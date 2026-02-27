@@ -1,0 +1,118 @@
+# Samples
+/build/
+build_out
+output
+/third_party/
+src/math/*/tests/st/[0-9]*/
+src/math/*/examples/CppExtensions/*/test/*.json
+src/math/*/examples/PytorchInvocation/pytorch
+
+
+# Cmake files
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+cmake-build-debug
+
+# Dynamic libraries
+*.so.*
+*.dylib
+
+# Static libraries
+*.la
+*.lai
+*.a
+*.lib
+
+# Object files
+*.o
+
+# python cache
+*.pyc
+__pycache__
+MANIFEST.in
+
+# Cquery
+.cquery_cached_index/
+compile_commands.json
+
+# Ctags and cscope
+tags
+TAGS
+CTAGS
+GTAGS
+GRTAGS
+GSYMS
+GPATH
+cscope.*
+
+# Python files
+*__pycache__*
+.pytest_cache
+
+# Mac files
+*.DS_Store
+
+# Test results
+test_temp_summary_event_file/
+*.dot
+*.dat
+*.perf
+*.info
+*.ckpt
+*.shp
+*.pkl
+*.pb
+*.om
+*.prototxt
+*.caffemodel
+
+# lite opencl compile file
+*.cl.inc
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+*.bak/
+
+# file
+*.mp4
+*.yuv
+*.log
+*.h264
+*.h265
+*.bin
+
+# Visual Studio
+.vs
+
+# Visual Studio Code
+.vscode
+
+# UT report file
+ut_report.txt
+
+# tbetoolkits log files
+tbetoolkits-*.log
+*_result.csv
+
+# Jetbrain
+.idea
+cmake-build-debug
+cmake-build-release
+
+# cann tmp
+lib/
+kernel_meta/
+
+# distribution and packaging
+build/
+build_out/
+output/
+dist/
+*.egg-info/
+*.egg
+*.whl
