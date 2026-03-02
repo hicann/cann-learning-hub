@@ -23,7 +23,6 @@
 关键目录如下。
 ```
 ├── quick_start                        # 快速入门系列教程
-│   ├── first_offline_inference        # 基于CANN快速跑通第一个离线推理
 │   ├── first_custom_operator          # 基于CANN快速跑通第一个自定义算子
 │   ├── first_operator_api_call        # 基于CANN快速跑通第一个算子API调用
 │   └── ...                            # 待扩展
