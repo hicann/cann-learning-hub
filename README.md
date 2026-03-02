@@ -28,7 +28,7 @@
 │   └── ...                            # 待扩展
 ├── tutorials                          # CANN各场景开发教程
 │   ├── ascend_c_operator_development  # Ascend C算子开发系列教程
-│   ├── PyPTO_ operator_development      # PyPTO算子开发系列教程
+│   ├── PyPTO_ operator_development    # PyPTO算子开发系列教程
 │   └── ...                            # 待扩展
 ├── contrib                            # 用户贡献
 │   └── ...                            # 待扩展
