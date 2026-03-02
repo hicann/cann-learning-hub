@@ -1,0 +1,23 @@
+#include "acl/acl.h"
+#include "kernel_operator.h"
+
+__global__ __aicore__ void hi_ascend()
+{
+    AscendC::printf("[Block (%lu/%lu)]: Hi Ascend\n", AscendC::GetBlockIdx(), AscendC::GetBlockNum());
+}
+
+int32_t main(int argc, char const *argv[])
+{
+    aclInit(nullptr);
+    int32_t deviceId = 0;
+    aclrtSetDevice(deviceId);
+    aclrtStream stream = nullptr;
+    aclrtCreateStream(&stream);
+    constexpr uint32_t blockDim = 4;
+    hi_ascend<<<blockDim, nullptr, stream>>>();
+    aclrtSynchronizeStream(stream);
+    aclrtDestroyStream(stream);
+    aclrtResetDevice(deviceId);
+    aclFinalize();
+    return 0;
+}
