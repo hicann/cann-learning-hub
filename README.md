@@ -18,7 +18,7 @@
 ## 📖教程与课程大纲
 | 课程 | 课程描述 | 状态 | 支持产品 |
 |---------|----------------|----------------|---------------|
-| [Ascend C算子开发](tutorials/ascend_c_operator_development) | 基于Ascend C的aicore算子开发教程 | 开发中 | Atlas A2 训练系列产品<br>Atlas A2 推理系列产品 |
+| [Ascend C算子开发](tutorials/ascend_c_operator_development) | 基于Ascend C的aicore算子开发教程 | 开发中 | Atlas A2/A3 系列产品 |
 | [pyPTO算子开发]() | 基于pyPTO的aicore算子开发教程 | 规划中 | |
 
 ## ⚡️快速体验
