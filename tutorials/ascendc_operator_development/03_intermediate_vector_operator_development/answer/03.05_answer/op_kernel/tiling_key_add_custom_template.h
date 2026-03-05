@@ -1,0 +1,17 @@
+#ifndef TILING_KEY_ADD_CUSTOM_TEMPLATE_H
+#define TILING_KEY_ADD_CUSTOM_TEMPLATE_H
+#include "ascendc/host_api/tiling/template_argument.h"
+
+ASCENDC_TPL_ARGS_DECL(AddCustomTemplate, // 算子名
+ASCENDC_TPL_DATATYPE_DECL(D_T_X, C_DT_INT8, C_DT_FLOAT, ASCENDC_TPL_INPUT(0)), 
+);
+
+ASCENDC_TPL_SEL(
+    ASCENDC_TPL_ARGS_SEL(
+    ASCENDC_TPL_DATATYPE_SEL(D_T_X, C_DT_INT8),
+    ),
+    ASCENDC_TPL_ARGS_SEL(
+    ASCENDC_TPL_DATATYPE_SEL(D_T_X, C_DT_FLOAT),
+    ),
+);
+#endif 
