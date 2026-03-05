@@ -25,7 +25,7 @@
 
 - **在线体验（建设中）**：开发者根据Readme中的跳转链接基于gitcode提供的轻量级notebook直接体验。
 
-- **gitcod环境体验**：参考[gitcode环境体验指南](./docs/gitcode_env_experience_guide.md)，基于Gitcode提供的notebook进行体验。
+- **gitcode环境体验**：参考[gitcode环境体验指南](./docs/gitcode_env_experience_guide.md)，基于Gitcode提供的notebook进行体验。
 
 ## 🔍目录结构
 关键目录如下。
