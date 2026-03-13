@@ -4,9 +4,10 @@
 - [2026/03] cann-learning-hub项目首次上线。
 
 ## 🚀概述
-本代码库是与[CANN](https://hiascend.com/software/cann) （Compute Architecture for Neural Networks）相关的开源学习资料集合。你可以在这里找到用户指南、教程及其他学习资源，免费面向所有对 CANN异构架构感兴趣的学习者开放。
-
-本项目旨在打造一个持续更新的动态项目，让各类文档、示例、最佳实践、优化方案与新功能能够快速、便捷地呈现给用户并供其使用。
+cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Architecture for Neural Networks）生态的官方开源学习中心仓库，聚焦 NPU 加速计算开发能力培养，汇聚从入门到进阶的全栈学习资源。
+仓库涵盖 CANN 全栈加速计算的系列示例与最佳实践教程，支持以 Notebook 方式在线 / 离线交互式运行，帮助开发者零门槛上手。
+我们致力于打造动态、全面的 CANN 知识平台，系统化整理入门指南、高级优化教程、精选算子与模型示例及经过验证的最佳实践方案。通过持续迭代更新，助力开发者快速掌握 CANN 开发技能，高效释放昇腾 NPU 算力，加速 AI 应用的开发与创新。
+仓库即将新增 contrib 目录，欢迎广大开发者贡献案例、教程、文档及各类学习资源，共建开放共享的 CANN 开发者生态。
 
 ## 📝版本配套
 本项目源码会基于CANN软件的非beta版本进行全量验证，关于CANN软件版本与本项目标签的对应关系请参阅[release仓库](https://gitcode.com/cann/release-management)中的相应版本说明，已验证情况如下下表所示。
