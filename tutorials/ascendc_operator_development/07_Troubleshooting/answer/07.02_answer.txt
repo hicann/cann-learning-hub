@@ -1,0 +1,15 @@
+    __aicore__ inline void Compute(int32_t progress)
+    {
+        AscendC::LocalTensor<half> xLocal = inQueueX.DeQue<half>();
+        AscendC::LocalTensor<half> yLocal = inQueueY.DeQue<half>();
+        AscendC::LocalTensor<half> zLocal = outQueueZ.AllocTensor<half>();
+        // 添加打印调试信息
+        if (progress == 0) {
+            AscendC::printf("[Block-%lu]:xLocal.size is: %d, yLocal.size is: %d, TILE_LENGTH is: %d\n",\
+                            AscendC::GetBlockIdx(),xLocal.GetSize(),yLocal.GetSize(),TILE_LENGTH);
+        }
+        AscendC::Add(zLocal, xLocal, yLocal, TILE_LENGTH);
+        outQueueZ.EnQue<half>(zLocal);
+        inQueueX.FreeTensor(xLocal);
+        inQueueY.FreeTensor(yLocal);
+    }

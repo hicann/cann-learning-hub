@@ -1,0 +1,6 @@
+// 请添加打印信息...
+if (AscendC::GetBlockIdx() == 2 && progress == (this->tileNum * BUFFER_NUM -1)) {
+    uint32_t array[] = {static_cast<uint32_t>(2), static_cast<uint32_t>(8)};
+    AscendC::ShapeInfo shapeInfo(2, array);
+    AscendC::DumpTensor(zLocal, 0, 8, shapeInfo);
+}
