@@ -1,0 +1,5 @@
+!git clone https://gitcode.com/cann/ops-math.git    
+!cd ops-math    
+!bash build.sh --pkg --vendor_name=custom --soc=ascend910b --ops=abs -j16    
+!./build_out/cann-ops-math-custom_linux-aarch64.run    
+!bash build.sh --run_example abs eager cust --vendor_name=custom    
