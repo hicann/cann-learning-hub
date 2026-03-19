@@ -1,0 +1,21 @@
+
+#ifndef __SUB_CUSTOM_TILING_KEY_H__
+#define __SUB_CUSTOM_TILING_KEY_H__
+
+#include "ascendc/host_api/tiling/template_argument.h"
+
+/* Mode场景定义 */
+#define ELEMENTWISE_TPL_SCH_MODE_0 0
+#define ELEMENTWISE_TPL_SCH_MODE_1 1
+/* 继续定义其他Mode场景... */
+
+/* 模板参数 */
+ASCENDC_TPL_ARGS_DECL(
+    SubCustom,
+    ASCENDC_TPL_UINT_DECL(schMode, 1, ASCENDC_TPL_UI_LIST, ELEMENTWISE_TPL_SCH_MODE_0, ELEMENTWISE_TPL_SCH_MODE_1));
+
+/* 模板参数组合 */
+ASCENDC_TPL_SEL(ASCENDC_TPL_ARGS_SEL(
+    ASCENDC_TPL_UINT_SEL(schMode, ASCENDC_TPL_UI_LIST, ELEMENTWISE_TPL_SCH_MODE_0, ELEMENTWISE_TPL_SCH_MODE_1)));
+
+#endif
