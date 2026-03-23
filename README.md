@@ -1,6 +1,7 @@
 # cann-learning-hub
 
 ## 🔥Latest News
+- [2026/03] cann-learning-hub技术博客内容添加(blogs目录)
 - [2026/03] cann-learning-hub项目首次上线。
 
 ## 🚀概述
@@ -38,6 +39,11 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 ├── tutorials                          # CANN各场景开发教程
 │   ├── ascend_c_operator_development  # Ascend C算子开发系列教程
 │   ├── PyPTO_ operator_development    # PyPTO算子开发系列教程
+│   └── ...                            # 待扩展
+├── blogs                              # 技术博客
+│   ├── operator                       # 算子相关技术博客
+│   ├── inference                      # 推理相关技术博客
+│   ├── training                       # 训练相关技术博客
 │   └── ...                            # 待扩展
 ├── contrib                            # 用户贡献
 │   └── ...                            # 待扩展
