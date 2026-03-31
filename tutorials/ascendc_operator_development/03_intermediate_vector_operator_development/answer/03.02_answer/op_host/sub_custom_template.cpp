@@ -18,6 +18,7 @@ namespace optiling {
 static ge::graphStatus TilingFunc(gert::TilingContext *context)
 {
     TilingDataTemplate *tiling = context->GetTilingData<TilingDataTemplate>();
+    uint32_t totalLength = context->GetInputShape(0)->GetOriginShape().GetShapeSize();
     context->SetBlockDim(8);
     tiling->totalLength = totalLength;
     tiling->tileNum = 1;
