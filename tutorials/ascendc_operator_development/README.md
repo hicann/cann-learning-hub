@@ -75,11 +75,10 @@
 
 | Notebook | Link | 状态 |
 |--|--|--|
-| 7.1 章节介绍 |  [在线体验(建设中)]() | ✅ 已发布 |
-| 7.2 CPU域孪生调试 |  [在线体验(建设中)]() | ✅ 已发布 |
-| 7.3 NPU域上板调试 |  [在线体验(建设中)]() | ✅ 已发布 |
-| 7.4 Ascend C算子开发典型问题 |  [在线体验(建设中)]() | ✅ 已发布 |
-| 7.5 章节实践 |  [在线体验(建设中)]() | ✅ 已发布 |
+| 4.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/04_matmul_basic/04.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 4.2 矩阵乘法介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/04_matmul_basic/04.02_matrix_multiplication_introduction.ipynb) | ✅ 已发布 |
+| 4.3 基于高阶API的矩阵乘算子开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/04_matmul_basic/04.03_matrix_multiplication_operator_development_with_high_level_api.ipynb) | ✅ 已发布 |
+| 4.4 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/04_matmul_basic/04.04_chapter_test.ipynb) | ✅ 已发布 |
 
 ### Ascend C算子性能优化
 
