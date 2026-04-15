@@ -21,7 +21,7 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 | 课程 | 课程描述 | 状态 | 支持产品 |
 |---------|----------------|----------------|---------------|
 | [Ascend C算子开发](tutorials/ascendc_operator_development) | 基于Ascend C的aicore算子开发教程 | 开发中 | Atlas A2/A3 系列产品 |
-| [pyPTO算子开发]() | 基于pyPTO的aicore算子开发教程 | 规划中 | |
+| [PyPTO算子开发]() | 基于PyPTO的aicore算子开发教程 | 规划中 | |
 
 ## ⚡️快速体验
 
