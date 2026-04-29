@@ -1,0 +1,39 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "cacheVariables": {
+        "ENABLE_BINARY_PACKAGE": true,
+        "ASCEND_CANN_PACKAGE_PATH": "$env{ASCEND_HOME_PATH}",
+        "vendor_name": "customize",
+        "ASCEND_PRODUCT_TYPE": "ascend910b"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "default",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "default",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    }
+  ]
+}

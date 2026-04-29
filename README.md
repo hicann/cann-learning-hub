@@ -1,6 +1,7 @@
 # cann-learning-hub
 
 ## 🔥Latest News
+- [2026/04] cann-learning-hub新增[skills](./skills)目录，包含CANNJudge竞赛skill及自定义算子工程算子生成skill。
 - [2026/03] cann-learning-hub技术博客内容添加(blogs目录)
 - [2026/03] cann-learning-hub项目首次上线。
 
