@@ -20,10 +20,11 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 |------------------------|-----------|
 | 8.5.0 | 2026.03.02 |
 
-## 📖教程与课程大纲
+## 📖教程与参考实践
 | 课程 | 课程描述 | 状态 | 支持产品 |
 |---------|----------------|----------------|---------------|
 | [Ascend C算子开发](tutorials/ascendc_operator_development) | 基于Ascend C的aicore算子开发教程 | 开发中 | Atlas A2/A3 系列产品 |
+| [模型推理优化实践](reference_practice/model_inference_optimization) | 以真实模型样例为载体，结合 Profiling 分析和融合算子开发完成整网性能优化参考实践 | 开发中 | Atlas A2 系列产品 |
 | [PyPTO算子开发]() | 基于PyPTO的aicore算子开发教程 | 规划中 | |
 
 ## ⚡️快速体验
@@ -42,6 +43,11 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 ├── tutorials                          # CANN各场景开发教程
 │   ├── ascend_c_operator_development  # Ascend C算子开发系列教程
 │   ├── PyPTO_ operator_development    # PyPTO算子开发系列教程
+│   └── ...                            # 待扩展
+├── reference_practice                 # CANN参考实践
+│   ├── model_inference_optimization   # 模型推理优化实践
+│   │   ├── sana_video                 # Sana-Video 推理优化实践
+│   │   └── ...                        # 待扩展
 │   └── ...                            # 待扩展
 ├── blogs                              # 技术博客
 │   ├── operator                       # 算子相关技术博客
