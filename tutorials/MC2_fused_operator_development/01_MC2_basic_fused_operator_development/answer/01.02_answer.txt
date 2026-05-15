@@ -1,0 +1,14 @@
+1. B
+解析：MC2 MTE通信算子的核心特点是使用MTE引擎直接读写Win Area，支持Kernel直调（<<<>>>），不依赖HCCL服务端调度，编译方式为CMake+ascendc，仅支持Ascend 950平台。
+
+2. B
+解析：MC2 MTE通信算子支持Kernel直调的原因是通信与计算在同一Kernel中执行，使用<<<>>>启动，Kernel参数包含mc2Context（HcclA5OpResParam结构体）。
+
+3. C
+解析：MC2 MTE通信算子支持AllGather、AllToAll、ReduceScatter、AllReduce（one-shot和two-shot）等多种集合通信类型，PUT和GET模式都支持。
+
+4. B
+解析：MC2 MTE通信算子使用HcclCommInitAll单进程多线程初始化通信域，无需RANK_TABLE_FILE；SetCommEngine(3)用于设置MTE引擎直接通信；编译方式为CMake+ascendc，不支持bisheng。
+
+5. A, B, C
+解析：Matmul+ReduceScatter使用GET模式，AIC Matmul结果直接写入Win Area，省掉GM→Win搬运（A正确）；AllGather+Matmul使用PUT模式，适合先通信后计算的场景（B正确）；大数据AllReduce使用two-shot算法，通信量从(N-1)×size降低到2×size（C正确）；MC2 MTE通信算子支持各种数据规模（D错误）。
