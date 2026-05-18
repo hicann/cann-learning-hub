@@ -64,7 +64,7 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 
 ## 💬相关信息
 
-- [贡献指南](CONTRIBUTING.md)
+- [贡献指南](CONTRIBUTION.md)
 - [安全声明](SECURITY.md)
 - [许可证](LICENSE)
 - [所属SIG](https://gitcode.com/cann/community/tree/master/CANN/sigs/doc)
