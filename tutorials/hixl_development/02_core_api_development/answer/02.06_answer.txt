@@ -1,0 +1,44 @@
+1. √
+解析：带端口的格式表示 Server 角色，在指定端口上监听等待远端连接。
+
+2. ×
+解析：申请内存和注册内存是两个独立步骤，`aclrtMalloc` 只是分配内存，需要调用 `RegisterMem` 才能让 HIXL 知道这段内存可以被远端访问。
+
+3. √
+解析：建链前需完成本地内存注册，未注册的地址无法参与直传，只能走中转模式。
+
+4. ×
+解析：`TransferSync` 返回 `SUCCESS` 只表示数据传输完成，远端业务逻辑是否已消费数据与 HIXL 无关。
+
+5. ×
+解析：`TransferAsync` 返回 `SUCCESS` 只表示请求下发成功，必须通过 `GetTransferStatus` 查询最终完成状态。
+
+6. B
+解析：`PARAM_INVALID` 通常表示参数格式或值非法，应检查 `local_engine` 格式和 `options` 配置项是否正确。
+
+7. C
+解析：推荐顺序：Transfer 完成 → Disconnect → DeregisterMem → aclrtFree → Finalize。
+
+8. B
+解析：`aclrtMallocHost` 分配的是 Host 内存，应使用 `MEM_HOST` 类型注册；`aclrtMalloc` 分配的是 Device 内存，应使用 `MEM_DEVICE`。
+
+9. B
+解析：`ALREADY_CONNECTED` 表示已建链，是幂等情况，可视为成功继续后续传输。
+
+10. B
+解析：`remote_engine` 应与远端 `Initialize` 使用的 `local_engine` 标识一致，否则无法定位正确远端。
+
+11. B
+解析：`READ` 是站在本端视角从远端读回本地，`local_addr` 是本地接收缓冲区，`remote_addr` 是远端源数据地址。
+
+12. C
+解析：`remote_addr` 是远端进程地址空间中的地址数值，需由远端分配、注册并通过控制面交换得到。
+
+13. A、B、C、D
+解析：Finalize 前应确认：不再提交新请求、传输已收口、已断链、已解注册并释放底层内存。
+
+14. A、B、C
+解析：建链约束包括 Initialize 完成后调用、建链前完成内存注册、同线程或 context 切换。建链后不能再注册新内存。
+
+15. A、B、C、D
+解析：这些都是 HIXL Initialize 的 options 配置项，用于设置通信模式和资源行为。

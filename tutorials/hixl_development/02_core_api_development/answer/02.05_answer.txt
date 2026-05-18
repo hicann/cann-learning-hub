@@ -1,0 +1,14 @@
+1. ×
+解析：TransferSync 返回 SUCCESS 表示传输接口语义完成，不等于远端业务逻辑已经消费数据。远端业务消费和控制面确认可能还未完成。
+
+2. ×
+解析：TransferAsync 返回 SUCCESS 只表示请求下发成功，不表示传输完成。必须通过 GetTransferStatus 查询到 COMPLETED 才表示传输完成。
+
+3. B
+解析：READ 是站在本端视角从远端读回本地，local_addr 是本地接收缓冲区，remote_addr 是远端源数据地址。
+
+4. C
+解析：remote_addr 是远端进程地址空间中的地址数值，需由远端分配、注册并通过控制面交换得到。MemHandle 是本地解注册用的句柄，不能用作远端地址。
+
+5. A、B、C
+解析：TransferAsync 成功只表示请求下发成功，最终完成态需通过 GetTransferStatus 查询，查询到终态后不应继续查询同一请求。异步超时需用户自行判断，TIMEOUT 状态暂不支持。

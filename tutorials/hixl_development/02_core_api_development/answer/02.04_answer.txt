@@ -1,0 +1,14 @@
+1. ×
+解析：Server 端需要 local_engine 带端口（如 10.10.10.1:26000）才能监听。不带端口不启动监听，无法等待远端 Connect。
+
+2. √
+解析：建链阶段需要建立远端访问相关的通信资源，必须在建链前完成两端内存注册。建链后注册的内存不支持远端访问。
+
+3. B
+解析：ALREADY_CONNECTED 表示已经与远端建链，是幂等返回，可视为成功继续传输。
+
+4. B
+解析：remote_engine 应与远端 Initialize 使用的 local_engine 标识一致，否则无法定位正确远端。
+
+5. A、B、C
+解析：Connect 需要 Initialize 完成后调用，建链前需完成内存注册，与 Initialize 同线程或通过 context 切换。建链后注册的内存不支持远端访问。
