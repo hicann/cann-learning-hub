@@ -15,6 +15,76 @@
 - 已注册 CANNJudge 账号
 - 已配置 CANN 开发环境
 - 已安装必要的编译工具
+- 已安装 pycryptodome：`pip install pycryptodome`
+
+## 安全登录机制（RSA 加密）
+
+### 铁律
+
+1. **禁止在对话中直接输入明文密码**
+2. **禁止将解密后的密码显示/打印/输出到对话中** — 解密仅用于内部调用登录 API，绝不出现在任何输出中
+3. **禁止将明文密码写入日志、文件或环境变量**
+
+违反以上任何一条视为严重安全事件。
+
+### 原理
+
+```
+服务器 (private.pem)          个人 PC (public.pem)
+       │                            │
+       │◄─── 拷贝 public.pem ───────┤
+       │                            │
+       │         密码 ──► RSA加密 ──┤──► 密文
+       │                            │
+       ├── RSA解密(密文) ──► 明文   │  ← 仅内存中，禁止输出
+       ├── 登录 CANNJudge           │
+       ├── 明文立即从内存清除        │
+```
+
+- **私钥 (private.pem)**：仅存在于服务器，用于解密，**绝不外传**
+- **公钥 (public.pem)**：可公开分发，用户在个人 PC 上用于加密密码
+- **密文**：用户将加密后的密文提供给 CANNBot，CANNBot 在服务器上解密后登录
+- **明文密码**：仅在内存中短暂存在，用于调用登录 API，**禁止输出到对话/日志/文件**
+
+### 首次设置（一次性）
+
+#### 步骤 1：在服务器上生成密钥对
+
+```bash
+# 在服务器上运行
+python3 skills/cannjudge-submit/generate_key.py
+# 生成 private.pem（留在服务器）和 public.pem（拷贝到 PC）
+```
+
+#### 步骤 2：将公钥拷贝到个人 PC
+
+```bash
+# 方式 A：直接复制服务器上 public.pem 的内容
+cat public.pem  # 在服务器上查看，复制内容到 PC
+
+# 方式 B：用 scp 拷贝
+scp server:~/path/to/public.pem ~/local/path/
+```
+
+#### 步骤 3：在个人 PC 上加密密码
+
+```bash
+# 在个人 PC 上运行
+python3 encrypt_password.py --public-key public.pem
+# 输入密码后，输出 RSA 密文
+```
+
+#### 步骤 4：将密文提供给 CANNBot
+
+将步骤 3 输出的密文直接粘贴给 CANNBot，CANNBot 会用服务器上的私钥解密并登录。
+
+### 日常使用
+
+设置完成后，每次登录只需：
+1. 在 PC 上用 `encrypt_password.py` 加密密码（或复用之前的密文，只要私钥不变）
+2. 将密文给 CANNBot
+
+**密文可以复用**：只要私钥文件不变，同一密文解密结果相同，无需每次重新加密。
 
 ## ⚠️ 重要：必须从网站获取题目信息
 
@@ -273,21 +343,38 @@ https://cannjudge.cn
 
 ### 步骤 1: 登录
 
+**推荐方式：RSA 加密密文登录（安全）**
+
 ```python
 import requests
+from cannjudge_cli import CANNJudgeClient
 
-# 登录获取用户信息和 cookie
-resp = requests.post(
-    "https://cannjudge.cn/api/users/login",
-    json={"email": "用户邮箱", "password": "密码"}
+client = CANNJudgeClient()
+
+# 方式 A：用密文登录（推荐）
+# 密文由用户在 PC 上用 encrypt_password.py 生成
+# 解密后的明文仅在内存中用于调用登录 API，禁止输出到对话/日志/文件
+user_info = client.login_with_ciphertext(
+    email="用户邮箱",
+    ciphertext="RSA加密后的密文",
+    private_key_path="private.pem"  # 服务器上的私钥路径
 )
 
-user_info = resp.json()
-user_id = user_info["_id"]
-
-# 保存 cookie 用于后续请求
-cookies = resp.cookies
+# 方式 B：直接用明文密码登录（不推荐，仅调试用）
+# user_info = client.login("用户邮箱", "明文密码")
 ```
+
+**命令行方式**：
+
+```bash
+# 推荐：密文登录
+python cannjudge_cli.py login --email "your@email.com" --ciphertext "RSA密文"
+
+# 不推荐：明文登录
+python cannjudge_cli.py login --email "your@email.com" --password "明文密码"
+```
+
+**安全铁律**：登录成功后只输出"登录成功"和用户 ID，**绝不输出解密后的密码**。
 
 ### 步骤 2: 获取题目信息
 
@@ -559,11 +646,12 @@ if (axis < 0) {
 
 ## 注意事项
 
-1. **敏感信息**: 不要在代码中硬编码账号、密码、题目ID等敏感信息
-2. **泛化设计**: 必须设计泛化算子，平台不提供测试用例
-3. **Cookie 管理**: 登录后保存 cookie，用于后续所有请求
-4. **轮询间隔**: 查询结果时建议间隔 3 秒，避免频繁请求
-5. **超时处理**: 设置合理的请求超时时间（建议 30 秒）
+1. **密码安全**: 禁止在对话中直接输入明文密码，必须使用 RSA 加密密文登录
+2. **私钥保护**: private.pem 仅保留在服务器，绝不外传、不提交到代码仓库
+3. **泛化设计**: 必须设计泛化算子，平台不提供测试用例
+4. **Cookie 管理**: 登录后保存 cookie，用于后续所有请求
+5. **轮询间隔**: 查询结果时建议间隔 3 秒，避免频繁请求
+6. **超时处理**: 设置合理的请求超时时间（建议 30 秒）
 
 ## 示例用法
 
@@ -573,17 +661,19 @@ if (axis < 0) {
 用户: 帮我从 CANNJudge 下载 DepthToSpace 题目并实现泛化算子
 
 助手: 
-1. 请提供 CANNJudge 登录邮箱和密码
-2. 我将登录并获取题目信息
-3. 下载工程模板
-4. 分析题目要求，设计泛化算子：
+1. 请提供 CANNJudge 登录邮箱和 RSA 加密密文
+   （如未设置，先运行 generate_key.py 生成密钥对，再在 PC 上用 encrypt_password.py 加密密码）
+2. 我将用服务器私钥解密密文，登录 CANNJudge
+3. 获取题目信息
+4. 下载工程模板
+5. 分析题目要求，设计泛化算子：
    - 支持的数据类型：float16, float32
    - 支持的维度：4D 输入
    - 属性：block_size
    - 边界情况：block_size=1, block_size=最大值
-5. 实现泛化的 Host 和 Kernel 代码
-6. 编译并提交
-7. 查看结果和排行榜
+6. 实现泛化的 Host 和 Kernel 代码
+7. 编译并提交
+8. 查看结果和排行榜
 ```
 
 ## 相关 Skills

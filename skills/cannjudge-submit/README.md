@@ -4,24 +4,46 @@
 
 ## 功能
 
-- ✅ 登录 CANNJudge
+- ✅ RSA 加密安全登录（禁止明文密码）
 - ✅ 获取题目信息
 - ✅ 下载工程模板
 - ✅ 提交算子实现
 - ✅ 查询提交结果
 - ✅ 查看排行榜
 
+## 安全登录机制
+
+**禁止在对话中直接输入明文密码！** 使用 RSA 非对称加密保护密码。
+
+### 首次设置
+
+```bash
+# 1. 在服务器上生成 RSA 密钥对（一次性）
+python3 generate_key.py
+# → 生成 private.pem（留在服务器）+ public.pem（拷贝到 PC）
+
+# 2. 将 public.pem 拷贝到个人 PC
+scp server:~/path/to/public.pem ./
+
+# 3. 在 PC 上加密密码
+python3 encrypt_password.py --public-key public.pem
+# → 输出 RSA 密文，将密文提供给 CANNBot
+```
+
+### 日常使用
+
+将密文提供给 CANNBot 即可登录，密文可复用（私钥不变时）。
+
 ## 使用方法
 
 ### 方式 1: 使用命令行工具
 
 ```bash
-# 设置登录信息（可选，也可在命令中指定）
-export CANNJUDGE_EMAIL="your_email@example.com"
-export CANNJUDGE_PASSWORD="your_password"
+# 推荐：密文登录
+python cannjudge_cli.py login --email "your@email.com" --ciphertext "RSA密文"
 
-# 登录
-python cannjudge_cli.py login --email "your_email" --password "your_password"
+# 不推荐：明文登录（仅调试用）
+python cannjudge_cli.py login --email "your@email.com" --password "明文密码"
 
 # 下载工程
 python cannjudge_cli.py download --problem-id "题目ID" --output "./output"
@@ -36,24 +58,22 @@ python cannjudge_cli.py query --submission-id "提交ID"
 python cannjudge_cli.py rank --problem-id "题目ID"
 ```
 
-### 方式 2: 使用示例脚本
-
-```bash
-python example.py
-```
-
-按照提示逐步完成整个流程。
-
-### 方式 3: 在代码中直接使用
+### 方式 2: 在代码中直接使用
 
 ```python
 from cannjudge_cli import CANNJudgeClient
 
-# 创建客户端
 client = CANNJudgeClient()
 
-# 登录
-user_info = client.login("email@example.com", "password")
+# 推荐：密文登录
+user_info = client.login_with_ciphertext(
+    email="email@example.com",
+    ciphertext="RSA密文",
+    private_key_path="private.pem"
+)
+
+# 不推荐：明文登录
+# user_info = client.login("email@example.com", "明文密码")
 
 # 获取题目信息
 problem = client.get_problem("题目ID")
@@ -140,10 +160,11 @@ GET /api/submissions/problem/{problemId}/latest
 
 ## 注意事项
 
-1. **敏感信息**: 不要在代码中硬编码账号密码
-2. **Cookie**: 登录后会自动管理 Cookie
-3. **轮询**: 查询结果时默认 3 秒间隔
-4. **超时**: 默认最长等待 120 秒
+1. **密码安全**: 禁止在对话中直接输入明文密码，使用 RSA 加密密文
+2. **私钥保护**: private.pem 仅保留在服务器，绝不外传
+3. **Cookie**: 登录后会自动管理 Cookie
+4. **轮询**: 查询结果时默认 3 秒间隔
+5. **超时**: 默认最长等待 120 秒
 
 ## 工程模板结构
 
@@ -164,3 +185,15 @@ code/
 
 - CANNJudge 网站: https://cannjudge.cn
 - CANN 文档: https://www.hiascend.com/document
+
+## 文件结构
+
+```
+cannjudge-submit/
+├── SKILL.md              # 技能详细说明文档
+├── README.md             # 使用说明
+├── cannjudge_cli.py      # 命令行工具（支持 RSA 密文登录）
+├── generate_key.py       # RSA 密钥对生成脚本（服务器端运行）
+├── encrypt_password.py   # RSA 密码加密脚本（PC 端运行）
+└── example.py            # 使用示例
+```

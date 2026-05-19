@@ -12,7 +12,28 @@ import time
 import os
 import zipfile
 import tempfile
+import base64
 from pathlib import Path
+
+try:
+    from Crypto.PublicKey import RSA
+    from Crypto.Cipher import PKCS1_v1_5
+    HAS_CRYPTO = True
+except ImportError:
+    HAS_CRYPTO = False
+
+
+def decrypt_password(ciphertext_b64: str, private_key_path: str = "private.pem") -> str:
+    """用 RSA 私钥解密密码密文。返回的明文密码仅供内部调用登录 API，禁止输出到对话/日志/文件。"""
+    if not HAS_CRYPTO:
+        raise ImportError("需要 pycryptodome 库: pip install pycryptodome")
+    with open(private_key_path, "r") as f:
+        private_key_pem = f.read()
+    rsa_key = RSA.importKey(private_key_pem)
+    cipher = PKCS1_v1_5.new(rsa_key)
+    ciphertext = base64.b64decode(ciphertext_b64)
+    plaintext = cipher.decrypt(ciphertext, sentinel=None)
+    return plaintext.decode()
 
 
 class CANNJudgeClient:
@@ -26,7 +47,7 @@ class CANNJudgeClient:
         self.user_info = None
     
     def login(self, email: str, password: str) -> dict:
-        """登录 CANNJudge"""
+        """登录 CANNJudge（password 为明文密码）"""
         resp = self.session.post(
             f"{self.BASE_URL}/api/users/login",
             json={"email": email, "password": password},
@@ -38,6 +59,15 @@ class CANNJudgeClient:
         self.user_id = self.user_info["_id"]
         
         return self.user_info
+    
+    def login_with_ciphertext(self, email: str, ciphertext: str,
+                              private_key_path: str = "private.pem") -> dict:
+        """登录 CANNJudge（ciphertext 为 RSA 加密后的密码密文，服务器用私钥解密）。
+        解密后的明文密码仅供内部调用登录 API，禁止输出到对话/日志/文件。"""
+        password = decrypt_password(ciphertext, private_key_path)
+        result = self.login(email, password)
+        del password  # 立即清除明文
+        return result
     
     def get_problem(self, problem_id: str) -> dict:
         """获取题目信息"""
@@ -156,7 +186,9 @@ def main():
     # 登录命令
     login_parser = subparsers.add_parser("login", help="登录 CANNJudge")
     login_parser.add_argument("--email", required=True, help="登录邮箱")
-    login_parser.add_argument("--password", required=True, help="登录密码")
+    login_parser.add_argument("--password", help="明文密码（不推荐，优先使用 --ciphertext）")
+    login_parser.add_argument("--ciphertext", help="RSA 加密后的密码密文（推荐）")
+    login_parser.add_argument("--private-key", default="private.pem", help="RSA 私钥路径")
     
     # 下载命令
     download_parser = subparsers.add_parser("download", help="下载工程模板")
@@ -190,7 +222,13 @@ def main():
         client.login(email, password)
     
     if args.command == "login":
-        result = client.login(args.email, args.password)
+        if args.ciphertext:
+            result = client.login_with_ciphertext(args.email, args.ciphertext, args.private_key)
+        elif args.password:
+            result = client.login(args.email, args.password)
+        else:
+            print("错误: 请提供 --ciphertext（推荐）或 --password")
+            return
         print(f"登录成功!")
         print(f"用户ID: {result['_id']}")
         print(f"昵称: {result.get('nickname', 'N/A')}")
