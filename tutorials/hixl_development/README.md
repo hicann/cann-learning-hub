@@ -17,38 +17,38 @@
 
 | Notebook | Link | 状态 |
 | --- | --- | --- |
-| 1.1 章节介绍 | [在线体验(建设中)]() | ✅ 已发布 |
-| 1.2 单边通信基础概念 | [在线体验(建设中)]() | ✅ 已发布 |
-| 1.3 HIXL 简介 | [在线体验(建设中)]() | ✅ 已发布 |
-| 1.4 HIXL 整体开发流程 | [在线体验(建设中)]()  | ✅ 已发布 |
-| 1.5 章节练习 | [在线体验(建设中)]() | ✅ 已发布 |
+| 1.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/01_basic_overview/01.01_chapter_intro.ipynb&npuCnt=2) | ✅ 已发布 |
+| 1.2 单边通信基础概念 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/01_basic_overview/01.02_one_sided_comm_basic_concepts.ipynb&npuCnt=2) | ✅ 已发布 |
+| 1.3 HIXL 简介 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/01_basic_overview/01.03_hixl_introduction.ipynb&npuCnt=2) | ✅ 已发布 |
+| 1.4 HIXL 整体开发流程 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/01_basic_overview/01.04_hixl_development_flow.ipynb&npuCnt=2)  | ✅ 已发布 |
+| 1.5 章节练习 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/01_basic_overview/01.05_chapter_practice.ipynb&npuCnt=2) | ✅ 已发布 |
 
 ### HIXL 核心 API 使用方法
 
 | Notebook | Link | 状态 |
 | --- | --- | --- |
-| 2.1 章节介绍 | [在线体验(建设中)]() | ✅ 已发布 |
-| 2.2 HIXL 资源管理 | [在线体验(建设中)]() | ✅ 已发布 |
-| 2.3 HIXL 内存管理 | [在线体验(建设中)]() | ✅ 已发布 |
-| 2.4 HIXL 链路管理 | [在线体验(建设中)]() | ✅ 已发布 |
-| 2.5 HIXL 数据传输 | [在线体验(建设中)]() | ✅ 已发布 |
-| 2.6 章节练习 | [在线体验(建设中)]() | ✅ 已发布 |
+| 2.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/02_core_api_development/02.01_chapter_intro.ipynb&npuCnt=2) | ✅ 已发布 |
+| 2.2 HIXL 资源管理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/02_core_api_development/02.02_hixl_resource_management.ipynb&npuCnt=2) | ✅ 已发布 |
+| 2.3 HIXL 内存管理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/02_core_api_development/02.03_hixl_memory_management.ipynb&npuCnt=2) | ✅ 已发布 |
+| 2.4 HIXL 链路管理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/02_core_api_development/02.04_hixl_link_management.ipynb&npuCnt=2) | ✅ 已发布 |
+| 2.5 HIXL 数据传输 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/02_core_api_development/02.05_hixl_data_transfer.ipynb&npuCnt=2) | ✅ 已发布 |
+| 2.6 章节练习 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/02_core_api_development/02.06_chapter_practice.ipynb&npuCnt=2) | ✅ 已发布 |
 
 ### HIXL 传输模式介绍
 
 | Notebook | Link | 状态 |
 | --- | --- | --- |
-| 3.1 章节介绍 | [在线体验(建设中)]() | ✅ 已发布 |
-| 3.2 直传模式 | [在线体验(建设中)]() | ✅ 已发布 |
-| 3.3 中转传输模式 | [在线体验(建设中)]() | ✅ 已发布 |
-| 3.4 FabricMem 模式 | [在线体验(建设中)]() | ✅ 已发布 |
-| 3.5 章节练习 | [在线体验(建设中)]() | ✅ 已发布 |
+| 3.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/03_multi_transfer_mode/03.01_chapter_intro.ipynb&npuCnt=2) | ✅ 已发布 |
+| 3.2 直传模式 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/03_multi_transfer_mode/03.02_direct_transfer_mode.ipynb&npuCnt=2) | ✅ 已发布 |
+| 3.3 中转传输模式 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/03_multi_transfer_mode/03.03_buffer_transfer_mode.ipynb&npuCnt=2) | ✅ 已发布 |
+| 3.4 FabricMem 模式 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/03_multi_transfer_mode/03.04_fabricmem_mode.ipynb&npuCnt=2) | ✅ 已发布 |
+| 3.5 章节练习 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/03_multi_transfer_mode/03.05_chapter_practice.ipynb&npuCnt=2) | ✅ 已发布 |
 
 ### HIXL 问题定位和性能优化
 
 | Notebook | Link | 状态 |
 | --- | --- | --- |
-| 4.1 章节介绍 | [在线体验(建设中)]() | ✅ 已发布 |
-| 4.2 HIXL 典型问题定位方法 | [在线体验(建设中)]() | ✅ 已发布 |
-| 4.3 HIXL 性能分析方法 | [在线体验(建设中)]() | ✅ 已发布 |
-| 4.4 章节练习 | [在线体验(建设中)]() | ✅ 已发布 |
+| 4.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/04_troubleshooting_and_perf_optimization/04.01_chapter_intro.ipynb&npuCnt=2) | ✅ 已发布 |
+| 4.2 HIXL 典型问题定位方法 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/04_troubleshooting_and_perf_optimization/04.02_typical_issue_troubleshoot.ipynb&npuCnt=2) | ✅ 已发布 |
+| 4.3 HIXL 性能分析方法 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/04_troubleshooting_and_perf_optimization/04.03_performance_analysis.ipynb&npuCnt=2) | ✅ 已发布 |
+| 4.4 章节练习 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/hixl_development&scanFilePath=tutorials/hixl_development/04_troubleshooting_and_perf_optimization/04.04_chapter_practice.ipynb&npuCnt=2) | ✅ 已发布 |
