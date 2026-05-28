@@ -22,6 +22,7 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 |------------------------|-----------|
 | 8.5.0 | 2026.03.02 |
 
+
 ## 🧭 开发者学习路径
 
 按你的技术方向，快速找到最适合的入口：
@@ -94,7 +95,10 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 │   ├── inference                      # 推理（12 篇）
 │   └── training                       # 训练（3 篇）
 ├── contrib                            # 社区贡献
-│   └── tutorials/swan_llm_course     # SwanLab 共建：LLM 微调实战
+├── contrib                            # 用户贡献
+│   ├── tutorials                      # 外部贡献教程
+│   │   ├── torch-rechub               # Torch-RecHub推荐系统实战教程
+│   │   └── swan_llm_course            # SwanLab 共建：LLM 微调实战
 ├── skills                             # CANNBot 技能
 │   ├── ascendc-ops-project           # 自定义算子工程生成
 │   └── cannjudge-submit              # CANNJudge 竞赛提交
