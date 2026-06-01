@@ -1,0 +1,51 @@
+========================================
+09.03 Conv2D V2 核函数开发 课后实践答案
+========================================
+
+SetTilingData 填空（4 处）：
+
+[QUIZ 1/4] kAL1 = KH * KW * CI = 3 * 3 * 16 = 144
+
+[QUIZ 2/4] kBL1 = KH * KW * CI = 3 * 3 * 16 = 144
+
+[QUIZ 3/4] kL0 = KH * KW * CI = 3 * 3 * 16 = 144
+
+[QUIZ 4/4] mStep = AlignUp(HO * WO, 16) = ((6 * 6 + 15) // 16) * 16 = (36 // 16) * 16 = 2 * 16 = 32
+
+----------------------------------------
+
+CheckTilingSpace 填空（5 处）：
+[QUIZ 1/5] 
+dilatedKH = 1 + (KH - 1) * DILATION_H = 1 + (3 - 1) * 1 = 3
+dilatedKW = 1 + (KW - 1) * DILATION_W = 1 + (3 - 1) * 1 = 3
+
+[QUIZ 2/5] 
+hiLoad = (HO - 1) * STRIDE_H + dilatedKH = (6 - 1) * 1 + 3 = 8
+wiLoad = (WO - 1) * STRIDE_W + dilatedKW = (6 - 1) * 1 + 3 = 8
+
+[QUIZ 3/5] 
+al1Bytes = hiLoad * wiLoad * CI * sizeof(fp16) = 8 * 8 * 16 * 2 = 2048
+
+[QUIZ 4/5] 
+mAlign = ((HO * WO + 15) // 16) * 16 = ((6 * 6 + 15) // 16) * 16 = 32
+al0Bytes = mAlign * kL0 * sizeof(fp16) = 32 * 144 * 2 = 9216
+
+[QUIZ 5/5] 
+nAlign = ((CO + 15) // 16) * 16 = ((16 + 15) // 16) * 16 = 16
+cl0Bytes = mAlign * nAlign * sizeof(fp32) = 32 * 16 * 4 = 2048
+
+----------------------------------------
+
+验证（与 Demo 默认参数 HI=WI=8, HO=WO=6 对应）：
+kAL1=144, kBL1=144, kL0=144, mStep=32
+dilatedKH=3, dilatedKW=3
+hiLoad=8, wiLoad=8
+al1Bytes=2048, al0Bytes=9216, cl0Bytes=2048
+
+片上空间检查：
+L1  = al1Bytes + bl1Bytes = 2048 + 16*144*2 = 2048 + 4608 = 6656  (限制 1MB = 1048576) ✓
+L0A = al0Bytes = 9216  (限制 64KB = 65536) ✓
+L0B = nAlign * kL0 * fp16 = 16 * 144 * 2 = 4608  (限制 64KB = 65536) ✓
+L0C = cl0Bytes = 2048  (限制 256KB = 262144) ✓
+
+========================================

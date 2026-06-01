@@ -116,3 +116,5 @@ dist/
 *.egg-info/
 *.egg
 *.whl
+.claude/
+.opencode/

@@ -1,0 +1,59 @@
+========================================
+01.04 Conv3D Backprop Filter V2 核函数开发 课后实践答案
+========================================
+
+SetTilingData 填空（4 处）：
+
+[QUIZ 1/4] singleCoreM = CO = 16
+    说明：反向传播中 M = 输出通道数 CO（前向中 M = HO×WO）
+
+[QUIZ 2/4] singleCoreK = HO * WO = 4 * 4 = 16
+    说明：反向传播中 K = 空间位置数 HO×WO（前向中 K = CI×KH×KW）
+
+[QUIZ 3/4] nL0 = ((CI * KH * KW + 15) / 16) * 16 = ((16 * 3 * 3 + 15) / 16) * 16 = ((144 + 15) / 16) * 16 = 9 * 16 = 144
+    说明：N 维度对齐到 16 的倍数，CI×KH×KW=144 恰好已对齐
+
+[QUIZ 4/4] aL1SpaceSize = ((HO * WO + 15) / 16) * 16 * CO * sizeof(uint16_t) = ((16 + 15) / 16) * 16 * 16 * 2 = 1 * 16 * 16 * 2 = 512
+    说明：gradOutput NZ 格式在 L1 的空间 = dstNzC0Stride × dValue × sizeof(half)
+         dstNzC0Stride = CeilDiv(HO×WO, 16) × 16 = 16
+         dValue = CO = 16
+
+----------------------------------------
+
+CheckTilingSpace 填空（3 处）：
+
+[QUIZ 1/3] 
+al1Bytes = t->aL1SpaceSize = 512
+bl1Bytes = t->bL1SpaceSize * fp16 = 576 * 2 = 1152
+    说明：直接从 tiling 结构体读取 L1 空间大小，无需重新计算
+         bL1SpaceSize = hiLoad * wiLoad * CI = 6 * 6 * 16 = 576 (元素数)
+         hiLoad = (HO-1)*STRIDE_H + (1+(KH-1)*DILATION_H) = 3+3 = 6
+         wiLoad = (WO-1)*STRIDE_W + (1+(KW-1)*DILATION_W) = 3+3 = 6
+
+[QUIZ 2/3] 
+mAlign = t->mStep = ((CO + 15) / 16) * 16 = ((16 + 15) / 16) * 16 = 16
+kAlign = t->kL0 = HO * WO = 4 * 4 = 16
+nAlign = t->nL0 = ((CI * KH * KW + 15) / 16) * 16 = 144
+al0Bytes = mAlign * kAlign * fp16 = 16 * 16 * 2 = 512
+bl0Bytes = kAlign * nAlign * fp16 = 16 * 144 * 2 = 4608
+    说明：直接从 tiling 读取 Mmad 对齐维度，避免与 SetTilingData 重复计算
+
+[QUIZ 3/3] 
+cl0Bytes = mAlign * nAlign * fp32 = 16 * 144 * 4 = 9216
+    说明：L0C 累加器为 fp32（4 bytes），注意不是 fp16（2 bytes）！
+
+----------------------------------------
+
+验证（与 Demo 默认参数 HI=WI=6, HO=WO=4, CI=CO=16, KH=KW=3 对应）：
+singleCoreM=16, singleCoreK=16, nL0=144, aL1SpaceSize=512
+al1Bytes=512, bl1Bytes=1152
+mAlign=16, kAlign=16, nAlign=144
+al0Bytes=512, bl0Bytes=4608, cl0Bytes=9216
+
+片上空间检查（L1 = 512 KB）：
+L1  = al1Bytes + bl1Bytes = 512 + 1152 = 1664   (限制 512KB = 524288) ✓
+L0A = al0Bytes = 512   (限制 64KB = 65536) ✓
+L0B = bl0Bytes = 4608  (限制 64KB = 65536) ✓
+L0C = cl0Bytes = 9216  (限制 256KB = 262144) ✓
+
+========================================
