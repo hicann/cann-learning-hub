@@ -30,8 +30,8 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 | 我想做… | 从这里开始 | 状态 |
 |---------|-----------|------|
 | 写高性能 NPU 算子 | [Ascend C 算子开发教程](./tutorials/ascendc_operator_development) | ✅ 已上线 |
-| 10 分钟体验自定义算子 | [快速上手：第一个自定义算子](./quick_start/first_custom_operator) | ✅ 已上线 |
-| 10 分钟体验算子 API 调用 | [快速上手：第一个算子 API 调用](./quick_start/first_operator_api_call) | ✅ 已上线 |
+| 10 分钟体验自定义算子 | [快速上手：第一个自定义算子](./quick_start) | ✅ 已上线 |
+| 10 分钟体验算子 API 调用 | [快速上手：第一个算子 API 调用](./quick_start) | ✅ 已上线 |
 | MC2 融合算子实战 | [算子开发实战系列](./tutorials/MC2_fused_operator_development) | ✅ 已上线 |
 | HiXL 单边通信开发 | [HiXL 应用开发教程](./tutorials/hixl_development) | ✅ 已上线 |
 | 大模型微调实战 | [SwanLab 共建：LLM 微调实战课程](./contrib/tutorials/swan_llm_course) | 🔍 评审中 |
