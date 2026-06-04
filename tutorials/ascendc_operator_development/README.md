@@ -9,9 +9,9 @@
 >- **注意：**
 >- 本教程当前仅针对Atlas A2系列产品进行验证，其它产品使用存在问题，欢迎开发者提出issue或PR进行共建。
 
-## Notebooks
+## Ascend C算子开发系列（初级）
 
-### Ascend C：面向昇腾NPU的高性能算子开发语言
+### 第一章：面向昇腾NPU的高性能算子开发语言
 
 | Notebook | Link | 状态 |
 |--|--|--|
@@ -21,7 +21,7 @@
 | 1.4 Ascend C算子开发的基本概念 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/01_basic_overview/01.04_ascend_c_op_dev_basic_concepts.ipynb) | ✅ 已发布 |
 | 1.5 章节练习 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/01_basic_overview/01.05_chapter_practice.ipynb) | ✅ 已发布 |
 
-### Ascend C算子开发基础知识
+### 第二章：Ascend C算子开发基础知识
 
 | Notebook | Link | 状态 |
 |--|--|--|
@@ -31,7 +31,9 @@
 | 2.4 基于Add算子的核函数介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.04_introduction_to_kernel_functions_based_on_add_operator.ipynb) | ✅ 已发布 |
 | 2.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.05_chapter_test.ipynb) | ✅ 已发布 |
 
-### Vector算子开发
+## Ascend C算子开发系列（中级）
+
+### 第三章：Vector算子开发
 
 | Notebook | Link | 状态 |
 |--|--|--|
@@ -42,7 +44,7 @@
 | 3.5 tiling模板化编程、属性、Tbuf、workspace的使用 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/03.05_tiling_template_attr_tbuf_workspace.ipynb) | ✅ 已发布 |
 | 3.6 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/03.06_chapter_practice.ipynb) | ✅ 已发布 |
 
-### 矩阵算子开发
+### 第四章：矩阵算子开发
 
 | Notebook | Link | 状态 |
 |--|--|--|
@@ -51,7 +53,7 @@
 | 4.3 基于高阶API的矩阵乘算子开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/04_matmul_basic/04.03_matrix_multiplication_operator_development_with_high_level_api.ipynb) | ✅ 已发布 |
 | 4.4 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/04_matmul_basic/04.04_chapter_test.ipynb) | ✅ 已发布 |
 
-### 融合算子开发
+### 第五章：融合算子开发
 
 | Notebook | Link | 状态 |
 |--|--|--|
@@ -61,7 +63,7 @@
 | 5.4 CV融合算子开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/05_fused_operator_development/05.04_cv_fused_operator_development.ipynb) | ✅ 已发布 |
 | 5.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/05_fused_operator_development/05.05_chapter_practice.ipynb) | ✅ 已发布 |
 
-### CANN开源算子仓：昇腾NPU异构计算全场景算子开发、验证与贡献一站式平台
+### 第六章：CANN开源算子仓--昇腾NPU异构计算全场景算子开发、验证与贡献一站式平台
 
 | Notebook | Link | 状态 |
 |--|--|--|
@@ -71,7 +73,8 @@
 | 6.4 UT的编写及验证 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/06_opensource_repo_operator_intro_and_contribution/06.04_ut_st_writing_and_verification.ipynb) | ✅ 已发布 |
 | 6.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/06_opensource_repo_operator_intro_and_contribution/06.05_chapter_practice.ipynb) | ✅ 已发布 |
 
-### Ascend C算子功能调试
+## Ascend C算子开发系列（高级）
+### 第七章：Ascend C算子功能调试
 
 | Notebook | Link | 状态 |
 |--|--|--|
@@ -82,7 +85,7 @@
 | 7.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/07_Troubleshooting/07.05_chapter_test.ipynb) | ✅ 已发布 |
 
 
-### Ascend C算子性能优化
+### 第八章：Ascend C算子性能优化
 
 | Notebook | Link | 状态 |
 |--|--|--|

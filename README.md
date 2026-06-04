@@ -26,18 +26,42 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 ## 🧭 开发者学习路径
 
 按你的技术方向，快速找到最适合的入口：
+| 大模型推理 | 课程简介 | 在线体验链接|状态|
+|---------|-----------|------|-----|
+| 在昇腾上跑通Qwen3-0.8B | 快速上手：第一个大模型推理部署(在线推理，看功能是否正确） | | 🚧 建设中 |
+| Qwen3-0.8B推理（图模式） | 快速上手：第一个大模型推理加速实践（通过图模式加速推理） | |🚧 建设中 |
+| Qwen3-0.8B推理算子级优化 | 快速上手：如何通过融合算子加速推理 | |🚧 建设中 |
+|端到端推理性能优化实践 | Sana-Video 推理优化实践 ||🚧 建设中 | 
+|推理优化系列教程（初级） | 大模型演化/结构/推理流程/多模态扩展|  | 🚧 建设中 |
+|推理优化系列教程（中级） | Qwen3-8B单卡部署/性能分析基础/主流优化技术/量化  | | 🚧 建设中 |
+|推理优化系列教程（高级） | profiling与瓶颈定位/Qwen3-8B优化实践  | |🚧 建设中 |
 
-| 我想做… | 从这里开始 | 状态 |
-|---------|-----------|------|
-| 写高性能 NPU 算子 | [Ascend C 算子开发教程](./tutorials/ascendc_operator_development) | ✅ 已上线 |
-| 10 分钟体验自定义算子 | [快速上手：第一个自定义算子](./quick_start) | ✅ 已上线 |
-| 10 分钟体验算子 API 调用 | [快速上手：第一个算子 API 调用](./quick_start) | ✅ 已上线 |
-| MC2 融合算子实战 | [算子开发实战系列](./tutorials/MC2_fused_operator_development) | ✅ 已上线 |
-| HiXL 单边通信开发 | [HiXL 应用开发教程](./tutorials/hixl_development) | ✅ 已上线 |
-| 大模型微调实战 | [SwanLab 共建：LLM 微调实战课程](./contrib/tutorials/swan_llm_course) | 🔍 评审中 |
-| 推理性能优化 | [Sana-Video 推理优化实践](./reference_practice/model_inference_optimization) | ✅ 已上线 |
-| 刷题练手 | [CANNJudge 开放题库](https://cannjudge.cn) | ✅ 已开放 |
-| 参加大赛 | [CANN 大赛专区](https://competition.gitcode.com/competition?type=cann) | ✅ 已开放 |
+| 大模型训练 | 课程简介 | 在线体验 |状态|
+|---------|-----------|------|---|
+| 大模型训练系列教程 | 快速上手：第一个自定义算子 || 🚧 建设中 |
+
+
+|  算子开发 | 课程简介 | 在线体验|状态 |
+|---------|-----------|------|---|
+| 10 分钟体验自定义算子 | 快速上手：第一个自定义算子|[在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_custom_operator&scanFilePath=quick_start/first_custom_operator/first_custom_operator.ipynb) | ✅ 已上线 |
+| 10 分钟体验算子 API 调用 | 快速体验调用 CANN 内置算子 API 进行计算 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_operator_api_call&scanFilePath=quick_start/first_operator_api_call/first_operator_api_call.ipynb) | ✅ 已上线 |
+| Ascend C算子开发系列教程（初级） |算子基础/CANN架构/算子开发基础/Add算子实践| [第一章/第二章](./tutorials/ascendc_operator_development) | ✅ 已上线 |
+| Ascend C算子开发系列教程（中级） |Vector算子开发/Cube算子开发/融合算子开发/开源算子仓| [第三章/第四章/第五章/第六章](./tutorials/ascendc_operator_development) | ✅ 已上线 |
+| Ascend C算子开发系列教程（高级） |Ascend C算子功能调试/性能优化| [第七章/第八章](./tutorials/ascendc_operator_development) | ✅ 已上线 |
+| 算子开发实战系列 |MC2 融合算子实战 |[在线体验](./tutorials/MC2_fused_operator_development) | ✅ 已上线 |
+| HiXL 单边通信开发|HiXL 应用开发教程 | [在线体验](./tutorials/hixl_development) | ✅ 已上线 |
+| 算子开发练习 |开放题库/历届算子赛真题等| [CANNJudge 开放题库](https://cannjudge.cn) | ✅ 已开放 |
+|参加算子赛 |算子天梯赛/校园赛等各种大赛等你挑战| [CANN 大赛专区](https://competition.gitcode.com/competition?type=cann) | ✅ 已开放 |
+
+
+| 推荐系统开发（初级） | 课程简介 | 在线体验 |状态|
+|---|---|---|---|
+ | [QuickStart：CTR 预测（DeepFM）](./00_QuickStart_CTR_DeepFM.ipynb) | 跑通  CTR 训练链路 DataFrame -> Feature -> DataGenerator -> DeepFM -> CTRTrainer -> AUC | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb) |✅ 已上线 |
+ | [序列兴趣建模：DIN](./01_Ranking_DIN.ipynb) | 使用 Amazon-Electronics 样例数据理解历史行为序列、`SequenceFeature` 与 DIN attention | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb) |✅ 已上线 |
+ | [匹配/召回：DSSM + Annoy](./02_Matching_DSSM.ipynb) | 基于 MovieLens-1M 样例数据跑通双塔召回与向量 Top-K 检索 |[在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/02_Matching_DSSM.ipynb) | ✅ 已上线|
+| [多任务学习：MMOE](./03_MultiTask_MMOE.ipynb) | 使用 Ali-CCP 样例数据演示多目标建模、expert、gate 与 tower | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/03_MultiTask_MMOE.ipynb) |✅ 已上线 |
+ | [实验跟踪：model_logger](./04_Experiment_Tracking_Light.ipynb) | 演示 WandB / SwanLab / TensorBoardX 等轻量实验跟踪接入方式 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/04_Experiment_Tracking_Light.ipynb) |✅ 已上线 |
+ | [模型导出与推理验证：ONNX](./05_Model_Export_and_Serving.ipynb) | 演示 DeepFM 与 DSSM 的 ONNX 导出、ONNXRuntime 推理验证和量化入口 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/05_Model_Export_and_Serving.ipynb) |✅ 已上线 |
 
 ## 🔗 学 · 练 · 赛：一站式成长链路
 
