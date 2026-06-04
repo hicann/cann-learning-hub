@@ -218,7 +218,7 @@
 
 #### 问题 2：Path A 偏移表使用 SetValue 逐元素构建——性能风险
 - **回应**：已修改
-- **理由**：Developer 质疑合理。SetValue 官方文档明确警告"不要大量使用SetValue对LocalTensor进行赋值，会使性能下降"（[SetValue.md](asc-devkit/docs/api/context/SetValue.md) 约束说明）。采纳 Developer 推荐的 Host 预计算方案：在 Host 侧预计算全部 offset 表，通过 workspace 传入 Kernel，Kernel 内 DataCopyPad 到 UB 后直接使用。这彻底消除了 Kernel 内的 SetValue 标量操作，且 workspace 开销（totalOutputElements × 4 bytes）在合理范围内。
+- **理由**：Developer 质疑合理。SetValue 官方文档明确警告"不要大量使用SetValue对LocalTensor进行赋值，会使性能下降"。采纳 Developer 推荐的 Host 预计算方案：在 Host 侧预计算全部 offset 表，通过 workspace 传入 Kernel，Kernel 内 DataCopyPad 到 UB 后直接使用。这彻底消除了 Kernel 内的 SetValue 标量操作，且 workspace 开销（totalOutputElements × 4 bytes）在合理范围内。
 - **文档依据**：`asc-devkit/docs/api/context/SetValue.md` 约束说明；`asc-devkit/docs/api/context/DataCopyPad(ISASI).md` GM→VECIN/VECCALC/VECOUT 通路
 - **DESIGN.md 变更**：
   1. §1.2 API 映射表新增"偏移表 GM→UB 搬运"行（DataCopyPad workspace → UB）
@@ -230,7 +230,7 @@
 
 #### 问题 3：负 stride 下 srcIdx 可能为负——Gather 偏移越界风险
 - **回应**：已修改
-- **理由**：Developer 质疑合理。Gather 官方文档约束"偏移地址后不能超出UB大小数据的范围"（[Gather.md](asc-devkit/docs/api/context/Gather.md) srcOffset 参数说明），负 srcIdx 存入 `uint32_t` 会无符号回绕，导致 Gather 读取超范围地址。采纳防御性 clamp 方案：Host 预计算 offset 时，对 srcIdx 做 `clamp(srcIdx, 0, inputTotalElements - 1)`，越界时填 0。输出值虽错但不触发硬件异常。由于偏移表已改为 Host 预计算（问题 2），clamp 逻辑自然在 Host 侧完成，无需额外 Kernel 开销。
+- **理由**：Developer 质疑合理。Gather 官方文档约束"偏移地址后不能超出UB大小数据的范围"，负 srcIdx 存入 `uint32_t` 会无符号回绕，导致 Gather 读取超范围地址。采纳防御性 clamp 方案：Host 预计算 offset 时，对 srcIdx 做 `clamp(srcIdx, 0, inputTotalElements - 1)`，越界时填 0。输出值虽错但不触发硬件异常。由于偏移表已改为 Host 预计算（问题 2），clamp 逻辑自然在 Host 侧完成，无需额外 Kernel 开销。
 - **文档依据**：`asc-devkit/docs/api/context/Gather.md` srcOffset 参数说明："偏移地址后不能超出UB大小数据的范围"
 - **DESIGN.md 变更**：
   1. §1.4 关键设计要点第 3 条：新增"防御性 clamp"说明

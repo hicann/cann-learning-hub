@@ -42,22 +42,22 @@ output[i_0, i_1, ..., i_{n-1}] = input_x[storage_offset + Σ(i_j × stride_j)]
 
 ### 1.2 API 映射
 
-| 数学操作 | 对应 API | 关键参数 | 数据布局 | 官方文档 |
-|---------|---------|---------|---------|---------|
-| 输入数据 GM→UB 搬运 | DataCopyPad | blockCount=1, blockLen=inputBytes | GM 连续 → UB 连续 | [DataCopyPad(ISASI).md](asc-devkit/docs/api/context/DataCopyPad(ISASI).md) |
-| 按 offset 表收集元素 | Gather | dst, src, srcOffset, srcBaseOffset=0, count | UB 内按字节偏移收集 | [Gather.md](asc-devkit/docs/api/context/Gather.md) |
-| 输出数据 UB→GM 搬运 | DataCopyPad | blockCount=1, blockLen=outputBytes | UB 连续 → GM 连续 | [DataCopyPad(ISASI).md](asc-devkit/docs/api/context/DataCopyPad(ISASI).md) |
-| 偏移表 GM→UB 搬运 | DataCopyPad | blockCount=1, blockLen=offsetTileBytes | Workspace → UB 连续 | [DataCopyPad(ISASI).md](asc-devkit/docs/api/context/DataCopyPad(ISASI).md) |
-| 单元素 GM→UB 搬运(Path B) | DataCopyPad | blockCount=1, blockLen=sizeof(T) | GM 单元素 → UB | [DataCopyPad(ISASI).md](asc-devkit/docs/api/context/DataCopyPad(ISASI).md) |
+| 数学操作 | 对应 API | 关键参数 | 数据布局 |
+|---------|---------|---------|---------|
+| 输入数据 GM→UB 搬运 | DataCopyPad | blockCount=1, blockLen=inputBytes | GM 连续 → UB 连续 |
+| 按 offset 表收集元素 | Gather | dst, src, srcOffset, srcBaseOffset=0, count | UB 内按字节偏移收集 |
+| 输出数据 UB→GM 搬运 | DataCopyPad | blockCount=1, blockLen=outputBytes | UB 连续 → GM 连续 |
+| 偏移表 GM→UB 搬运 | DataCopyPad | blockCount=1, blockLen=offsetTileBytes | Workspace → UB 连续 |
+| 单元素 GM→UB 搬运(Path B) | DataCopyPad | blockCount=1, blockLen=sizeof(T) | GM 单元素 → UB |
 
 #### 1.2.1 API 语义验证
 
-| API | 数据布局 | 功能需求 | API选择 | 限制条件 | 匹配 | 文档 |
-|-----|---------|---------|---------|---------|-----|------|
-| DataCopyPad (GM→UB) | GM 连续存储，可能非 32B 对齐 | 全量输入搬运到 UB | `DataCopyPad(dst, src, DataCopyExtParams, DataCopyPadExtParams)` | dst 起始地址 32B 对齐；blockLen 单位为字节 | ✅ | [DataCopyPad(ISASI).md] |
-| Gather (UB→UB) | UB 内源数据连续存储；offset 表为 uint32_t 字节偏移 | 按 offset 表从源收集到目的 | `Gather<T>(dst, src, srcOffset, srcBaseOffset, count)` | dst/src/srcOffset 起始地址 32B 对齐；T 支持 half/float/int32_t；offset 单位为字节；srcBaseOffset 对齐到元素大小 | ✅ | [Gather.md] |
-| DataCopyPad (UB→GM) | UB 连续存储，可能非 32B 对齐 | 输出搬运到 GM | `DataCopyPad(dst, src, DataCopyExtParams)` | src 起始地址 32B 对齐；blockLen 单位为字节；GM 端无对齐约束 | ✅ | [DataCopyPad(ISASI).md] |
-| DataCopyPad (Workspace→UB) | Workspace 中预计算的 offset 表连续存储 | 偏移表搬运到 UB | `DataCopyPad(dst, src, DataCopyExtParams, DataCopyPadExtParams)` | dst 起始地址 32B 对齐；blockLen 单位为字节 | ✅ | [DataCopyPad(ISASI).md] |
+| API | 数据布局 | 功能需求 | API选择 | 限制条件 | 匹配 |
+|-----|---------|---------|---------|---------|-----|
+| DataCopyPad (GM→UB) | GM 连续存储，可能非 32B 对齐 | 全量输入搬运到 UB | `DataCopyPad(dst, src, DataCopyExtParams, DataCopyPadExtParams)` | dst 起始地址 32B 对齐；blockLen 单位为字节 | ✅ |
+| Gather (UB→UB) | UB 内源数据连续存储；offset 表为 uint32_t 字节偏移 | 按 offset 表从源收集到目的 | `Gather<T>(dst, src, srcOffset, srcBaseOffset, count)` | dst/src/srcOffset 起始地址 32B 对齐；T 支持 half/float/int32_t；offset 单位为字节；srcBaseOffset 对齐到元素大小 | ✅ |
+| DataCopyPad (UB→GM) | UB 连续存储，可能非 32B 对齐 | 输出搬运到 GM | `DataCopyPad(dst, src, DataCopyExtParams)` | src 起始地址 32B 对齐；blockLen 单位为字节；GM 端无对齐约束 | ✅ |
+| DataCopyPad (Workspace→UB) | Workspace 中预计算的 offset 表连续存储 | 偏移表搬运到 UB | `DataCopyPad(dst, src, DataCopyExtParams, DataCopyPadExtParams)` | dst 起始地址 32B 对齐；blockLen 单位为字节 | ✅ |
 
 **验证清单**：
 - [x] 1. DataCopyPad GM→UB：数据布局为 GM 连续存储，支持非对齐搬运，满足需求

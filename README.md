@@ -128,7 +128,7 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 | [CrossEntropyLoss 与 Zloss 融合](./blogs/operator/cross_entropy_zloss_fusion) | 损失函数融合，MoE 场景端到端 5.2% 效率提升 | 2025.11 |
 | [算子 Kernel 直调编程](./blogs/operator/kernel_direct_call_programming) | 异构混合编程，简化编译部署，降低开发门槛 | 2025.11 |
 | [TilingKey 模板化编程](./blogs/operator/tilingkey_template_programming) | 统一多场景算子管理，减少 icache miss | 2025.11 |
-| [Ascend C 矩阵乘接口选型指南](./blogs/operator/ascend_c_matmul_api_guide) | 矩阵乘 API 接口对比与选型建议 | 2025.10 |
+| [Ascend C 矩阵乘接口选型指南](./blogs/operator/ascend_c_mmad_selection_guide) | 矩阵乘 API 接口对比与选型建议 | 2025.10 |
 
 ### 推理
 
