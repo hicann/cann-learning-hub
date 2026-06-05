@@ -160,13 +160,14 @@ $$
     TilingData参数设计，`LeakyReluCustomTilingData`参数本质上是和并行数据切分相关的参数，本示例算子使用了3个tiling参数：`totalLength`、`tileNum`、`negativeSlope`。`totalLength`、`tileNum`与Add算子类似，`negativeSlope`表示LeakyRelu的负半轴斜率系数，作为计算参数传递给kernel侧。</br>
 
 
+<a id="operatorcompile"></a>
 ## 编译运行
 
 在本样例根目录下执行如下步骤，编译、打包并部署自定义算子包。
 
 - 配置环境变量
 
-  请根据当前环境上CANN开发套件包的[安装方式](../../../../docs/quick_start.md#prepare&install)，选择对应配置环境变量的命令。
+  请根据当前环境上CANN开发套件包的安装方式，选择对应配置环境变量的命令。
   - 默认路径，root用户安装CANN软件包
 
     ```bash

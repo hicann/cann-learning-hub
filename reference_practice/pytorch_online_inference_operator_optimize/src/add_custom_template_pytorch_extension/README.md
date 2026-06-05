@@ -60,7 +60,7 @@
 ## 运行样例算子
 该样例脚本基于Pytorch2.1、python3.9 运行
 ### 1.编译算子工程
-运行此样例前，请参考[编译算子工程](../README.md#operatorcompile)完成前期准备。
+运行此样例前，请参考[编译运行](../add_custom_template/README.md#operatorcompile)完成前期准备。
 
 ### 2.pytorch调用的方式调用样例运行
 
