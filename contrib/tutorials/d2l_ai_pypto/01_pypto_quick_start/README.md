@@ -8,7 +8,7 @@
 ## 在线阅读
 | 文档 | Link | 状态 |
 |--|--|--|
-| 01.01 章节介绍 | [在线阅读](./01.01_chapter_intro.ipynb) | ✅ 已发布 |
-| 01.02 使用 CANNLab 快速进行 pypto 开发 | [在线阅读](./01.02_CANNLab_pypto_quick_start.md) | ✅ 已发布 |
-| 01.03 在 CANNLab 上进行常用环境持久化配置 | [在线阅读](./01.03_CANNLab_proj_env_config.md) | ✅ 已发布 |
-| 01.04 使用 notebook 进行 pypto 开发 | - | 🚧 编写中 |
+| 01.00 章节介绍 | [在线阅读](./01.00_chapter_intro.ipynb) | ✅ 已发布 |
+| 01.01 使用 CANNLab 快速进行 pypto 开发 | [在线阅读](./01.01_CANNLab_pypto_quick_start.md) | ✅ 已发布 |
+| 01.02 在 CANNLab 上进行常用环境持久化配置 | [在线阅读](./01.02_CANNLab_proj_env_config.md) | ✅ 已发布 |
+| 01.03 使用 notebook 进行 pypto 开发 | [在线阅读](./01.03_notebook_quick_start.md) |  ✅ 已发布  |
