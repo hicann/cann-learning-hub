@@ -26,53 +26,56 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 ## 🧭 开发者学习路径
 
 按你的技术方向，快速找到最适合的入口：
-| 大模型推理 | 课程简介 | 在线体验链接|状态|
-|---------|-----------|------|-----|
-| 在昇腾上跑通Qwen3-0.8B | 快速上手：第一个大模型推理部署(在线推理，看功能是否正确） | | 🚧 建设中 |
-| Qwen3-0.8B推理（图模式） | 快速上手：第一个大模型推理加速实践（通过图模式加速推理） | |🚧 建设中 |
-| Qwen3-0.8B推理算子级优化 | 快速上手：如何通过融合算子加速推理 | |🚧 建设中 |
-|端到端推理性能优化实践 | Sana-Video 推理优化实践 ||🚧 建设中 | 
-|推理优化系列教程（初级） | 大模型演化/结构/推理流程/多模态扩展|  | 🚧 建设中 |
-|推理优化系列教程（中级） | Qwen3-8B单卡部署/性能分析基础/主流优化技术/量化  | | 🚧 建设中 |
-|推理优化系列教程（高级） | profiling与瓶颈定位/Qwen3-8B优化实践  | |🚧 建设中 |
 
-| 大模型训练 | 课程简介 | 在线体验 |状态|
-|---------|-----------|------|---|
-| 大模型训练系列教程 | 快速上手：第一个自定义算子 || 🚧 建设中 |
-
-
-|  算子开发 | 课程简介 | 在线体验|状态 |
-|---------|-----------|------|---|
-| 10 分钟体验自定义算子 | 快速上手：第一个自定义算子|[在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_custom_operator&scanFilePath=quick_start/first_custom_operator/first_custom_operator.ipynb) | ✅ 已上线 |
-| 10 分钟体验算子 API 调用 | 快速体验调用 CANN 内置算子 API 进行计算 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_operator_api_call&scanFilePath=quick_start/first_operator_api_call/first_operator_api_call.ipynb) | ✅ 已上线 |
-| Ascend C算子开发系列教程（初级） |算子基础/CANN架构/算子开发基础/Add算子实践| [第一章/第二章](./tutorials/ascendc_operator_development) | ✅ 已上线 |
-| Ascend C算子开发系列教程（中级） |Vector算子开发/Cube算子开发/融合算子开发/开源算子仓| [第三章/第四章/第五章/第六章](./tutorials/ascendc_operator_development) | ✅ 已上线 |
-| Ascend C算子开发系列教程（高级） |Ascend C算子功能调试/性能优化| [第七章/第八章](./tutorials/ascendc_operator_development) | ✅ 已上线 |
-| 算子开发实战系列 |MC2 融合算子实战 |[在线体验](./tutorials/MC2_fused_operator_development) | ✅ 已上线 |
-| HiXL 单边通信开发|HiXL 应用开发教程 | [在线体验](./tutorials/hixl_development) | ✅ 已上线 |
-| 算子开发练习 |开放题库/历届算子赛真题等| [CANNJudge 开放题库](https://cannjudge.cn) | ✅ 已开放 |
-|参加算子赛 |算子天梯赛/校园赛等各种大赛等你挑战| [CANN 大赛专区](https://competition.gitcode.com/competition?type=cann) | ✅ 已开放 |
-
-
-| 推荐系统开发（初级） | 课程简介 | 在线体验 |状态|
-|---|---|---|---|
- | [QuickStart：CTR 预测（DeepFM）](./00_QuickStart_CTR_DeepFM.ipynb) | 跑通  CTR 训练链路 DataFrame -> Feature -> DataGenerator -> DeepFM -> CTRTrainer -> AUC | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb) |✅ 已上线 |
- | [序列兴趣建模：DIN](./01_Ranking_DIN.ipynb) | 使用 Amazon-Electronics 样例数据理解历史行为序列、`SequenceFeature` 与 DIN attention | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb) |✅ 已上线 |
- | [匹配/召回：DSSM + Annoy](./02_Matching_DSSM.ipynb) | 基于 MovieLens-1M 样例数据跑通双塔召回与向量 Top-K 检索 |[在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/02_Matching_DSSM.ipynb) | ✅ 已上线|
-| [多任务学习：MMOE](./03_MultiTask_MMOE.ipynb) | 使用 Ali-CCP 样例数据演示多目标建模、expert、gate 与 tower | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/03_MultiTask_MMOE.ipynb) |✅ 已上线 |
- | [实验跟踪：model_logger](./04_Experiment_Tracking_Light.ipynb) | 演示 WandB / SwanLab / TensorBoardX 等轻量实验跟踪接入方式 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/04_Experiment_Tracking_Light.ipynb) |✅ 已上线 |
- | [模型导出与推理验证：ONNX](./05_Model_Export_and_Serving.ipynb) | 演示 DeepFM 与 DSSM 的 ONNX 导出、ONNXRuntime 推理验证和量化入口 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/05_Model_Export_and_Serving.ipynb) |✅ 已上线 |
+<table width="100%">
+<tr><th width="22%">课程</th><th width="46%">课程简介</th><th width="18%">在线体验</th><th width="14%">状态</th></tr>
+<tr><th colspan="4" align="left">📖 CANN 基础知识</th></tr>
+<tr><td><a href="./quick_start/cann_basics/01_人工智能基础.ipynb">人工智能基础</a></td><td>AI 发展历程、算子概念（算子名称/类型/Tensor/shape/format/Axis）</td><td></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./quick_start/cann_basics/02_什么是NPU.ipynb">什么是 NPU</a></td><td>昇腾 NPU 硬件架构：DaVinci 核心、AI Core / AI CPU / Vector / Cube 计算单元、存储层级</td><td></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./quick_start/cann_basics/03_什么是CANN.ipynb">什么是 CANN</a></td><td>CANN 异构计算架构与软件栈：分层架构、Ascend C 算子开发、torch_npu 适配</td><td></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./quick_start/cann_basics/04_hello_world_npu.ipynb">Hello World：NPU 加法</a></td><td>基于 torch_npu 在 NPU 上跑通第一个加法运算，验证环境可用</td><td></td><td>✅ 已上线</td></tr>
+<tr><th colspan="4" align="left">🧠 大模型推理</th></tr>
+<tr><td>在昇腾上跑通 Qwen3-0.8B</td><td>快速上手：第一个大模型推理部署（在线推理，看功能是否正确）</td><td></td><td>🚧 建设中</td></tr>
+<tr><td>Qwen3-0.8B 推理（图模式）</td><td>快速上手：第一个大模型推理加速实践（通过图模式加速推理）</td><td></td><td>🚧 建设中</td></tr>
+<tr><td>Qwen3-0.8B 推理算子级优化</td><td>快速上手：如何通过融合算子加速推理</td><td></td><td>🚧 建设中</td></tr>
+<tr><td>端到端推理性能优化实践</td><td>Sana-Video 推理优化实践</td><td></td><td>🚧 建设中</td></tr>
+<tr><td>推理优化系列（初级）</td><td>大模型演化 / 结构 / 推理流程 / 多模态扩展</td><td></td><td>🚧 建设中</td></tr>
+<tr><td>推理优化系列（中级）</td><td>Qwen3-8B 单卡部署 / 性能分析基础 / 主流优化技术 / 量化</td><td></td><td>🚧 建设中</td></tr>
+<tr><td>推理优化系列（高级）</td><td>Profiling 与瓶颈定位 / Qwen3-8B 优化实践</td><td></td><td>🚧 建设中</td></tr>
+<tr><th colspan="4" align="left">🏋️ 大模型训练</th></tr>
+<tr><td>大模型训练系列（初级）</td><td>训练基础原理、昇腾 NPU 特性、入门训练实战</td><td></td><td>🚧 建设中</td></tr>
+<tr><td>大模型训练系列（中级）</td><td>性能分析、CANN 图优化、显存优化、基础调优</td><td></td><td>🚧 建设中</td></tr>
+<tr><td>大模型训练系列（高级）</td><td>核心算子优化、分布式训练、通信优化、端到端优化落地</td><td></td><td>🚧 建设中</td></tr>
+<tr><th colspan="4" align="left">⚙️ 算子开发</th></tr>
+<tr><td>10 分钟体验自定义算子</td><td>快速上手：第一个自定义算子</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_custom_operator&scanFilePath=quick_start/first_custom_operator/first_custom_operator.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td>10 分钟体验算子 API 调用</td><td>快速体验调用 CANN 内置算子 API 进行计算</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_operator_api_call&scanFilePath=quick_start/first_operator_api_call/first_operator_api_call.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td>Ascend C 算子开发系列（初级）</td><td>算子基础 / CANN 架构 / 算子开发基础 / Add 算子实践</td><td><a href="./tutorials/ascendc_operator_development">第一章 / 第二章</a></td><td>✅ 已上线</td></tr>
+<tr><td>Ascend C 算子开发系列（中级）</td><td>Vector 算子开发 / Cube 算子开发 / 融合算子开发 / 开源算子仓</td><td><a href="./tutorials/ascendc_operator_development">第三章 / 第四章 / 第五章 / 第六章</a></td><td>✅ 已上线</td></tr>
+<tr><td>Ascend C 算子开发系列（高级）</td><td>Ascend C 算子功能调试 / 性能优化</td><td><a href="./tutorials/ascendc_operator_development">第七章 / 第八章</a></td><td>✅ 已上线</td></tr>
+<tr><td>算子开发实战系列</td><td>MC2 融合算子实战</td><td><a href="./tutorials/MC2_fused_operator_development">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td>HiXL 单边通信开发</td><td>HiXL 应用开发教程</td><td><a href="./tutorials/hixl_development">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td>算子开发练习</td><td>开放题库 / 历届算子赛真题等</td><td><a href="https://cannjudge.cn">CANNJudge 开放题库</a></td><td>✅ 已开放</td></tr>
+<tr><td>参加算子赛</td><td>算子天梯赛 / 校园赛等各种大赛等你挑战</td><td><a href="https://competition.gitcode.com/competition?type=cann">CANN 大赛专区</a></td><td>✅ 已开放</td></tr>
+<tr><th colspan="4" align="left">📊 推荐系统开发</th></tr>
+<tr><td><a href="./contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb">QuickStart：CTR 预测（DeepFM）</a></td><td>跑通 CTR 训练链路 DataFrame → Feature → DataGenerator → DeepFM → CTRTrainer → AUC</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb">序列兴趣建模：DIN</a></td><td>使用 Amazon-Electronics 样例数据理解历史行为序列、SequenceFeature 与 DIN attention</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./contrib/tutorials/torch-rechub/02_Matching_DSSM.ipynb">匹配/召回：DSSM + Annoy</a></td><td>基于 MovieLens-1M 样例数据跑通双塔召回与向量 Top-K 检索</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/02_Matching_DSSM.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./contrib/tutorials/torch-rechub/03_MultiTask_MMOE.ipynb">多任务学习：MMOE</a></td><td>使用 Ali-CCP 样例数据演示多目标建模、expert、gate 与 tower</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/03_MultiTask_MMOE.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./contrib/tutorials/torch-rechub/04_Experiment_Tracking_Light.ipynb">实验跟踪：model_logger</a></td><td>演示 WandB / SwanLab / TensorBoardX 等轻量实验跟踪接入方式</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/04_Experiment_Tracking_Light.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./contrib/tutorials/torch-rechub/05_Model_Export_and_Serving.ipynb">模型导出与推理验证：ONNX</a></td><td>演示 DeepFM 与 DSSM 的 ONNX 导出、ONNXRuntime 推理验证和量化入口</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/05_Model_Export_and_Serving.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+</table>
 
 ## 🔗 学 · 练 · 赛：一站式成长链路
 
 cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完整闭环：
 
-| | 平台 | 说明 |
-|--|------|------|
-| 📖 **学** | **cann-learning-hub**（本仓） | 系列教程 + 快速上手 + 参考实践 + 技术博客 |
-| 🏋️ **练** | **[CANNJudge](https://cannjudge.cn)** | 开放题库，Ascend C 算子编程在线刷题，实时评测 |
-| 🔬 **练** | **CANNLab** | 任意 CANN 代码仓右上角一键启动，获得 NPU 环境用于练习 & 调测（初始 100 小时，积分可兑换时长） |
-| 🏆 **赛** | **[CANN 大赛专区](https://competition.gitcode.com/competition?type=cann)** | 官方 / 社区大赛报名入口，与全国开发者同台竞技 |
+<table style="table-layout:fixed;width:100%">
+<tr><th width="8%"></th><th width="25%">平台</th><th width="67%">说明</th></tr>
+<tr><td>📖 <b>学</b></td><td><b>cann-learning-hub</b>（本仓）</td><td>系列教程 + 快速上手 + 参考实践 + 技术博客</td></tr>
+<tr><td>🏋️ <b>练</b></td><td><b><a href="https://cannjudge.cn">CANNJudge</a></b></td><td>开放题库，Ascend C 算子编程在线刷题，实时评测</td></tr>
+<tr><td>🔬 <b>练</b></td><td><b>CANNLab</b></td><td>任意 CANN 代码仓右上角一键启动，获得 NPU 环境用于练习 &amp; 调测（初始 100 小时，积分可兑换时长）</td></tr>
+<tr><td>🏆 <b>赛</b></td><td><b><a href="https://competition.gitcode.com/competition?type=cann">CANN 大赛专区</a></b></td><td>官方 / 社区大赛报名入口，与全国开发者同台竞技</td></tr>
+</table>
 
 > 💡 **推荐路径**：选方向 → 看教程 → 去 CANNJudge 刷题 / CANNLab 实验 → 参赛验证 → 贡献你的实践（PR 到 contrib/）
 
@@ -80,24 +83,25 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 
 > ✅ 已上线 &nbsp;&nbsp; 🔍 评审中（PR 已提交）&nbsp;&nbsp; 🚧 建设中
 
-| 业务场景 | 课程系列 | 进展 |
-|---------|---------|------|
-| **算子开发** | [Ascend C 算子开发系列](./tutorials/ascendc_operator_development)（基于 A2/A3，SIMD 编程） | ✅ 已上线 |
-| | Ascend C 算子开发系列（基于 A5，SIMD 兼容 A2/A3 + 新增 SIMT） | 🚧 建设中 |
-| | [算子开发实战系列](./tutorials/MC2_fused_operator_development)（MC2 融合算子） | ✅ 已上线 |
-| | PyPTO 算子开发系列 | 🚧 建设中 |
-| | PyASC 算子开发系列 | 🚧 建设中 |
-| | TileLang 算子开发系列 | 🚧 建设中 |
-| **训练** | 大模型训练优化 | 🚧 建设中 |
-| | 大语言模型微调实战（SwanLab 共建） | 🔍 评审中 |
-| **推理** | 大模型推理优化 | 🚧 建设中 |
-| | [Sana-Video 推理优化实践](./reference_practice/model_inference_optimization) | ✅ 已上线 |
-| **推荐系统** | 推荐系统开发（DataWhale 贡献） | ✅ 已上线 |
-| **应用开发** | 应用开发系列 | 🚧 建设中 |
-| **图框架** | 图框架加速 & 图模式应用系列 | 🚧 建设中 |
-| **集合通信** | HCCL 集合通信系列 | 🚧 建设中 |
-| | [HiXL 单边通信系列](./tutorials/hixl_development) | ✅ 已上线 |
-| **CANN Bot** | CANN Bot 系列课程 | 🚧 建设中 |
+<table style="table-layout:fixed;width:100%">
+<tr><th width="15%">业务场景</th><th width="65%">课程系列</th><th width="20%">进展</th></tr>
+<tr><td><b>算子开发</b></td><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列</a>（基于 A2/A3，SIMD 编程）</td><td>✅ 已上线</td></tr>
+<tr><td></td><td>Ascend C 算子开发系列（基于 A5，SIMD 兼容 A2/A3 + 新增 SIMT）</td><td>🚧 建设中</td></tr>
+<tr><td></td><td><a href="./tutorials/MC2_fused_operator_development">算子开发实战系列</a>（MC2 融合算子）</td><td>✅ 已上线</td></tr>
+<tr><td></td><td>PyPTO 算子开发系列</td><td>🚧 建设中</td></tr>
+<tr><td></td><td>PyASC 算子开发系列</td><td>🚧 建设中</td></tr>
+<tr><td></td><td>TileLang 算子开发系列</td><td>🚧 建设中</td></tr>
+<tr><td><b>训练</b></td><td>大模型训练优化</td><td>🚧 建设中</td></tr>
+<tr><td></td><td>大语言模型微调实战（SwanLab 共建）</td><td>🔍 评审中</td></tr>
+<tr><td><b>推理</b></td><td>大模型推理优化</td><td>🚧 建设中</td></tr>
+<tr><td></td><td><a href="./reference_practice/model_inference_optimization">Sana-Video 推理优化实践</a></td><td>✅ 已上线</td></tr>
+<tr><td><b>推荐系统</b></td><td>推荐系统开发（DataWhale 贡献）</td><td>✅ 已上线</td></tr>
+<tr><td><b>应用开发</b></td><td>应用开发系列</td><td>🚧 建设中</td></tr>
+<tr><td><b>图框架</b></td><td>图框架加速 &amp; 图模式应用系列</td><td>🚧 建设中</td></tr>
+<tr><td><b>集合通信</b></td><td>HCCL 集合通信系列</td><td>🚧 建设中</td></tr>
+<tr><td></td><td><a href="./tutorials/hixl_development">HiXL 单边通信系列</a></td><td>✅ 已上线</td></tr>
+<tr><td><b>CANN Bot</b></td><td>CANN Bot 系列课程</td><td>🚧 建设中</td></tr>
+</table>
 
 ## 🔍 目录结构
 
@@ -119,10 +123,9 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 │   ├── inference                      # 推理（12 篇）
 │   └── training                       # 训练（3 篇）
 ├── contrib                            # 社区贡献
-├── contrib                            # 用户贡献
-│   ├── tutorials                      # 外部贡献教程
-│   │   ├── torch-rechub               # Torch-RecHub推荐系统实战教程
-│   │   └── swan_llm_course            # SwanLab 共建：LLM 微调实战
+│   └── tutorials                      # 外部贡献教程
+│       ├── torch-rechub               # Torch-RecHub 推荐系统实战教程
+│       └── swan_llm_course            # SwanLab 共建：LLM 微调实战
 ├── skills                             # CANNBot 技能
 │   ├── ascendc-ops-project           # 自定义算子工程生成
 │   └── cannjudge-submit              # CANNJudge 竞赛提交
@@ -139,45 +142,37 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 
 > CANN 在实际业务场景中的最新技术实践与成果。
 
-### 算子
-
-| 博客 | 简介 | 时间 |
-|------|------|------|
-| [AICPU 点对点通信算子开发](./blogs/operator/hccl_custom_operator_aicpu_p2p) | 基于 AICPU+TS 实现 HCCL 自定义 Send/Recv 算子 | 2026.2 |
-| [AICPU Tiling 下沉编程](./blogs/operator/aicpu_tiling_sink) | Tiling 计算下沉到 AICPU，减少 Host 与 Device 交互 | 2025.12 |
-| [Ascend C RTC 即时编译](./blogs/operator/ascendc_rtc_compilation) | 运行时按 shape 即时编译，兼顾性能与迭代灵活性 | 2025.12 |
-| [DeepXTrace 快慢卡在线检测](./blogs/operator/deepxtrace_moe_slow_card_detection) | MOE 推理集群轻量级快慢卡诊断，分钟级定位 | 2025.12 |
-| [HCCL ReduceScatter 精度优化](./blogs/operator/hccl_reducescatter_high_precision_redevelopment) | 开源 ReduceScatter 精度增强改造 | 2025.12 |
-| [MIX 算子开发贡献](./blogs/operator/transformer_experimental_mix_operator) | 矩阵化重构 RoPE，落地首个开源 MIX 算子 | 2025.12 |
-| [CrossEntropyLoss 与 Zloss 融合](./blogs/operator/cross_entropy_zloss_fusion) | 损失函数融合，MoE 场景端到端 5.2% 效率提升 | 2025.11 |
-| [算子 Kernel 直调编程](./blogs/operator/kernel_direct_call_programming) | 异构混合编程，简化编译部署，降低开发门槛 | 2025.11 |
-| [TilingKey 模板化编程](./blogs/operator/tilingkey_template_programming) | 统一多场景算子管理，减少 icache miss | 2025.11 |
-| [Ascend C 矩阵乘接口选型指南](./blogs/operator/ascend_c_mmad_selection_guide) | 矩阵乘 API 接口对比与选型建议 | 2025.10 |
-
-### 推理
-
-| 博客 | 简介 | 时间 |
-|------|------|------|
-| [Overlap Scheduling 吞吐优化](./blogs/inference/overlap_scheduling_throughput_optimization) | CPU 与 NPU 执行重叠，TPS 提升约 70% | 2026.3 |
-| [npugraph_ex 第三方框架集成](./blogs/inference/npugraph_ex_third_party_framework_integration) | 图编译与编译缓存能力接入，降低冷启动耗时 | 2026.2 |
-| [Deepseek-R1 SuperPoD 推理优化](./blogs/inference/deepseek_r1_superpod_inference_optimization) | 全栈协同，TTFT<2s、TPOT<50ms，608 QPM | 2025.12 |
-| [HIXL、Mooncake 与 vLLM KV Cache 池化](./blogs/inference/hixl_mooncake_vllm_kv_cache_pooling) | KV Cache 池化 + D2D/H2H 传输，降低 TTFT | 2025.12 |
-| [HIXL RL 长尾时延优化](./blogs/inference/hixl_rl_tail_latency_optimization) | PD 分离与高效传输，缓解千卡集群长尾 | 2025.12 |
-| [LongCat-Flash SuperPod 推理优化](./blogs/inference/longcat_flash_superpod_inference_optimization) | 多流并发 + 控核 + SuperKernel，TPOT 10ms | 2025.12 |
-| [npugraph_ex 图模式优化](./blogs/inference/npugraph_ex_aclgraph_graph_mode) | aclGraph 图捕获与重放，减少 Host 下发 | 2025.12 |
-| [torch_npu IPC 特性](./blogs/inference/torch_npu_ipc) | 跨进程共享设备内存，节省显存 | 2025.12 |
-| [TorchAir 自定义 FX Pass](./blogs/inference/torchair_fx_pass_multi_stream) | 多流并行自动图变换，减少适配代码 | 2025.12 |
-| [SGLang、Mooncake 与 HIXL PD 分离](./blogs/inference/sglang_mooncake_hixl_pd_separation_d2d) | 加速 PD 分离 D2D 特性落地 | 2025.11 |
-| [SuperKernel 技术综述](./blogs/inference/superkernel_inference_acceleration) | 整网编译为大算子，性能再提升 10%-20% | 2025.11 |
-| [vLLM-Ascend 推理优化](./blogs/inference/vllm_ascend_inference_optimization) | PagedAttention + 昇腾适配，提升吞吐 | 2025.11 |
-
-### 训练
-
-| 博客 | 简介 | 时间 |
-|------|------|------|
-| [AReaL 全异步 RL 训练](./blogs/training/areal_async_rl_training) | 全异步 RL + Single Controller，解耦式 Agentic RL | 2026.3 |
-| [FlashRecovery 训练故障恢复](./blogs/training/flashrecovery_training_fault_recovery) | 降低检查点 I/O 与回滚重算损失 | 2025.12 |
-| [SAM 投机解码 RL 训练](./blogs/training/sam_speculative_decoding_rl_training) | 无辅助模型 SAM 投机解码，超 35% 长尾加速 | 2025.12 |
+<table style="table-layout:fixed;width:100%">
+<tr><th width="35%">博客</th><th width="55%">简介</th><th width="10%">时间</th></tr>
+<tr><th colspan="3" align="left">算子</th></tr>
+<tr><td><a href="./blogs/operator/hccl_custom_operator_aicpu_p2p">AICPU 点对点通信算子开发</a></td><td>基于 AICPU+TS 实现 HCCL 自定义 Send/Recv 算子</td><td>2026.2</td></tr>
+<tr><td><a href="./blogs/operator/aicpu_tiling_sink">AICPU Tiling 下沉编程</a></td><td>Tiling 计算下沉到 AICPU，减少 Host 与 Device 交互</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/operator/ascendc_rtc_compilation">Ascend C RTC 即时编译</a></td><td>运行时按 shape 即时编译，兼顾性能与迭代灵活性</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/operator/deepxtrace_moe_slow_card_detection">DeepXTrace 快慢卡在线检测</a></td><td>MOE 推理集群轻量级快慢卡诊断，分钟级定位</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/operator/hccl_reducescatter_high_precision_redevelopment">HCCL ReduceScatter 精度优化</a></td><td>开源 ReduceScatter 精度增强改造</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/operator/transformer_experimental_mix_operator">MIX 算子开发贡献</a></td><td>矩阵化重构 RoPE，落地首个开源 MIX 算子</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/operator/cross_entropy_zloss_fusion">CrossEntropyLoss 与 Zloss 融合</a></td><td>损失函数融合，MoE 场景端到端 5.2% 效率提升</td><td>2025.11</td></tr>
+<tr><td><a href="./blogs/operator/kernel_direct_call_programming">算子 Kernel 直调编程</a></td><td>异构混合编程，简化编译部署，降低开发门槛</td><td>2025.11</td></tr>
+<tr><td><a href="./blogs/operator/tilingkey_template_programming">TilingKey 模板化编程</a></td><td>统一多场景算子管理，减少 icache miss</td><td>2025.11</td></tr>
+<tr><td><a href="./blogs/operator/ascend_c_matmul_api_guide">Ascend C 矩阵乘接口选型指南</a></td><td>矩阵乘 API 接口对比与选型建议</td><td>2025.10</td></tr>
+<tr><th colspan="3" align="left">推理</th></tr>
+<tr><td><a href="./blogs/inference/overlap_scheduling_throughput_optimization">Overlap Scheduling 吞吐优化</a></td><td>CPU 与 NPU 执行重叠，TPS 提升约 70%</td><td>2026.3</td></tr>
+<tr><td><a href="./blogs/inference/npugraph_ex_third_party_framework_integration">npugraph_ex 第三方框架集成</a></td><td>图编译与编译缓存能力接入，降低冷启动耗时</td><td>2026.2</td></tr>
+<tr><td><a href="./blogs/inference/deepseek_r1_superpod_inference_optimization">Deepseek-R1 SuperPoD 推理优化</a></td><td>全栈协同，TTFT&lt;2s、TPOT&lt;50ms，608 QPM</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/inference/hixl_mooncake_vllm_kv_cache_pooling">HIXL、Mooncake 与 vLLM KV Cache 池化</a></td><td>KV Cache 池化 + D2D/H2H 传输，降低 TTFT</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/inference/hixl_rl_tail_latency_optimization">HIXL RL 长尾时延优化</a></td><td>PD 分离与高效传输，缓解千卡集群长尾</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/inference/longcat_flash_superpod_inference_optimization">LongCat-Flash SuperPod 推理优化</a></td><td>多流并发 + 控核 + SuperKernel，TPOT 10ms</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/inference/npugraph_ex_aclgraph_graph_mode">npugraph_ex 图模式优化</a></td><td>aclGraph 图捕获与重放，减少 Host 下发</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/inference/torch_npu_ipc">torch_npu IPC 特性</a></td><td>跨进程共享设备内存，节省显存</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/inference/torchair_fx_pass_multi_stream">TorchAir 自定义 FX Pass</a></td><td>多流并行自动图变换，减少适配代码</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/inference/sglang_mooncake_hixl_pd_separation_d2d">SGLang、Mooncake 与 HIXL PD 分离</a></td><td>加速 PD 分离 D2D 特性落地</td><td>2025.11</td></tr>
+<tr><td><a href="./blogs/inference/superkernel_inference_acceleration">SuperKernel 技术综述</a></td><td>整网编译为大算子，性能再提升 10%-20%</td><td>2025.11</td></tr>
+<tr><td><a href="./blogs/inference/vllm_ascend_inference_optimization">vLLM-Ascend 推理优化</a></td><td>PagedAttention + 昇腾适配，提升吞吐</td><td>2025.11</td></tr>
+<tr><th colspan="3" align="left">训练</th></tr>
+<tr><td><a href="./blogs/training/areal_async_rl_training">AReaL 全异步 RL 训练</a></td><td>全异步 RL + Single Controller，解耦式 Agentic RL</td><td>2026.3</td></tr>
+<tr><td><a href="./blogs/training/flashrecovery_training_fault_recovery">FlashRecovery 训练故障恢复</a></td><td>降低检查点 I/O 与回滚重算损失</td><td>2025.12</td></tr>
+<tr><td><a href="./blogs/training/sam_speculative_decoding_rl_training">SAM 投机解码 RL 训练</a></td><td>无辅助模型 SAM 投机解码，超 35% 长尾加速</td><td>2025.12</td></tr>
+</table>
 
 ## 💬相关信息
 
