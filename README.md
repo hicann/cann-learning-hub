@@ -134,7 +134,8 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 │   ├── as_strided                     # as_strided 算子
 │   └── erf                            # erf 算子
 ├── docs                               # 文档与指南
-│   └── gitcode_env_experience_guide  # gitcode 环境体验指南
+│   ├── cannlab_env_experience_guide.md 	# CANNLab 环境体验指南
+│   └── acceptance_criteria_for_new_course_submission_and_launch.md 	# 新课程上库与上线验收标准
 └── README.md
 ```
 
