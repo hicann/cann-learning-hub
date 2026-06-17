@@ -1,0 +1,5 @@
+1.√  SIMT适用于离散访问和复杂分支控制场景，如Scatter类算子。
+2.B  一个线程块最多可以启用2048个线程，这是blockDim的三维乘积上限。
+3.B  每个Warp包含32个线程，是SIMT调度的基本单位。
+4.B  Unified Buffer总大小为256KB，划分为静态内存、动态内存、预留空间（8KB）和Data Cache。
+5.C  Data Cache的空间可配置范围在32KB到128KB，用户需确保Data Cache大于或等于32KB。

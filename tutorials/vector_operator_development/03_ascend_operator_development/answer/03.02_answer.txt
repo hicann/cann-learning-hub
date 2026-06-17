@@ -1,0 +1,5 @@
+1.√  TTK使用CSV文件定义测试用例，支持批量测试多个场景。
+2.√  对于PyTorch有内置实现的算子，TTK可直接使用PyTorch作为Golden进行对比。
+3.B  动态编译（-d）模式用动态shape编译，经tiling得到实际shape后执行。
+4.B  aiv_vec_ratio表示向量计算占比，用于评估Vector Core的计算密集度。
+5.C  精度判定条件为|npu - golden| <= atol + rtol × |golden|。
