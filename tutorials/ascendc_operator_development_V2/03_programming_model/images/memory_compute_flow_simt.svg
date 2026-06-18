@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="500" viewBox="0 0 700 500" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="700" height="500" fill="#ffffff"/>
+
+  <defs>
+    <marker id="bi" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto-start-reverse" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#1f2937">数据计算流程</text>
+
+  <!-- ============ 层叠的 Vector Core（后两层表示"多个"）============ -->
+  <rect x="118" y="74" width="480" height="226" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <rect x="104" y="66" width="480" height="226" rx="10" fill="#e3edff" stroke="#3b82f6" stroke-width="1.5"/>
+
+  <!-- 最前面的 Vector Core（详细画）-->
+  <rect x="90" y="58" width="480" height="226" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="110" y="83" font-size="14" font-weight="bold" fill="#1d4ed8">Vector Core</text>
+
+  <!-- 两个计算单元 + 寄存器（线程独享，各一份）-->
+  <g>
+    <rect x="122" y="100" width="178" height="106" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+    <rect x="138" y="114" width="146" height="38" rx="5" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="211" y="138" text-anchor="middle" font-size="12" font-weight="bold" fill="#b91c1c">⚙ 计算单元</text>
+    <rect x="138" y="160" width="146" height="34" rx="5" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="211" y="183" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">Register</text>
+  </g>
+  <g>
+    <rect x="360" y="100" width="178" height="106" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+    <rect x="376" y="114" width="146" height="38" rx="5" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="449" y="138" text-anchor="middle" font-size="12" font-weight="bold" fill="#b91c1c">⚙ 计算单元</text>
+    <rect x="376" y="160" width="146" height="34" rx="5" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="449" y="183" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">Register</text>
+  </g>
+
+  <!-- Data Cache（核内共享，整核一份）-->
+  <rect x="122" y="230" width="416" height="42" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.8"/>
+  <text x="330" y="256" text-anchor="middle" font-size="13" font-weight="bold" fill="#0369a1">Data Cache</text>
+  <!-- Register <-> Data Cache -->
+  <line x1="211" y1="194" x2="211" y2="229" stroke="#6b7280" stroke-width="1.5" marker-start="url(#bi)" marker-end="url(#bi)"/>
+  <line x1="449" y1="194" x2="449" y2="229" stroke="#6b7280" stroke-width="1.5" marker-start="url(#bi)" marker-end="url(#bi)"/>
+
+  <!-- ============ L2 Cache ============ -->
+  <rect x="90" y="346" width="480" height="46" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+  <text x="330" y="374" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d4ed8">L2 Cache</text>
+  <!-- Data Cache <-> L2 -->
+  <line x1="330" y1="272" x2="330" y2="345" stroke="#6b7280" stroke-width="1.5" marker-start="url(#bi)" marker-end="url(#bi)"/>
+
+  <!-- ============ Global Memory（核外，最底层）============ -->
+  <rect x="90" y="430" width="480" height="54" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="2"/>
+  <text x="330" y="456" text-anchor="middle" font-size="14" font-weight="bold" fill="#374151">Global Memory（核外全局内存）</text>
+  <text x="330" y="473" text-anchor="middle" font-size="10" fill="#6b7280">输入 / 输出数据</text>
+  <!-- L2 <-> Global Memory -->
+  <line x1="330" y1="392" x2="330" y2="429" stroke="#6b7280" stroke-width="1.5" marker-start="url(#bi)" marker-end="url(#bi)"/>
+</svg>

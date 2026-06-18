@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="340" viewBox="0 0 620 340" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="620" height="340" fill="#ffffff"/>
+
+  <defs>
+    <marker id="bi" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto-start-reverse" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <text x="310" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#1f2937">SIMT 内存层级</text>
+
+  <!-- stacked Vector Cores (back layers) to indicate multiple cores -->
+  <rect x="84" y="63" width="500" height="150" rx="9" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <rect x="72" y="59" width="500" height="150" rx="9" fill="#e0ecff" stroke="#3b82f6" stroke-width="1.5"/>
+
+  <!-- front Vector Core -->
+  <rect x="60" y="55" width="500" height="150" rx="9" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="78" y="77" font-size="12" font-weight="bold" fill="#1d4ed8">Vector Core</text>
+
+  <!-- Registers -->
+  <rect x="80" y="88" width="460" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.8"/>
+  <text x="96" y="108" font-size="11" font-weight="bold" fill="#166534">寄存器 Register</text>
+  <text x="96" y="126" font-size="10" fill="#15803d">作用域：单个线程私有 ｜ 访问最快</text>
+
+  <!-- Shared memory -->
+  <rect x="80" y="146" width="460" height="50" rx="7" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.8"/>
+  <text x="96" y="166" font-size="11" font-weight="bold" fill="#a16207">共享内存（位于 Unified Buffer）</text>
+  <text x="96" y="184" font-size="10" fill="#a16207">作用域：同一线程块内的线程 ｜ 带宽高、延迟低</text>
+
+  <!-- data exchange arrow between core and global memory -->
+  <line x1="310" y1="216" x2="310" y2="254" stroke="#6b7280" stroke-width="2" marker-start="url(#bi)" marker-end="url(#bi)"/>
+  <text x="318" y="239" font-size="10" fill="#6b7280" text-anchor="start">数据加载 / 写回</text>
+
+  <!-- Global Memory (core-external) -->
+  <rect x="60" y="255" width="512" height="65" rx="9" fill="#f3f4f6" stroke="#6b7280" stroke-width="2"/>
+  <text x="78" y="280" font-size="12" font-weight="bold" fill="#374151">Global Memory（核外全局内存）</text>
+  <text x="78" y="300" font-size="10" fill="#6b7280">作用域：所有 Vector Core 的所有线程 ｜ 容量最大、访问最慢</text>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="400" viewBox="0 0 820 400" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="820" height="400" fill="#ffffff"/>
+
+  <defs>
+    <marker id="ar" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <text x="410" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2937">同一套代码，每个线程用内置变量定位自己的数据</text>
+
+  <!-- ===== 两个 Thread Block ===== -->
+  <!-- 列中心：Block0 = 95,180,265,350 ; Block1 = 470,555,640,725 ; 框宽 70 -->
+  <rect x="48" y="64" width="354" height="92" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="225" y="84" text-anchor="middle" font-size="12" font-weight="bold" fill="#a16207">Block 0 (blockIdx.x = 0)</text>
+
+  <rect x="418" y="64" width="354" height="92" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="595" y="84" text-anchor="middle" font-size="12" font-weight="bold" fill="#a16207">Block 1 (blockIdx.x = 1)</text>
+
+  <!-- 线程框：每块 4 个，宽 70 高 44，y=98 -->
+  <g font-size="11" text-anchor="middle">
+    <g>
+      <rect x="60"  y="98" width="70" height="44" rx="5" fill="#dcfce7" stroke="#16a34a"/>
+      <text x="95"  y="118" fill="#166534">thread 0</text><text x="95"  y="134" fill="#15803d" font-weight="bold">i = 0</text>
+      <rect x="145" y="98" width="70" height="44" rx="5" fill="#dcfce7" stroke="#16a34a"/>
+      <text x="180" y="118" fill="#166534">thread 1</text><text x="180" y="134" fill="#15803d" font-weight="bold">i = 1</text>
+      <rect x="230" y="98" width="70" height="44" rx="5" fill="#dcfce7" stroke="#16a34a"/>
+      <text x="265" y="118" fill="#166534">thread 2</text><text x="265" y="134" fill="#15803d" font-weight="bold">i = 2</text>
+      <rect x="315" y="98" width="70" height="44" rx="5" fill="#dcfce7" stroke="#16a34a"/>
+      <text x="350" y="118" fill="#166534">thread 3</text><text x="350" y="134" fill="#15803d" font-weight="bold">i = 3</text>
+    </g>
+    <g>
+      <rect x="435" y="98" width="70" height="44" rx="5" fill="#dcfce7" stroke="#16a34a"/>
+      <text x="470" y="118" fill="#166534">thread 0</text><text x="470" y="134" fill="#15803d" font-weight="bold">i = 4</text>
+      <rect x="520" y="98" width="70" height="44" rx="5" fill="#dcfce7" stroke="#16a34a"/>
+      <text x="555" y="118" fill="#166534">thread 1</text><text x="555" y="134" fill="#15803d" font-weight="bold">i = 5</text>
+      <rect x="605" y="98" width="70" height="44" rx="5" fill="#dcfce7" stroke="#16a34a"/>
+      <text x="640" y="118" fill="#166534">thread 2</text><text x="640" y="134" fill="#15803d" font-weight="bold">i = 6</text>
+      <rect x="690" y="98" width="70" height="44" rx="5" fill="#dcfce7" stroke="#16a34a"/>
+      <text x="725" y="118" fill="#166534">thread 3</text><text x="725" y="134" fill="#15803d" font-weight="bold">i = 7</text>
+    </g>
+  </g>
+
+  <!-- ===== 公式带 ===== -->
+  <rect x="48" y="186" width="724" height="40" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="410" y="211" text-anchor="middle" font-size="14" font-family="monospace" fill="#1d4ed8">i = blockIdx.x * blockDim.x + threadIdx.x</text>
+
+  <!-- ===== 调度箭头：线程 -> 数据 ===== -->
+  <g stroke="#16a34a" stroke-width="1.5" marker-end="url(#ar)">
+    <line x1="95"  y1="226" x2="95"  y2="296"/>
+    <line x1="180" y1="226" x2="180" y2="296"/>
+    <line x1="265" y1="226" x2="265" y2="296"/>
+    <line x1="350" y1="226" x2="350" y2="296"/>
+    <line x1="470" y1="226" x2="470" y2="296"/>
+    <line x1="555" y1="226" x2="555" y2="296"/>
+    <line x1="640" y1="226" x2="640" y2="296"/>
+    <line x1="725" y1="226" x2="725" y2="296"/>
+  </g>
+
+  <!-- ===== 数据：每个线程处理 C[i] = A[i] + B[i] ===== -->
+  <g font-size="11" text-anchor="middle" fill="#374151">
+    <rect x="60"  y="300" width="70" height="44" rx="5" fill="#f3f4f6" stroke="#6b7280"/><text x="95"  y="326">A[0]+B[0]</text>
+    <rect x="145" y="300" width="70" height="44" rx="5" fill="#f3f4f6" stroke="#6b7280"/><text x="180" y="326">A[1]+B[1]</text>
+    <rect x="230" y="300" width="70" height="44" rx="5" fill="#f3f4f6" stroke="#6b7280"/><text x="265" y="326">A[2]+B[2]</text>
+    <rect x="315" y="300" width="70" height="44" rx="5" fill="#f3f4f6" stroke="#6b7280"/><text x="350" y="326">A[3]+B[3]</text>
+    <rect x="435" y="300" width="70" height="44" rx="5" fill="#f3f4f6" stroke="#6b7280"/><text x="470" y="326">A[4]+B[4]</text>
+    <rect x="520" y="300" width="70" height="44" rx="5" fill="#f3f4f6" stroke="#6b7280"/><text x="555" y="326">A[5]+B[5]</text>
+    <rect x="605" y="300" width="70" height="44" rx="5" fill="#f3f4f6" stroke="#6b7280"/><text x="640" y="326">A[6]+B[6]</text>
+    <rect x="690" y="300" width="70" height="44" rx="5" fill="#f3f4f6" stroke="#6b7280"/><text x="725" y="326">A[7]+B[7]</text>
+  </g>
+
+  <text x="410" y="380" text-anchor="middle" font-size="12" fill="#15803d">8 个线程并行执行同一份代码，因 i 不同而各自处理不同元素</text>
+</svg>

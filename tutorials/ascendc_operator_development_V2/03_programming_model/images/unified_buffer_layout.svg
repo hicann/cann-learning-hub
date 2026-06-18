@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="190" viewBox="0 0 760 190" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="190" fill="#ffffff"/>
+
+  <text x="380" y="28" text-anchor="middle" font-size="17" font-weight="bold" fill="#1f2937">Unified Buffer 空间划分（总大小 256KB）</text>
+
+  <!-- address axis -->
+  <text x="60" y="58" font-size="11" font-weight="bold" fill="#374151">低地址</text>
+  <text x="700" y="58" text-anchor="end" font-size="11" font-weight="bold" fill="#374151">高地址</text>
+  <line x1="60" y1="66" x2="700" y2="66" stroke="#9ca3af" stroke-width="1"/>
+
+  <!-- segments (widths are illustrative, not to scale) -->
+  <!-- 静态内存 -->
+  <rect x="60"  y="76" width="150" height="70" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="135" y="106" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d4ed8">静态内存</text>
+  <text x="135" y="126" text-anchor="middle" font-size="9.5" fill="#2563eb">编译期确定大小</text>
+  <!-- 动态内存 -->
+  <rect x="210" y="76" width="150" height="70" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="285" y="106" text-anchor="middle" font-size="12" font-weight="bold" fill="#0369a1">动态内存</text>
+  <text x="285" y="126" text-anchor="middle" font-size="9.5" fill="#0284c7">运行期确定大小</text>
+  <!-- 预留空间 -->
+  <rect x="360" y="76" width="90" height="70" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="405" y="104" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">预留空间</text>
+  <text x="405" y="124" text-anchor="middle" font-size="9.5" fill="#6b7280">固定 8KB</text>
+  <!-- Data Cache -->
+  <rect x="450" y="76" width="250" height="70" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="575" y="104" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">Data Cache</text>
+  <text x="575" y="124" text-anchor="middle" font-size="9.5" fill="#15803d">SIMT 全局内存访问缓存 ｜ 32KB ~ 128KB</text>
+
+  <!-- labels -->
+  <text x="285" y="171" text-anchor="middle" font-size="10" fill="#1d4ed8">↑ 用户申请的共享内存</text>
+  <text x="405" y="171" text-anchor="middle" font-size="10" fill="#6b7280">↑ 编译器/Ascend C 预留</text>
+  <text x="575" y="171" text-anchor="middle" font-size="10" fill="#166534">↑ 必须至少保留 32KB</text>
+</svg>

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="395" viewBox="0 0 760 395" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="395" fill="#ffffff"/>
+
+  <defs>
+    <marker id="th" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#16a34a"/>
+    </marker>
+    <marker id="sch" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <text x="380" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2937">SIMT 线程层次结构与调度</text>
+
+  <!-- ===================== Grid ===================== -->
+  <rect x="30" y="50" width="700" height="170" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="380" y="72" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d4ed8">Grid（线程块网格）</text>
+
+  <!-- 4 个 Thread Block，每个含 5 条向下箭头（线程）-->
+  <!-- Block 0 -->
+  <rect x="50" y="86" width="150" height="116" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="2"/>
+  <text x="125" y="106" text-anchor="middle" font-size="12" font-weight="bold" fill="#a16207">Thread Block 0</text>
+  <g stroke="#16a34a" stroke-width="3" marker-end="url(#th)">
+    <line x1="70" y1="118" x2="70" y2="188"/><line x1="95" y1="118" x2="95" y2="188"/>
+    <line x1="120" y1="118" x2="120" y2="188"/><line x1="145" y1="118" x2="145" y2="188"/>
+    <line x1="170" y1="118" x2="170" y2="188"/>
+  </g>
+  <!-- Block 1 -->
+  <rect x="220" y="86" width="150" height="116" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="2"/>
+  <text x="295" y="106" text-anchor="middle" font-size="12" font-weight="bold" fill="#a16207">Thread Block 1</text>
+  <g stroke="#16a34a" stroke-width="3" marker-end="url(#th)">
+    <line x1="240" y1="118" x2="240" y2="188"/><line x1="265" y1="118" x2="265" y2="188"/>
+    <line x1="290" y1="118" x2="290" y2="188"/><line x1="315" y1="118" x2="315" y2="188"/>
+    <line x1="340" y1="118" x2="340" y2="188"/>
+  </g>
+  <!-- Block 2 -->
+  <rect x="390" y="86" width="150" height="116" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="2"/>
+  <text x="465" y="106" text-anchor="middle" font-size="12" font-weight="bold" fill="#a16207">Thread Block 2</text>
+  <g stroke="#16a34a" stroke-width="3" marker-end="url(#th)">
+    <line x1="410" y1="118" x2="410" y2="188"/><line x1="435" y1="118" x2="435" y2="188"/>
+    <line x1="460" y1="118" x2="460" y2="188"/><line x1="485" y1="118" x2="485" y2="188"/>
+    <line x1="510" y1="118" x2="510" y2="188"/>
+  </g>
+  <!-- Block 3 -->
+  <rect x="560" y="86" width="150" height="116" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="2"/>
+  <text x="635" y="106" text-anchor="middle" font-size="12" font-weight="bold" fill="#a16207">Thread Block 3</text>
+  <g stroke="#16a34a" stroke-width="3" marker-end="url(#th)">
+    <line x1="580" y1="118" x2="580" y2="188"/><line x1="605" y1="118" x2="605" y2="188"/>
+    <line x1="630" y1="118" x2="630" y2="188"/><line x1="655" y1="118" x2="655" y2="188"/>
+    <line x1="680" y1="118" x2="680" y2="188"/>
+  </g>
+
+  <!-- ===================== 调度箭头 ===================== -->
+  <text x="380" y="248" text-anchor="middle" font-size="12" font-weight="bold" fill="#dc2626">线程块被调度到 Vector Core 上执行</text>
+  <g stroke="#dc2626" stroke-width="2" marker-end="url(#sch)" stroke-dasharray="5 3">
+    <line x1="125" y1="202" x2="125" y2="299"/>
+    <line x1="295" y1="202" x2="295" y2="299"/>
+    <line x1="465" y1="202" x2="465" y2="299"/>
+    <line x1="635" y1="202" x2="635" y2="299"/>
+  </g>
+
+  <!-- ===================== Vector Core 行 ===================== -->
+  <rect x="50"  y="300" width="150" height="80" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="125" y="335" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534">Vector Core 0</text>
+  <text x="125" y="356" text-anchor="middle" font-size="10" fill="#15803d">执行 Thread Block 0</text>
+
+  <rect x="220" y="300" width="150" height="80" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="295" y="335" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534">Vector Core 1</text>
+  <text x="295" y="356" text-anchor="middle" font-size="10" fill="#15803d">执行 Thread Block 1</text>
+
+  <rect x="390" y="300" width="150" height="80" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="465" y="335" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534">Vector Core 2</text>
+  <text x="465" y="356" text-anchor="middle" font-size="10" fill="#15803d">执行 Thread Block 2</text>
+
+  <rect x="560" y="300" width="150" height="80" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="635" y="335" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534">Vector Core 3</text>
+  <text x="635" y="356" text-anchor="middle" font-size="10" fill="#15803d">执行 Thread Block 3</text>
+</svg>
