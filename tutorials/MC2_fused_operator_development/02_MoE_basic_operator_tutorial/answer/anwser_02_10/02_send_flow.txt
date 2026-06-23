@@ -1,0 +1,48 @@
+// ===== TODO 2 参考答案：发送流程（TokenToExpertInQuant）=====
+// 文件位置：include/moe_distribute_dispatch.h
+//
+// 发送流程在非量化版（TokenToExpert）基础上增加以下步骤：
+//   1) 量化前清零：MX 每 256 字节计算一组 scale，axisH_ 不是 256 倍数时
+//      尾部填 QUANT_PADDING_VALUE 避免引入脏数据；
+//   2) DataCopyPadExtParams 的 isPad 改为 true（量化要求精确边界）；
+//   3) 调用 quantInst_.QuantProcess(tempTensor_, xInTensor) 由模板完成
+//      MX 量化（ComputeMaxExp/ComputeScale/ComputeData 都封装在内部）；
+//   4) FillTriple 写入 (epRankId, tokenIndex, topkIdx) 三元组用于 Combine 回查；
+//   5) 量化后输出 = FP8 量化值 + scale 值的拼接，Copy 时按 int32 视角分两段搬，
+//      stride {1, 1, 16, 15} 把每段 256B / 224B 拼到 512B 的 Win 槽位中；
+//   6) aclshmemx_mte_put_nbi 把整段（含 token-flag 占位 + 数据 + scales）非阻塞
+//      送往对端 Win数据区，flagPadOffset_ 在两个 ping-pong 半区之间翻转。
+
+__aicore__ inline void MoeDistributeDispatch::TokenToExpertInQuant(
+    int32_t toRankId, GlobalTensor<ExpandXOutType> dstWinGMTensor,
+    TQue<QuePosition::VECIN, 1> inQueue, uint32_t srcTokenIndex,
+    uint32_t fillExpertIdx, uint32_t quantExpertIdx)
+{
+    assert(flagPadOffset_ == 0 || flagPadOffset_ == hCommuSize_);
+    DataCopyPadExtParams<XType> copyPadExtParams{true, 0U, 0U, 0U};
+    LocalTensor<XType> xInTensor = inQueue.AllocTensor<XType>();
+    LocalTensor<uint8_t> singleByteTok = xInTensor.template ReinterpretCast<uint8_t>();
+    Duplicate(singleByteTok, QUANT_PADDING_VALUE, Align128(axisH_) * sizeof(XType));
+    SyncFunc<HardEvent::V_MTE2>();
+    DataCopyPad(xInTensor, xGMTensor_[srcTokenIndex * axisH_], hCopyParams_, copyPadExtParams);
+    inQueue.EnQue(xInTensor);
+    xInTensor = inQueue.DeQue<XType>();
+    quantInst_.QuantProcess(tempTensor_, xInTensor);
+    FillTriple(tempTensor_, srcTokenIndex, fillExpertIdx);
+    inQueue.FreeTensor<XType>(xInTensor);
+    SyncFunc<AscendC::HardEvent::S_V>();
+    LocalTensor<int32_t> tempTensorInt32 = tempTensor_.template ReinterpretCast<int32_t>();
+    LocalTensor<int32_t> outTensorInt32 = outTensor_.template ReinterpretCast<int32_t>();
+    PipeBarrier<PIPE_V>();
+    // 第一段：64 个 int32 = 256B 数据；16/15 是 dst/src 相邻迭代地址步长（按 256B 槽位间隔）
+    Copy(outTensorInt32[flagPadOffset_ / sizeof(int32_t)], tempTensorInt32,
+         uint64_t(64), uint8_t(blockCntPerToken_), {1, 1, 16, 15});
+    // 第二段：56 个 int32 = (480 - 256)B 数据；偏移 +64 对应跳过第一段
+    Copy(outTensorInt32[flagPadOffset_ / sizeof(int32_t) + 64], tempTensorInt32[64],
+         uint64_t(56), uint8_t(blockCntPerToken_), {1, 1, 16, 15});
+    SyncFunc<AscendC::HardEvent::V_MTE3>();
+    aclshmemx_mte_put_nbi(
+        dstWinGMTensor, outTensor_[flagPadOffset_ / sizeof(ExpandXOutType)],
+        axisHCommu_, toRankId, 0U);
+    flagPadOffset_ = hCommuSize_ - flagPadOffset_;
+}

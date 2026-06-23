@@ -1,0 +1,39 @@
+// ===== TODO 1 参考答案：Buffer 大小计算（SetTilingDataAndCal）=====
+// 文件位置：include/moe_distribute_dispatch.h
+//
+// 与非量化版本相比，量化版本的关键差异：
+//   1) ExpandXOutType 从 float16_t 变为 fp8_e5m2_t，hOutSize_ = axisH_ * 1 字节；
+//   2) 调用 quantInst_.QuantInit(...) 由量化模板内部完成 hAlignSize_、
+//      hOutSizeAlign_、scaleOutBytes_、tokenQuantAlign_ 的对齐计算
+//      （Align256/Align128/Ceil32），开发者不需要复现 MX 对齐公式；
+//   3) hOutSizeAlign_ 在 QuantInit 返回后还要追加一个 UB_ALIGN 字节，用于
+//      在末尾承载三元组（epRankId, tokenIndex, topkIdx）。
+//
+// 其余字段（blockCntPerToken_、hCommuSize_、aivUsedCumSum_ 等）与非量化版本
+// 完全一致，只是 hOutSizeAlign_ 的来源不同。
+
+__aicore__ inline void MoeDistributeDispatch::SetTilingDataAndCal(
+    const DispatchTilingData *tilingData)
+{
+    SetTilingData(tilingData);
+
+    moeExpertNumPerRank_ = moeExpertNum_ / epWorldSize_;
+    expertIdsCnt_ = axisBS_ * axisK_;
+    hOutSize_ = axisH_ * sizeof(ExpandXOutType);
+    // === 量化版本 Buffer 大小核心：直接复用 MX 量化模板的 QuantInit ===
+    quantInst_.QuantInit(hAlignSize_, hOutSize_,
+                         tokenQuantAlign_, hOutSizeAlign_, scaleOutBytes_, axisH_);
+    hOutSizeAlign_ = tokenQuantAlign_ * sizeof(int32_t) + UB_ALIGN;
+    blockCntPerToken_ = Ceil(hOutSizeAlign_, SPLIT_BLOCK_DATA_SIZE);
+    hCommuSize_ = blockCntPerToken_ * SPLIT_BLOCK_SIZE;
+    axisHCommu_ = hCommuSize_ / sizeof(ExpandXOutType);
+    expertPerSizeOnWin_ = axisBS_ * hCommuSize_;
+    rscvStatusNum_ = epWorldSize_ * moeExpertNumPerRank_;
+    statusCntAlign_ = Ceil(moeExpertNum_, UB_ALIGN_DATA_COUNT) * UB_ALIGN_DATA_COUNT;
+    aivUsedCumSum_ = moeExpertNum_ / 32;
+    aivUsedCumSum_ = (aivUsedCumSum_ == 0) ? 1 : aivUsedCumSum_;
+    aivUsedCumSum_ = (aivUsedCumSum_ >= (aivNum_ / 2)) ? (aivNum_ / 2) : aivUsedCumSum_;
+    aivUsedCumSum_ = (aivUsedCumSum_ >= CUMSUM_MAX_CORE_NUM) ? CUMSUM_MAX_CORE_NUM : aivUsedCumSum_;
+    aivUsedCumSum_ = (aivUsedCumSum_ >= rscvStatusNum_) ? rscvStatusNum_ : aivUsedCumSum_;
+    aivUsedAllToAll_ = aivNum_ - aivUsedCumSum_;
+}

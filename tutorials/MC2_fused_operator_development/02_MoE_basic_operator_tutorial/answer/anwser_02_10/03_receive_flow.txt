@@ -1,0 +1,55 @@
+// ===== TODO 3 参考答案：接收流程（CopyInAndOut）=====
+// 文件位置：include/moe_distribute_dispatch.h
+//
+// 接收流程与非量化版的关键差异：
+//   1) 同样按 SPLIT_BLOCK_DATA_SIZE = 480B 的子块搬入（token-flag 在每个 512B
+//      槽位的末 32B），arriveCount 已由 CheckDataArriveWithFlag 校验到位；
+//   2) 量化版在 srcToken 块的内部布局是 [FP8 数据 + scales 紧随]，因此需要两套
+//      DataCopyExtParams：tokenCopyParams 取前 hOutSize_ 字节写到 expandXOut，
+//      scalesCopyParams 取 scale_out_bytes_ 字节写到 dynamicScalesOut；
+//   3) 调用 quantInst_.CopyScalesToOut(...) 由模板从 xTmpTensor_ 偏移
+//      Align256<uint32_t>(axisH_) 处拷出 scales 到 GM，开发者无需再次理解
+//      scales 在 UB 内的具体偏移；
+//   4) 三元组随每条 token 一同写入 expandIdxGMTensor_，供 Combine 回查。
+//
+// 接收侧的"等到达 → 解码 → 整理"三步骤抽象不变，只是多一次 CopyScalesToOut。
+
+__aicore__ inline void MoeDistributeDispatch::CopyInAndOut(
+    LocalTensor<int32_t> xOutInt32Tensor, GM_ADDR wAddr, uint32_t index,
+    uint32_t dstPosition, uint32_t arriveCount)
+{
+    GlobalTensor<ExpandXOutType> dataFlagGlobal, expandXOutGlobal;
+    dataFlagGlobal.SetGlobalBuffer((__gm__ ExpandXOutType *)(wAddr));
+    expandXOutGlobal.SetGlobalBuffer(
+        (__gm__ ExpandXOutType *)(expandXOutGM_) + (dstPosition) * axisH_);
+
+    // 一次性搬入 arriveCount 条 token 的全部子块（含 FP8 + scales）
+    DataCopyParams srcTokenCopyParams{
+        static_cast<uint16_t>(blockCntPerToken_ * arriveCount),
+        static_cast<uint16_t>(SPLIT_BLOCK_DATA_SIZE),
+        static_cast<uint16_t>(UB_ALIGN), 0};
+    // scales 在每条 token 的尾部，stride 跳过 FP8 数据段
+    DataCopyExtParams scalesCopyParams{
+        uint16_t(arriveCount),
+        static_cast<uint32_t>(scaleOutBytes_),
+        static_cast<uint32_t>((blockCntPerToken_ * SPLIT_BLOCK_DATA_SIZE - scaleOutBytes_) / UB_ALIGN), 0U, 0U};
+    DataCopyExtParams tokenCopyParams{
+        uint16_t(arriveCount), hOutSize_,
+        static_cast<uint32_t>((blockCntPerToken_ * SPLIT_BLOCK_DATA_SIZE - hOutSize_) / UB_ALIGN), 0U, 0U};
+    DataCopyExtParams expandIdxCopyParams{
+        uint16_t(arriveCount), EXPAND_IDX_INFO * sizeof(int32_t),
+        static_cast<uint32_t>((blockCntPerToken_ * SPLIT_BLOCK_DATA_SIZE) / UB_ALIGN - 1), 0U, 0U};
+    DataCopyPadParams srcTokenPadParams{false, 0U, 0U, 0U};
+
+    DataCopyPad(xTmpTensor_,
+        dataFlagGlobal[expertFinishNumTensor_(index) * hCommuSize_ / sizeof(ExpandXOutType)],
+        srcTokenCopyParams, srcTokenPadParams);
+    SyncFunc<AscendC::HardEvent::MTE2_MTE3>();
+
+    // 调用 MX 量化模板已封装好的 scales 拷出函数
+    quantInst_.CopyScalesToOut(dstPosition, scaleOutBytes_, xTmpTensor_, scalesCopyParams);
+
+    DataCopyPad(expandXOutGlobal, xTmpTensor_, tokenCopyParams);
+    DataCopyPad(expandIdxGMTensor_[dstPosition * EXPAND_IDX_INFO],
+                xOutInt32Tensor[tokenQuantAlign_], expandIdxCopyParams);
+}
