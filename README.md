@@ -35,9 +35,8 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 <tr><td><a href="./quick_start/cann_basics/03_what_is_cann.ipynb">什么是 CANN</a></td><td>CANN 异构计算架构与软件栈：分层架构、Ascend C 算子开发、torch_npu 适配</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/03_what_is_cann.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
 <tr><td><a href="./quick_start/cann_basics/04_hello_world_npu.ipynb">Hello World：NPU 加法</a></td><td>基于 torch_npu 在 NPU 上跑通第一个加法运算，验证环境可用</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/04_hello_world_npu.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
 <tr><th colspan="4" align="left">🧠 大模型推理</th></tr>
-<tr><td><a href="./quick_start/first_llm_inference/01_qwen3_npu_inference_baseline.ipynb">在昇腾上跑通 Qwen3-0.6B</td><td>快速上手：第一个大模型推理部署（在线推理，看功能是否正确）</td><td></td><td>✅ 已上线</td></tr>
-<tr><td><a href="undefined/wiki/./quick_start/first_llm_inference/01_qwen3_npu_inference_baseline.ipynb">在昇腾上跑通 Qwen3-0.6B</a></td><td>快速上手：第一个大模型推理部署（在线推理，看功能是否正确）</td><td></td><td>✅ 已上线</td></tr>
-<tr><td><a href="undefined/wiki/./quick_start/first_llm_inference/02_qwen3_npu_inference_npugraph_ex.ipynb"> Qwen3-0.6B 推理（图模式）</a></td><td>快速上手：第一个大模型推理加速实践（通过图模式加速推理）</td><td></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./quick_start/first_llm_inference/01_qwen3_npu_inference_baseline.ipynb">在昇腾上跑通 Qwen3-0.6B</a></td><td>快速上手：第一个大模型推理部署（在线推理，看功能是否正确）</td><td></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./quick_start/first_llm_inference/02_qwen3_npu_inference_npugraph_ex.ipynb"> Qwen3-0.6B 推理（图模式）</a></td><td>快速上手：第一个大模型推理加速实践（通过图模式加速推理）</td><td></td><td>✅ 已上线</td></tr>
 <tr><td>Qwen3-0.8B 推理算子级优化</td><td>快速上手：如何通过融合算子加速推理</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>端到端推理性能优化实践</td><td>Sana-Video 推理优化实践</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>推理优化系列（初级）</td><td>大模型演化 / 结构 / 推理流程 / 多模态扩展</td><td></td><td>🚧 建设中</td></tr>
