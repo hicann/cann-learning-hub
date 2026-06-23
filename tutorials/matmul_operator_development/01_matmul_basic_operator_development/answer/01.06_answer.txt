@@ -1,0 +1,42 @@
+01.06 MatMul 量化模式与实现 — 课后练习答案
+==========================================
+
+1. （判断题）MatMul 计算中的量化操作是指在 Cube 计算完成后，通过 Scale 将低 bit 结果转换回高 bit，以保证与全精度计算近似等价。
+   答案：×
+   解析：MatMul 量化包含「高 bit → 低 bit + Scale」的量化过程，以及低 bit 计算后的反量化；题干只描述了反量化环节，表述不完整。
+
+2. （判断题）动态量化因为需要在线生成量化参数，在推理场景下通常比静态量化具有更好的性能。
+   答案：×
+   解析：动态量化需在线计算 Scale，性能通常略差于预定义 Scale 的静态量化；静态量化常用于 weight，性能更好。
+
+3. （单选题）右矩阵 shape 为 (k, n)，采用 perchannel 量化时，Scale 的 shape 应为：
+   - A. (1,)　B. (m,)　C. (n,)　D. (k/gs, n)
+   答案：C. (n,)
+
+4. （单选题）LLM 推理中，左矩阵 activation 采用动态量化且 Scale shape 为 (m,)，对应的量化粒度为：
+   - A. T 量化（pertensor）　B. C 量化（perchannel）　C. K 量化（pertoken）　D. B 量化（perblock）
+   答案：C. K 量化（pertoken）
+   解析：Scale shape 为 (m,) 说明沿 m 轴（左矩阵行方向）独立量化，对应 pertoken（K）粒度；perchannel 作用于右矩阵 n 轴，pertensor 为 (1,)，perblock 为二维分块。
+
+5. （单选题）MX 量化本质是哪种量化模式的特例？
+   - A. T-C 量化　B. G-G 量化　C. B-B 量化　D. C 量化
+   答案：B. G-G 量化（pergroup-pergroup）
+
+6. （多选题）以下关于 pergroup 量化的描述，正确的有：
+   - A. 在 reduce 轴 k 上按 group size 分组
+   - B. 左矩阵 (m,k) 的 Scale shape 为 (m, k/gs)
+   - C. 右矩阵 (k,n) 的 Scale shape 为 (k/gs, n)
+   - D. group size 固定为 16
+   答案：A、B、C
+   解析：
+   - A. 在 reduce 轴 k 上按 group size 分组 ✓
+   - B. 左矩阵 Scale shape 为 (m, k/gs) ✓
+   - C. 右矩阵 Scale shape 为 (k/gs, n) ✓
+   - D. group size 固定为 16 ✗（MX 量化中 gs=32，pergroup 本身 gs 可配置）
+
+7. （填空题）左矩阵 shape 为 (m, k)、右矩阵 shape 为 (k, n)，采用 G-G 组合量化（group size = gs）时，ScaleA 的逻辑 shape 为 ______，ScaleB 的逻辑 shape 为 ______。
+   答案：(m, k/gs)；(k/gs, n)
+   解析：G-G 模式下左右矩阵均在 k 轴按 group size 分组，左矩阵 Scale 沿 m 轴与 k/gs 个分组各有一份，右矩阵 Scale 沿 k/gs 个分组与 n 轴各有一份。
+
+8. （填空题）MX 量化中，Scale 的数据类型为 ______，group size 为 ______。
+   答案：FLOAT8_E8M0；32
