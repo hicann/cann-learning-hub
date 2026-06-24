@@ -1,5 +1,5 @@
-1. 错（编译期 SFINAE/enable_if_t，不是运行期 switch-case）
-2. 对（BlockEpilogueEmpty Run() 为空实现，适用于不需要 AIV 端后处理的场景）
-3. C（SFINAE / enable_if_t，根据 ScheduleType 选择）
-4. B（MatmulMultiBlockWithStreamK）
-5. DispatchPolicy / GemmUniversal
+1. 对（DispatchPolicy 通过编译期模板参数选择代码路径，不是运行期分支）
+2. 错（Tensor 方式通过 Layout 自动计算偏移，不需要手动计算）
+3. B（BlockScheduler 负责"切分矩阵、分配任务"，对应文中"调度员"角色）
+4. B（MatmulMultiBlockBasic<0, 0> 是入门阶段推荐的 Basic 策略）
+5. DispatchPolicy / 类型（5 步流程：选择 DispatchPolicy → 定义类型 → 组合组件 → 组装 Kernel → 执行）
