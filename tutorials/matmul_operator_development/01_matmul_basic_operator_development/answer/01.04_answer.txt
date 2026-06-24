@@ -1,0 +1,5 @@
+1. 错（不同 Kernel 特化版本的 Params 字段不同，如 Basic 无 workspace，StreamK 有 workspace）
+2. 对（主模板 static_assert 提示未匹配，每个 Policy 有完整特化）
+3. D（ZNLayoutPtn：IsTrans=true, IsWeightNz=true）
+4. A、B、D（A: StreamK 由 DispatchPolicy 控制；B: Empty 适用于 Basic 非量化；D: ON_THE_FLY 直写 GM；C 错：DefaultFusion 默认执行 identity，不是 ReLU）
+5. L1 / L0

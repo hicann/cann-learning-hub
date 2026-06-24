@@ -1,0 +1,7 @@
+理论速查答案：
+1. B（BF16）
+2. B（MatmulMultiBlockBasic<0, 0>，FULL_LOAD_MODE=0，FUSED_OP_TYPE=0）
+3. BlockMmad / BlockScheduler / BlockEpilogueEmpty
+
+思考题：mTailCnt/nTailCnt
+   mTailCnt = m % baseM，nTailCnt = n % baseN。当矩阵 M/N 轴不能被 baseM/baseN 整除时，余量部分是尾块。如果不做尾块处理，矩阵边缘数据会被截断或越界，导致输出不完整。BlockSchedulerMatmulBasic 通过 mTailCnt/nTailCnt 将尾块切分为子块，让多个核并行处理余量，确保完整覆盖。

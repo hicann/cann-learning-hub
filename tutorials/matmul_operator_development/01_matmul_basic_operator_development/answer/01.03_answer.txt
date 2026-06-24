@@ -1,0 +1,5 @@
+1. 错（编译期 SFINAE/enable_if_t，不是运行期 switch-case）
+2. 对（BlockEpilogueEmpty Run() 为空实现，适用于不需要 AIV 端后处理的场景）
+3. C（SFINAE / enable_if_t，根据 ScheduleType 选择）
+4. B（MatmulMultiBlockWithStreamK）
+5. DispatchPolicy / GemmUniversal
