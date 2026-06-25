@@ -1,0 +1,14 @@
+1. √
+解析：根据 HIXL 端到端执行流程表格，RegisterMem 通常要在 Connect 前完成。接口文档也强调建链前需要提前注册本地以及远端内存，否则建链后注册不支持远端访问。
+
+2. √
+解析：根据 HIXL 端到端执行流程表格，传输阶段的注意事项明确指出：地址必须合法，长度不能越界。否则会导致传输失败或不可预期的行为。
+
+3. B
+解析：HIXL 端到端执行流程的正确顺序是：Initialize -> RegisterMem -> Connect -> Transfer。RegisterMem 需要在 Connect 之前完成，以便建链后远端可以访问已注册的内存。
+
+4. C
+解析：HIXL 资源释放的正确顺序是：Disconnect -> DeregisterMem -> Finalize。断链前应确保没有未完成的传输，解注册前应先断链避免远端仍访问该内存，Finalize 不要和其他 HIXL 接口并发调用。
+
+5. A、B、C
+解析：Initialize 成功后必须和 Finalize 配对；Disconnect 前应确保没有未完成的传输任务；DeregisterMem 前应先断链，避免远端仍访问该内存。选项 D 错误，Finalize 不应和其他 HIXL 接口并发调用。

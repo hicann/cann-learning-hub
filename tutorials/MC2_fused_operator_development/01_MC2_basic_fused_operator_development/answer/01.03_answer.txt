@@ -1,0 +1,33 @@
+MC2融合算子课后实践参考答案
+================================
+
+练习1：修改 Tiling 参数观察行为
+关注 op_host/mte_matmul_reduce_scatter_host.cpp 中 CreateTilingDataAndContext 函数的校验逻辑：
+- minSplitM 必须是 128 的倍数且 >= 128
+- chunkM 必须能整除 minSplitM
+- 修改 minSplitM 后 splitMCnt = chunkM / minSplitM，splitM = chunkM / splitMCnt
+
+练习2：添加新的测试 Case
+修改 run_multi_data.sh 中 TEST_CASES 数组，例如：
+  TEST_CASES=(
+      "base_1024:1024:1024:1024"
+      "custom_512:512:512:512"
+      "large_2048:2048:2048:2048"
+      "large_4096:4096:4096:4096"
+  )
+
+练习3：理解 Split-M 的设计意图
+如果不做 Split-M（splitMCnt=1，一次计算所有 chunkM 行）：
+- Win Area 内存占用：需要容纳 chunkM*N 而非 splitM*N，对 Win Area 压力更大
+- 同步粒度：所有 Matmul 完成后才开始 ReduceScatter，无法实现流水重叠
+- 通信等待时间：Barrier 粒度更大，总体时延更高
+
+练习4：扩展思考 — PUT 模式
+AllGather+Matmul（PUT 模式）与 Matmul+ReduceScatter（GET 模式）的主要差异：
+- 数据流向：PUT 是先通信收集数据再做计算，GET 是先计算再通信分发结果
+- 通信模块：PUT 需要将 AllGather 放在 Matmul 之前，从各 Rank Win Area 先收集 X 矩阵
+- Matmul 输入：PUT 模式下 Matmul 的输入不再来自本地 GM，而是来自 Win Area
+- 需要修改的模块：
+  * MTE 通信模块：需要实现 AllGather 而非 ReduceScatter（数据收集方向相反）
+  * 顶层 Kernel Process 流程：通信放在计算之前
+  * Tiling 参数：AllGather 的输出维度与 ReduceScatter 不同

@@ -1,0 +1,22 @@
+[{
+    "op": "AddCustomTemplate",
+    "input_desc": [{
+            "name": "x",
+            "param_type": "required",
+            "format": ["ND", "ND"],
+            "type": ["float16", "float"]
+        },
+        {
+            "name": "y",
+            "param_type": "required",
+            "format": ["ND", "ND"],
+            "type": ["float16", "float"]
+        }
+    ],
+    "output_desc": [{
+        "name": "z",
+        "param_type": "required",
+        "format": ["ND", "ND"],
+        "type": ["float16", "float"]
+    }]
+}]

@@ -1,0 +1,14 @@
+1. √
+解析：FabricMem模式的核心原理是通过VMM（Virtual Memory Manager）统一编址，将超节点内所有DRAM纳入统一地址空间，NPU通过HCCS链路直接读写远程内存，无需CPU参与数据搬运。
+
+2. ×
+解析：FabricMem模式仅支持超节点内部传输，不支持跨超节点。这是FabricMem模式的使用限制之一，适用于Atlas A3超节点内的高带宽传输场景。
+
+3. C
+解析：FabricMem模式的前置条件要求HDK版本为26.0以上，同时需要LingQu Computing Network 1.5.0以上和CANN 9.0以上，仅支持Atlas A3训练系列产品和Atlas A3推理系列产品。
+
+4. C
+解析：FabricMem模式与Buffer Pool模式不能同时配置，`OPTION_BUFFER_POOL`不能与`OPTION_ENABLE_USE_FABRIC_MEM`同时使用。配置时需选择其一，FabricMem是推荐的生产环境方案。
+
+5. A、B、C
+解析：FabricMem模式具有三大技术优势：超高传输带宽，RH2D可达约103GB/s（A正确）；零拷贝传输，NPU直接访问远程DRAM无需CPU参与（B正确）；超节点内存池化，突破单节点内存容量限制（C正确）。FabricMem不支持跨超节点传输（D错误）。

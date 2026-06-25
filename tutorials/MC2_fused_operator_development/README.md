@@ -17,13 +17,3 @@
 | 1.2 MC2融合算子概念介绍 | 在线体验建设中 | ✅ 已发布 |
 | 1.3 MC2融合算子开发流程讲解 | 在线体验建设中 | ✅ 已发布 |
 | 1.4 章节实践 | 在线体验建设中 | ✅ 已发布 |
-| 2.1 章节介绍 | [在线体验](./02.01_chapter_intro.ipynb) | ✅ 已发布 |
-| 2.2 MoE 架构概述 | [在线体验](./02.02_moe_architexture_overview.ipynb) | ✅ 已发布 |
-| 2.3 并行策略 | [在线体验](./02.03_parallel_strategy.ipynb) | ✅ 已发布 |
-| 2.4 Dispatch/Combine 算子 | [在线体验](./02.04_dispatch_combine_operator.ipynb) | ✅ 已发布 |
-| 2.5 算子逻辑概述 | [在线体验](./02.05_operator_logic_overview.ipynb) | ✅ 已发布 |
-| 2.6 核心流程拆解 | [在线体验](./02.06_dispatch_combine_core_flow.ipynb) | ✅ 已发布 |
-| 2.7 Win 区内存布局 | [在线体验](./02.07_win_memory_layout.ipynb) | ✅ 已发布 |
-| 2.8 Tiling 指南 | [在线体验](./02.08_tiling_guide.ipynb) | ✅ 已发布 |
-| 2.9 Kernel 阶段指南 | [在线体验](./02.09_kernel_stage_guide.ipynb) | ✅ 已发布 |
-| 2.10 量化 Dispatch 实践 | [在线体验](./02.10_quant_dispatch_practice.ipynb) | ✅ 已发布 |

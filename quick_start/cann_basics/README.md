@@ -1,0 +1,24 @@
+# CANN 基础知识课程
+
+本课程是 CANN 生态的入门通识课，面向零基础初学者，用大量生活化比喻和图文讲解，让你像读故事一样理解 AI、NPU 和 CANN。课程以 Jupyter Notebook 形式提供，支持在线交互式运行。
+
+## 课程列表
+
+| 序号 | 课程 | 内容概要 | 在线体验 |
+|:----:|------|---------|-----|
+| 1 | [人工智能基础](./01_ai_basics.ipynb) | AI 发展历程 → AI/ML/DL → 模型 → 训练与推理 → 常见架构 → 计算图 → 算子 → 张量 → 从模型到昇腾 NPU | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/01_ai_basics.ipynb) |
+| 2 | [什么是 NPU](./02_what_is_npu.ipynb) | 为什么需要 NPU → CPU vs NPU 算力差距 → 昇腾产品全览 → Host/Device → NPU 内部 6 组件 → AI Core 三大部分 → 多核并行 → GPU 对比 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/02_what_is_npu.ipynb) |
+| 3 | [什么是 CANN](./03_what_is_cann.ipynb) | 从 NPU 到 CANN → 架构总览 → 各组件详解（框架适配/算子库/通信库/图引擎/加速库/Ascend C/编译器/运行时/驱动）→ 一行代码的完整旅程 → CANN vs CUDA → 环境验证 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/03_what_is_cann.ipynb) |
+| 4 | [Hello World：NPU 加法](./04_hello_world_npu.ipynb) | 体验从 PyTorch 到昇腾 NPU 的零门槛迁移：一行代码切换设备，亲手感受 NPU 加速计算 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/04_hello_world_npu.ipynb) |
+
+## 适用人群
+
+- 对 AI 和昇腾 NPU 感兴趣的初学者（无需编程基础）
+- 有 GPU/CUDA 经验、想快速了解 CANN 的开发者
+- 需要向团队介绍 CANN 基础概念的工程师
+
+## 学习建议
+
+1. 按顺序学习，每课承上启下
+2. 每课都穿插了可执行的代码段，建议在昇腾 NPU 环境下运行体验
+3. 有 CUDA 经验的同学可重点看第 3 课的"CANN 与 CUDA 对照"部分，快速建立映射

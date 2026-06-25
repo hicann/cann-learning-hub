@@ -1,0 +1,44 @@
+1. √
+解析：日志分析的基本原则之一是优先定位首条致命错误。首条 `[ERROR]` 通常最接近根因，后续报错很多是连锁反应。
+
+2. ×
+解析：本章强调 HIXL 应用开发分为 client 侧和 server 侧，定位建链问题时应同时结合两端日志分析，不能只看一侧的 TraceBack。
+
+3. √
+解析：性能统计日志通过心跳机制每 90 秒打印一次。如果程序运行时间过短，可能拿不到 `Connect statistic info`、传输统计等关键性能日志。
+
+4. A
+解析：当 HIXL 接口调用失败时，可通过 `aclGetRecentErrMsg` 获取错误码、接口调用堆栈和相关日志参数打印，这是定位问题的第一步。
+
+5. A
+解析：当 HIXL 层错误堆栈不足以定位问题时，需要继续查看底层 HCCL 或 RUNTIME 日志。本章给出的默认应用类日志目录是 `$HOME/ascend/log/plog/`。
+
+6. A
+解析：在“建链超时时间非法”案例中，`aclGetRecentErrMsg` 直接打印出 `timeout_in_millis:0 must > 0`，明确说明根因是建链超时时间参数 `0` 非法。
+
+7. C
+解析：在“建链两端链路不一致”案例中，两侧 `LINK_ERROR_INFO` 打印出的 IP 地址明显不一致，通常说明 client 和 server 使用了不同的通信链路，例如一端 HCCS、一端 RoCE。
+
+8. B
+解析：`Connect statistic info` 中若 `hccl` 耗时偏高，慢点更可能位于 HCCL 建链阶段，应进一步查看 `Connect hccl detail`，再区分是 `init`、`bind` 还是 `prepare` 偏高。
+
+9. C
+解析：`avg bandwidth` 表示平均带宽，可直接反映单位时间内实际搬运的数据量。`transfer times` 和 `total size` 缺少时间维度，`max cost` 只表示最大单次耗时。
+
+10. B
+解析：Buffer 模式传输统计中，`server comm` 字段表示 server 侧 D2D 或通信阶段耗时。若该字段偏高，应优先排查 server 侧通信阶段。
+
+11. B
+解析：执行 `msprof --export=on --output=./` 后，可视化 timeline 文件 `msprof_xxxxx.json` 位于 `mindstudio_profiler_output/` 目录下；`mindstudio_profiler_log/` 保存的是采集日志。
+
+12. C
+解析：在 Chrome Trace Event 格式中，`dur` 表示事件耗时，单位为微秒，且仅在 `ph = X` 的耗时事件中有效。`pid` 表示进程分区，`ts` 表示时间戳，`args` 表示附加属性。
+
+13. A、B、C
+解析：本章给出的 HIXL 错误码中，`SUCCESS = 0`、`PARAM_INVALID = 103900`、`TIMEOUT = 103901` 都是正确匹配；`RESOURCE_EXHAUSTED` 的错误码是 `203900`，不是 `103901`。
+
+14. A、B、C
+解析：`avg size` 小于 16 KB 时属于小包场景，不宜仅凭耗时偏高直接判定异常；FabricMem 模式下若 `transfer` 和 `real copy` 都高，应优先怀疑真实 copy 路径；CANN 层若 Wall Duration 远大于 Self Time，通常说明主要耗时在子接口调用链上。`Aicore Time` 在手动调频、动态调频等场景下可能不准确，因此 D 错误。
+
+15. A、B、C
+解析：`aclprofInit` 与 `aclprofFinalize`、`aclprofCreateConfig` 与 `aclprofDestroyConfig`、`aclprofStart` 与 `aclprofStop` 都需要按生命周期成对调用；导出的 `msprof_xxxxx.json` 可拖入 `chrome://tracing` 查看；`ph = s / f` 表示流事件，会在界面中展示为连接 Host 与 Device 因果关系的箭头。`pid` 表示进程 ID，而不是事件耗时。

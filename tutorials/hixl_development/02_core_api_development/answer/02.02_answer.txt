@@ -1,0 +1,14 @@
+1. ×
+解析：只有 local_engine 带端口（端口值大于 0）才会启动监听。不带端口或端口不大于 0 时不启动监听。
+
+2. √
+解析：host_ip:host_port 是 IPv4 engine 标识，端口大于 0 时表示当前 HIXL 作为 Server 端监听该端口。
+
+3. B
+解析：PARAM_INVALID 通常表示参数格式或取值错误，包括 engine 字符串格式错误、option key/value 不合法等。
+
+4. C
+解析：推荐顺序：Disconnect -> DeregisterMem -> aclrtFree -> Finalize。先断链避免远端访问失效地址，再解注册内存，然后释放底层内存，最后调用 Finalize。
+
+5. A、B、C、D
+解析：Finalize 是 HIXL 生命周期的最后一步，调用前需确保所有传输、链路、内存注册和底层内存都已正确收口。

@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.16)
+project({OPERATOR_NAME} CXX C)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 查找 CANN
+find_package(AscendC REQUIRED)
+
+# 添加子目录
+add_subdirectory(op_host)
+add_subdirectory(op_kernel)
+
+# 安装目标
+install(TARGETS {OPERATOR_NAME}_host {OPERATOR_NAME}_kernel
+        LIBRARY DESTINATION lib)
+
+# 打包配置
+set(CPACK_GENERATOR "STGZ")
+set(CPACK_PACKAGE_NAME "custom_opp")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+include(CPack)

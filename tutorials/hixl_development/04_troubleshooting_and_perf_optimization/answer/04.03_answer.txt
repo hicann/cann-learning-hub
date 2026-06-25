@@ -1,0 +1,18 @@
+1. 正确
+解析：本节明确说明性能统计信息通过心跳机制每 90 秒打印一次，因此如果程序运行时间太短，可能采集不到 `Connect statistic info`、`Direct transfer statistic info` 等性能日志。
+
+2. 错误
+解析：ACL C++ Profiling 接口存在成对调用关系。除了 `aclprofStart` / `aclprofStop` 之外，还需要执行 `aclprofDestroyConfig` 释放配置对象，并调用 `aclprofFinalize` 释放 Profiling 资源，不能省略。
+
+3. B
+解析：当 `Connect statistic info` 中的 `hccl` 耗时明显偏高时，说明慢点更可能位于 HCCL 建链阶段。本节给出的下一步建议是继续查看 `Connect hccl detail`，再区分是 `init`、`bind` 还是 `prepare` 偏高。
+
+4. C
+解析：在 Chrome Trace Event 格式中，`dur` 表示事件持续时间，单位为 μs，且仅对 `ph = X` 的耗时事件有效。`pid` 表示进程分区，`ts` 表示时间戳，`args` 表示附加属性。
+
+5. A、B、C
+解析：
+- A 正确：本节明确提示，分析 Buffer 模式时建议同时观察链路两端的统计日志，以便区分慢点位于 client copy、server comm 还是 server copy。
+- B 正确：FabricMem 模式下若 `transfer` 和 `real copy` 都高，说明真实数据拷贝阶段本身就慢，应优先怀疑 copy 路径。
+- C 正确：CANN 层的 Wall Duration 为总耗时，Self Time 为接口自身耗时；若前者远大于后者，通常说明主要耗时落在子接口调用链上。
+- D 错误：`mindstudio_profiler_log/` 存放的是采集日志；可直接拖入 `chrome://tracing` 的 timeline JSON 位于 `mindstudio_profiler_output/` 目录下。

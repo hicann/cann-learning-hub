@@ -1,0 +1,14 @@
+1. √
+解析：中转Buffer模式的核心原理是预分配NPU内存池作为中转站，当源端或目标端内存未在RDMA通信层注册时，数据先复制到中转Buffer，再通过已注册的NPU内存通道传输。
+
+2. ×
+解析：中转Buffer模式不推荐在生产环境使用，每次传输需要三次操作叠加（Client Copy + D2D + Server Copy），延迟显著增加，且仅支持同步传输。它仅作为兼容旧环境的备选方案。
+
+3. C
+解析：BufferPool参数格式为"$BUFFER_NUM:$BUFFER_SIZE"，其中BUFFER_SIZE的单位为MB。默认值为"4:8"，表示4个Buffer，每个8MB。
+
+4. C
+解析：直传模式支持同步和异步双模式，中转Buffer仅支持同步传输。中转Buffer服务仅处理同步传输接口，异步接口不经过Buffer服务，调用线程会被阻塞直到传输完成。
+
+5. A、B、C
+解析：中转Buffer模式仅支持同步传输（A正确）；每次传输增加两段本地复制操作（Client Copy和Server Copy，B正确）；大数据超过单个Buffer容量需要多次分片传输（C正确）；不支持异步传输接口（D错误）。
