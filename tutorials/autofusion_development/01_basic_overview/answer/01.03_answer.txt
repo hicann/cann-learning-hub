@@ -1,0 +1,14 @@
+1. √
+解析：AutoFuse 的基础使能入口是 `AUTOFUSE_FLAGS`，最小开启配置可以写为 `--enable_autofuse=true`。
+
+2. ×
+解析：进阶定位或调优配置用于辅助分析和优化，不是开启 AutoFuse 的必需配置。基础使能主要依赖 `AUTOFUSE_FLAGS`。
+
+3. A
+解析：Reduce、Concat 默认不使能，需要额外开启时可通过 `--autofuse_enable_pass=reduce,concat` 显式配置，同时需要先开启 `--enable_autofuse=true`。
+
+4. A
+解析：环境变量只对当前 shell 或其子进程生效，因此需要确认编译命令和环境变量处在同一个执行环境中。
+
+5. A、B、C
+解析：普通使用者应先开启整体 AutoFuse 能力，再按场景开启 Reduce、Concat 等扩展融合能力；开启后仍需要结合实际模型和后续性能分析判断是否收益。进阶定位或调优配置不能替代基础开关。

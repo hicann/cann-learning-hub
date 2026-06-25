@@ -1,0 +1,50 @@
+# AutoFuse 自动融合开发系列教程
+
+本教程面向希望理解并掌握昇腾 AutoFuse 自动融合能力的开发者，基于 CANN 官方资料整理。课程设计兼顾普通使用者与进阶开发者需求：从零开始建立认知，逐步深入到融合原理与实战应用。
+
+## 教程结构
+
+教程按章节组织，每个章节包含以下内容：
+
+- **Notebooks**：涵盖课程知识点、可执行示例与练习题，适用于自主学习或讲师引导式教学。可在 gitcode 提供的轻量级 Notebook 环境中直接运行，也可自行搭建 JupyterLab 在本地执行。
+- **answer**：提供课后习题与章节练习的参考答案，便于自测与验证。
+- **images**：存放章节所需的图示资源，Notebook 中通过相对路径引用。
+
+> **注意事项**
+> - AutoFuse 自动融合特性仅支持 Atlas 350 加速卡、Atlas A2 训练/推理系列产品、Atlas A3 训练/推理系列产品。
+> - AutoFuse 是昇腾图编译流程中的内置能力，无需额外编写融合代码、也无需修改现有业务逻辑：用户只需配置 `AUTOFUSE_FLAGS` 等环境变量即可启用。AutoFuse 模块会自动识别可融合算子模式、生成融合内核、完成编译优化，整个融合过程在编译阶段自动完成。
+
+## 课程目录
+
+### 第一章 AutoFuse 基础介绍
+帮助建立 AutoFuse 的整体认知，掌握基础使能方式
+
+| Notebook | 链接 | 状态 |
+| -------- | ---- | ---- |
+| 1.1 章节介绍 | [在线体验](01_basic_overview/01.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 1.2 AutoFuse简介 | [在线体验](01_basic_overview/01.02_autofuse_introduction.ipynb) | ✅ 已发布 |
+| 1.3 AutoFuse使能基础 | [在线体验](01_basic_overview/01.03_enable_autofusion.ipynb) | ✅ 已发布 |
+| 1.4 章节练习 | [在线体验](01_basic_overview/01.04_chapter_practice.ipynb) | ✅ 已发布 |
+
+### 第二章 AutoFuse 自动融合原理
+深入理解融合条件判断与策略求解的核心机制
+
+| Notebook | 链接 | 状态 |
+| -------- | ---- | ---- |
+| 2.1 章节介绍 | [在线体验](02_autofusion_principles/02.01_chapter_intro.ipynb) | ⏳ 未发布 |
+| 2.2 融合条件判断 | [在线体验](02_autofusion_principles/02.02_fusion_condition_judgment.ipynb) | ⏳ 未发布 |
+| 2.3 融合策略求解 | [在线体验](02_autofusion_principles/02.03_fusion_strategy_solving.ipynb) | ⏳ 未发布 |
+| 2.4 章节练习 | [在线体验](02_autofusion_principles/02.04_chapter_practice.ipynb) | ⏳ 未发布 |
+
+### 第三章 AutoFuse 项目实践与问题定位
+面向实际项目开发，掌握高级配置与问题排查方法
+
+| Notebook | 链接 | 状态 |
+| -------- | ---- | ---- |
+| 3.1 章节介绍 | [在线体验](03_practice_and_debugging/03.01_chapter_intro.ipynb) | ⏳ 未发布 |
+| 3.2 AutoFuse使能进阶 | [在线体验](03_practice_and_debugging/03.02_advanced_enable_autofusion.ipynb) | ⏳ 未发布 |
+| 3.3 对接PyTorch项目实践 | [在线体验](03_practice_and_debugging/03.03_pytorch_inductor_integration.ipynb) | ⏳ 未发布 |
+| 3.4 对接TensorFlow项目实践 | [在线体验](03_practice_and_debugging/03.04_tensorflow_autofuse_integration.ipynb) | ⏳ 未发布 |
+| 3.5 性能分析方法 | [在线体验](03_practice_and_debugging/03.05_performance_analysis.ipynb) | ⏳ 未发布 |
+| 3.6 问题定位方法 | [在线体验](03_practice_and_debugging/03.06_troubleshooting.ipynb) | ⏳ 未发布 |
+| 3.7 章节练习 | [在线体验](03_practice_and_debugging/03.07_chapter_practice.ipynb) | ⏳ 未发布 |
