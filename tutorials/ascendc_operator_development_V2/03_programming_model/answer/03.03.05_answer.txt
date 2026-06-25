@@ -1,0 +1,13 @@
+1.D
+2.B
+3.B
+4.B
+5.B
+
+
+解析：
+- 1: MmadTrait属于 MmadAtom，不属于 CopyAtom
+- 2: cmatrixInitVal = true仅在 K 方向第一次迭代时使用，后续需要累加
+- 3: NZ 是 4D 分形布局，所有计算在编译期完成
+- 4: with()不可变，返回新 Atom
+- 5: Atom主要将搬运和计算操作封装为 CopyAtom、MmadAtom等原子对象，Arch层负责routing分发机制
