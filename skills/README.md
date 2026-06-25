@@ -51,7 +51,7 @@ CANNBot 会引导你完成整个开发流程。
 
 CANNBot 使用 RSA 加密保护你的 CANNJudge 密码，**禁止在对话中输入明文密码**。
 
-##### 2.1 在云开发终端生成 RSA 密钥对
+##### 1. 在云开发终端生成 RSA 密钥对
 
 ```bash
 cd skills/cannjudge-submit
@@ -67,7 +67,7 @@ RSA-2048 密钥对已生成
 
 > `private.pem` 留在云开发服务器上，**不要拷贝出去**。`public.pem` 需要拷贝到你的个人电脑。
 
-##### 2.2 将公钥拷贝到个人电脑
+##### 2. 将公钥拷贝到个人电脑
 
 **方式 A**：在云开发左侧文件浏览器中，找到 `public.pem`，右键点击 **「下载」**，保存到个人电脑。
 
@@ -77,7 +77,7 @@ cat public.pem
 ```
 将输出的内容保存为 `public.pem` 文件到你的个人电脑。
 
-##### 2.3 在个人电脑上加密密码
+##### 3. 在个人电脑上加密密码
 
 确保你的个人电脑已安装 Python 3 和 pycryptodome：
 
@@ -95,7 +95,7 @@ python3 encrypt_password.py --public-key public.pem
 
 > **密文可以复用**：只要服务器上的 `private.pem` 不变，同一密文可以反复使用，无需每次重新加密。建议保存到安全位置。
 
-##### 2.4 使用密文登录
+##### 4. 使用密文登录
 
 当 CANNBot 需要登录 CANNJudge 时，会询问你的 **邮箱** 和 **RSA 密文**，将它们粘贴给 CANNBot 即可。
 
