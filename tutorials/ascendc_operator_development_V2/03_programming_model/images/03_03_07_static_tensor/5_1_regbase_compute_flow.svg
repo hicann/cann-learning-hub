@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="220" viewBox="0 0 1060 220">
+<defs>
+<style>
+.bg{fill:#ffffff}
+.gm{fill:#fff8e6;stroke:#d99a00;stroke-width:1.4}
+.ub{fill:#5b9bd5;stroke:#2e6da4;stroke-width:1.4}
+.ub-txt{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:14px;fill:#ffffff;font-weight:600}
+.op{fill:#f5a623;stroke:#c07d00;stroke-width:1.4}
+.op-txt{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:14px;fill:#ffffff;font-weight:600}
+.reg{fill:#5b9bd5;stroke:#2e6da4;stroke-width:1.4}
+.compute{fill:#70b96e;stroke:#3d8a3b;stroke-width:1.4}
+.compute-txt{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:14px;fill:#ffffff;font-weight:600}
+.gm-txt{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:14px;fill:#1f2933;font-weight:600}
+.title{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:13px;font-weight:600;fill:#374151}
+.small{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:11px;fill:#4b5563}
+.arrow{stroke:#374151;stroke-width:1.6;fill:none;marker-end:url(#arr)}
+.arrow-bi{stroke:#374151;stroke-width:1.6;fill:none;marker-end:url(#arr);marker-start:url(#arr-start)}
+</style>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M0 0L10 5L0 10z" fill="#374151"/>
+</marker>
+<marker id="arr-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+  <path d="M10 0L0 5L10 10z" fill="#374151"/>
+</marker>
+</defs>
+
+<rect class="bg" x="0" y="0" width="1060" height="220"/>
+
+<!--
+  布局（主轴 y=130）：
+  GM输入:       x=20~80    w=60
+  箭头:         80→110
+  数据搬入:      x=110~200  w=90
+  箭头:         200→230
+  UB:           x=230~290  w=60
+  箭头:         290→320
+
+  ── Reg矢量计算虚线框 x=315~755 ──
+  Load:         x=320~400  w=80
+  箭头:         400→430
+  Register File: x=430~560  w=130
+  ↕ Compute:    Register File上方
+  Compute:      x=465~525  w=60  y=50~90
+  箭头:         560→590
+  Store:        x=590~670  w=80
+
+  箭头:         670→700
+  UB:           x=700~760  w=60
+  箭头:         760→790
+  数据搬出:      x=790~880  w=90
+  箭头:         880→910
+  GM输出:       x=910~970  w=60
+-->
+
+<!-- ① GM 输入 -->
+<rect class="gm" x="20" y="105" width="60" height="50" rx="8"/>
+<text class="gm-txt" x="50" y="133" text-anchor="middle" dominant-baseline="central">GM</text>
+
+<!-- 箭头 -->
+<path class="arrow" d="M80 130 H110"/>
+
+<!-- ② 数据搬入 -->
+<rect class="op" x="110" y="105" width="90" height="50" rx="8"/>
+<text class="op-txt" x="155" y="133" text-anchor="middle" dominant-baseline="central">数据搬入</text>
+
+<!-- 箭头 -->
+<path class="arrow" d="M200 130 H230"/>
+
+<!-- ③ UB -->
+<rect class="ub" x="230" y="105" width="60" height="50" rx="8"/>
+<text class="ub-txt" x="260" y="133" text-anchor="middle" dominant-baseline="central">UB</text>
+
+<!-- 箭头 -->
+<path class="arrow" d="M290 130 H320"/>
+
+<!-- ── Reg矢量计算 虚线框 ── -->
+<rect x="315" y="42" width="445" height="138" rx="8" fill="none" stroke="#5b9bd5" stroke-width="1.2" stroke-dasharray="6 3"/>
+<text class="title" x="325" y="58" dominant-baseline="central">Reg矢量计算</text>
+
+<!-- ④ Load -->
+<rect class="op" x="320" y="105" width="80" height="50" rx="8"/>
+<text class="op-txt" x="360" y="133" text-anchor="middle" dominant-baseline="central">Load</text>
+
+<!-- 箭头 -->
+<path class="arrow" d="M400 130 H430"/>
+
+<!-- ⑤ Register File -->
+<rect class="reg" x="430" y="105" width="130" height="50" rx="8"/>
+<text class="ub-txt" x="495" y="133" text-anchor="middle" dominant-baseline="central">Register File</text>
+
+<!-- ⑥ Compute（上方，双向箭头连接Register File） -->
+<rect class="compute" x="465" y="50" width="60" height="40" rx="8"/>
+<text class="compute-txt" x="495" y="70" text-anchor="middle" dominant-baseline="central">Compute</text>
+
+<!-- 双向箭头：Compute ↕ Register File -->
+<line x1="495" y1="90" x2="495" y2="105" stroke="#374151" stroke-width="1.6" marker-end="url(#arr)" marker-start="url(#arr-start)"/>
+
+<!-- 箭头 Register File → Store -->
+<path class="arrow" d="M560 130 H590"/>
+
+<!-- ⑦ Store -->
+<rect class="op" x="590" y="105" width="80" height="50" rx="8"/>
+<text class="op-txt" x="630" y="133" text-anchor="middle" dominant-baseline="central">Store</text>
+
+<!-- 箭头 Store → UB -->
+<path class="arrow" d="M670 130 H700"/>
+
+<!-- ⑧ UB -->
+<rect class="ub" x="700" y="105" width="60" height="50" rx="8"/>
+<text class="ub-txt" x="730" y="133" text-anchor="middle" dominant-baseline="central">UB</text>
+
+<!-- 箭头 -->
+<path class="arrow" d="M760 130 H790"/>
+
+<!-- ⑨ 数据搬出 -->
+<rect class="op" x="790" y="105" width="90" height="50" rx="8"/>
+<text class="op-txt" x="835" y="133" text-anchor="middle" dominant-baseline="central">数据搬出</text>
+
+<!-- 箭头 -->
+<path class="arrow" d="M880 130 H910"/>
+
+<!-- ⑩ GM 输出 -->
+<rect class="gm" x="910" y="105" width="60" height="50" rx="8"/>
+<text class="gm-txt" x="940" y="133" text-anchor="middle" dominant-baseline="central">GM</text>
+
+</svg>

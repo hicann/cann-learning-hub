@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="220" viewBox="0 0 880 220">
+<defs>
+<style>
+.bg{fill:#ffffff}
+.store{fill:#fff8e6;stroke:#d99a00;stroke-width:1.4}
+.ub{fill:#f7fbff;stroke:#337ab7;stroke-width:1.4}
+.sync{fill:#fff3f3;stroke:#c74a4a;stroke-width:1.4}
+.txt{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:14px;fill:#1f2933;font-weight:600}
+.small{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:11px;fill:#4b5563}
+.sync-lbl{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:11px;fill:#c74a4a;font-weight:600}
+.title{font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;font-size:17px;font-weight:700;fill:#111827}
+.arrow{stroke:#374151;stroke-width:1.6;fill:none;marker-end:url(#arr)}
+</style>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M0 0L10 5L0 10z" fill="#374151"/>
+</marker>
+</defs>
+
+<rect class="bg" x="0" y="0" width="880" height="220"/>
+
+<!-- 标题 -->
+<text class="title" x="28" y="32">静态 Tensor 基本计算流程</text>
+
+<!--
+  整体布局（y中心=110）：
+  GM输入:      x=28~118   w=90
+  MTE2箭头:    118→188    70px
+  UB输入:      x=188~358  w=170
+  左线(无箭头): 358→408   50px
+  Vector矩形:  x=408~478  w=70
+  右箭头:      478→528    50px
+  UB输出:      x=528~698  w=170
+  MTE3箭头:    698→768    70px
+  GM输出:      x=768~858  w=90
+-->
+
+<!-- ① GM 输入 -->
+<rect class="store" x="28" y="75" width="90" height="70" rx="8"/>
+<text class="txt" x="73" y="106" text-anchor="middle">GM</text>
+<text class="small" x="73" y="124" text-anchor="middle">输入</text>
+
+<!-- MTE2 箭头 118→188 -->
+<path class="arrow" d="M118 110 H188"/>
+<text class="small" x="153" y="93" text-anchor="middle">MTE2</text>
+<text class="small" x="153" y="105" text-anchor="middle">DataCopy</text>
+
+<!-- ② UB 输入 buffer x=188~358 w=170 -->
+<rect class="ub" x="188" y="75" width="170" height="70" rx="8"/>
+<text class="txt" x="273" y="101" text-anchor="middle">UB</text>
+<text class="small" x="273" y="118" text-anchor="middle">输入 Tensor</text>
+<rect class="sync" x="223" y="130" width="100" height="18" rx="4"/>
+<text class="sync-lbl" x="273" y="143" text-anchor="middle">Wait MTE2_V</text>
+
+<!-- ③ Vector：左线(无箭头) 358→408，矩形 408~478，右箭头 478→528 -->
+<line x1="358" y1="110" x2="408" y2="110" stroke="#374151" stroke-width="1.6"/>
+<rect x="408" y="97" width="70" height="26" rx="8" fill="#f2fff4" stroke="#3a9d45" stroke-width="1.4" stroke-dasharray="4 2"/>
+<text class="txt" x="443" y="113" text-anchor="middle">Vector</text>
+<text class="small" x="443" y="76" text-anchor="middle">V</text>
+<text class="small" x="443" y="88" text-anchor="middle">计算</text>
+<path class="arrow" d="M478 110 H528"/>
+
+<!-- ④ UB 输出 buffer x=528~698 w=170 -->
+<rect class="ub" x="528" y="75" width="170" height="70" rx="8"/>
+<text class="txt" x="613" y="101" text-anchor="middle">UB</text>
+<text class="small" x="613" y="118" text-anchor="middle">输出 Tensor</text>
+<rect class="sync" x="563" y="130" width="100" height="18" rx="4"/>
+<text class="sync-lbl" x="613" y="143" text-anchor="middle">Wait V_MTE3</text>
+
+<!-- MTE3 箭头 698→768 -->
+<path class="arrow" d="M698 110 H768"/>
+<text class="small" x="733" y="93" text-anchor="middle">MTE3</text>
+<text class="small" x="733" y="105" text-anchor="middle">DataCopy</text>
+
+<!-- ⑤ GM 输出 -->
+<rect class="store" x="768" y="75" width="90" height="70" rx="8"/>
+<text class="txt" x="813" y="106" text-anchor="middle">GM</text>
+<text class="small" x="813" y="124" text-anchor="middle">输出</text>
+
+<!-- 底部说明 -->
+<text class="small" x="28" y="185">数据路径：GM → UB（输入Tensor）→ Vector 计算 → UB（输出Tensor）→ GM</text>
+<text class="small" x="28" y="200">同步点：Wait MTE2_V 保证搬入完成后再计算；Wait V_MTE3 保证计算完成后再搬出</text>
+
+</svg>

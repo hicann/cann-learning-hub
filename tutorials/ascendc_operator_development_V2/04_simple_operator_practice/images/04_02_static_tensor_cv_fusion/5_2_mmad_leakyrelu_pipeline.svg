@@ -1,0 +1,119 @@
+<svg width="840" height="360" viewBox="0 0 840 360" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .th { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 13px; font-weight: 600; fill: #1a1a2e; }
+    .ts { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 11px; fill: #1a1a2e; }
+    .note { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 11px; fill: #475569; }
+    .c-blue rect   { fill: #dbeafe; stroke: #3b82f6; }
+    .c-teal rect   { fill: #d1fae5; stroke: #10b981; }
+    .c-coral rect  { fill: #fee2e2; stroke: #ef4444; }
+    .c-purple rect { fill: #ede9fe; stroke: #8b5cf6; }
+    .c-amber rect  { fill: #fef3c7; stroke: #f59e0b; }
+    .c-green rect  { fill: #dcfce7; stroke: #22c55e; }
+    .c-slate rect  { fill: #e2e8f0; stroke: #64748b; }
+  </style>
+
+  <rect x="0" y="0" width="840" height="360" fill="#ffffff"/>
+
+  <rect x="0" y="36"  width="840" height="46" fill="#f8fafc"/>
+  <rect x="0" y="82"  width="840" height="46" fill="#f1f5f9"/>
+  <rect x="0" y="128" width="840" height="46" fill="#f8fafc"/>
+  <rect x="0" y="174" width="840" height="46" fill="#f1f5f9"/>
+  <rect x="0" y="220" width="840" height="46" fill="#f8fafc"/>
+  <rect x="0" y="266" width="840" height="46" fill="#f1f5f9"/>
+
+  <text class="th" x="55" y="59"  text-anchor="middle" dominant-baseline="central">MTE2</text>
+  <text class="th" x="55" y="105" text-anchor="middle" dominant-baseline="central">MTE1</text>
+  <text class="th" x="55" y="151" text-anchor="middle" dominant-baseline="central">M</text>
+  <text class="th" x="55" y="197" text-anchor="middle" dominant-baseline="central">FIX</text>
+  <text class="th" x="55" y="243" text-anchor="middle" dominant-baseline="central">V</text>
+  <text class="th" x="55" y="289" text-anchor="middle" dominant-baseline="central">MTE3</text>
+
+  <line x1="0" y1="36"  x2="840" y2="36"  stroke="#94a3b8" stroke-width="0.8"/>
+  <line x1="0" y1="82"  x2="840" y2="82"  stroke="#cbd5e1" stroke-width="0.5"/>
+  <line x1="0" y1="128" x2="840" y2="128" stroke="#cbd5e1" stroke-width="0.5"/>
+  <line x1="0" y1="174" x2="840" y2="174" stroke="#cbd5e1" stroke-width="0.5"/>
+  <line x1="0" y1="220" x2="840" y2="220" stroke="#cbd5e1" stroke-width="0.5"/>
+  <line x1="0" y1="266" x2="840" y2="266" stroke="#cbd5e1" stroke-width="0.5"/>
+  <line x1="0" y1="312" x2="840" y2="312" stroke="#94a3b8" stroke-width="0.8"/>
+  <line x1="110" y1="36" x2="110" y2="312" stroke="#94a3b8" stroke-width="0.8"/>
+
+  <line x1="118" y1="32" x2="118" y2="312" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="220" y1="32" x2="220" y2="312" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="322" y1="32" x2="322" y2="312" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="424" y1="32" x2="424" y2="312" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="526" y1="32" x2="526" y2="312" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="628" y1="32" x2="628" y2="312" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="730" y1="32" x2="730" y2="312" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="832" y1="32" x2="832" y2="312" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+
+  <text class="ts" x="118" y="24" text-anchor="middle" dominant-baseline="central">T0</text>
+  <text class="ts" x="220" y="24" text-anchor="middle" dominant-baseline="central">T1</text>
+  <text class="ts" x="322" y="24" text-anchor="middle" dominant-baseline="central">T2</text>
+  <text class="ts" x="424" y="24" text-anchor="middle" dominant-baseline="central">T3</text>
+  <text class="ts" x="526" y="24" text-anchor="middle" dominant-baseline="central">T4</text>
+  <text class="ts" x="628" y="24" text-anchor="middle" dominant-baseline="central">T5</text>
+  <text class="ts" x="730" y="24" text-anchor="middle" dominant-baseline="central">T6</text>
+  <text class="ts" x="832" y="24" text-anchor="middle" dominant-baseline="central">T7</text>
+
+  <g class="c-blue">
+    <rect x="118" y="44" width="100" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="168" y="56" text-anchor="middle" dominant-baseline="central">DataCopy</text>
+    <text class="ts" x="168" y="70" text-anchor="middle" dominant-baseline="central">GM → L1</text>
+  </g>
+  <g class="c-amber">
+    <rect x="152" y="90" width="66" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="185" y="105" text-anchor="middle" dominant-baseline="central">Wait</text>
+  </g>
+  <g class="c-teal">
+    <rect x="220" y="90" width="100" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="270" y="102" text-anchor="middle" dominant-baseline="central">LoadData</text>
+    <text class="ts" x="270" y="116" text-anchor="middle" dominant-baseline="central">L1 → L0</text>
+  </g>
+  <g class="c-amber">
+    <rect x="254" y="136" width="66" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="287" y="151" text-anchor="middle" dominant-baseline="central">Wait</text>
+  </g>
+  <g class="c-coral">
+    <rect x="322" y="136" width="100" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="372" y="148" text-anchor="middle" dominant-baseline="central">Mmad</text>
+    <text class="ts" x="372" y="162" text-anchor="middle" dominant-baseline="central">L0 → L0C</text>
+  </g>
+  <g class="c-amber">
+    <rect x="356" y="182" width="66" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="389" y="197" text-anchor="middle" dominant-baseline="central">Wait</text>
+  </g>
+  <g class="c-purple">
+    <rect x="424" y="182" width="100" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="474" y="194" text-anchor="middle" dominant-baseline="central">Fixpipe</text>
+    <text class="ts" x="474" y="208" text-anchor="middle" dominant-baseline="central">L0C → GM</text>
+  </g>
+  <g class="c-slate">
+    <rect x="458" y="228" width="66" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="491" y="239" text-anchor="middle" dominant-baseline="central">Wait</text>
+    <text class="ts" x="491" y="253" text-anchor="middle" dominant-baseline="central">CrossCore</text>
+  </g>
+  <g class="c-blue">
+    <rect x="526" y="44" width="100" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="576" y="56" text-anchor="middle" dominant-baseline="central">DataCopy</text>
+    <text class="ts" x="576" y="70" text-anchor="middle" dominant-baseline="central">GM → UB</text>
+  </g>
+  <g class="c-amber">
+    <rect x="560" y="228" width="66" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="593" y="243" text-anchor="middle" dominant-baseline="central">Wait</text>
+  </g>
+  <g class="c-green">
+    <rect x="628" y="228" width="100" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="678" y="243" text-anchor="middle" dominant-baseline="central">LeakyRelu</text>
+  </g>
+  <g class="c-amber">
+    <rect x="662" y="274" width="66" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="695" y="289" text-anchor="middle" dominant-baseline="central">Wait</text>
+  </g>
+  <g class="c-purple">
+    <rect x="730" y="274" width="100" height="30" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="780" y="286" text-anchor="middle" dominant-baseline="central">DataCopy</text>
+    <text class="ts" x="780" y="300" text-anchor="middle" dominant-baseline="central">UB → GM</text>
+  </g>
+
+  <text class="note" x="122" y="336">同一条 MTE2 流水先完成 GM→L1，跨核同步后继续完成 GM→UB；各流水间通过同一时刻竖线表示依赖。</text>
+</svg>

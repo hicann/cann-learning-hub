@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="380" viewBox="0 0 980 380">
+<defs>
+<style>
+.bg{fill:#fff}.group{fill:#f9fafb;stroke:#d1d5db;stroke-width:1.4;rx:16;ry:16}.aic{fill:#fff8e6;stroke:#d99a00;stroke-width:1.5;rx:10;ry:10}.aiv{fill:#f2fff4;stroke:#3a9d45;stroke-width:1.5;rx:10;ry:10}.gm{fill:#f7fbff;stroke:#337ab7;stroke-width:1.5;rx:10;ry:10}.sync{fill:#fff3f3;stroke:#c74a4a;stroke-width:1.5;rx:10;ry:10}.txt{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:15px;fill:#1f2933}.small{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:12px;fill:#4b5563}.title{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;font-weight:700;fill:#111827}.arrow{stroke:#374151;stroke-width:1.6;fill:none;marker-end:url(#arrow)}.dash{stroke:#6b7280;stroke-width:1.4;fill:none;stroke-dasharray:5 4;marker-end:url(#arrow)}.syncArrow{stroke:#c74a4a;stroke-width:1.7;fill:none;marker-end:url(#arrow-red)}
+</style>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#374151"/></marker>
+<marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#c74a4a"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="980" height="380"/>
+<text class="title" x="30" y="34">MMAD + LeakyRelu 中的核间同步</text>
+<text class="small" x="30" y="58">__mix__(1, 2)：1 个 AIC block 搭配 2 个 AIV subblock，AIC 先产出 C_tile，AIV 等待通知后再读取并后处理。</text>
+
+<rect class="group" x="48" y="86" width="884" height="260"/>
+<text class="small" x="70" y="112">一个 group：AIC 为 block，两个 AIV 为 subblock</text>
+
+<rect class="aic" x="90" y="145" width="160" height="76"/>
+<text class="txt" x="135" y="175">AIC block</text>
+<text class="small" x="123" y="198">MMAD + Fixpipe</text>
+
+<rect class="gm" x="340" y="145" width="160" height="76"/>
+<text class="txt" x="385" y="175">GM C_tile</text>
+<text class="small" x="366" y="198">AIC 写回中间结果</text>
+
+<rect class="aiv" x="610" y="112" width="170" height="66"/>
+<text class="txt" x="655" y="140">AIV subblock 0</text>
+<text class="small" x="648" y="160">处理上半块 C_tile</text>
+
+<rect class="aiv" x="610" y="205" width="170" height="66"/>
+<text class="txt" x="655" y="233">AIV subblock 1</text>
+<text class="small" x="648" y="253">处理下半块 C_tile</text>
+
+<path class="arrow" d="M250 183 H340"/>
+<text class="small" x="265" y="166">Fixpipe 写回</text>
+
+<rect class="sync" x="300" y="258" width="200" height="38"/>
+<text class="small" x="308" y="282">CrossCoreSetFlag&lt;0x2, PIPE_FIX&gt;</text>
+<path class="syncArrow" d="M250 221 C265 250 286 270 300 277"/>
+
+<rect class="sync" x="610" y="300" width="170" height="38"/>
+<text class="small" x="635" y="324">CrossCoreWaitFlag</text>
+<path class="syncArrow" d="M500 277 C545 292 573 312 610 319"/>
+<path class="dash" d="M420 145 C460 112 548 100 610 132"/>
+<path class="dash" d="M420 221 C458 255 548 270 610 244"/>
+<text class="small" x="515" y="99">等待 AIC 写完后读取</text>
+
+<text class="small" x="66" y="368">若缺少核间同步，AIV 可能在 AIC 的 Fixpipe 尚未把 C_tile 写回 GM 时读取数据，导致后处理使用未完成结果。</text>
+</svg>

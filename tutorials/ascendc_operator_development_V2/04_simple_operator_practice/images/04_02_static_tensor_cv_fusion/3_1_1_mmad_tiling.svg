@@ -1,0 +1,75 @@
+<svg width="690" height="380" xmlns="http://www.w3.org/2000/svg" role="img">
+ <title>矩阵乘法分块示意图</title>
+ <desc>A矩阵沿M维度切分为A0/A1两块，分别与B矩阵相乘并加同一个Bias，拼接为C矩阵</desc>
+ <defs>
+  <marker orient="auto-start-reverse" markerHeight="6" markerWidth="6" refY="5" refX="8" viewBox="0 0 10 10" id="arrow">
+   <path id="svg_1" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5" stroke="context-stroke" fill="none" d="m2,1l6,4l-6,4"/>
+  </marker>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <path stroke="null" id="svg_30" d="m-3.56388,7.89994c0,-6.80335 5.62024,-12.52045 12.30833,-12.52045l672.85545,0c6.68809,0 12.30833,5.7171 12.30833,12.52045l0,413.17475c0,6.80335 -5.62024,12.52045 -12.30833,12.52045l-672.85545,0c-6.68809,0 -12.30833,-5.7171 -12.30833,-12.52045l0,-413.17475z" fill="rgb(253, 246, 238)"/>
+  
+  <text id="svg_31" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="22" x="100">A M=512, K=128</text>
+  <g id="svg_32" text-anchor="start" font-weight="400" font-size="16px" font-family="sans-serif" stroke-width="1px" fill="rgb(0, 0, 0)">
+   <rect id="svg_33" stroke="rgb(24, 95, 165)" fill="rgb(230, 241, 251)" stroke-width="0.5px" rx="4" height="120" width="144" y="36" x="28"/>
+   <text id="svg_34" font-weight="500" font-size="14px" fill="rgb(12, 68, 124)" dominant-baseline="central" text-anchor="middle" y="88" x="100">A₀</text>
+   <text id="svg_35" font-weight="400" font-size="12px" fill="rgb(24, 95, 165)" dominant-baseline="central" text-anchor="middle" y="108" x="100">256 × 128</text>
+  </g>
+  <line id="svg_36" fill="rgb(0, 0, 0)" stroke-dasharray="5px, 3px" stroke-width="1px" stroke="rgb(148, 163, 184)" y2="164" x2="172" y1="164" x1="28"/>
+  <text id="svg_37" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="177" x="100">切分</text>
+  <g id="svg_38" text-anchor="start" font-weight="400" font-size="16px" font-family="sans-serif" stroke-width="1px" fill="rgb(0, 0, 0)">
+   <rect id="svg_39" stroke="rgb(24, 95, 165)" fill="rgb(230, 241, 251)" stroke-width="0.5px" rx="4" height="120" width="144" y="190" x="28"/>
+   <text id="svg_40" font-weight="500" font-size="14px" fill="rgb(12, 68, 124)" dominant-baseline="central" text-anchor="middle" y="242" x="100">A₁</text>
+   <text id="svg_41" font-weight="400" font-size="12px" fill="rgb(24, 95, 165)" dominant-baseline="central" text-anchor="middle" y="262" x="100">256 × 128</text>
+  </g>
+  <rect id="svg_42" stroke-dasharray="4px, 3px" stroke-width="0.8px" stroke="rgb(148, 163, 184)" fill="none" rx="6" height="282" width="152" y="32" x="24"/>
+  <line id="svg_43" marker-start="url(#arrow)" marker-end="url(#arrow)" stroke-width="0.5px" stroke="rgb(148, 163, 184)" y2="314" x2="12" y1="36" x1="12"/>
+  <text id="svg_44" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="175" x="5">M</text>
+  <line id="svg_45" fill="rgb(0, 0, 0)" marker-start="url(#arrow)" marker-end="url(#arrow)" stroke-width="0.5px" stroke="rgb(148, 163, 184)" y2="330" x2="172" y1="330" x1="28"/>
+  <text id="svg_46" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="340" x="100">K</text>
+  
+  <text id="svg_47" font-weight="500" font-size="14px" font-family="sans-serif" stroke-width="1px" fill="rgb(20, 20, 19)" dominant-baseline="central" text-anchor="middle" y="175.9901" x="193.81166">×</text>
+  
+  <text id="svg_48" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="22" x="282">B K=128, N=128</text>
+  <g id="svg_49" text-anchor="start" font-weight="400" font-size="16px" font-family="sans-serif" stroke-width="1px" fill="rgb(0, 0, 0)">
+   <rect id="svg_50" stroke="rgb(15, 110, 86)" fill="rgb(225, 245, 238)" stroke-width="0.5px" rx="4" height="160" width="128" y="97.85575" x="234.52408"/>
+   <text id="svg_51" font-weight="500" font-size="14px" fill="rgb(8, 80, 65)" dominant-baseline="central" text-anchor="middle" y="168.61812" x="297.53398">B</text>
+   <text id="svg_52" font-weight="400" font-size="12px" fill="rgb(15, 110, 86)" dominant-baseline="central" text-anchor="middle" y="188.61812" x="297.53398">128 × 128</text>
+  </g>
+  <line id="svg_53" marker-start="url(#arrow)" marker-end="url(#arrow)" stroke-width="0.5px" stroke="rgb(148, 163, 184)" y2="256.61812" x2="221.53398" y1="96.61812" x1="221.53398"/>
+  <text id="svg_54" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="177.34147" x="215.70758">K</text>
+  <line id="svg_55" fill="rgb(0, 0, 0)" marker-start="url(#arrow)" marker-end="url(#arrow)" stroke-width="0.5px" stroke="rgb(148, 163, 184)" y2="271.61812" x2="361.53398" y1="271.61812" x1="233.53398"/>
+  <text id="svg_56" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="285.61812" x="297.53398">N</text>
+  
+  <text id="svg_57" font-weight="500" font-size="14px" font-family="sans-serif" stroke-width="1px" fill="rgb(20, 20, 19)" dominant-baseline="central" text-anchor="middle" y="175" x="376">+</text>
+  
+  <text id="svg_58" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="22" x="446">Bias N=128</text>
+  <g id="svg_59" text-anchor="start" font-weight="400" font-size="16px" font-family="sans-serif" stroke-width="1px" fill="rgb(0, 0, 0)">
+   <rect stroke="rgb(133, 79, 11)" id="svg_60" fill="rgb(250, 238, 218)" stroke-width="0.5px" rx="4" height="45" width="96" y="158.0297" x="396.51485"/>
+   <text id="svg_61" font-weight="500" font-size="14px" fill="rgb(99, 56, 6)" dominant-baseline="central" text-anchor="middle" y="174.0297" x="444.51485">Bias</text>
+  </g>
+  <text id="svg_62" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(133, 79, 11)" dominant-baseline="central" text-anchor="middle" y="190" x="444.14126">1 × 128</text>
+  
+  <text id="svg_66" font-weight="500" font-size="14px" font-family="sans-serif" stroke-width="1px" fill="rgb(20, 20, 19)" dominant-baseline="central" text-anchor="middle" y="175" x="510">=</text>
+  
+  <text id="svg_67" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="22" x="584">C M=512, N=128</text>
+  <g id="svg_68" text-anchor="start" font-weight="400" font-size="16px" font-family="sans-serif" stroke-width="1px" fill="rgb(0, 0, 0)">
+   <rect id="svg_69" stroke="rgb(153, 60, 29)" fill="rgb(250, 236, 231)" stroke-width="0.5px" rx="4" height="120" width="116" y="36" x="526"/>
+   <text id="svg_70" font-weight="500" font-size="14px" fill="rgb(113, 43, 19)" dominant-baseline="central" text-anchor="middle" y="88" x="584">C₀</text>
+   <text id="svg_71" font-weight="400" font-size="12px" fill="rgb(153, 60, 29)" dominant-baseline="central" text-anchor="middle" y="108" x="584">256 × 128</text>
+  </g>
+  <line id="svg_72" fill="rgb(0, 0, 0)" stroke-dasharray="5px, 3px" stroke-width="1px" stroke="rgb(148, 163, 184)" y2="164" x2="642" y1="164" x1="526"/>
+  <text id="svg_73" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="177" x="584">拼接</text>
+  <g id="svg_74" text-anchor="start" font-weight="400" font-size="16px" font-family="sans-serif" stroke-width="1px" fill="rgb(0, 0, 0)">
+   <rect id="svg_75" stroke="rgb(153, 60, 29)" fill="rgb(250, 236, 231)" stroke-width="0.5px" rx="4" height="120" width="116" y="190" x="526"/>
+   <text id="svg_76" font-weight="500" font-size="14px" fill="rgb(113, 43, 19)" dominant-baseline="central" text-anchor="middle" y="242" x="584">C₁</text>
+   <text id="svg_77" font-weight="400" font-size="12px" fill="rgb(153, 60, 29)" dominant-baseline="central" text-anchor="middle" y="262" x="584">256 × 128</text>
+  </g>
+  <rect id="svg_78" stroke-dasharray="4px, 3px" stroke-width="0.8px" stroke="rgb(148, 163, 184)" fill="none" rx="6" height="282" width="124" y="32" x="522"/>
+  <line id="svg_79" fill="rgb(0, 0, 0)" marker-start="url(#arrow)" marker-end="url(#arrow)" stroke-width="0.5px" stroke="rgb(148, 163, 184)" y2="314" x2="656" y1="36" x1="656"/>
+  <text id="svg_80" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="175" x="668">M</text>
+  <line id="svg_81" fill="rgb(0, 0, 0)" marker-start="url(#arrow)" marker-end="url(#arrow)" stroke-width="0.5px" stroke="rgb(148, 163, 184)" y2="330" x2="642" y1="330" x1="526"/>
+  <text id="svg_82" font-weight="400" font-size="12px" font-family="sans-serif" stroke-width="1px" fill="rgb(61, 61, 58)" dominant-baseline="central" text-anchor="middle" y="344" x="584">N</text>
+ </g>
+</svg>

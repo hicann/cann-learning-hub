@@ -1,0 +1,105 @@
+<svg width="680" height="320" viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .th { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 13px; font-weight: 600; fill: #1a1a2e; }
+    .ts { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 11px; fill: #1a1a2e; }
+    .c-blue rect   { fill: #dbeafe; stroke: #3b82f6; }
+    .c-teal rect   { fill: #d1fae5; stroke: #10b981; }
+    .c-coral rect  { fill: #fee2e2; stroke: #ef4444; }
+    .c-purple rect { fill: #ede9fe; stroke: #8b5cf6; }
+    .c-amber rect  { fill: #fef3c7; stroke: #f59e0b; }
+    .c-green rect  { fill: #dcfce7; stroke: #22c55e; }
+  </style>
+
+  <!-- 白色背景 -->
+  <rect x="0" y="0" width="680" height="320" fill="#ffffff"/>
+
+  <!-- 泳道背景 -->
+  <rect x="0" y="36"  width="680" height="58" fill="#f8fafc"/>
+  <rect x="0" y="94"  width="680" height="58" fill="#f1f5f9"/>
+  <rect x="0" y="152" width="680" height="58" fill="#f8fafc"/>
+  <rect x="0" y="210" width="680" height="58" fill="#f1f5f9"/>
+
+  <!-- 泳道标签 -->
+  <text class="th" x="55" y="65"  text-anchor="middle" dominant-baseline="central">MTE2</text>
+  <text class="th" x="55" y="123" text-anchor="middle" dominant-baseline="central">MTE1</text>
+  <text class="th" x="55" y="181" text-anchor="middle" dominant-baseline="central">M</text>
+  <text class="th" x="55" y="239" text-anchor="middle" dominant-baseline="central">MTE3</text>
+
+  <!-- 泳道横선 -->
+  <line x1="0" y1="36"  x2="680" y2="36"  stroke="#94a3b8" stroke-width="0.8"/>
+  <line x1="0" y1="94"  x2="680" y2="94"  stroke="#cbd5e1" stroke-width="0.5"/>
+  <line x1="0" y1="152" x2="680" y2="152" stroke="#cbd5e1" stroke-width="0.5"/>
+  <line x1="0" y1="210" x2="680" y2="210" stroke="#cbd5e1" stroke-width="0.5"/>
+  <line x1="0" y1="268" x2="680" y2="268" stroke="#94a3b8" stroke-width="0.8"/>
+  <line x1="110" y1="36" x2="110" y2="268" stroke="#94a3b8" stroke-width="0.8"/>
+
+  <!-- 时间刻度线 -->
+  <line x1="118" y1="32" x2="118" y2="268" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="270" y1="32" x2="270" y2="268" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="422" y1="32" x2="422" y2="268" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="574" y1="32" x2="574" y2="268" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+  <line x1="662" y1="32" x2="662" y2="268" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 4"/>
+
+  <text class="ts" x="118" y="24" text-anchor="middle" dominant-baseline="central">T0</text>
+  <text class="ts" x="270" y="24" text-anchor="middle" dominant-baseline="central">T1</text>
+  <text class="ts" x="422" y="24" text-anchor="middle" dominant-baseline="central">T2</text>
+  <text class="ts" x="574" y="24" text-anchor="middle" dominant-baseline="central">T3</text>
+  <text class="ts" x="662" y="24" text-anchor="middle" dominant-baseline="central">T4</text>
+
+  <!-- MTE2: DataCopy GM→L1 -->
+  <g class="c-blue">
+    <rect x="118" y="47" width="150" height="36" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="193" y="61" text-anchor="middle" dominant-baseline="central">DataCopy</text>
+    <text class="ts" x="193" y="77" text-anchor="middle" dominant-baseline="central">GM → L1</text>
+  </g>
+
+  <!-- MTE1: Wait + LoadData -->
+  <g class="c-amber">
+    <rect x="150" y="105" width="118" height="36" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="209" y="123" text-anchor="middle" dominant-baseline="central">Wait MTE2_MTE1</text>
+  </g>
+  <g class="c-teal">
+    <rect x="270" y="105" width="150" height="36" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="345" y="119" text-anchor="middle" dominant-baseline="central">LoadData</text>
+    <text class="ts" x="345" y="135" text-anchor="middle" dominant-baseline="central">L1 → L0A/L0B/BT</text>
+  </g>
+
+  <!-- M: Wait + Mmad -->
+  <g class="c-amber">
+    <rect x="308" y="163" width="112" height="36" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="364" y="181" text-anchor="middle" dominant-baseline="central">Wait MTE1_M</text>
+  </g>
+  <g class="c-coral">
+    <rect x="422" y="163" width="150" height="36" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="497" y="177" text-anchor="middle" dominant-baseline="central">Mmad</text>
+    <text class="ts" x="497" y="193" text-anchor="middle" dominant-baseline="central">L0A/L0B/BT → L0C</text>
+  </g>
+
+  <!-- MTE3: Wait + DataCopy -->
+  <g class="c-amber">
+    <rect x="460" y="221" width="112" height="36" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="516" y="239" text-anchor="middle" dominant-baseline="central">Wait M_FIX</text>
+  </g>
+  <g class="c-purple">
+    <rect x="574" y="221" width="86" height="36" rx="5" stroke-width="0.8"/>
+    <text class="ts" x="617" y="235" text-anchor="middle" dominant-baseline="central">Fixpipe</text>
+    <text class="ts" x="617" y="251" text-anchor="middle" dominant-baseline="central">L0C → GM</text>
+  </g>
+
+  <!-- 解锁竖线 -->
+  <line x1="270" y1="44" x2="270" y2="152" stroke="#3b82f6" stroke-width="1.5"/>
+  <line x1="422" y1="102" x2="422" y2="210" stroke="#10b981" stroke-width="1.5"/>
+  <line x1="574" y1="160" x2="574" y2="268" stroke="#ef4444" stroke-width="1.5"/>
+
+  <!-- 图例 -->
+  <rect x="118" y="282" width="14" height="14" rx="2" fill="#dbeafe" stroke="#3b82f6" stroke-width="0.8"/>
+  <text class="ts" x="138" y="289" dominant-baseline="central">MTE2</text>
+  <rect x="188" y="282" width="14" height="14" rx="2" fill="#d1fae5" stroke="#10b981" stroke-width="0.8"/>
+  <text class="ts" x="208" y="289" dominant-baseline="central">MTE1</text>
+  <rect x="258" y="282" width="14" height="14" rx="2" fill="#fee2e2" stroke="#ef4444" stroke-width="0.8"/>
+  <text class="ts" x="278" y="289" dominant-baseline="central">M</text>
+  <rect x="308" y="282" width="14" height="14" rx="2" fill="#ede9fe" stroke="#8b5cf6" stroke-width="0.8"/>
+  <text class="ts" x="328" y="289" dominant-baseline="central">MTE3</text>
+  <rect x="378" y="282" width="14" height="14" rx="2" fill="#fef3c7" stroke="#f59e0b" stroke-width="0.8"/>
+  <text class="ts" x="398" y="289" dominant-baseline="central">WaitFlag（等待上一流水完成）</text>
+</svg>
