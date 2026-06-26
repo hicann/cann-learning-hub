@@ -1,0 +1,30 @@
+flowchart TB
+    subgraph framework["上层框架 / 模型来源"]
+        pytorch["PyTorch / TorchAir"]
+        tensorflow["TensorFlow / TF Adapter"]
+        mindspore["MindSpore"]
+        paddle["PaddlePaddle"]
+        model["ONNX / TensorFlow / AIR 模型文件"]
+        userapi["用户 GE API 构图"]
+    end
+
+    subgraph ge["GE 图引擎"]
+        parser["Parser / Adapter<br/>转换为 AscendIR"]
+        api["GE API"]
+        compiler["GE Compiler<br/>图准备 / 图拆分 / 图优化 / 图编译"]
+        executor["GE Executor<br/>加载 GeModel / 下发 stream 与 task"]
+    end
+
+    runtime["Ascend Runtime"]
+    hardware["昇腾硬件<br/>AI Core / AI CPU / HBM"]
+
+    pytorch --> parser
+    tensorflow --> parser
+    mindspore --> parser
+    paddle --> parser
+    model --> parser
+    userapi --> api
+    parser --> compiler
+    api --> compiler
+    compiler --> executor
+    executor --> runtime --> hardware

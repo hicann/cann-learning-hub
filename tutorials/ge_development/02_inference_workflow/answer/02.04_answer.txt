@@ -1,0 +1,33 @@
+2.4 推理流程介绍 章节练习答案
+
+一、判断题
+
+1. 错误。ATC 编译 OM 模型时无需昇腾设备在线，纯靠 Host 侧即可完成编译。
+
+2. 正确。`ge_api_v2.h` 的 GeSession 已将旧接口中分散的编译、加载与执行配合关系收敛到 CompileGraph / RunGraph* 这一组接口，不再单独提供 BuildGraph。
+
+二、单选题
+
+3. B。aclgrphBuildModel 将 Graph 编译为离线模型并保存到内存缓冲区。
+
+4. C。云端推理服务部署、模型结构固定的场景最适合使用离线路径。
+
+5. B。正确顺序：GEInitializeV2 → GeSession 构造 → AddGraph → CompileGraph → RunGraph → GEFinalizeV2。
+
+6. B。AddGraph 的参数顺序为 AddGraph(graph_id, graph[, options])，先 graph_id 后 graph，options 可选。
+
+7. C。GeSession 的 RunGraph 输入输出张量使用 gert::Tensor 承载。aclmdlDataset 属于 ACL 离线推理。
+
+8. B。ATC 的 --framework 取值：3=TensorFlow，5=ONNX，1=MindSpore air。
+
+9. B。aclgrphParseONNX 用于将 ONNX 模型解析为 Graph。
+
+10. C。OM 包含算子二进制、权重数据、执行流信息及模型元信息，不包含原始模型文件（.onnx / .pb）。
+
+三、多选题
+
+11. ABCD。GE C++ 接口用 op:: 原型构图，Parser 解析第三方模型，ES 通过 EsGraphBuilder 极简构图，三者最终均产出可供 GE 编译的 Graph，描述均正确。
+
+12. ABC。D 错误，在线路径需要实时编译，启动速度通常比离线路径慢。
+
+13. ABCD。所有描述均正确：aclmdlLoadFromFile 从文件加载、aclmdlLoadFromMem 从内存加载、aclmdlLoadFromFileWithMem 支持零拷贝并由用户指定设备内存，加载接口均返回 model_id。

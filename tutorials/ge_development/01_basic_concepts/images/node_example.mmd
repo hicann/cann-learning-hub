@@ -1,0 +1,12 @@
+flowchart LR
+    input["Node: input<br/>type=Data"] -->|"Tensor"| conv1["Node: Conv1<br/>type=Convolution"]
+    conv1 -->|"Tensor"| pool1["Node: Pool1<br/>type=Pooling"]
+    pool1 -->|"Tensor"| conv2["Node: Conv2<br/>type=Convolution"]
+    conv2 -->|"Tensor"| output["Node: output<br/>type=NetOutput"]
+
+    classDef input fill:#EAF7EF,stroke:#2E7D52,stroke-width:1.5px,color:#123524;
+    classDef compute fill:#FFFFFF,stroke:#4E6E9E,stroke-width:1.5px,color:#1F2933;
+    classDef output fill:#FFF4E6,stroke:#B45F06,stroke-width:1.5px,color:#3D2500;
+    class input input;
+    class conv1,pool1,conv2 compute;
+    class output output;

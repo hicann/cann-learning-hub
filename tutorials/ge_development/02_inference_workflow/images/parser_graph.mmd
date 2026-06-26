@@ -1,0 +1,8 @@
+flowchart LR
+    A["框架模型文件<br/>ONNX / TensorFlow / Caffe"] --> B["Parser 接口"]
+    B --> C["ge::Graph"]
+    C --> D{"后续路径"}
+    D --> E["离线编译<br/>aclgrphBuildModel"]
+    D --> F["在线执行<br/>GeSession::AddGraph"]
+    E --> G["GeModel / OM"]
+    F --> H["CompileGraph / RunGraph"]

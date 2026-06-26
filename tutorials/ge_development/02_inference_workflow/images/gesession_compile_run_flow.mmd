@@ -1,0 +1,14 @@
+flowchart TD
+    A["GEInitializeV2<br/>申请 GE 全局资源"] --> B["构造 GeSession<br/>申请会话资源"]
+    B --> C["AddGraph<br/>graph_id + ge::Graph"]
+    C --> D["CompileGraph<br/>可传入输入 Tensor 信息"]
+    D --> E{"执行接口"}
+    E --> F["RunGraph<br/>同步执行"]
+    E --> G["RunGraphAsync<br/>回调取结果"]
+    E --> H["RunGraphWithStreamAsync<br/>指定 stream 异步执行"]
+    F --> I["读取输出 gert::Tensor"]
+    G --> I
+    H --> I
+    I --> J["RemoveGraph"]
+    J --> K["GeSession 析构"]
+    K --> L["GEFinalizeV2"]

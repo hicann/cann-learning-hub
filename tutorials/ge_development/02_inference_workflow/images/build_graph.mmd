@@ -1,0 +1,15 @@
+flowchart LR
+    X["Data: x<br/>TensorDesc"] --> A["Add"]
+    Y["Data: y<br/>TensorDesc"] --> A
+    A --> O1["Graph Output"]
+    D["Data: image"] --> C["Conv2D"]
+    W["Const: weight"] --> C
+    C --> O2["Graph Output"]
+    subgraph S["GE 图引擎接口构图"]
+      X
+      Y
+      A
+      D
+      W
+      C
+    end

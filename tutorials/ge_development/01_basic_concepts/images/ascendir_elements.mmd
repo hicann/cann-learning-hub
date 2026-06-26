@@ -1,0 +1,18 @@
+flowchart LR
+    direction LR
+    note["数据流方向：生产者 -> 消费者"]
+
+    subgraph g["Graph: demo_graph<br/>容器：保存 Node、输入输出与连接关系"]
+        data0["Node: data0<br/>type=Data"]
+        data1["Node: data1<br/>type=Data"]
+        matmul["Node: matmul<br/>type=MatMul"]
+        relu["Node: relu<br/>type=ReLU"]
+        out["Node: output<br/>type=NetOutput"]
+
+        data0 -- "Tensor: x<br/>shape=[M,K] dtype=float16" --> matmul
+        data1 -- "Tensor: w<br/>shape=[K,N] dtype=float16" --> matmul
+        matmul -- "Tensor: z<br/>shape=[M,N]" --> relu
+        relu -- "Tensor: y<br/>shape=[M,N]" --> out
+    end
+
+    note -.-> g

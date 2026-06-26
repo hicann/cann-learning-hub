@@ -1,0 +1,17 @@
+01.03 课后练习答案
+
+1. 正确。AscendIR 是 GE 编译流程使用的核心 IR，用图结构表达模型的计算逻辑与数据依赖关系。
+
+2. 错误。在 GE 的实际实现中，图中并不存在独立的 Edge 对象，而是通过"锚点（Anchor）"来描述连边关系。
+
+3. B。AscendIR 的核心对象模型由四个层次层层持有构成：ComputeGraph → Node → OpDesc → GeTensorDesc（节点间连接由成对的 Anchor 维护，图中没有独立的 Edge 对象）。
+
+4. B。每个 Node 持有一个算子描述符 OpDesc，算子的输入/输出 Tensor 描述（name/shape/dtype/format）就作为 input_desc / output_desc 保存在 OpDesc 中，因此 Tensor 描述是由节点持有的，而不是漂浮在数据边上的独立对象。
+
+5. B。控制边表示纯依赖关系，无数据传递，仅约束执行顺序，保证 src 节点先于 dst 节点执行。
+
+6. ABC。A 正确，静态 Shape 图的所有 Tensor shape 在编译期完全确定。B 正确，动态分档会设置多个 shape 档位，每个档位按相对确定的静态 shape 方式编译 / 执行。C 正确，静态 Shape 图的运行时开销通常低于动态 Shape 图。D 错误，GE 支持动态 Shape 图的编译和执行。
+
+7. B。name 是图中唯一的身份标识，type 决定算子的计算逻辑。Conv1 与 Conv2 是两个不同的 name，但 type 都是 Convolution，因此 name 不同、type 相同，二者实现逻辑相同。同一图中允许出现多个同 type 算子。
+
+8. ABC。A 正确，GE 用成对的 Anchor 代替独立 Edge，DataAnchor 表数据边、CtrlAnchor 表控制边。B 正确，Parser 接口（如 aclgrphParseONNX）可将 onnx 模型解析为 AscendIR Graph。C 正确，三种构图方式产出的都是同一种 AscendIR 图，差别只在写法。D 错误，CtrlAnchor 仅约束执行顺序，不传递 Tensor 数据。

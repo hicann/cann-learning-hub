@@ -1,0 +1,19 @@
+flowchart TB
+    subgraph S["GeSession"]
+      G0["Graph 0<br/>推理图"]
+      G1["Graph 1<br/>训练图"]
+      G2["Graph 2<br/>预处理"]
+      G3["Graph 3<br/>后处理"]
+    end
+    A["AddGraph / AddGraphClone"] --> G0
+    A --> G1
+    A --> G2
+    A --> G3
+    G0 --> R0["CompileGraph / RunGraph<br/>graph_id = 0"]
+    G1 --> R1["CompileGraph / RunGraph<br/>graph_id = 1"]
+    G2 --> R2["CompileGraph / RunGraph<br/>graph_id = 2"]
+    G3 --> R3["CompileGraph / RunGraph<br/>graph_id = 3"]
+    R0 --> M["RemoveGraph 按 graph_id 释放"]
+    R1 --> M
+    R2 --> M
+    R3 --> M

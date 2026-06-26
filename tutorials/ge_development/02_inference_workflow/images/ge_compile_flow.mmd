@@ -1,0 +1,7 @@
+flowchart LR
+    A["原始图<br/>Parser 或构图得到"] --> B["图准备<br/>Shape / DType / Format 推导"]
+    B --> C["图拆分<br/>按执行引擎划分子图"]
+    C --> D["图优化<br/>融合 / 内存复用 / 调度优化"]
+    D --> E["图编译<br/>资源规划与算子编译"]
+    E --> F["GeModel<br/>GE 编译后的可执行模型"]
+    F --> G["离线场景<br/>序列化为 OM 文件"]

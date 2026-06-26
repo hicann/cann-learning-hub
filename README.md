@@ -97,7 +97,8 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 <tr><td></td><td><a href="./reference_practice/model_inference_optimization">Sana-Video 推理优化实践</a></td><td>✅ 已上线</td></tr>
 <tr><td><b>推荐系统</b></td><td>推荐系统开发（DataWhale 贡献）</td><td>✅ 已上线</td></tr>
 <tr><td><b>应用开发</b></td><td>应用开发系列</td><td>🚧 建设中</td></tr>
-<tr><td><b>图框架</b></td><td>图框架加速 &amp; 图模式应用系列</td><td>🚧 建设中</td></tr>
+<tr><td><b>图框架</b></td><td><a href="./tutorials/ge_development">GE 图引擎开发系列</a>（图编译/执行/扩展开发）</td><td>🚧 建设中（第 1 章已发布）</td></tr>
+<tr><td></td><td>图框架加速 &amp; 图模式应用系列</td><td>🚧 建设中</td></tr>
 <tr><td><b>集合通信</b></td><td>HCCL 集合通信系列</td><td>🚧 建设中</td></tr>
 <tr><td></td><td><a href="./tutorials/hixl_development">HiXL 单边通信系列</a></td><td>✅ 已上线</td></tr>
 <tr><td><b>CANN Bot</b></td><td>CANN Bot 系列课程</td><td>🚧 建设中</td></tr>

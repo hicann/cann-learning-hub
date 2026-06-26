@@ -1,0 +1,12 @@
+flowchart LR
+    data0["Data: x<br/>shape=[M,K]"] -->|"Tensor x"| matmul["MatMul"]
+    data1["Data: w<br/>shape=[K,N]"] -->|"Tensor w"| matmul
+    matmul -->|"Tensor z<br/>shape=[M,N]"| relu["ReLU"]
+    relu -->|"Tensor y<br/>shape=[M,N]"| out["NetOutput: output"]
+
+    classDef input fill:#EAF7EF,stroke:#2E7D52,stroke-width:1.5px,color:#123524;
+    classDef compute fill:#FFFFFF,stroke:#4E6E9E,stroke-width:1.5px,color:#1F2933;
+    classDef output fill:#FFF4E6,stroke:#B45F06,stroke-width:1.5px,color:#3D2500;
+    class data0,data1 input;
+    class matmul,relu compute;
+    class out output;

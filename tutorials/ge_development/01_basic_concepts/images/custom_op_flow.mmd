@@ -1,0 +1,5 @@
+flowchart LR
+    A["算子原型定义"] --> B["InferShape 实现"]
+    B --> C["Kernel 实现"]
+    C --> D["注册打包"]
+    D --> E["进入 GE 图编译流程"]

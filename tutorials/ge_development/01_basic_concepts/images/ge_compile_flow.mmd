@@ -1,0 +1,10 @@
+flowchart LR
+    prepare["1 图准备<br/>推导 shape / dtype / format<br/>常量折叠等通用优化"]
+    split["2 图拆分<br/>按 AI Core / AI CPU 等执行引擎拆分子图"]
+    optimize["3 图优化<br/>算子融合 / UB 融合等"]
+    compile["4 图编译<br/>内存与 stream 资源规划<br/>生成 GeModel"]
+    gemodel["GeModel"]
+    om["OM 文件<br/>离线场景可选落盘"]
+
+    prepare --> split --> optimize --> compile --> gemodel
+    gemodel -. "离线编译" .-> om

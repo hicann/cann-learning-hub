@@ -1,0 +1,11 @@
+flowchart LR
+    A["模型来源<br/>ONNX / TensorFlow / Caffe / GE Graph"] --> B{"离线编译入口"}
+    B --> C["ATC 命令行<br/>atc --model ..."]
+    B --> D["Parser 接口<br/>aclgrphParseONNX / TensorFlow / Caffe"]
+    B --> E["Build 接口<br/>aclgrphBuildModel"]
+    D --> F["ge::Graph<br/>可继续改图或配置编译选项"]
+    F --> E
+    E --> G["GeModel<br/>编译后的内存模型数据"]
+    G --> H["aclgrphSaveModel<br/>离线路径可选序列化"]
+    C --> I["OM 文件<br/>离线部署产物"]
+    H --> I

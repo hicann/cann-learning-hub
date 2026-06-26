@@ -1,0 +1,16 @@
+flowchart TB
+    subgraph host["Host 逐算子调度"]
+        h1["第 1 次执行：下发 A / B / C / ..."]
+        h2["第 2 次执行：再次下发 A / B / C / ..."]
+        h3["第 N 次执行：继续逐算子下发"]
+    end
+
+    subgraph sink["模型下沉调度"]
+        s0["加载阶段：整图 task 下沉到 Device"]
+        s1["第 1 次执行：下发 1 个模型执行 task"]
+        s2["第 2 次执行：下发 1 个模型执行 task"]
+        s3["第 N 次执行：下发 1 个模型执行 task"]
+    end
+
+    h1 --> h2 --> h3
+    s0 --> s1 --> s2 --> s3

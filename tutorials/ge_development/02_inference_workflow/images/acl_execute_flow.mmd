@@ -1,0 +1,15 @@
+flowchart TD
+    A["aclInit"] --> B["aclrtSetDevice"]
+    B --> C["aclmdlLoadFromFile / FromMem"]
+    C --> D["aclmdlCreateDesc + aclmdlGetDesc"]
+    D --> E["按 desc 准备输入 Dataset"]
+    D --> F["按 desc 准备输出 Dataset"]
+    E --> G{"执行方式"}
+    F --> G
+    G --> H["同步执行<br/>aclmdlExecute"]
+    G --> I["异步执行<br/>aclmdlExecuteAsync"]
+    I --> J["aclrtSynchronizeStream"]
+    H --> K["读取输出 Dataset"]
+    J --> K
+    K --> L["释放 Dataset / Desc / Model"]
+    L --> M["aclrtResetDevice + aclFinalize"]
