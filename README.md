@@ -37,7 +37,7 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 <tr><th colspan="4" align="left">🧠 大模型推理</th></tr>
 <tr><td><a href="./quick_start/first_llm_inference/01_qwen3_npu_inference_baseline.ipynb">在昇腾上跑通 Qwen3-0.6B</a></td><td>快速上手：第一个大模型推理部署（在线推理，看功能是否正确）</td><td></td><td>✅ 已上线</td></tr>
 <tr><td><a href="./quick_start/first_llm_inference/02_qwen3_npu_inference_npugraph_ex.ipynb"> Qwen3-0.6B 推理（图模式）</a></td><td>快速上手：第一个大模型推理加速实践（通过图模式加速推理）</td><td></td><td>✅ 已上线</td></tr>
-<tr><td>Qwen3-0.8B 推理算子级优化</td><td>快速上手：如何通过融合算子加速推理</td><td></td><td>🚧 建设中</td></tr>
+<tr><td><a href="./quick_start/first_llm_inference/03_qwen3_npu_inference_fused_op.ipynb"> Qwen3-0.6B 推理（融合算子替换）</a></td><td>快速上手：第一个大模型推理加速实践（通过替换融合算子加速推理）</td><td></td><td>✅ 已上线</td></tr>
 <tr><td>端到端推理性能优化实践</td><td>Sana-Video 推理优化实践</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>推理优化系列（初级）</td><td>大模型演化 / 结构 / 推理流程 / 多模态扩展</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>推理优化系列（中级）</td><td>Qwen3-8B 单卡部署 / 性能分析基础 / 主流优化技术 / 量化</td><td></td><td>🚧 建设中</td></tr>
