@@ -16,7 +16,7 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 本仓已集成代码仓库智能体，点击 [![Zread](https://img.shields.io/badge/Zread-Ask_AI-_.svg?style=flat&color=0052D9&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/hicann/cann-learning-hub) 徽章，进入其专属页面，开启在线智能代码学习与知识问答体验！
 
 ## 📝版本配套
-本项目源码会基于CANN软件的非beta版本进行全量验证，关于CANN软件版本与本项目标签的对应关系请参阅[release仓库](https://gitcode.com/cann/release-management)中的相应版本说明，已验证情况如下下表所示。
+本项目源码会基于CANN软件的非beta版本进行全量验证，关于CANN软件版本与本项目标签的对应关系请参阅[release仓库](https://gitcode.com/cann/release-management)中的相应版本说明，已验证情况如下表所示。
 
 | 已验证支持CANN版本 | 验证日期 |
 |------------------------|-----------|
@@ -36,8 +36,8 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 <tr><td><a href="./quick_start/cann_basics/04_hello_world_npu.ipynb">Hello World：NPU 加法</a></td><td>基于 torch_npu 在 NPU 上跑通第一个加法运算，验证环境可用</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/04_hello_world_npu.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
 <tr><th colspan="4" align="left">🧠 大模型推理</th></tr>
 <tr><td><a href="./quick_start/first_llm_inference/01_qwen3_npu_inference_baseline.ipynb">在昇腾上跑通 Qwen3-0.6B</a></td><td>快速上手：第一个大模型推理部署（在线推理，看功能是否正确）</td><td></td><td>✅ 已上线</td></tr>
-<tr><td><a href="./quick_start/first_llm_inference/02_qwen3_npu_inference_npugraph_ex.ipynb"> Qwen3-0.6B 推理（图模式）</a></td><td>快速上手：第一个大模型推理加速实践（通过图模式加速推理）</td><td></td><td>✅ 已上线</td></tr>
-<tr><td><a href="./quick_start/first_llm_inference/03_qwen3_npu_inference_fused_op.ipynb"> Qwen3-0.6B 推理（融合算子替换）</a></td><td>快速上手：第一个大模型推理加速实践（通过替换融合算子加速推理）</td><td></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./quick_start/first_llm_inference/02_qwen3_npu_inference_npugraph_ex.ipynb">Qwen3-0.6B 推理（图模式）</a></td><td>快速上手：第一个大模型推理加速实践（通过图模式加速推理）</td><td></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./quick_start/first_llm_inference/03_qwen3_npu_inference_fused_op.ipynb">Qwen3-0.6B 推理（融合算子替换）</a></td><td>快速上手：第一个大模型推理加速实践（通过替换融合算子加速推理）</td><td></td><td>✅ 已上线</td></tr>
 <tr><td>端到端推理性能优化实践</td><td>Sana-Video 推理优化实践</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>推理优化系列（初级）</td><td>大模型演化 / 结构 / 推理流程 / 多模态扩展</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>推理优化系列（中级）</td><td>Qwen3-8B 单卡部署 / 性能分析基础 / 主流优化技术 / 量化</td><td></td><td>🚧 建设中</td></tr>
@@ -47,15 +47,15 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 <tr><td>大模型训练系列（中级）</td><td>性能分析、CANN 图优化、显存优化、基础调优</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>大模型训练系列（高级）</td><td>核心算子优化、分布式训练、通信优化、端到端优化落地</td><td></td><td>🚧 建设中</td></tr>
 <tr><th colspan="4" align="left">⚙️ 算子开发</th></tr>
-<tr><td><a href="./quick_start/first_custom_operator/first_custom_operator.ipynb">10 分钟体验自定义算子</td><td>快速上手：第一个自定义算子</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_custom_operator&scanFilePath=quick_start/first_custom_operator/first_custom_operator.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
-<tr><td><a href="./quick_start/first_operator_api_call/first_operator_api_call.ipynb">10 分钟体验算子 API 调用</td><td>快速体验调用 CANN 内置算子 API 进行计算</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_operator_api_call&scanFilePath=quick_start/first_operator_api_call/first_operator_api_call.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
-<tr><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列（初级）：第一章 / 第二章</td><td>算子基础 / CANN 架构 / 算子开发基础 / Add 算子实践</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/01_basic_overview/01.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
-<tr><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列（中级）：第三章 / 第四章 / 第五章 / 第六章</td><td>Vector 算子开发 / Cube 算子开发 / 融合算子开发 / 开源算子仓</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/03.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
-<tr><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列（高级）：第七章 / 第八章</td><td>Ascend C 算子功能调试 / 性能优化</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/07_Troubleshooting/07.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
-<tr><td><a href="./tutorials/MC2_fused_operator_development">算子开发实战系列</td><td>MC2 融合算子实战</td><td><a href="./tutorials/MC2_fused_operator_development">在线体验</a></td><td>✅ 已上线</td></tr>
-<tr><td><a href="./tutorials/hixl_development">HiXL 单边通信开发</td><td>HiXL 应用开发教程</td><td><a href="./tutorials/hixl_development">在线体验</a></td><td>✅ 已上线</td></tr>
-<tr><td><a href="https://cannjudge.cn">算子开发练习</td><td>开放题库 / 历届算子赛真题等</td><td><a href="https://cannjudge.cn">CANNJudge 开放题库</a></td><td>✅ 已开放</td></tr>
-<tr><td><a href="https://cannjudge.cn">参加算子赛</td><td>算子天梯赛 / 校园赛等各种大赛等你挑战</td><td><a href="https://competition.gitcode.com/competition?type=cann">CANN 大赛专区</a></td><td>✅ 已开放</td></tr>
+<tr><td><a href="./quick_start/first_custom_operator/first_custom_operator.ipynb">10 分钟体验自定义算子</a></td><td>快速上手：第一个自定义算子</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_custom_operator&scanFilePath=quick_start/first_custom_operator/first_custom_operator.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./quick_start/first_operator_api_call/first_operator_api_call.ipynb">10 分钟体验算子 API 调用</a></td><td>快速体验调用 CANN 内置算子 API 进行计算</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_operator_api_call&scanFilePath=quick_start/first_operator_api_call/first_operator_api_call.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列（初级）：第一章 / 第二章</a></td><td>算子基础 / CANN 架构 / 算子开发基础 / Add 算子实践</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/01_basic_overview/01.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列（中级）：第三章 / 第四章 / 第五章 / 第六章</a></td><td>Vector 算子开发 / Cube 算子开发 / 融合算子开发 / 开源算子仓</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/03.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列（高级）：第七章 / 第八章</a></td><td>Ascend C 算子功能调试 / 性能优化</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/07_Troubleshooting/07.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./tutorials/MC2_fused_operator_development">算子开发实战系列</a></td><td>MC2 融合算子实战</td><td><a href="./tutorials/MC2_fused_operator_development">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./tutorials/hixl_development">HiXL 单边通信开发</a></td><td>HiXL 应用开发教程</td><td><a href="./tutorials/hixl_development">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="https://cannjudge.cn">算子开发练习</a></td><td>开放题库 / 历届算子赛真题等</td><td><a href="https://cannjudge.cn">CANNJudge 开放题库</a></td><td>✅ 已开放</td></tr>
+<tr><td><a href="https://cannjudge.cn">参加算子赛</a></td><td>算子天梯赛 / 校园赛等各种大赛等你挑战</td><td><a href="https://competition.gitcode.com/competition?type=cann">CANN 大赛专区</a></td><td>✅ 已开放</td></tr>
 <tr><th colspan="4" align="left">📊 推荐系统开发</th></tr>
 <tr><td><a href="./contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb">QuickStart：CTR 预测（DeepFM）</a></td><td>跑通 CTR 训练链路 DataFrame → Feature → DataGenerator → DeepFM → CTRTrainer → AUC</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
 <tr><td><a href="./contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb">序列兴趣建模：DIN</a></td><td>使用 Amazon-Electronics 样例数据理解历史行为序列、SequenceFeature 与 DIN attention</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?imageId=online-ubuntu22-cann8.5-python3.11-jupyter%3Av1.0.1&repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
@@ -120,7 +120,7 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 │   │   └── sana_video                # Sana-Video 推理优化
 │   └── pytorch_online_inference_operator_optimize  # PyTorch 在线推理算子优化
 ├── blogs                              # 技术博客
-│   ├── operator                       # 算子（10 篇）
+│   ├── operator                       # 算子（13 篇）
 │   ├── inference                      # 推理（12 篇）
 │   └── training                       # 训练（3 篇）
 ├── contrib                            # 社区贡献
@@ -130,10 +130,6 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 ├── skills                             # CANNBot 技能
 │   ├── ascendc-ops-project           # 自定义算子工程生成
 │   └── cannjudge-submit              # CANNJudge 竞赛提交
-├── operators                          # 算子仓工作目录
-│   ├── addcmul                        # addcmul 算子
-│   ├── as_strided                     # as_strided 算子
-│   └── erf                            # erf 算子
 ├── docs                               # 文档与指南
 │   ├── cannlab_env_experience_guide.md 	# CANNLab 环境体验指南
 │   └── acceptance_criteria_for_new_course_submission_and_launch.md 	# 新课程上库与上线验收标准
@@ -156,7 +152,10 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 <tr><td><a href="./blogs/operator/cross_entropy_zloss_fusion">CrossEntropyLoss 与 Zloss 融合</a></td><td>损失函数融合，MoE 场景端到端 5.2% 效率提升</td><td>2025.11</td></tr>
 <tr><td><a href="./blogs/operator/kernel_direct_call_programming">算子 Kernel 直调编程</a></td><td>异构混合编程，简化编译部署，降低开发门槛</td><td>2025.11</td></tr>
 <tr><td><a href="./blogs/operator/tilingkey_template_programming">TilingKey 模板化编程</a></td><td>统一多场景算子管理，减少 icache miss</td><td>2025.11</td></tr>
-<tr><td><a href="./blogs/operator/ascend_c_matmul_api_guide">Ascend C 矩阵乘接口选型指南</a></td><td>矩阵乘 API 接口对比与选型建议</td><td>2025.10</td></tr>
+<tr><td><a href="./blogs/operator/ascend_c_mmad_selection_guide">Ascend C 矩阵乘接口选型指南</a></td><td>矩阵乘 API 接口对比与选型建议</td><td>2025.10</td></tr>
+<tr><td><a href="./blogs/operator/ms_sanitizer">msSanitizer 异常检测工具</a></td><td>单算子开发异常检测，定位内存访问、数据竞争与同步问题</td><td>2025.10</td></tr>
+<tr><td><a href="./blogs/operator/nddma_introduction">NDDMA 多维数据搬运</a></td><td>多维 DMA 搬运与 Padding、Transpose、Broadcast、Slice 变换</td><td>2025.10</td></tr>
+<tr><td><a href="./blogs/operator/regbase_vec_add">Regbase 编程范式</a></td><td>从向量加法理解寄存器级编程与底层性能优化</td><td>2025.10</td></tr>
 <tr><th colspan="3" align="left">推理</th></tr>
 <tr><td><a href="./blogs/inference/overlap_scheduling_throughput_optimization">Overlap Scheduling 吞吐优化</a></td><td>CPU 与 NPU 执行重叠，TPS 提升约 70%</td><td>2026.3</td></tr>
 <tr><td><a href="./blogs/inference/npugraph_ex_third_party_framework_integration">npugraph_ex 第三方框架集成</a></td><td>图编译与编译缓存能力接入，降低冷启动耗时</td><td>2026.2</td></tr>
