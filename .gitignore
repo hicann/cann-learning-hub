@@ -116,5 +116,5 @@ dist/
 *.egg-info/
 *.egg
 *.whl
-Sources/
-*.onnx
+.claude/
+.opencode/

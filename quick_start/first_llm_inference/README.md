@@ -15,7 +15,7 @@
 2.在开始之前，请先在终端中安装所需的 Python 依赖包：
 
 ```bash
-pip install transformers==4.51.0 modelscope
+pip install transformers==4.51.0 modelscope einops==0.8.2 accelerate==1.14.0
 ```
 ![dependency_install](../../docs/images/first_llm_course/dependency_install.png)
 > **为什么指定版本？** 大模型生态更新很快，不同版本的 `transformers` 在模型加载、分词器行为上可能有差异。指定版本可以确保你跑出的结果和本课一致。
