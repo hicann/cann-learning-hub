@@ -40,6 +40,18 @@
                 ]
             },
             {
+                "name": "tmp",
+                "param_type": "required",
+                "format": [
+                    "ND",
+                    "ND"
+                ],
+                "type": [
+                    "int32",
+                    "int32"
+                ]
+            },
+            {
                 "name": "pertoken_scale",
                 "param_type": "optional",
                 "format": [

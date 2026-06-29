@@ -86,12 +86,14 @@ at::Tensor qmm_custom_npu(const at::Tensor& x1, const at::Tensor& x2,
                            int64_t dtype)
 {
     at::Tensor result = construct_qmm_custom_output_tensor(x1, x2, pertoken_scale, dtype);
+    at::Tensor tmp = at::empty({x1.size(0), x2.size(1)}, x1.options().dtype(at::ScalarType::Int));
 
     // 创建 aclTensor 参数
     // x2 使用 ConvertTypeWithFormat 显式指定 ACL_FORMAT_FRACTAL_NZ，其余使用 ND 格式
     aclTensor* x1_acl = ConvertType(x1);
     aclTensor* x2_acl = ConvertTypeWithFormat(x2, ACL_FORMAT_FRACTAL_NZ);
     aclTensor* scale_acl = ConvertType(scale);
+    aclTensor* tmp_acl = ConvertType(tmp);
     aclTensor* pertoken_acl = ConvertType(pertoken_scale);
     aclTensor* result_acl = ConvertType(result);
 
@@ -109,12 +111,12 @@ at::Tensor qmm_custom_npu(const at::Tensor& x1, const at::Tensor& x2,
     uint64_t workspace_size = 0;
     aclOpExecutor* executor = nullptr;
     typedef int (*GetWorkspaceSizeFunc)(
-        aclTensor*, aclTensor*, aclTensor*, aclTensor*,
+        aclTensor*, aclTensor*, aclTensor*, aclTensor*, aclTensor*,
         aclTensor*, uint64_t*, aclOpExecutor**);
     auto getWorkspaceSizeFunc =
         reinterpret_cast<GetWorkspaceSizeFunc>(getWorkspaceSizeFuncAddr);
     auto workspace_status = getWorkspaceSizeFunc(
-        x1_acl, x2_acl, scale_acl, pertoken_acl,
+        x1_acl, x2_acl, scale_acl, tmp_acl, pertoken_acl,
         result_acl, &workspace_size, &executor);
     TORCH_CHECK(workspace_status == 0,
                 "call aclnnQmmCustomGetWorkspaceSize failed, detail:", aclGetRecentErrMsg());
@@ -139,6 +141,7 @@ at::Tensor qmm_custom_npu(const at::Tensor& x1, const at::Tensor& x2,
         Release(x1_acl);
         Release(x2_acl);
         Release(scale_acl);
+        Release(tmp_acl);
         if (pertoken_acl != nullptr) {
             Release(pertoken_acl);
         }

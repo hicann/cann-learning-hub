@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.16)
+
+set(CMAKE_ASC_ARCHITECTURES "dav-2201" CACHE STRING "NPU architecture")
+
+find_package(ASC REQUIRED)
+
+project(qmm_custom_standalone LANGUAGES ASC CXX)
+
+add_executable(qmm_custom_standalone
+    qmm_custom_standalone.asc
+)
+
+target_link_libraries(qmm_custom_standalone PRIVATE
+    tiling_api
+    register
+    platform
+    m
+    dl
+)
+
+target_compile_options(qmm_custom_standalone PRIVATE
+    $<$<COMPILE_LANGUAGE:ASC>:--npu-arch=${CMAKE_ASC_ARCHITECTURES}>
+)

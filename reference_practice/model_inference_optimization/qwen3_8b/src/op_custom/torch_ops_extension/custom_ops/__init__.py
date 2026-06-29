@@ -14,7 +14,12 @@ __all__ = list(module for _, module, _ in pkgutil.iter_modules([os.path.dirname(
 
 # 导入so 和 python
 from . import custom_ops_lib
-from .converter import qmm_custom
+try:
+    from .converter import qmm_custom
+except Exception as exc:
+    warn_msg = f"custom_ops graph converter import failed: {exc}. Eager custom op calls are still available."
+    warnings.warn(warn_msg)
+    warnings.filterwarnings("ignore", message=warn_msg)
 
 """
 import custom ops as torch_npu ops to support the following usage:
