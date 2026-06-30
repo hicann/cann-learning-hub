@@ -1,0 +1,13 @@
+======================================================================
+1.4 npugraph_ex 基础概念练习答案
+======================================================================
+
+1. （单选题）关于 TorchAir 定位与两种图执行模式描述，错误的是？
+    答案：D
+    解析：基于 GE 的图模式才依赖 GE 图引擎；npugraph_ex 后端 aclgraph 采用 Capture&Replay 机制，使用 aclmdlRICaptureXxx 系列 Runtime 接口，不依赖 GE 做图编译转换。A/B/C 均为原文正确描述。
+2. （多选题）下列属于 Eager 单算子执行模式（未使用 torch.compile）核心特征的有？
+    答案：ABD
+    解析：C 是图模式（torch.compile）特征；A、B 是文档明确标注的 Eager 两大核心特点，D 对应 Eager 单算子调度逻辑，无图层面统一优化
+3. （多选题）下列关于 npugraph_ex 基础功能与概念说法正确的是？
+    答案：ABC
+    解析：D 错误，TorchAir 是 torch.compile 的后端实现，必须搭配 torch.compile 使用；A、B 对应表 2 基础功能列表；C 为文档 GE 标准定义。

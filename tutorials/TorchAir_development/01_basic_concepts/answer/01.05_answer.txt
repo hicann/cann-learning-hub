@@ -1,0 +1,69 @@
+======================================================================
+1.5 npugraph_ex 基础概念练习答案
+======================================================================
+1. （判断题）使用 npugraph_ex 需要在 torch.compile 中指定 backend="npugraph_ex"。
+   答案：正确 (True)
+   解析：文档明确使用 npugraph_ex 必须显式传入 backend="npugraph_ex"
+
+2. （判断题）npugraph_ex 仅支持静态 shape 输入，不提供动态维度（dynamic shape）编译配置参数。
+   答案：错误 (False)
+   解析：npugraph_ex 支持配置动态输入维度参数，可编译动态 shape 场景模型。
+
+3. （判断题）SuperKernel 功能属于 npugraph_ex 的进阶功能。
+   答案：正确 (True)
+   解析：SuperKernel 功能归类在进阶功能列表中。
+
+4. （单选题） NPUGraph 的核心思想是什么？
+    答案：B
+    解析：NPUGraph 通过一次捕获计算图，后续多次重放使用相同的 kernel 和参数，核心优势在于跳过 CPU 端的多层调度开销。
+
+5. （单选题）在 NPUGraph 重放阶段，如何更新输入数据？
+    答案：B
+    解析：重放时使用完全相同的 kernel 和参数，对于指针参数（如输入张量），需在每次重放前将新数据写入原有内存地址，实现数据更新而无需重建图。
+
+6. （单选题）以下哪种场景不适合使用 NPUGraph？
+    答案：C
+    解析：NPUGraph 不适用动态形状输入（每批次尺寸变化），因为捕获后图的参数和内核固定，无法适应不同形状。
+
+7. （单选题）以下三种 NPUGraph 使用方式中，封装程度最高的是？
+    答案：C。
+    解析：`make_graphed_callables` 是高级封装，自动处理 Stream 管理、内存分配等细节，并支持安全子图捕获；`NPUGraph` 类是底层原始类，需手动管理。
+
+8. （单选题）TorchDynamo 利用哪个 CPython 底层接口来获取字节码执行前的控制权？
+    答案:A
+    解析：Dynamo 利用 PEP 523（帧评估钩子）在 CPython 执行每个函数栈帧前设置钩子，从而获取控制权，在原始字节码运行之前对其进行拦截和分析。
+
+9. （单选题）在 FX Graph 中，以下哪种 op 类型表示调用子模块（如 nn.Linear）？
+    答案：C
+    解析：`call_module` 表示调用子模块（如 `nn.Linear`），target 为模块名称（如 `linear`）。`placeholder` 是输入参数，`call_function` 调用自由函数，`get_attr` 从模块中获取属性。
+
+10.（单选题） AOTAutograd 的核心价值是什么？
+    答案：B
+    解析：AOTAutograd 将反向传播计算提前捕获并编译，将前向图和反向图拆分为独立子图，使后端编译器（如 Inductor）能同时看到前后向计算，进行跨前后向的算子融合优化。
+
+11. （单选题）以下关于 torch.compile 三种后端的描述，哪项是正确的？
+    答案：C
+    解析：NPUGraph_EX 后端基于 ACLGraph 调度和 FX 图优化，对大模型推理进行加速。Inductor 支持动态形状但会触发重新编译，NPUGraphs 要求固定形状，优化器通常不入图。
+
+12. （单选题） npugraph_ex 是基于哪个接口实现整图加速？
+    答案：A
+    解析：npugraph_ex 依托 PyTorch 原生 torch.compile 接口实现昇腾整图优化加速。
+
+13. （单选题） 开启 npugraph_ex 整图捕获优化，fullgraph 参数建议设置为？
+    答案：B
+    解析：使用 npugraph_ex 完整捕获模型计算图时，推荐将 fullgraph 设为 True，保证完整整图编译优化。
+
+14. （单选题） 下列哪一项属于 npugraph_ex 的 DFX 调试功能？
+    答案：B
+    解析：Data-Dump 算子落盘功能归类为 DFX 调试能力，用于调试定位图执行问题。
+
+15. （多选题） 下面属于 npugraph_ex 基础功能的有？
+    答案：ABD
+    解析：AI-Core 限核属于进阶功能，其余均为基础功能。
+
+16. （多选题） 排查 npugraph_ex 脚本问题时，可用来定位问题的配置 / 方式有？
+    答案：ABC
+    解析：D 选项错误，关闭 dynamic 无法解决全部报错，仅用于关闭动态 Shape。
+
+
+
