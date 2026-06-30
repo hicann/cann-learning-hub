@@ -1,0 +1,18 @@
+1. 参考答案：
+`TQue` 常用核心 API 包括：
+- `AllocTensor<T>()`：从队列管理的 buffer 中申请一个 `LocalTensor<T>`。在 CopyIn 阶段通常用于申请输入 buffer，在 Compute 阶段也可用于申请输出 buffer。
+- `EnQue(tensor)`：将已经准备好的 `LocalTensor` 放入队列，通知下游流水阶段该 tensor 可以被消费。CopyIn 搬入完成后会将输入 tensor 入队，Compute 计算完成后会将输出 tensor 入队。
+- `DeQue<T>()`：从队列中取出一个 `LocalTensor<T>`，并等待上游阶段提交的数据就绪。Compute 阶段通过它获取输入 tensor，CopyOut 阶段通过它获取输出 tensor。
+- `FreeTensor(tensor)`：当前阶段最后一次使用 tensor 后释放它，把对应 buffer 归还给队列，允许后续安全复用。
+
+2. B
+解析：`TPipe` 是 Kernel 内的资源管理器，主要用于统一管理 Device 端内存等资源，例如通过 `InitBuffer` 为 `TQue` 分配片上 buffer，也可以管理部分同步事件资源。真正的数据搬运由 `DataCopy` 完成，真正的矢量计算由 `Add` 等计算 API 完成。
+
+3. B
+解析：`TQue` 是流水任务之间的通信与同步队列。CopyIn 阶段把准备好的 `LocalTensor` 入队，Compute 阶段再出队使用；Compute 到 CopyOut 之间也可以通过输出队列完成结果交接和同步。
+
+4. A
+解析：`pipe` 是 `pipe_init()` 内部的局部变量，函数返回后生命周期结束，`test_kernel` 中无法使用它。`TPipe` 的生命周期需要覆盖后续 `InitBuffer`、`AllocTensor`、`EnQue`、`DeQue`、`FreeTensor` 等操作，通常应在 Kernel 入口创建，或通过引用传入辅助函数。
+
+5. A
+解析：`DeQue` 的前提是队列中已经有上游阶段通过 `EnQue` 提交的 tensor。代码中 `DataCopy` 后没有调用 `inQueueX.EnQue(xLocal)`，因此直接 `DeQue` 属于空队列出队的错误用法。
