@@ -1,7 +1,7 @@
 #include "acl/acl.h"
 #include "kernel_operator.h"
 
-__global__ __aicore__ void hi_ascend()
+__global__ __vector__ void hi_ascend()
 {
     AscendC::printf("[Block (%lu/%lu)]: Hi Ascend\n", AscendC::GetBlockIdx(), AscendC::GetBlockNum());
 }
