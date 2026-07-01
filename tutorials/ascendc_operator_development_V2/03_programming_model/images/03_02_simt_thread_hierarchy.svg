@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="520" viewBox="0 0 980 520" role="img" aria-labelledby="title desc">
+  <title id="title">SIMT Grid Block Thread hierarchy</title>
+  <desc id="desc">A SIMT grid contains multiple thread blocks, and each thread block contains multiple threads indexed by threadIdx.</desc>
+  <defs>
+    <marker id="arrow-head" markerWidth="10" markerHeight="10" refX="8" refY="5" viewBox="0 0 10 10" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+    </marker>
+    <style>
+      .canvas { fill: #ffffff; }
+      .title { font: 700 28px sans-serif; fill: #101828; }
+      .subtitle { font: 16px sans-serif; fill: #475467; }
+      .section-label { font: 700 20px sans-serif; fill: #101828; }
+      .label { font: 600 15px sans-serif; fill: #1d2939; }
+      .small { font: 12px sans-serif; fill: #475467; }
+      .note-text { font: 13px sans-serif; fill: #344054; }
+      .code-text { font: 12px monospace; fill: #344054; }
+      .grid-box { fill: #eef4ff; stroke: #356ca3; stroke-width: 2; rx: 10; }
+      .block-card { fill: #fff8db; stroke: #d0a11f; stroke-width: 1.6; rx: 8; }
+      .block-selected { fill: #fff8db; stroke: #344054; stroke-width: 2; stroke-dasharray: 7 5; rx: 8; }
+      .thread-cell { fill: #ecfdf3; stroke: #2f7d46; stroke-width: 1.4; rx: 4; }
+      .note { fill: #f8fafc; stroke: #d0d5dd; stroke-width: 1.3; rx: 8; }
+      .arrow { stroke: #667085; stroke-width: 1.8; stroke-linecap: round; marker-end: url(#arrow-head); }
+    </style>
+  </defs>
+
+  <rect class="canvas" width="980" height="520"/>
+  <text class="title" x="40" y="48">SIMT 三级线程层级</text>
+  <text class="subtitle" x="40" y="76">Grid 由多个 Thread Block 组成，每个 Thread Block 内再划分多个 Thread。</text>
+
+  <rect class="grid-box" x="40" y="110" width="650" height="150"/>
+  <text class="section-label" x="62" y="142">Grid</text>
+  <text class="small" x="62" y="164">gridDim：当前 Grid 中启用的 Thread Block 数量</text>
+
+  <g transform="translate(78 180)">
+    <rect class="block-card" x="0" y="0" width="118" height="58"/>
+    <text class="label" x="24" y="24">Block 0</text>
+    <text class="small" x="18" y="43">blockIdx.x = 0</text>
+  </g>
+  <g transform="translate(212 180)">
+    <rect class="block-card" x="0" y="0" width="118" height="58"/>
+    <text class="label" x="24" y="24">Block 1</text>
+    <text class="small" x="18" y="43">blockIdx.x = 1</text>
+  </g>
+  <g transform="translate(346 180)">
+    <rect class="block-selected" x="0" y="0" width="118" height="58"/>
+    <text class="label" x="24" y="24">Block 2</text>
+    <text class="small" x="18" y="43">blockIdx.x = 2</text>
+  </g>
+  <g transform="translate(480 180)">
+    <rect class="block-card" x="0" y="0" width="118" height="58"/>
+    <text class="label" x="24" y="24">Block 3</text>
+    <text class="small" x="18" y="43">blockIdx.x = 3</text>
+  </g>
+
+  <line class="arrow" x1="405" y1="270" x2="405" y2="308"/>
+
+  <rect class="grid-box" x="40" y="318" width="650" height="158"/>
+  <text class="section-label" x="62" y="350">Thread Block</text>
+  <text class="small" x="62" y="372">blockDim：当前 Block 中启用的 Thread 数量</text>
+
+  <g transform="translate(218 386)">
+    <rect class="thread-cell" x="0" y="0" width="88" height="34"/>
+    <text class="small" x="17" y="22">Thread(0,0)</text>
+  </g>
+  <g transform="translate(306 386)">
+    <rect class="thread-cell" x="0" y="0" width="88" height="34"/>
+    <text class="small" x="17" y="22">Thread(1,0)</text>
+  </g>
+  <g transform="translate(394 386)">
+    <rect class="thread-cell" x="0" y="0" width="88" height="34"/>
+    <text class="small" x="17" y="22">Thread(2,0)</text>
+  </g>
+  <g transform="translate(482 386)">
+    <rect class="thread-cell" x="0" y="0" width="88" height="34"/>
+    <text class="small" x="17" y="22">Thread(3,0)</text>
+  </g>
+  <g transform="translate(218 436)">
+    <rect class="thread-cell" x="0" y="0" width="88" height="34"/>
+    <text class="small" x="17" y="22">Thread(0,1)</text>
+  </g>
+  <g transform="translate(306 436)">
+    <rect class="thread-cell" x="0" y="0" width="88" height="34"/>
+    <text class="small" x="17" y="22">Thread(1,1)</text>
+  </g>
+  <g transform="translate(394 436)">
+    <rect class="thread-cell" x="0" y="0" width="88" height="34"/>
+    <text class="small" x="17" y="22">Thread(2,1)</text>
+  </g>
+  <g transform="translate(482 436)">
+    <rect class="thread-cell" x="0" y="0" width="88" height="34"/>
+    <text class="small" x="17" y="22">Thread(3,1)</text>
+  </g>
+
+  <rect class="note" x="720" y="112" width="220" height="122"/>
+  <text class="label" x="740" y="142">层级关系</text>
+  <text class="note-text" x="740" y="170">1. Grid：线程块网格</text>
+  <text class="note-text" x="740" y="194">2. Thread Block：线程块</text>
+  <text class="note-text" x="740" y="218">3. Thread：最小执行单位</text>
+
+  <rect class="note" x="720" y="256" width="220" height="164"/>
+  <text class="label" x="740" y="286">索引变量</text>
+  <text class="note-text" x="740" y="314">blockIdx：当前 Block 索引</text>
+  <text class="note-text" x="740" y="338">threadIdx：Block 内线程索引</text>
+  <text class="note-text" x="740" y="362">一维映射：</text>
+  <text class="code-text" x="740" y="386">global_id = blockIdx.x</text>
+  <text class="code-text" x="740" y="404">* blockDim.x + threadIdx.x</text>
+
+  <text class="small" x="40" y="502">说明：示意图展示逻辑线程组织结构；实际启用的 Grid 和 Block 维度由 Kernel 启动配置决定。</text>
+</svg>

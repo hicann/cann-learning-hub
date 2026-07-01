@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="430" viewBox="0 0 1100 430" role="img" aria-label="SIMD SPMD block partition model">
+  <defs>
+    <marker id="arrow2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#345"/>
+    </marker>
+    <style>
+      .title { font: 700 28px sans-serif; fill: #1d2939; }
+      .label { font: 700 19px sans-serif; fill: #1d2939; }
+      .body { font: 15px sans-serif; fill: #344054; }
+      .small { font: 13px sans-serif; fill: #475467; }
+      .gm { fill: #eef6ff; stroke: #4776a8; stroke-width: 2; rx: 8; }
+      .block0 { fill: #fef3c7; stroke: #b7791f; stroke-width: 2; rx: 8; }
+      .block1 { fill: #dcfce7; stroke: #2f7d46; stroke-width: 2; rx: 8; }
+      .block2 { fill: #fce7f3; stroke: #a63f73; stroke-width: 2; rx: 8; }
+      .box { fill: #f9fafb; stroke: #667085; stroke-width: 2; rx: 8; }
+      .arrow { stroke: #345; stroke-width: 3; fill: none; marker-end: url(#arrow2); }
+    </style>
+  </defs>
+  <rect width="1100" height="430" fill="#ffffff"/>
+  <text x="40" y="48" class="title">SIMD：外层 SPMD 分核 + 内层单指令多数据</text>
+
+  <rect x="70" y="110" width="860" height="70" class="gm"/>
+  <text x="90" y="100" class="label">Global Memory 中的一段连续数据</text>
+  <rect x="90" y="125" width="260" height="40" class="block0"/>
+  <rect x="360" y="125" width="260" height="40" class="block1"/>
+  <rect x="630" y="125" width="260" height="40" class="block2"/>
+  <text x="175" y="150" class="body">数据片 0</text>
+  <text x="445" y="150" class="body">数据片 1</text>
+  <text x="715" y="150" class="body">数据片 2</text>
+
+  <path d="M220 180 V235" class="arrow"/>
+  <path d="M490 180 V235" class="arrow"/>
+  <path d="M760 180 V235" class="arrow"/>
+
+  <rect x="120" y="240" width="220" height="105" class="box"/>
+  <text x="155" y="275" class="label">Block 0 / AI Core 0</text>
+  <text x="160" y="304" class="body">block_idx = 0</text>
+  <text x="160" y="329" class="body">处理数据片 0</text>
+
+  <rect x="390" y="240" width="220" height="105" class="box"/>
+  <text x="425" y="275" class="label">Block 1 / AI Core 1</text>
+  <text x="430" y="304" class="body">block_idx = 1</text>
+  <text x="430" y="329" class="body">处理数据片 1</text>
+
+  <rect x="660" y="240" width="220" height="105" class="box"/>
+  <text x="695" y="275" class="label">Block 2 / AI Core 2</text>
+  <text x="700" y="304" class="body">block_idx = 2</text>
+  <text x="700" y="329" class="body">处理数据片 2</text>
+
+  <text x="78" y="390" class="small">同一份 Kernel 在多个 Block 上执行；每个 Block 内部再用 Vector/Cube 指令批量处理规整数据。</text>
+</svg>
