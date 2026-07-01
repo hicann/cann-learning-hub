@@ -1,0 +1,85 @@
+==================== Step 1：环境自检 ====================
+
+参考实现（命令与 PyAsc 官方文档保持一致）：
+
+# 1. 检查 NPU 驱动（参考《pyasc 快速开始》——开发环境验证）
+!npu-smi info
+
+# 2. 检查 CANN toolkit 与 CANN ops 安装信息
+!cat /usr/local/Ascend/cann/$(uname -m)-linux/ascend_toolkit_install.info
+!cat /usr/local/Ascend/cann/$(uname -m)-linux/ascend_ops_install.info
+
+# 3. 检查 ASCEND_HOME_PATH
+import os
+print('ASCEND_HOME_PATH:', os.environ.get('ASCEND_HOME_PATH', '[NOT SET]'))
+
+
+预期输出（示例）：
+
+- npu-smi info 正常返回 NPU 设备表。
+- ascend_toolkit_install.info 与 ascend_ops_install.info 输出 version、arch 等字段。
+- ASCEND_HOME_PATH 指向 /usr/local/Ascend/cann/latest 之类的绝对路径，而不是 [NOT SET]。
+
+
+==================== Step 2：安装 PyAsc 并验证 ====================
+
+参考实现：
+
+# 1. pip 快速安装（命令与 PyAsc 官方 quick_start.md 一致）
+!pip install pyasc
+
+# 2. 验证 PyAsc 是否已安装（参考《pyasc 快速开始》——安装验证）
+!pip3 list | grep -w "pyasc"
+
+
+预期输出：
+
+- 安装过程结束后看到 "Successfully installed pyasc-<版本号>"。
+- pip3 list 输出包含 "pyasc <版本号>"。
+
+
+==================== Step 3：在运行环境中配置 CANN 环境变量 ====================
+
+完整命令（与 PyAsc 官方 quick_start.md 原文一致）：
+
+# source CANN 环境变量
+source /usr/local/Ascend/cann/set_env.sh
+
+
+==================== Step 4：跑通 01_add 样例 ====================
+
+参考实现：
+
+!python3 ./src/tutorials/01_add/add.py -r NPU -v Ascend910B1
+
+预期输出（末尾两行）：
+
+INFO:root:[INFO] start process sample add.
+INFO:root:[INFO] Sample add run success.
+
+
+==================== Step 5：跑通 02_add_framework 样例 ====================
+
+参考实现：
+
+!python3 ./src/tutorials/02_add_framework/add_framework.py -r NPU -v Ascend910B1
+
+预期输出（末尾两行）：
+
+INFO:root:[INFO] start process sample add_framework.
+INFO:root:[INFO] Sample add_framework run success.
+
+
+==================== 常见问题排查 ====================
+
+[问题 1] ASCEND_HOME_PATH 显示 [NOT SET]
+原因  ：未在运行环境中执行 source set_env.sh。
+处理  ：source /usr/local/Ascend/cann/set_env.sh（路径以实际安装为准）。
+
+[问题 2] pip3 list 中找不到 pyasc
+原因  ：PyAsc 未安装或 pip install 未执行成功。
+处理  ：重新执行 pip install pyasc，并查看安装日志中的错误信息。
+
+[问题 3] -v 取值与实际 SOC 不匹配
+原因  ：SOC_VERSION 与硬件不一致。
+处理  ：在 NPU 主机上执行 npu-smi info，在 Name 字段前加 Ascend 前缀作为 -v 取值。

@@ -1,0 +1,13 @@
+==================== 第 1 题（单选题） ====================
+答案：C
+解析：pyasc/python/asc/ 是用户 import asc 时实际加载的 Python 包，wheel 包也以此目录为主。
+      pyasc/include/ 与 pyasc/lib/ 是后端 C++ 头文件与实现；pyasc/python/tutorials/ 是样例集。
+
+
+==================== 第 2 题（单选题） ====================
+答案：A
+解析：PyAsc 的 Python 接口包 asc/language 下按 Ascend C 接口分类划分为四个子模块：
+      - asc/language/adv：高阶 API，与 Ascend C 高阶 API（如 Matmul）一一对应。
+      - asc/language/basic：基础 API，与 Ascend C 基础 API（如 data_copy、add）一一对应。
+      - asc/language/core：核心数据结构和枚举（GlobalTensor、LocalTensor、TPosition、HardEvent 等）。
+      - asc/language/fwk：框架类（TPipe、TQue 等）。
