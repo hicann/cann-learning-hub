@@ -1,0 +1,20 @@
+1. √
+解析：策略崩塌的典型表现：entropy 突然跌到 0、correct 归零、response_length 全部打满 3232。模型输出退化为固定模式。
+
+2. ×
+解析：策略崩塌的根因是策略梯度（pg_loss）过强，压过了 KL 正则和 entropy bonus。KL 正则过强反而会限制学习，但不会导致崩塌。
+
+3. ×
+解析：entropy_coeff=0.01 过大，会导致 entropy 失控飙升（25 步内从 0.56 到 4.51）。0.005 比 0.01 更安全。
+
+4. C
+解析：崩溃后 correct=0、partial=0、length_bonus=0，只有 format_reward=1.0，加权后 0.2*1.0=0.20。模型虽然输出退化为固定模式，但格式仍然正确。
+
+5. B
+解析：加 entropy_coeff=0.005 可以在 pg_loss 和 entropy 之间建立平衡，防止 entropy 崩塌。降低 entropy_coeff（A）会加重崩塌，提高学习率（C）会加速崩塌。
+
+6. A、B、C、D
+解析：崩溃诊断需要检查 entropy（是否崩塌）、response_length（是否打满）、correct 率（是否归零）、grad_norm（是否爆炸）。四个指标缺一不可。
+
+7. A、B、D
+解析：训练监控最佳实践：前 50 步密切监控（A）、设置 checkpoint 频率（B）、同时看多个指标（D）。只看 reward（C）是错误做法，reward 可能因为 format 分而不归零，掩盖崩塌。

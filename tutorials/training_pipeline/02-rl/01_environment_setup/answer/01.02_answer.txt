@@ -1,0 +1,14 @@
+1. √
+解析：vLLM 在 RL 训练中的核心作用是生成 rollout（模型回复），供奖励函数打分。模型参数更新由 verl 的训练引擎（FSDP）完成，而非 vLLM。
+
+2. √
+解析：verl 的 pip install -e . 会自动安装 pyarrow、pandas、ray、wandb 等依赖。只有 nltk 和 textarena 需要单独安装。
+
+3. ×
+解析：Wordle AgentLoop 补丁不仅添加 wordle_agent_loop.py 文件，还会修改 verl 的 __init__.py 注册 WordleAgentLoop 类。因此必须使用 git apply 而非简单复制文件。
+
+4. C
+解析：verl 是 RL 训练框架，负责管理推理、奖励、训练的完整循环。vLLM 负责推理，vLLM-Ascend 是 NPU 适配层，CANN 是底层驱动。
+
+5. C
+解析：verl 会自动安装 pyarrow、pandas、ray 等依赖，但 nltk 和 textarena 是 Wordle 训练特有的依赖，需要通过 requirements.txt 单独安装。

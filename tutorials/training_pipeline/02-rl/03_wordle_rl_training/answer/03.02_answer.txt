@@ -1,0 +1,14 @@
+1. √
+解析：G（Green）表示字母正确且位置正确，Y（Yellow）表示字母存在但位置错误，X（Wrong）表示字母不在单词中。这是 Wordle 的标准反馈机制。
+
+2. √
+解析：WordleAgentLoop 的职责包括发送 prompt、接收猜词、计算 G/Y/X 反馈、追加反馈到对话，并重复直到猜中或达到最大轮次。
+
+3. ×
+解析：环境追加的 user feedback token 不需要计算梯度。response_mask 中值为 0 表示环境追加的 token，不参与梯度计算。
+
+4. B
+解析：response_mask 值为 0 表示环境追加的 token（如 G/Y/X 反馈），不计算梯度；值为 1 表示模型生成的 token（如猜词），计算梯度。
+
+5. B
+解析：max_user_turns=6 表示 Wordle 最大猜词轮次为 6，即模型最多可以猜 6 次。

@@ -1,0 +1,20 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {"id":"title","type":"text","x":260,"y":20,"width":280,"height":28,"text":"第3章 三步闭环","fontSize":22,"fontFamily":5,"textAlign":"center","strokeColor":"#1e1e1e","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"b1","type":"rectangle","x":60,"y":70,"width":200,"height":80,"strokeColor":"#1971c2","backgroundColor":"#a5d8ff","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t1","type":"text"}]},
+    {"id":"t1","type":"text","x":65,"y":85,"width":190,"height":50,"containerId":"b1","text":"训练配置构建（03.02）\nWordle数据+配置全景\n数据管线原理\n训练参数深度解析","fontSize":13,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1971c2","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"b2","type":"rectangle","x":300,"y":70,"width":200,"height":80,"strokeColor":"#e8590c","backgroundColor":"#ffd8a8","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t2","type":"text"}]},
+    {"id":"t2","type":"text","x":305,"y":85,"width":190,"height":50,"containerId":"b2","text":"运行训练（03.03）\nSFT 20 steps\nCE Loss 下降\nformat 0.2→1.0","fontSize":13,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#e8590c","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"b3","type":"rectangle","x":540,"y":70,"width":200,"height":80,"strokeColor":"#2f9e44","backgroundColor":"#b2f2bb","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t3","type":"text"}]},
+    {"id":"t3","type":"text","x":545,"y":85,"width":190,"height":50,"containerId":"b3","text":"推理评测（03.04）\nInfer Server\nvf-eval 评测\nSFT 前后对比","fontSize":13,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#2f9e44","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"a1","type":"arrow","x":260,"y":110,"width":40,"height":0,"points":[[0,0],[40,0]],"strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100},
+    {"id":"a1l","type":"text","x":267,"y":95,"width":26,"height":16,"text":"→","fontSize":18,"fontFamily":5,"textAlign":"center","strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"a2","type":"arrow","x":500,"y":110,"width":40,"height":0,"points":[[0,0],[40,0]],"strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100},
+    {"id":"a2l","type":"text","x":507,"y":95,"width":26,"height":16,"text":"→","fontSize":18,"fontFamily":5,"textAlign":"center","strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100}
+  ],
+  "appState": {"viewBackgroundColor": "#ffffff", "gridSize": 20},
+  "files": {}
+}

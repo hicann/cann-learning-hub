@@ -1,0 +1,20 @@
+1. √
+解析：策略崩塌是指模型 entropy 趋近于 0，丧失探索能力。模型每次输出几乎完全相同的文本，不再尝试新策略，correct 率归零。
+
+2. √
+解析：KL 散度正则化通过在 loss 中加入 KL(π || π_ref) 惩罚项，限制当前策略与参考策略之间的距离。模型偏离越远，惩罚越大，梯度会拉回模型。
+
+3. ×
+解析：Entropy bonus 的作用是鼓励模型保持探索能力（高熵），而非降低探索性。它在 loss 中加入 -entropy_coeff × H(π)，熵越低惩罚越大，推高熵。
+
+4. B
+解析：kl_loss_coef=0.001 提供轻微的 KL 约束，平衡探索和利用。太大会限制学习新策略，太小则无法防止漂移。
+
+5. C
+解析：策略崩塌的典型信号是 entropy 突然跌到 0、response_length 全部打满、correct 归零。entropy 缓慢下降（A）和 kl_loss 缓慢上升（D）是正常现象。
+
+6. A、B、C
+解析：RL 训练中的三种力：策略梯度（pg_loss，降低 entropy）、KL 正则（kl_loss，限制漂移）、熵奖励（entropy_bonus，推高 entropy）。Critic 价值估计是 PPO 的组件，不是稳定性机制。
+
+7. A、B、C
+解析：entropy_coeff 过大会导致 entropy 失控飙升（A）、模型过度探索不收敛（B）、reward 提升靠 partial 而非 correct（C）。策略崩塌（D）是 entropy_coeff 太小或为 0 时的问题。

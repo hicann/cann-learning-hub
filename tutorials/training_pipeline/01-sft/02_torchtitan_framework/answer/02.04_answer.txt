@@ -1,0 +1,23 @@
+1. √
+解析：FSDP 每张卡存 1/N 参数，正向时通过 all-gather 拼出完整模型，各自用自己的 batch 数据前向计算。
+
+2. √
+解析：每张卡只算了自己 batch 的梯度，不完整。reduce-scatter 先求和（reduce）得到所有 rank 贡献的完整梯度，再分发（scatter）回各卡。
+
+3. ×
+解析：Debug 模式使用随机初始化的极小模型，不需要提前下载权重。目的是快速验证环境是否正常。
+
+4. B
+解析：parallelize_fn 是 FSDP 分片逻辑的挂载点——框架构建完模型后调用此函数，将参数按分片数切到多张卡上。
+
+5. B
+解析：FSDP FULL_SHARD 将参数、梯度、优化器状态全部切分，每卡只存 1/N，单卡显存占用最低。代价是通信开销增加。
+
+6. C
+解析：FSDP 使用 all-gather（A）、reduce-scatter（B）、用完即弃（D）。broadcast（C）不是 FSDP 的核心操作。
+
+7. A、B、C
+解析：TorchTitan 的设计目标包括把 FSDP 包装成开箱即用的框架（A）、可切换配置（B）和 ModelConverter 插件机制（C）。它基于 PyTorch，不是要替代 PyTorch（D 错误）。
+
+8. A、B、D
+解析：环境配置前置条件包括 CANN 9.0.0（A）、torch_npu 可用（B）、npu-smi info 可用（D）。Docker 不是必须的（C）。

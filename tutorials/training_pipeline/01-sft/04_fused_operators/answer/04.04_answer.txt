@@ -1,0 +1,11 @@
+1. √
+解析：三个信号必须同时满足——ACL kernel 总数下降（碎片消除的直接证据）、fused trace 中出现 `npu::npu_rms_norm`（融合算子被调用）、碎片化 ACL kernel（Pow/Mul）减少或消失（RMSNorm 不再展开为微内核）。
+
+2. ×
+解析：融合 RMSNorm 不改变显存占用，因为融合 kernel 的中间结果在 UB（片上 SRAM，~192 KB）上完成，不额外占用 HBM。模型参数量和激活张量形状均不变。
+
+3. √
+解析：如果 `model_converters` 列表为空或未包含 `"npu_rms_norm"`，`NpuRMSNormConverter.convert()` 不会被调用，模型中的 RMSNorm 保持原生实现，trace 中就不会出现 `npu::npu_rms_norm`。
+
+4. B
+解析：ACL kernel 调用次数从 ~12,500 降至 ~7,100（-43%），变化最大。Peak memory（A）和模型参数量（C）基本不变，序列长度（D）不变。

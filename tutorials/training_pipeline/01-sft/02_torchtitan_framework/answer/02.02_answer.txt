@@ -1,0 +1,14 @@
+1. √
+解析：FSDP 每张卡存 1/N 参数，正向时通过 all-gather 拼出完整模型，各自用自己的 batch 数据前向计算。
+
+2. B
+解析：每张卡只算了自己 batch 的梯度，不完整。reduce-scatter 先求和（reduce）得到所有 rank 贡献的完整梯度，再分发（scatter）回各卡。直接 scatter 拿不到完整梯度。
+
+3. √
+解析：FSDP1 整个 layer 做完 backward 才通信，卡在等待。FSDP2 把通信拆到每层——算第 N 层梯度时第 N+1 层的通信已在通道中，两者 overlap。
+
+4. B
+解析：entry.py 是训练入口——ConfigManager 解析命令行参数和配置文件 → 构建 Trainer（含 DataLoader/Model/Optimizer）→ trainer.train() 启动训练循环。
+
+5. B
+解析：parallelize_fn 是 FSDP 分片逻辑的挂载点——框架构建完模型后调用此函数，将参数按分片数切到多张卡上。

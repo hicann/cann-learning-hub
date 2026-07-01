@@ -1,0 +1,14 @@
+1. √
+解析：Hybrid Engine 通过时分复用机制，让训练和推理交替占用同一组 NPU 卡。训练时 FSDP 占卡，推理时参数卸载到 CPU、vLLM 占卡，因此 2 卡即可完成 RL 训练。
+
+2. √
+解析：WordleAgentLoop 是多轮交互的核心逻辑单元，负责在模型猜词后计算 G/Y/X 反馈并返回给模型，实现多轮交互。
+
+3. ×
+解析：param_offload=True 表示训练参数从 GPU 卸载到 CPU，释放显存给 vLLM 推理使用，而非保留在 GPU 中。
+
+4. B
+解析：vLLM Server 负责生成模型回复（rollout）。TaskRunner 是总调度者，Ray Train (FSDP) 负责训练更新，AgentLoopManager 管理 rollout 并行处理。
+
+5. B
+解析：rollout.n=8 表示每个 prompt 生成 8 条 rollout（回复），这 8 条回复构成一个 GRPO 组，用于计算组内相对优势。

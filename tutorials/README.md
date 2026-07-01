@@ -8,6 +8,7 @@
 | MC2融合算子开发教程 | MC2融合算子开发教程，详细介绍 MC2 融合算子的概念、开发流程和实践 | [MC2_fused_operator_development](./MC2_fused_operator_development) | 🚧 开发中 |
 | PyPTO 算子开发系列教程 | 基于 Tile 编程模型的昇腾 NPU 算子开发教程，聚焦 PyPTO 框架的快速上手与实战应用 | [pypto_development](./pypto_development) | 🚧 开发中 |
 | HIXL 应用开发系列教程 | 基于昇腾单边通信库的应用开发教程，包含核心API介绍、传输模式选择、问题定位、性能分析等核心内容 | [hixl_development](./hixl_development) | ✅ 已发布 |
+| 大语言模型 SFT + RL 端到端教程 | 基于 torchtitan-npu 的 Qwen3-1.7B SFT 监督微调与融合算子优化，以及基于 verl + GRPO 的 RL 强化学习训练全流程 | [training_pipeline](./training_pipeline) | ✅ 已发布 |
 
 ## 教程使用说明
 1. 已发布教程：点击链接可直接进入对应目录，包含教程文档、示例代码、实操步骤等完整内容；

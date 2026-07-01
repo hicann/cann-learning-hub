@@ -43,7 +43,7 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 <tr><td>推理优化系列（中级）</td><td>Qwen3-8B 单卡部署 / 性能分析基础 / 主流优化技术 / 量化</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>推理优化系列（高级）</td><td>Profiling 与瓶颈定位 / Qwen3-8B 优化实践</td><td></td><td>🚧 建设中</td></tr>
 <tr><th colspan="4" align="left">🏋️ 大模型训练</th></tr>
-<tr><td>大模型训练系列（初级）</td><td>训练基础原理、昇腾 NPU 特性、入门训练实战</td><td></td><td>🚧 建设中</td></tr>
+<tr><td><a href="./tutorials/training_pipeline/01-sft/01_sft_and_wordle/01.01_chapter_intro.ipynb">大模型训练系列（初级）</a></td><td>SFT 监督微调 + RL 强化学习：Qwen3-1.7B 在 Ascend NPU 上全流程实战，含融合算子优化</td><td></td><td>✅ 已上线</td></tr>
 <tr><td>大模型训练系列（中级）</td><td>性能分析、CANN 图优化、显存优化、基础调优</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>大模型训练系列（高级）</td><td>核心算子优化、分布式训练、通信优化、端到端优化落地</td><td></td><td>🚧 建设中</td></tr>
 <tr><th colspan="4" align="left">⚙️ 算子开发</th></tr>
@@ -91,7 +91,7 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 <tr><td></td><td>PyPTO 算子开发系列</td><td>🚧 建设中</td></tr>
 <tr><td></td><td>PyASC 算子开发系列</td><td>🚧 建设中</td></tr>
 <tr><td></td><td>TileLang 算子开发系列</td><td>🚧 建设中</td></tr>
-<tr><td><b>训练</b></td><td>大模型训练优化</td><td>🚧 建设中</td></tr>
+<tr><td><b>训练</b></td><td><a href="./tutorials/training_pipeline">大模型训练教程</a></td><td>✅ 已上线</td></tr>
 <tr><td></td><td>大语言模型微调实战（SwanLab 共建）</td><td>🔍 评审中</td></tr>
 <tr><td><b>推理</b></td><td>大模型推理优化</td><td>🚧 建设中</td></tr>
 <tr><td></td><td><a href="./reference_practice/model_inference_optimization">Sana-Video 推理优化实践</a></td><td>✅ 已上线</td></tr>

@@ -1,0 +1,17 @@
+1. √
+解析：val-aux/wordle/correct/mean@1 表示验证集的猜中率，是衡量模型猜词能力最直接的指标。
+
+2. √
+解析：actor/entropy 反映模型输出的不确定性（探索能力）。entropy 高表示模型在尝试不同策略，低表示趋于确定性输出。
+
+3. ×
+解析：健康训练中 entropy 应缓慢下降但不应崩塌到 0。entropy 突然跌到 0 是策略崩塌的信号。
+
+4. B
+解析：val-aux/wordle/correct/mean@1 表示验证集猜中率，直接反映模型猜中秘密单词的能力。
+
+5. C
+解析：训练崩塌的典型信号是 entropy 突然跌到 0、response_length 全部打满 3232、correct 归零。entropy 缓慢下降（D）是正常现象。
+
+6. A、B、C、D
+解析：健康训练的特征：reward 上升趋势（A）、correct 率提升（B）、entropy 缓慢下降但未崩塌（C）、response_length 稳定未全部打满（D）。

@@ -1,0 +1,17 @@
+1. √
+解析：entropy_coeff=0 时没有 entropy bonus，pg_loss 完全主导，entropy 持续下降，可能导致策略崩塌。
+
+2. ×
+解析：entropy_coeff 过大（如 0.01）会导致 entropy 失控飙升，模型过度探索不收敛。需要在探索和利用之间平衡，0.005 是更合理的选择。
+
+3. √
+解析：RL 更新基于 noisy 的优势估计，需要更保守的步长。RL 学习率通常比 SFT 低 1-2 个数量级。
+
+4. B
+解析：entropy_coeff=0.01 导致 entropy bonus 过强，压过了策略梯度。25 步内 entropy 从 0.56 飙升到 4.51，模型过度探索。
+
+5. B
+解析：调参应先用默认参数跑 50 步观察 entropy 趋势，再根据趋势决定加 entropy_coeff 还是降。盲目设置大值会导致失控。
+
+6. A、B、C
+解析：entropy_coeff（探索控制）、kl_loss_coef（漂移控制）、ACTOR_LR（更新步长）直接影响训练稳定性。ROLLOUT_N 影响组大小但不是稳定性参数。

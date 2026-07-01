@@ -1,0 +1,23 @@
+1. ×
+解析：Qwen3-1.7B 每层有 2 个 RMSNorm（attention_norm + ffn_norm），28 层共 56 个实例。
+
+2. √
+解析：`NpuRMSNormConverter.convert()` 使用 `isinstance(module, RMSNorm)` 做精确类型匹配，只替换原始 RMSNorm 实例，不碰子类或其他 Norm 类型。
+
+3. √
+解析：Profiling 目的是测量算子耗时，不关心收敛质量。小 batch_size 减少梯度累计等待时间，更快出 profiling 结果。
+
+4. C
+解析：`aclnnBatchMatMul` 用于矩阵乘法（如 Linear 层的 matmul），不是 RMSNorm 的一部分。原生 RMSNorm 展开后包含 Pow（A）、ReduceMean（B）、Mul（D）。
+
+5. B
+解析：`@register_model_converter("npu_rms_norm")` 将名字到配置类的映射写入全局注册表 `_ConverterRegistry`。实际替换在 `convert()` 被调用时执行（A 错误）。
+
+6. C
+解析：baseline trace 中不包含 `npu::npu_rms_norm`，fused trace 中出现——这是融合已替换模型算子的最直接证据。显存（A）、参数量（B）都不变；loss（D）与融合无关。
+
+7. A、B、D
+解析：算子碎片化导致 launch overhead 增大（A）、HBM 访存增加（B）、Cube 利用率降低（D）。模型参数量由结构决定，与碎片化无关（C 错误）。
+
+8. A、B、C
+解析：`analyze_profiling.py` 能自动发现 trace（A）、按时间排序区分 baseline/fused（B）、按算子名分类统计（C）。它不修复环境配置问题（D 错误）。

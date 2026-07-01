@@ -1,0 +1,35 @@
+1. √
+解析：RL 训练不需要标准答案，而是通过奖励函数对模型生成的回复打分，好的回复被强化，差的被抑制。这是 RL 与 SFT 的本质区别。
+
+2. ×
+解析：vLLM 在 RL 训练中的作用是生成 rollout（模型回复），而非计算梯度。模型参数更新由 verl 的训练引擎（FSDP）完成。
+
+3. √
+解析：verl 基于 Ray 构建分布式训练系统，TaskRunner 是训练的总调度者，控制推理、奖励、训练的循环。
+
+4. √
+解析：Hybrid Engine 通过时分复用让训练和推理交替占用同一组卡。训练时参数在 GPU，推理时卸载到 CPU 释放显存给 vLLM，2 卡即可完成 RL 训练。
+
+5. √
+解析：git apply 补丁会做两件事：新增 wordle_agent_loop.py 文件，修改 __init__.py 注册 WordleAgentLoop 类。简单复制文件会漏掉注册步骤。
+
+6. C
+解析：RL 训练不需要标准答案标注数据，这是它与 SFT 的核心区别。RL 只需要奖励函数来评估模型回复的质量。
+
+7. C
+解析：verl 会自动安装 ray、pandas、pyarrow 等依赖，但 nltk 和 textarena 是 Wordle 训练特有的依赖，需要单独安装。
+
+8. B
+解析：param_offload=True 将训练参数从 GPU 卸载到 CPU，释放显存给 vLLM 推理使用。这是 Hybrid Engine 时分复用的关键机制。
+
+9. B
+解析：AgentLoopManager 管理多个 AgentLoop Worker，每个 Worker 并行处理一组 rollout。参数更新由 Ray Train (FSDP) 负责。
+
+10. A、B、D
+解析：RL 的优势包括：不需要人工标注标准答案（A）、适合多轮决策场景（B）、可以通过试错优化策略（D）。RL 训练速度通常比 SFT 慢（C 错误），因为需要生成 rollout。
+
+11. A、B、C
+解析：Wordle RL 训练需要 vLLM（推理引擎）、vLLM-Ascend（NPU 适配）、verl（训练框架）。torchtitan 是 SFT 阶段的框架，RL 阶段不需要。
+
+12. A、B、C、D
+解析：verl 框架的四大核心组件：TaskRunner（总调度）、AgentLoopManager（rollout 管理）、vLLM Server（推理引擎）、Ray Train/FSDP（训练引擎）。

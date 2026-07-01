@@ -1,0 +1,17 @@
+1. √
+解析：猜中后 correct_answer=1.0，此时 partial_answer 设为 0.0。partial 只在未猜中时计算，作为部分匹配的鼓励。
+
+2. √
+解析：length_bonus = 1 / 猜测次数。2 轮猜中得 0.5，3 轮猜中得 0.33，步数越少奖励越高。
+
+3. ×
+解析：format_reward 的权重是 0.2，远低于 correct_answer 的 1.0。这是为了防止模型只学格式不学猜词（reward hacking）。
+
+4. B
+解析：length_bonus = 1 / 猜测次数 = 1/2 = 0.5。
+
+5. B
+解析：词表来源于 TextArena Wordle-v0，TextArena 使用 NLTK 的 pos_tag 过滤出 5 字母名词。需要下载 NLTK 的 words 和 averaged_perceptron_tagger_eng 数据。
+
+6. A、B、C、D
+解析：Wordle 奖励函数包含 correct_answer、partial_answer、length_bonus、format_reward 四个组件。总奖励 = correct + partial + length_bonus + 0.2 * format。

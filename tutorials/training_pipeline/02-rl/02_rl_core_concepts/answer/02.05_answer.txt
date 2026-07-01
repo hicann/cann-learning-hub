@@ -1,0 +1,44 @@
+1. √
+解析：策略就是语言模型本身，给定输入后输出 token 概率分布。RL 训练优化的就是这个分布。
+
+2. ×
+解析：参考策略（π_ref）在整个 RL 训练过程中固定不变，它是训练前的 SFT 模型，用作 KL 正则化的锚点。
+
+3. √
+解析：GRPO 用组内平均奖励作为 baseline 计算优势，不需要 Critic 模型。这是它相比 PPO 的核心改进。
+
+4. √
+解析：PPO clip 机制限制新旧策略的概率比在 [1-ε, 1+ε] 范围内，防止策略突变。
+
+5. ×
+解析：Entropy bonus 设置过大会导致 entropy 失控飙升，模型过度探索不收敛。需要选择适中的值（如 0.001）。
+
+6. √
+解析：KL 正则化在 loss 中加入 KL(π || π_ref) 惩罚项，限制当前策略与参考策略之间的距离，防止策略漂移过大。
+
+7. √
+解析：correct_answer 只有猜中才有，是稀疏奖励；partial_answer 每轮都有部分匹配分数，是密集奖励。两者结合加速学习。
+
+8. B
+解析：GRPO 的核心优势是不需要 Critic 模型，用组内平均奖励作为 baseline 来计算优势，减少了显存和计算开销。
+
+9. C
+解析：策略崩塌的典型表现：entropy 趋近 0、response_length 全部打满、correct 归零。模型输出退化为固定模式。
+
+10. B
+解析：保留参考策略是为了通过 KL 正则化防止当前策略偏离初始模型太远，避免模型为了追求高奖励而忘记原有的语言能力。
+
+11. B
+解析：entropy_coeff=0.01 过大，会导致 entropy 失控飙升，模型过度探索不收敛。实测中 25 步内 entropy 从 0.56 飙到 4.5。
+
+12. D
+解析：Wordle 奖励函数包含 correct_answer、partial_answer、length_bonus、format_reward。critic_value 不是奖励组件，是 PPO 中 Critic 模型的输出。
+
+13. A、B、D
+解析：PPO 的组成部分：Critic 模型估计价值（A）、clip 机制限制更新幅度（B）、策略梯度（D）。组内相对优势（C）是 GRPO 的特征，不是 PPO 的。
+
+14. A、B、C
+解析：RL 训练的三种力：策略梯度 pg_loss（A）、KL 正则 kl_loss（B）、熵奖励 entropy_bonus（C）。Critic 价值估计（D）是 PPO 的组件，不是稳定性机制。
+
+15. A、B、C、D
+解析：判断 RL 训练健康度的指标：entropy（崩塌/失控）、kl_loss（漂移程度）、grad_norm（梯度爆炸）、response_length（输出退化）。四个指标都需要监控。

@@ -1,0 +1,24 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {"id":"title","type":"text","x":220,"y":15,"width":300,"height":28,"text":"训练启动流程","fontSize":22,"fontFamily":5,"textAlign":"center","strokeColor":"#1e1e1e","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"b1","type":"rectangle","x":200,"y":55,"width":340,"height":36,"strokeColor":"#868e96","backgroundColor":"#f1f3f5","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t1","type":"text"}]},
+    {"id":"t1","type":"text","x":210,"y":62,"width":320,"height":22,"containerId":"b1","text":"1. 加载配置 → 解析 model_converters 列表","fontSize":14,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"b2","type":"rectangle","x":200,"y":106,"width":340,"height":36,"strokeColor":"#868e96","backgroundColor":"#f1f3f5","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t2","type":"text"}]},
+    {"id":"t2","type":"text","x":210,"y":113,"width":320,"height":22,"containerId":"b2","text":"2. 加载模型 → 从 HuggingFace 权重初始化","fontSize":14,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"b3","type":"rectangle","x":160,"y":157,"width":420,"height":55,"strokeColor":"#2f9e44","backgroundColor":"#b2f2bb","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t3","type":"text"}]},
+    {"id":"t3","type":"text","x":165,"y":164,"width":410,"height":41,"containerId":"b3","text":"3. 执行转换 → 遍历 model_converters，逐个 convert(model)\n   └ NpuRMSNormConverter: 28层×2 RMSNorm → NPURMSNorm","fontSize":13,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#2f9e44","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"b4","type":"rectangle","x":200,"y":227,"width":340,"height":36,"strokeColor":"#868e96","backgroundColor":"#f1f3f5","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t4","type":"text"}]},
+    {"id":"t4","type":"text","x":210,"y":234,"width":320,"height":22,"containerId":"b4","text":"4. 应用并行策略 → FSDP 分片","fontSize":14,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"b5","type":"rectangle","x":200,"y":278,"width":340,"height":36,"strokeColor":"#e8590c","backgroundColor":"#ffd8a8","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t5","type":"text"}]},
+    {"id":"t5","type":"text","x":210,"y":285,"width":320,"height":22,"containerId":"b5","text":"5. 开始训练 → 用优化后的算子跑 forward/backward","fontSize":14,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#e8590c","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"a1","type":"arrow","x":370,"y":91,"width":0,"height":15,"points":[[0,0],[0,15]],"strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1.5,"roughness":1,"opacity":100},
+    {"id":"a2","type":"arrow","x":370,"y":142,"width":0,"height":15,"points":[[0,0],[0,15]],"strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1.5,"roughness":1,"opacity":100},
+    {"id":"a3","type":"arrow","x":370,"y":212,"width":0,"height":15,"points":[[0,0],[0,15]],"strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1.5,"roughness":1,"opacity":100},
+    {"id":"a4","type":"arrow","x":370,"y":263,"width":0,"height":15,"points":[[0,0],[0,15]],"strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1.5,"roughness":1,"opacity":100}
+  ],
+  "appState": {"viewBackgroundColor": "#ffffff", "gridSize": 20},
+  "files": {}
+}

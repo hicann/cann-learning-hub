@@ -1,0 +1,21 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {"id":"title","type":"text","x":220,"y":15,"width":360,"height":28,"text":"融合算子接入链路","fontSize":22,"fontFamily":5,"textAlign":"center","strokeColor":"#1e1e1e","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"b1","type":"rectangle","x":40,"y":65,"width":155,"height":70,"strokeColor":"#1971c2","backgroundColor":"#a5d8ff","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t1","type":"text"}]},
+    {"id":"t1","type":"text","x":45,"y":78,"width":145,"height":44,"containerId":"b1","text":"torch_npu API\ntorch_npu.npu_rms_norm\n(Ascend C kernel)","fontSize":12,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1971c2","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"a1","type":"arrow","x":195,"y":100,"width":35,"height":0,"points":[[0,0],[35,0]],"strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100},
+    {"id":"b2","type":"rectangle","x":230,"y":65,"width":155,"height":70,"strokeColor":"#e8590c","backgroundColor":"#ffd8a8","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t2","type":"text"}]},
+    {"id":"t2","type":"text","x":235,"y":78,"width":145,"height":44,"containerId":"b2","text":"融合算子实现\nNPURMSNorm.forward()\n(nn.Module wrapper)","fontSize":12,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#e8590c","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"a2","type":"arrow","x":385,"y":100,"width":35,"height":0,"points":[[0,0],[35,0]],"strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100},
+    {"id":"b3","type":"rectangle","x":420,"y":65,"width":155,"height":70,"strokeColor":"#2f9e44","backgroundColor":"#b2f2bb","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t3","type":"text"}]},
+    {"id":"t3","type":"text","x":425,"y":78,"width":145,"height":44,"containerId":"b3","text":"ModelConverter\nNpuRMSNormConverter\n(遍历模型+替换)","fontSize":12,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#2f9e44","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100},
+    {"id":"a3","type":"arrow","x":575,"y":100,"width":35,"height":0,"points":[[0,0],[35,0]],"strokeColor":"#495057","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100},
+    {"id":"b4","type":"rectangle","x":610,"y":65,"width":140,"height":70,"strokeColor":"#9c36b5","backgroundColor":"#d0bfff","fillStyle":"solid","strokeWidth":2,"roughness":1,"opacity":100,"roundness":{"type":3},"boundElements":[{"id":"t4","type":"text"}]},
+    {"id":"t4","type":"text","x":615,"y":78,"width":130,"height":44,"containerId":"b4","text":"配置\nconfig_registry.py\n(一行启用)","fontSize":12,"fontFamily":5,"textAlign":"center","verticalAlign":"middle","strokeColor":"#9c36b5","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":1,"roughness":1,"opacity":100}
+  ],
+  "appState": {"viewBackgroundColor": "#ffffff", "gridSize": 20},
+  "files": {}
+}

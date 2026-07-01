@@ -1,0 +1,8 @@
+1. B
+解析：`--checkpoint.last_save_in_hf` 在训练最后一步将权重导出为 HuggingFace 格式，方便后续用 transformers 库加载进行推理和评测。
+
+2. C
+解析：grad_norm 骤降说明模型迅速适应了新数据分布：初始参数与 Wordle 格式不匹配导致梯度剧烈，学会 `<guess>` 格式后梯度迅速稳定。这是 SFT 收敛的正常现象。
+
+3. B
+解析：小模型（1.7B）在单卡上计算量有限，大部分时间花在等待 HBM 数据搬运（memory-bound），而非计算单元不够用。第 4 章通过融合 RMSNorm 算子改善。
