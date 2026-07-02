@@ -1,0 +1,42 @@
+name: Course-Feedback|课程反馈
+description: 如果您需要对课程内容进行反馈或评价，请使用此模板。
+title: "[Course-Feedback|课程反馈]: "
+labels: ["course-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sending an issue! Please fill in the following template to help quickly solve your problem.
+  - type: textarea
+    attributes:
+      label:
+      description: 提供尽可能多的信息描述您的课程反馈
+      value: |
+        ####  一、课程名称 （必填）
+        <!-- 请给出您反馈的课程名称或链接 -->
+
+
+        ####  二、反馈类型 （必填）
+        <!--
+        • 课程内容错误
+        • 课程内容建议
+        • 课程实验环境问题
+        • 课程难度/节奏反馈
+        • 其他
+         -->
+
+        ####  三、反馈详情 （必填）
+        <!-- 请详细描述您的反馈内容，可粘贴截图或日志 -->
+
+        ####  四、环境信息 （可选）
+        <!--
+        • 昇腾硬件型号：
+        • CANN版本:
+        • 操作系统：
+        • 其他相关软件版本：
+         -->
+
+        💡 备注（选填）
+
+    validations:
+      required: true
