@@ -29,7 +29,7 @@
 | 2.2 Ascend C的"Hello world" | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.02_HelloWorld.ipynb) | ✅ 已发布 |
 | 2.3 AscendC编程范式介绍与API介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.03_ascendc_programming_paradigm_and_api_introduction.ipynb) | ✅ 已发布 |
 | 2.4 基于Add算子的核函数介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.04_introduction_to_kernel_functions_based_on_add_operator.ipynb) | ✅ 已发布 |
-| 2.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.05_chapter_test.ipynb) | ✅ 已发布 |
+| 2.10 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.10_chapter_test.ipynb) | ✅ 已发布 |
 
 ## Ascend C算子开发系列（中级）
 

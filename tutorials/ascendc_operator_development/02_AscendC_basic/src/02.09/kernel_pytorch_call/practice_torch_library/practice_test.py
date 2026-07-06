@@ -1,0 +1,21 @@
+import torch
+import torch_npu
+from torch_npu.testing.testcase import TestCase, run_tests
+
+# TODO: 使用 torch.ops.load_library("libpractice_sub_ops.so") 加载动态库。
+
+
+class TestPracticeSub(TestCase):
+    def test_practice_sub(self):
+        torch.manual_seed(0)
+        x = torch.rand([8, 2048], device="cpu", dtype=torch.float16)
+        y = torch.rand([8, 2048], device="cpu", dtype=torch.float16)
+
+        # TODO: 调用 torch.ops.practice_sub_ops.practice_sub(x.npu(), y.npu()).cpu()。
+        # TODO: 使用 x - y 生成期望结果。
+        # TODO: 使用 self.assertRtolEqual(...) 校验结果。
+        raise NotImplementedError("请补全 practice_sub 的 torch.library 集成调用")
+
+
+if __name__ == "__main__":
+    run_tests()

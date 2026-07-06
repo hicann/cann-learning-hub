@@ -78,9 +78,8 @@ private:
     uint32_t tileLength;
 };
 
-__global__ __aicore__ void sigmoid_custom(GM_ADDR x, GM_ADDR y, SigmoidCustomTilingData tiling)
+__global__ __vector__ void sigmoid_custom(GM_ADDR x, GM_ADDR y, SigmoidCustomTilingData tiling)
 {
-    KERNEL_TASK_TYPE_DEFAULT(KERNEL_TYPE_AIV_ONLY);
     KernelSigmoid op;
     op.Init(x, y, tiling.totalLength, tiling.tileNum);
     op.Process();

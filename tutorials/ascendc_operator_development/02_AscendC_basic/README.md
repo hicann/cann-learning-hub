@@ -1,7 +1,7 @@
 # 第2章 Ascend C算子开发基础知识
 
 ## 章节概述
-本章为Ascend C算子开发基础实践章节，通过Hello World示例、编程范式、核函数机制与Add算子实战，带你快速掌握Ascend C基础开发流程，完成从理论到代码的第一步落地。
+本章为Ascend C算子开发基础实践章节，通过Hello World示例、编程范式与API、Add算子核函数开发、融合算子概念、CV融合算子直调开发，以及PyTorch框架下Kernel直调，带你掌握从设备侧核函数编写、Host侧调用到框架侧接入的基础开发流程。
 
 ## 在线体验
 | Notebook | Link | 状态 |
@@ -10,4 +10,7 @@
 | 2.2 Ascend C的"Hello world" | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.02_HelloWorld.ipynb) | ✅ 已发布 |
 | 2.3 AscendC编程范式介绍与API介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.03_ascendc_programming_paradigm_and_api_introduction.ipynb) | ✅ 已发布 |
 | 2.4 基于Add算子的核函数介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.04_introduction_to_kernel_functions_based_on_add_operator.ipynb) | ✅ 已发布 |
-| 2.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.05_chapter_test.ipynb) | ✅ 已发布 |
+| 2.7 融合算子概念介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.07_fused_operator_concept_intro.ipynb) | ✅ 已发布 |
+| 2.8 CV融合算子开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.08_cv_fused_operator_development.ipynb) | ✅ 已发布 |
+| 2.9 PyTorch框架下Kernel直调 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.09_kernel_pytorch_call.ipynb) | ✅ 已发布 |
+| 2.10 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.10_chapter_test.ipynb) | ✅ 已发布 |
