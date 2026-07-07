@@ -1,7 +1,7 @@
 #include <cstdint>
 #include <iostream>
 #include <vector>
-#include <cmath> 
+#include <cmath>
 #include <algorithm>
 #include <iterator>
 #include "acl/acl.h"
@@ -52,7 +52,7 @@ private:
         AscendC::LocalTensor<float> yLocal = outQueueY.AllocTensor<float>();
         AscendC::Muls(xLocal, xLocal,(float)-1, this->tileLength);
         AscendC::Exp(xLocal, xLocal, this->tileLength);
-        
+
         AscendC::Adds(xLocal, xLocal,(float)1, this->tileLength);
         AscendC::Duplicate<float>(yLocal, (float)1, this->tileLength);
         AscendC::Div(yLocal, yLocal, xLocal, this->tileLength);
