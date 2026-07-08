@@ -33,6 +33,8 @@
 | 2.6 基于高阶API的矩阵乘算子开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.06_matrix_multiplication_operator_development_with_high_level_api.ipynb) | ✅ 已发布 |
 | 2.10 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.10_chapter_test.ipynb) | ✅ 已发布 |
 | 2.12 Matmul综合实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.12_matmul_practice.ipynb) | ✅ 已发布 |
+| 2.15 Sigmoid直调章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.15_vector_operator_practice.ipynb) | ✅ 已发布 |
+| 2.16 泛化Tiling设计 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/02_AscendC_basic/02.16_generalized_tiling_design.ipynb) | ✅ 已发布 |
 
 ## Ascend C算子开发系列（中级）
 

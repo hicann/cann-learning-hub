@@ -88,7 +88,7 @@ __global__ __aicore__ void sub_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z, SubCustom
 
 std::vector<float> kernel_sub(std::vector<float> &x, std::vector<float> &y)
 {
-    constexpr uint32_t blockDim = 8;
+    constexpr uint32_t numBlocks = 8;
     uint32_t totalLength = x.size();
     size_t totalByteSize = totalLength * sizeof(float);
     int32_t deviceId = 0;
@@ -113,7 +113,7 @@ std::vector<float> kernel_sub(std::vector<float> &x, std::vector<float> &y)
     aclrtMemcpy(xDevice, totalByteSize, xHost, totalByteSize, ACL_MEMCPY_HOST_TO_DEVICE);
     aclrtMemcpy(yDevice, totalByteSize, yHost, totalByteSize, ACL_MEMCPY_HOST_TO_DEVICE);
 
-    sub_custom<<<blockDim, nullptr, stream>>>(xDevice, yDevice, zDevice, tiling);
+    sub_custom<<<numBlocks, nullptr, stream>>>(xDevice, yDevice, zDevice, tiling);
     aclrtSynchronizeStream(stream);
 
     aclrtMemcpy(zHost, totalByteSize, zDevice, totalByteSize, ACL_MEMCPY_DEVICE_TO_HOST);

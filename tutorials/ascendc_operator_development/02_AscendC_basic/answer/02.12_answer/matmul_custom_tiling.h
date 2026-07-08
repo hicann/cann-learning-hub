@@ -8,7 +8,7 @@
 #include "tiling/tiling_api.h"
 
 inline bool GenMatmulTiling(platform_ascendc::PlatformAscendC* ascendcPlatform, TCubeTiling& tiling,
-                            int32_t m, int32_t n, int32_t k, int32_t blockDim)
+                            int32_t m, int32_t n, int32_t k, int32_t numBlocks)
 {
     if (ascendcPlatform == nullptr) {
         std::cerr << "ascendcPlatform is nullptr." << std::endl;
@@ -16,7 +16,7 @@ inline bool GenMatmulTiling(platform_ascendc::PlatformAscendC* ascendcPlatform, 
     }
 
     matmul_tiling::MultiCoreMatmulTiling cubeTiling(*ascendcPlatform);
-    cubeTiling.SetDim(blockDim);
+    cubeTiling.SetDim(numBlocks);
     cubeTiling.SetAType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND,
                         matmul_tiling::DataType::DT_INT8);
     cubeTiling.SetBType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND,

@@ -87,7 +87,7 @@ __global__ __vector__ void sigmoid_custom(GM_ADDR x, GM_ADDR y, SigmoidCustomTil
 
 std::vector<float> kernel_sigmoid(std::vector<float> &x)
 {
-    constexpr uint32_t blockDim = 8;
+    constexpr uint32_t numBlocks = 8;
     uint32_t totalLength = x.size();
     size_t totalByteSize = totalLength * sizeof(float);
     int32_t deviceId = 0;
@@ -108,7 +108,7 @@ std::vector<float> kernel_sigmoid(std::vector<float> &x)
 
     aclrtMemcpy(xDevice, totalByteSize, xHost, totalByteSize, ACL_MEMCPY_HOST_TO_DEVICE);
 
-    sigmoid_custom<<<blockDim, nullptr, stream>>>(xDevice, yDevice, tiling);
+    sigmoid_custom<<<numBlocks, nullptr, stream>>>(xDevice, yDevice, tiling);
     aclrtSynchronizeStream(stream);
 
     aclrtMemcpy(yHost, totalByteSize, yDevice, totalByteSize, ACL_MEMCPY_DEVICE_TO_HOST);
