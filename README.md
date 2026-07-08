@@ -132,8 +132,10 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 │   ├── ascendc-ops-project           # 自定义算子工程生成
 │   └── cannjudge-submit              # CANNJudge 竞赛提交
 ├── docs                               # 文档与指南
-│   ├── cannlab_env_experience_guide.md 	# CANNLab 环境体验指南
-│   └── acceptance_criteria_for_new_course_submission_and_launch.md 	# 新课程上库与上线验收标准
+│   ├── acceptance_criteria_for_new_course_submission_and_launch.md 	# 新课程上库与上线验收标准
+│   ├── CANNLab_course_development_guide.md         	                # 基于 CANNLab 环境开发与提交课程指南
+│   ├── CANNLab_env_experience_guide.md             	                # CANNLab 环境体验指南
+│   └── test_branch_course_experience_guide.md      	                # Test 分支课程体验指导书
 └── README.md
 ```
 
