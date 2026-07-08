@@ -14,13 +14,12 @@
 | --- | --- | --- |
 | 1 | 签署 CLA & Fork 仓库 | 完成社区准入准备，获取个人开发仓库。 |
 | 2 | 创建并进入 CANNLab 云开发环境 | 申请 NPU 环境，通过 WebIDE 连接。 |
-| 3 | 安装 Jupyter 扩展 | 为运行 `.ipynb` 教程准备 Notebook 执行环境。 |
-| 4 | 克隆仓库 & 切换开发分支 | 在环境中拉取代码，创建课程开发分支。 |
-| 5 | 开发课程内容 | 按照目录结构与 Notebook 规范开发课程。 |
-| 6 | 提交代码 | 将开发内容提交并推送到个人 fork 仓库的 `test` 分支。 |
-| 7 | 运行验证 | 在课程支持的环境中逐 cell 执行 Notebook，确认可正常运行。 |
-| 8 | 发起 PR | 向 `cann/cann-learning-hub` 的 `test` 分支发起 PR。 |
-| 9 | 响应评审 & 迭代修改 | 根据评审意见在环境中修改并更新 PR。 |
+| 3 | 克隆仓库 & 切换开发分支 | 在环境中拉取代码，切换到 `test` 分支。 |
+| 4 | 开发课程内容 | 按照目录结构与 Notebook 规范开发课程。 |
+| 5 | 提交代码 | 将开发内容提交并推送到个人 fork 仓库的 `test` 分支。 |
+| 6 | 运行验证 | 在课程支持的环境中逐 cell 执行 Notebook，确认可正常运行。 |
+| 7 | 发起 PR | 向 `cann/cann-learning-hub` 的 `test` 分支发起 PR。 |
+| 8 | 响应评审 & 迭代修改 | 根据评审意见在环境中修改并更新 PR。 |
 
 详细规范请参见 [新课程上库与上线验收标准](./acceptance_criteria_for_new_course_submission_and_launch.md)，本指南聚焦于 CANNLab 环境下的操作步骤。
 
@@ -63,12 +62,8 @@
 
 按课程目标硬件选择规格配置（以 A2 为例）：
 
-- **开发环境名称**：自行命名。
-- **处理器类型**：昇腾 NPU。
-- **模板名称**：`cann_master-py3.12-A2-arm-20260514`。
-- **规格**：`1*NPU 910B3 16vCPUs 32GiB`。
-
 <img src="./images/CANNLab_env_experience_guide/create_npu.png" alt="create_npu" width="500px">
+
 
 点击 **创建** 后，点击 **开机** 启动环境：
 
@@ -88,29 +83,15 @@
 
 ---
 
-## 4. 安装 Jupyter 扩展
+## 4. 克隆仓库与分支管理
 
-课程以 `.ipynb` 形式交付，需在 WebIDE 中安装 Jupyter 相关扩展以打开和运行 Notebook：
-
-- **Python 扩展**：用于识别 Python 环境和解释器（通常已预装）。
-- **Jupyter 扩展**：用于打开和运行 `.ipynb` 文件，并管理 kernel。
-- **Jupyter Notebook Renderers 扩展**：用于渲染表格、图片、Markdown、HTML、图表等输出内容（通常已预装）。
-
-若 **Jupyter 扩展** 未安装，点击左侧 **扩展**，搜索 **Jupyter** 并点击 **安装**：
-
-<img src="./images/CANNLab_env_experience_guide/jupyter_install.png">
-
----
-
-## 5. 克隆仓库与分支管理
-
-### 5.1 打开终端
+### 4.1 打开终端
 
 在 WebIDE 中通过菜单 **Terminal → New Terminal** 打开集成终端。
 
 <img src="./images/CANNLab_env_experience_guide/terminal.png">
 
-### 5.2 克隆个人 fork 仓库
+### 4.2 克隆个人 fork 仓库
 
 执行以下命令，克隆个人 fork 仓库：
 
@@ -120,7 +101,7 @@ git clone https://gitcode.com/<your_username>/cann-learning-hub.git
 cd cann-learning-hub
 ```
 
-### 5.3 切换到开发分支
+### 4.3 切换到开发分支
 
 课程开发统一基于个人 fork 仓库的 `test` 分支进行，切换到该分支即可开始开发：
 
@@ -130,9 +111,9 @@ git checkout test
 
 ---
 
-## 6. 开发课程内容
+## 5. 开发课程内容
 
-### 6.1 在 WebIDE 中打开 fork 仓库
+### 5.1 在 WebIDE 中打开 fork 仓库
 
 克隆完成后，在 WebIDE 中使用快捷键 `Ctrl+K Ctrl+O` 打开工程，在弹出窗口输入 `/mnt/workspace/gitCode/` 目录：
 
@@ -144,14 +125,14 @@ git checkout test
 
 即可在左侧资源管理器中看到自己的 fork 仓库目录结构，直接在其中开发。
 
-### 6.2 确定课程目录位置
+### 5.2 确定课程目录位置
 
 - **官方课程**：放在 `tutorials/` 目录下。
 - **社区贡献课程**：放在 `contrib/tutorials/` 目录下。
 
 课程目录名建议全部小写，多个单词之间用下划线连接，例如 `yolov3_inference`。
 
-### 6.3 目录结构
+### 5.3 目录结构
 
 按照以下结构组织课程内容（以 `tutorials/` 下多章节课程为例）：
 
@@ -181,7 +162,7 @@ tutorials/
 - 章节目录命名符合 `0n_abc` 格式，例如 `01_introduction`。
 - 小节 notebook 命名符合 `0n.0m_abc.ipynb` 格式，例如 `01.01_chapter_intro.ipynb`。
 
-### 6.4 开发 README.md
+### 5.4 开发 README.md
 
 课程根目录的 `README.md` 必须包含：
 
@@ -193,7 +174,7 @@ tutorials/
   - 若支持 **gitcode 在线 Notebook 环境**：在 README 中说明。gitcode 在线体验链接由仓库维护人员统一配置，开发者无需自行配置；课程提交到 `test` 分支后，请创建一个 Issue，说明课程名称、目录路径及各 `.ipynb` 入口文件，请求维护人员协助配置 gitcode 在线体验链接。
   - 若支持 **CANNLab 环境**：在 README 中说明，并附上 CANNLab 环境体验指导链接：[CANNLab 环境体验指南](./CANNLab_env_experience_guide.md)。
 
-### 6.5 开发 Notebook 内容
+### 5.5 开发 Notebook 内容
 
 每个章节的小节 Notebook 必须包含 **小节概述、教程具体内容、课后练习或课后实践** 三个部分。
 
@@ -206,7 +187,7 @@ tutorials/
 - **课后实践**：实践题的代码开发、编译执行等操作在 code cell 中执行；待填写文件通过 `%%writefile` 命令写入；答案通过 `cat` 命令展示。
 - **源码查看**：源码较多放入 `src` 时，notebook 中通过 `cat`、`tree`、`ls` 等命令展示关键源码结构与内容。
 
-### 6.6 在 WebIDE 中编辑 Notebook
+### 5.6 在 WebIDE 中编辑 Notebook
 
 在左侧资源管理器中找到并双击 `.ipynb` 文件即可在 Notebook 编辑器中打开，通过顶部工具栏新增单元格编写内容：
 
@@ -217,7 +198,7 @@ tutorials/
 
 ---
 
-## 7. 提交代码
+## 6. 提交代码
 
 在终端中执行以下命令，将开发内容提交到个人 fork 仓库的 `test` 分支：
 
@@ -231,18 +212,18 @@ git push origin test
 
 ---
 
-## 8. 运行验证
+## 7. 运行验证
 
 课程提交前 **必须** 在课程要支持的环境中完成实际运行验证，确保所有 Notebook 可从上到下顺序执行且不报错。根据课程声明的在线体验环境，分为：
 
 - **gitcode 在线 Notebook 环境**：在 gitcode 在线 Notebook 中完成运行验证。
 - **CANNLab 环境**：在 CANNLab 云开发环境（或 950 尝鲜体验环境）中完成运行验证。
 
-### 8.1 打开 Notebook
+### 7.1 打开 Notebook
 
 运行验证前，需先在对应支持环境中打开课程 Notebook。
 
-#### 8.1.1 在 gitcode 在线 Notebook 环境中打开
+#### 7.1.1 在 gitcode 在线 Notebook 环境中打开
 
 点击[gitcode在线体验链接](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/01_ai_basics.ipynb)进入 Notebook 在线体验环境。
 
@@ -268,15 +249,49 @@ git checkout test
 
 <img src="./images/test_branch_course_experience_guide/cann-learning-hub_contents.png" width="400">
 
-#### 8.1.2 在 CANNLab 环境中打开
+#### 7.1.2 在 CANNLab 环境中打开
 
 按照本指南第 3 节创建并进入 CANNLab 云开发环境，通过 WebIDE 在左侧资源管理器中双击课程 `.ipynb` 文件即可打开 Notebook。
 
-### 8.2 逐 cell 执行验证
+### 7.2 逐 cell 执行验证
 
-打开每个 `.ipynb` 文件，在右上角 **选择内核**，选择 Python Kernel（例如 **Python 3.12.9**）：
+#### 7.2.1 注册 Jupyter 内核
 
-<img src="./images/CANNLab_env_experience_guide/select_kernel.png">
+在终端中依次执行以下命令，注册 Python 3.11.4 (CANN) 内核：
+
+```bash
+# 安装 ipykernel（如已安装会提示 already satisfied，忽略即可）
+/opt/buildtools/Python-3.11.4/bin/python3.11 -m pip install ipykernel
+# 注册内核
+/opt/buildtools/Python-3.11.4/bin/python3.11 -m ipykernel install --user \
+  --name cann_py311 \
+  --display-name "Python 3.11.4 (CANN)"
+```
+
+#### 7.2.2 设置环境变量自动加载
+
+创建 `usercustomize.py`，让 Python 启动时自动设置 CANN 环境变量：
+
+```bash
+# 获取 CANN 路径
+CANN_PATH=$(echo $ASCEND_TOOLKIT_HOME)
+mkdir -p ~/.local/lib/python3.11/site-packages
+cat > ~/.local/lib/python3.11/site-packages/usercustomize.py << EOF
+import os
+os.environ.setdefault('ASCEND_OPP_PATH', '${CANN_PATH}/opp')
+os.environ.setdefault('ASCEND_TOOLKIT_HOME', '${CANN_PATH}')
+os.environ.setdefault('ASCEND_HOME_PATH', '${CANN_PATH}')
+os.environ.setdefault('ASCEND_AICPU_PATH', '${CANN_PATH}')
+EOF
+```
+
+#### 7.2.3 关机重新开机并执行验证
+
+完成上述配置后，**关机并重新开机**，使内核与环境变量配置生效。开机后通过 WebIDE 重新进入环境，打开每个 `.ipynb` 文件，在右上角 **选择内核**，选择 **Python 3.11.4 (CANN)**：
+
+<img src="./images/CANNLab_env_experience_guide/kernel1.png">
+
+<img src="./images/CANNLab_env_experience_guide/kernel2.png">
 
 内核选择完成后，从第一个 code cell 开始依次点击运行按钮，确认：
 
@@ -290,7 +305,7 @@ git checkout test
 
 <img src="./images/CANNLab_env_experience_guide/run_code_cell_success.png">
 
-### 8.3 验证记录
+### 7.3 验证记录
 
 在 PR 描述中需要说明：
 
@@ -298,7 +313,7 @@ git checkout test
 - 运行环境（如 CANNLab 云开发环境，模板及规格）。
 - 验证结果（所有 Notebook 运行通过 / 存在的已知问题）。
 
-### 8.4 多硬件验证
+### 7.4 多硬件验证
 
 若课程同时支持多种硬件，需在每种硬件对应的体验环境中分别完成运行验证：
 
@@ -318,9 +333,9 @@ git checkout test
 
 ---
 
-## 9. 发起 PR
+## 8. 发起 PR
 
-### 9.1 发起 PR
+### 8.1 发起 PR
 
 1. 在 GitCode 上进入个人 fork 仓库页面，切换到 `test` 分支。
 2. 点击 **发起 Pull Request**。
@@ -332,7 +347,7 @@ git checkout test
    - **类型标签**：勾选 **新特性** 或对应类型。
 5. 提交 PR。
 
-### 9.2 PR 准入自检
+### 8.2 PR 准入自检
 
 提交 PR 前请对照 [PR 准入 Checklist](./acceptance_criteria_for_new_course_submission_and_launch.md#6-pr-准入-checklist) 完成自检，重点关注：
 
@@ -345,13 +360,13 @@ git checkout test
 
 ---
 
-## 10. 响应评审与迭代修改
+## 9. 响应评审与迭代修改
 
-### 10.1 查看评审意见
+### 9.1 查看评审意见
 
 PR 提交后，课程组组长与 committer 会依据准合入 Checklist 进行评审。评审意见会在 PR 评论中给出。
 
-### 10.2 在开发环境中修改
+### 9.2 在开发环境中修改
 
 如需修改，在原开发环境（CANNLab 云开发环境）中继续开发。若使用 CANNLab 环境，环境关机后重新开机并进入即可，代码已保存在 fork 仓库。拉取最新代码：
 
@@ -371,7 +386,7 @@ git push origin test
 
 推送后 PR 会自动更新，在 PR 评论中回复评审意见并说明修改情况。
 
-### 10.3 合入流程
+### 9.3 合入流程
 
 - PR 评审通过后合入 `test` 分支。
 - 在 `test` 分支组织内测，评审团队体验课程并提 Issue 闭环问题。
@@ -379,7 +394,7 @@ git push origin test
 
 ---
 
-## 11. 常见问题
+## 10. 常见问题
 
 **Q1：课程应该提交到 `test` 分支还是 `master` 分支？**
 
@@ -399,7 +414,7 @@ git push origin test
 
 ---
 
-## 12. 相关文档
+## 11. 相关文档
 
 | 文档 | 说明 |
 | --- | --- |
