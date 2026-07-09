@@ -13,8 +13,8 @@ int32_t main(int argc, char const *argv[])
     aclrtSetDevice(deviceId);
     aclrtStream stream = nullptr;
     aclrtCreateStream(&stream);
-    constexpr uint32_t numBlocks = 4;
-    hi_ascend<<<numBlocks, nullptr, stream>>>();
+    constexpr uint32_t blockDim = 4;
+    hi_ascend<<<blockDim, nullptr, stream>>>();
     aclrtSynchronizeStream(stream);
     aclrtDestroyStream(stream);
     aclrtResetDevice(deviceId);
