@@ -1,0 +1,168 @@
+#include <cstdint>
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <iterator>
+#include "acl/acl.h"
+#include "kernel_operator.h"
+
+constexpr uint32_t BUFFER_NUM = 2; // tensor num for each queue
+
+struct SigmoidCustomTilingData
+{
+    uint32_t totalLength;
+    uint32_t tileNum;
+};
+
+class KernelSigmoid {
+public:
+    __aicore__ inline KernelSigmoid() {}
+    __aicore__ inline void Init(GM_ADDR x, GM_ADDR y, uint32_t totalLength, uint32_t tileNum)
+    {
+        this->blockLength = totalLength / AscendC::GetBlockNum();
+        this->tileNum = tileNum;
+        this->tileLength = this->blockLength / tileNum / BUFFER_NUM;
+        xGm.SetGlobalBuffer((__gm__ float *)x + this->blockLength * AscendC::GetBlockIdx(), this->blockLength);
+        yGm.SetGlobalBuffer((__gm__ float *)y + this->blockLength * AscendC::GetBlockIdx(), this->blockLength);
+        pipe.InitBuffer(inQueueX, BUFFER_NUM, this->tileLength * sizeof(float));
+        pipe.InitBuffer(outQueueY, BUFFER_NUM, this->tileLength * sizeof(float));
+    }
+    __aicore__ inline void Process()
+    {
+        int32_t loopCount = this->tileNum * BUFFER_NUM;
+        for (int32_t i = 0; i < loopCount; i++) {
+            CopyIn(i);
+            Compute(i);
+            CopyOut(i);
+        }
+    }
+
+private:
+    __aicore__ inline void CopyIn(int32_t progress)
+    {
+        AscendC::LocalTensor<float> xLocal = inQueueX.AllocTensor<float>();
+        AscendC::DataCopy(xLocal, xGm[progress * this->tileLength], this->tileLength);
+        inQueueX.EnQue(xLocal);
+    }
+    __aicore__ inline void Compute(int32_t progress)
+    {
+        AscendC::LocalTensor<float> xLocal = inQueueX.DeQue<float>();
+
+        AscendC::LocalTensor<float> yLocal = outQueueY.AllocTensor<float>();
+        AscendC::Muls(xLocal, xLocal,(float)-1, this->tileLength);
+        AscendC::Exp(xLocal, xLocal, this->tileLength);
+
+        AscendC::Adds(xLocal, xLocal,(float)1, this->tileLength);
+        AscendC::Duplicate<float>(yLocal, (float)1, this->tileLength);
+        AscendC::Div(yLocal, yLocal, xLocal, this->tileLength);
+
+        outQueueY.EnQue<float>(yLocal);
+        inQueueX.FreeTensor(xLocal);
+    }
+    __aicore__ inline void CopyOut(int32_t progress)
+    {
+        AscendC::LocalTensor<float> yLocal = outQueueY.DeQue<float>();
+        AscendC::DataCopy(yGm[progress * this->tileLength], yLocal, this->tileLength);
+        outQueueY.FreeTensor(yLocal);
+    }
+
+private:
+    AscendC::TPipe pipe;
+    AscendC::TQue<AscendC::TPosition::VECIN, BUFFER_NUM> inQueueX;
+    AscendC::TQue<AscendC::TPosition::VECOUT, BUFFER_NUM> outQueueY;
+    AscendC::GlobalTensor<float> xGm;
+    AscendC::GlobalTensor<float> yGm;
+    uint32_t blockLength;
+    uint32_t tileNum;
+    uint32_t tileLength;
+};
+
+__global__ __vector__ void sigmoid_custom(GM_ADDR x, GM_ADDR y, SigmoidCustomTilingData tiling)
+{
+    KernelSigmoid op;
+    op.Init(x, y, tiling.totalLength, tiling.tileNum);
+    op.Process();
+}
+
+std::vector<float> kernel_sigmoid(std::vector<float> &x)
+{
+    constexpr uint32_t numBlocks = 8;
+    uint32_t totalLength = x.size();
+    size_t totalByteSize = totalLength * sizeof(float);
+    int32_t deviceId = 0;
+    aclrtStream stream = nullptr;
+    SigmoidCustomTilingData tiling = {/*totalLength:*/totalLength, /*tileNum:*/8};
+    uint8_t *xHost = reinterpret_cast<uint8_t *>(x.data());
+    uint8_t *yHost = nullptr;
+    uint8_t *xDevice = nullptr;
+    uint8_t *yDevice = nullptr;
+
+    aclInit(nullptr);
+    aclrtSetDevice(deviceId);
+    aclrtCreateStream(&stream);
+
+    aclrtMallocHost((void **)(&yHost), totalByteSize);
+    aclrtMalloc((void **)&xDevice, totalByteSize, ACL_MEM_MALLOC_HUGE_FIRST);
+    aclrtMalloc((void **)&yDevice, totalByteSize, ACL_MEM_MALLOC_HUGE_FIRST);
+
+    aclrtMemcpy(xDevice, totalByteSize, xHost, totalByteSize, ACL_MEMCPY_HOST_TO_DEVICE);
+
+    sigmoid_custom<<<numBlocks, nullptr, stream>>>(xDevice, yDevice, tiling);
+    aclrtSynchronizeStream(stream);
+
+    aclrtMemcpy(yHost, totalByteSize, yDevice, totalByteSize, ACL_MEMCPY_DEVICE_TO_HOST);
+    std::vector<float> y((float *)yHost, (float *)(yHost + totalByteSize));
+
+    aclrtFree(xDevice);
+    aclrtFree(yDevice);
+    aclrtFreeHost(yHost);
+
+    aclrtDestroyStream(stream);
+    aclrtResetDevice(deviceId);
+    aclFinalize();
+
+    return y;
+}
+
+uint32_t VerifyResult(std::vector<float> &output, std::vector<float> &golden)
+{
+    auto printTensor = [](std::vector<float> &tensor, const char *name) {
+        constexpr size_t maxPrintSize = 20;
+        std::cout << name << ": ";
+        std::copy(tensor.begin(), tensor.begin() + std::min(tensor.size(), maxPrintSize),
+            std::ostream_iterator<float>(std::cout, " "));
+        if (tensor.size() > maxPrintSize) {
+            std::cout << "...";
+        }
+        std::cout << std::endl;
+    };
+    printTensor(output, "Output");
+    printTensor(golden, "Golden");
+    if (std::equal(golden.begin(), golden.end(), output.begin())) {
+        std::cout << "[Success] Case accuracy is verification passed." << std::endl;
+        return 0;
+    } else {
+        std::cout << "[Failed] Case accuracy is verification failed!" << std::endl;
+        return 1;
+    }
+    return 0;
+}
+
+std::vector<float> sigmoid(const std::vector<float>& x) {
+    std::vector<float> y(x.size());
+    for (size_t i = 0; i < x.size(); ++i) {
+        y[i] = 1.0f / (1.0f + std::exp(-x[i]));
+    }
+    return y;
+}
+
+int32_t main(int32_t argc, char *argv[])
+{
+    constexpr uint32_t totalLength = 8 * 2048;
+    constexpr float valueX = 5.5f;
+    std::vector<float> x(totalLength, valueX);
+    std::vector<float> output = kernel_sigmoid(x);
+    std::vector<float> golden = sigmoid(x);
+    return VerifyResult(output, golden);
+}
