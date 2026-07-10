@@ -1,3 +1,2 @@
 torch==2.8.0
 torch_npu==2.8.0.post4
-Ninja
