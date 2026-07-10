@@ -1,9 +1,10 @@
 # CANN 教程中心
-本目录汇总了昇腾 CANN（Compute Architecture for Neural Networks）各核心领域的官方教程，覆盖算子开发、高性能编程等关键方向，助力开发者快速掌握昇腾 NPU 开发能力。
+本目录汇总了昇腾 CANN（Compute Architecture for Neural Networks）各核心领域的官方教程，覆盖大模型推理、算子开发、高性能编程等关键方向，助力开发者快速掌握昇腾 NPU 开发能力。
 
 ## 教程列表
 | 教程名称 | 教程描述 | 访问链接 | 状态 |
 |----------|----------|----------|------|
+| 大模型推理系列课程 | 从大语言模型基础出发，介绍 CANN 推理仓、推理优化、量化与 Profiling，并提供 Qwen3-8B 单卡实践 | [llm_inference](./llm_inference) | ✅ 已发布 |
 | Ascend C 算子开发系列教程 | 面向昇腾 NPU 的高性能算子开发全流程教程，包含 Tiling 模板化编程、算子调试、性能优化等核心内容 | [ascendc_operator_development](./ascendc_operator_development) | ✅ 已发布 |
 | MC2融合算子开发教程 | MC2融合算子开发教程，详细介绍 MC2 融合算子的概念、开发流程和实践 | [MC2_fused_operator_development](./MC2_fused_operator_development) | 🚧 开发中 |
 | PyPTO 算子开发系列教程 | 基于 Tile 编程模型的昇腾 NPU 算子开发教程，聚焦 PyPTO 框架的快速上手与实战应用 | - | 🚧 规划中 |
