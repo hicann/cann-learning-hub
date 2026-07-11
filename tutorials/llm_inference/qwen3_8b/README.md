@@ -14,7 +14,7 @@
 本课程采用该仓库的 recipes 工作流与 Qwen3-8B 单卡 BF16 推理所需代码子集，保留 YAML 配置、`executor/scripts/infer.sh` 启动方式、离线推理、Profiling 和 Dense RMSNorm NPU 融合验证链路。学习本课程后，可以继续到完整 `cann-recipes-infer` 仓库中查看更多模型和更复杂的部署优化实践。
 
 >- **注意：**
->- 在线体验请直接在 GitCode Notebook 环境中执行。Notebook 环境需包含 CANN、`torch`、`torch_npu`、`transformers`、`modelscope`、`datasets` 和 recipes 推理所需依赖；本地运行前请先执行 `/usr/local/Ascend/ascend-toolkit/set_env.sh` 或等价 CANN 环境脚本。
+>- 教程支持在CANNLab中执行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）。环境中需包含 CANN、`torch`、`torch_npu`、`transformers`、`modelscope`、`datasets` 和 recipes 推理所需依赖；本地运行前请先执行 `/usr/local/Ascend/ascend-toolkit/set_env.sh` 或等价 CANN 环境脚本。
 >- `transformers` 版本需支持 Qwen3 模型结构，建议使用 4.51.0 或更高版本。
 >- `Qwen3-8B` BF16 权重约 16GB，短上下文单卡验证建议使用 64GB HBM NPU，磁盘空间建议至少 40GB。教程默认关闭 thinking 模式并使用短输出，降低在线环境资源压力。
 >- 模型权重使用 `Qwen/Qwen3-8B`。首次运行会通过 ModelScope 下载并缓存权重；如环境中已准备本地权重，可设置 `QWEN3_8B_MODEL_PATH=/path/to/Qwen3-8B`。
@@ -73,11 +73,12 @@ export QWEN3_8B_MODEL_PATH=/path/to/Qwen3-8B
 
 ## Notebooks
 
-| Notebook | Link | 状态 |
-|--|--|--|
-| 1. 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/01_chapter_intro.ipynb) | ✅ 已发布 |
-| 2. Baseline 跑通 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/02_baseline_inference.ipynb) | ✅ 已发布 |
-| 3. Profiling 分析 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/03_profiling_analysis.ipynb) | ✅ 已发布 |
-| 4. Dense RMSNorm NPU 融合路径优化验证 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/04_npu_optimization.ipynb) | ✅ 已发布 |
-| 5. 量化Qwen3-8B模型 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/05_quantization_qwen3_8b.ipynb) | ✅ 已发布 |
-| 6. 自定义量化 A8W8 matmul 算子开发并接入 Qwen3-8B | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/06_custom_matmul_operator_development_and_integration_with_qwen3_8b.ipynb) | ✅ 已发布 |
+<table>
+<tr><th>Notebook</th><th>在线体验</th><th>状态</th></tr>
+<tr><td>1. 章节介绍</td><td rowspan="6">在CANNLab中运行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）</td><td>✅ 已发布</td></tr>
+<tr><td>2. Baseline 跑通</td><td>✅ 已发布</td></tr>
+<tr><td>3. Profiling 分析</td><td>✅ 已发布</td></tr>
+<tr><td>4. Dense RMSNorm NPU 融合路径优化验证</td><td>✅ 已发布</td></tr>
+<tr><td>5. 量化Qwen3-8B模型</td><td>✅ 已发布</td></tr>
+<tr><td>6. 自定义量化 A8W8 matmul 算子开发并接入 Qwen3-8B</td><td>✅ 已发布</td></tr>
+</table>

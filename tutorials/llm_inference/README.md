@@ -16,14 +16,15 @@
 
 配套实践以 Qwen3-8B 单卡推理为主线，使用 cann-recipes-infer 的 YAML 配置和推理入口完成部署、Profiling、优化与量化验证。详细环境要求和运行说明见 [qwen3_8b/README.md](./qwen3_8b/README.md)。
 
-| 序号 | 实践内容 | 在线体验 |
-|---|---|---|
-| 01 | 课程与实践流程介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/01_chapter_intro.ipynb) |
-| 02 | Baseline 推理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/02_baseline_inference.ipynb) |
-| 03 | Profiling 分析 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/03_profiling_analysis.ipynb) |
-| 04 | Dense RMSNorm NPU 融合优化验证 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/04_npu_optimization.ipynb) |
-| 05 | Qwen3-8B 量化 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/05_quantization_qwen3_8b.ipynb) |
-| 06 | 自定义量化 MatMul 算子开发与模型接入 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/llm_inference/qwen3_8b&scanFilePath=tutorials/llm_inference/qwen3_8b/06_custom_matmul_operator_development_and_integration_with_qwen3_8b.ipynb) |
+<table>
+<tr><th>序号</th><th>实践内容</th><th>在线体验</th></tr>
+<tr><td>01</td><td>课程与实践流程介绍</td><td rowspan="6">在CANNLab中运行（<a href="../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）</td></tr>
+<tr><td>02</td><td>Baseline 推理</td></tr>
+<tr><td>03</td><td>Profiling 分析</td></tr>
+<tr><td>04</td><td>Dense RMSNorm NPU 融合优化验证</td></tr>
+<tr><td>05</td><td>Qwen3-8B 量化</td></tr>
+<tr><td>06</td><td>自定义量化 MatMul 算子开发与模型接入</td></tr>
+</table>
 
 ## 目录结构
 
