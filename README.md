@@ -1,6 +1,9 @@
 # cann-learning-hub
 
 ## 🔥Latest News
+- [2026/07] 新增[Ascend C 算子开发系列（Kernel 直调版）教程](./tutorials/ascendc_operator_development_light)，覆盖算子开发基础概念、Ascend C 编程范式、Vector/Cube/融合算子开发与性能优化实战。
+- [2026/07] 新增[大模型推理系列课程](./tutorials/llm_inference)，涵盖大语言模型基础、CANN 推理仓库、推理优化、量化与 Profiling，并提供 Qwen3-8B 单卡实践。
+- [2026/07] 新增[Conv 算子开发实战教程](./tutorials/conv_operator_development)，覆盖卷积算子开发核心概念与实践。
 - [2026/06] cann-learning-hub在线体验适配cann9.0.0
 - [2026/05] cann-learning-hub新增[MC2融合算子开发系列教程](./tutorials/MC2_fused_operator_development)，讲解MC2融合算子核心概念与开发方法。
 - [2026/05] 新增[HIXL应用开发系列教程](./tutorials/hixl_development)，讲解昇腾单边通信库核心概念与开发方法。
@@ -39,8 +42,8 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 <tr><td><a href="./quick_start/first_llm_inference/01_qwen3_npu_inference_baseline.ipynb">在昇腾上跑通 Qwen3-0.6B</a></td><td>快速上手：第一个大模型推理部署（在线推理，看功能是否正确）</td><td></td><td>✅ 已上线</td></tr>
 <tr><td><a href="./quick_start/first_llm_inference/02_qwen3_npu_inference_npugraph_ex.ipynb">Qwen3-0.6B 推理（图模式）</a></td><td>快速上手：第一个大模型推理加速实践（通过图模式加速推理）</td><td></td><td>✅ 已上线</td></tr>
 <tr><td><a href="./quick_start/first_llm_inference/03_qwen3_npu_inference_fused_op.ipynb">Qwen3-0.6B 推理（融合算子替换）</a></td><td>快速上手：第一个大模型推理加速实践（通过替换融合算子加速推理）</td><td></td><td>✅ 已上线</td></tr>
-<tr><td>端到端推理性能优化实践</td><td>Sana-Video 推理优化实践</td><td></td><td>🚧 建设中</td></tr>
-<tr><td>推理优化系列（初级）</td><td>大模型演化 / 结构 / 推理流程 / 多模态扩展</td><td></td><td>🚧 建设中</td></tr>
+<tr><td><a href="./reference_practice/model_inference_optimization/sana_video">端到端推理性能优化实践</a></td><td>Sana-Video 推理优化实践</td><td></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./tutorials/llm_inference">推理优化系列（初级）</a></td><td>大模型演化 / 结构 / 推理流程 / 多模态扩展</td><td></td><td>✅ 已上线</td></tr>
 <tr><td>推理优化系列（中级）</td><td>Qwen3-8B 单卡部署 / 性能分析基础 / 主流优化技术 / 量化</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>推理优化系列（高级）</td><td>Profiling 与瓶颈定位 / Qwen3-8B 优化实践</td><td></td><td>🚧 建设中</td></tr>
 <tr><th colspan="4" align="left">🏋️ 大模型训练</th></tr>
@@ -53,6 +56,9 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 <tr><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列（初级）：第一章 / 第二章</a></td><td>算子基础 / CANN 架构 / 算子开发基础 / Add 算子实践</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/01_basic_overview/01.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
 <tr><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列（中级）：第三章 / 第四章 / 第五章 / 第六章</a></td><td>Vector 算子开发 / Cube 算子开发 / 融合算子开发 / 开源算子仓</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/03.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
 <tr><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列（高级）：第七章 / 第八章</a></td><td>Ascend C 算子功能调试 / 性能优化</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development&scanFilePath=tutorials/ascendc_operator_development/07_Troubleshooting/07.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./tutorials/ascendc_operator_development_light">Ascend C 算子开发系列（Kernel 直调版）（初级）：第一章 / 第二章</a></td><td>算子开发基础概念 / Ascend C 编程范式 / Add 算子核函数实践</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./tutorials/ascendc_operator_development_light">Ascend C 算子开发系列（Kernel 直调版）（中级）：第三章</a></td><td>Vector / Cube / 融合算子开发与实践</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
+<tr><td><a href="./tutorials/ascendc_operator_development_light">Ascend C 算子开发系列（Kernel 直调版）（高级）：第四章</a></td><td>Ascend C 算子调试 / 性能优化</td><td><a href="https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_debug/04.01_chapter_intro.ipynb">在线体验</a></td><td>✅ 已上线</td></tr>
 <tr><td><a href="./tutorials/MC2_fused_operator_development">算子开发实战系列</a></td><td>MC2 融合算子实战</td><td><a href="./tutorials/MC2_fused_operator_development">在线体验</a></td><td>✅ 已上线</td></tr>
 <tr><td><a href="./tutorials/hixl_development">HiXL 单边通信开发</a></td><td>HiXL 应用开发教程</td><td><a href="./tutorials/hixl_development">在线体验</a></td><td>✅ 已上线</td></tr>
 <tr><td><a href="https://cannjudge.cn">算子开发练习</a></td><td>开放题库 / 历届算子赛真题等</td><td><a href="https://cannjudge.cn">CANNJudge 开放题库</a></td><td>✅ 已开放</td></tr>
@@ -87,14 +93,16 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 <table style="table-layout:fixed;width:100%">
 <tr><th width="15%">业务场景</th><th width="65%">课程系列</th><th width="20%">进展</th></tr>
 <tr><td><b>算子开发</b></td><td><a href="./tutorials/ascendc_operator_development">Ascend C 算子开发系列</a>（基于 A2/A3，SIMD 编程）</td><td>✅ 已上线</td></tr>
+<tr><td></td><td><a href="./tutorials/ascendc_operator_development_light">Ascend C 算子开发系列（Kernel 直调版）</a>（基于 A2，算子核函数 / Tiling / Vector / Cube / 融合算子 / 调试调优）</td><td>✅ 已上线</td></tr>
 <tr><td></td><td>Ascend C 算子开发系列（基于 A5，SIMD 兼容 A2/A3 + 新增 SIMT）</td><td>🚧 建设中</td></tr>
-<tr><td></td><td><a href="./tutorials/MC2_fused_operator_development">算子开发实战系列</a>（MC2 融合算子）</td><td>✅ 已上线</td></tr>
+<tr><td></td><td><a href="./tutorials/conv_operator_development">Conv 算子开发实战教程</a></td><td>✅ 已上线</td></tr>
+<tr><td></td><td><a href="./tutorials/MC2_fused_operator_development">MC2 融合算子开发实战教程</a></td><td>✅ 已上线</td></tr>
 <tr><td></td><td>PyPTO 算子开发系列</td><td>🚧 建设中</td></tr>
 <tr><td></td><td>PyASC 算子开发系列</td><td>🚧 建设中</td></tr>
 <tr><td></td><td>TileLang 算子开发系列</td><td>🚧 建设中</td></tr>
 <tr><td><b>训练</b></td><td>大模型训练优化</td><td>🚧 建设中</td></tr>
 <tr><td></td><td>大语言模型微调实战（SwanLab 共建）</td><td>🔍 评审中</td></tr>
-<tr><td><b>推理</b></td><td>大模型推理优化</td><td>🚧 建设中</td></tr>
+<tr><td><b>推理</b></td><td><a href="./tutorials/llm_inference">大模型推理系列课程</a>（大模型基础 / 推理仓库 / 推理优化 / 量化 / Profiling / Qwen3-8B 实践）</td><td>✅ 已上线</td></tr>
 <tr><td></td><td><a href="./reference_practice/model_inference_optimization">Sana-Video 推理优化实践</a></td><td>✅ 已上线</td></tr>
 <tr><td><b>推荐系统</b></td><td>推荐系统开发（DataWhale 贡献）</td><td>✅ 已上线</td></tr>
 <tr><td><b>应用开发</b></td><td>应用开发系列</td><td>🚧 建设中</td></tr>
@@ -108,14 +116,18 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 
 ```
 ├── quick_start                        # 快速入门
+│   ├── cann_basics                    # CANN 基础知识（4 篇 + 课件）
 │   ├── first_custom_operator          # 第一个自定义算子
 │   ├── first_operator_api_call        # 第一个算子 API 调用
 │   └── first_llm_inference            # 第一个大模型推理和优化
 ├── tutorials                          # 开发教程
-│   ├── ascendc_operator_development   # Ascend C 算子开发（8 章）
-│   ├── MC2_fused_operator_development # MC2 融合算子开发
-│   ├── hixl_development               # HiXL 单边通信应用开发（4 章）
-│   └── ...                            # 待扩展（PyPTO / TileLang 等）
+│   ├── ascendc_operator_development       # Ascend C 算子开发（8 章）
+│   ├── ascendc_operator_development_light # Ascend C 算子开发（Kernel 直调版，4 章）
+│   ├── conv_operator_development          # Conv 算子开发实战
+│   ├── MC2_fused_operator_development     # MC2 融合算子开发实战
+│   ├── llm_inference                      # 大模型推理系列课程
+│   ├── hixl_development                   # HiXL 单边通信应用开发（4 章）
+│   └── ...                                # 待扩展（PyPTO / TileLang 等）
 ├── reference_practice                 # 参考实践
 │   ├── model_inference_optimization   # 模型推理优化
 │   │   └── sana_video                # Sana-Video 推理优化
@@ -132,8 +144,8 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 │   ├── ascendc-ops-project           # 自定义算子工程生成
 │   └── cannjudge-submit              # CANNJudge 竞赛提交
 ├── docs                               # 文档与指南
-│   ├── cannlab_env_experience_guide.md 	# CANNLab 环境体验指南
-│   └── acceptance_criteria_for_new_course_submission_and_launch.md 	# 新课程上库与上线验收标准
+│   ├── cannlab_env_experience_guide.md    # CANNLab 环境体验指南
+│   └── acceptance_criteria_for_new_course_submission_and_launch.md  # 新课程上库与上线验收标准
 └── README.md
 ```
 
