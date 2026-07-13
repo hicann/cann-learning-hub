@@ -42,7 +42,7 @@ transpose 等基础实践，帮助开发者建立使用 PyPTO 进行算子开发
 
 > 说明：
 > 当前教程按 PyPTO Notebook 交互式学习方式组织，建议在支持 CANN 与
-> torch_npu / pypto 的环境中体验。
+> torch_npu / pypto 的环境中体验。本教程支持cannlab运行，开始学习前需在cannlab里运行pip install pypto。
 
 ## 章节规划
 
