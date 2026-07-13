@@ -26,7 +26,7 @@ TILE_NUM = 8
 logging.basicConfig(level=logging.INFO)
 
 
-@asc.jit
+@asc.jit(always_compile=True)
 def vadd_kernel(x: asc.GlobalAddress, y: asc.GlobalAddress, z: asc.GlobalAddress, block_length: int):
 
     offset = asc.get_block_idx() * block_length
@@ -92,7 +92,7 @@ def vadd_custom(backend: config.Backend, platform: config.Platform):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", type=str, default="Model", help="backend to run")
+    parser.add_argument("-r", type=str, default="NPU", help="backend to run")
     parser.add_argument("-v", type=str, default=None, help="platform to run")
     args = parser.parse_args()
     backend = args.r

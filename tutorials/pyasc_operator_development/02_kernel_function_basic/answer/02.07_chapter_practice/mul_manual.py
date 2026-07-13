@@ -78,7 +78,7 @@ def vmul_custom(backend: config.Backend, platform: config.Platform):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", type=str, default="Model", help="backend to run")
+    parser.add_argument("-r", type=str, default="NPU", help="backend to run")
     parser.add_argument("-v", type=str, default=None, help="platform to run")
     args = parser.parse_args()
     backend = args.r
