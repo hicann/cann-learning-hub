@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 180" font-family="monospace">
+  <defs>
+    <linearGradient id="inputGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5A623" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#E09515" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="ubGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A90D9" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#357ABD" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="outputGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7ED321" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#6AB81A" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="regGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5B6ABF" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#4A54A0" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="500" height="180" rx="6" fill="#FAFBFC" stroke="#E8ECF0" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="250" y="20" font-size="11" fill="#555" text-anchor="middle" font-weight="bold">regbase UB as Data Transit Station</text>
+
+  <!-- Left GM -->
+  <rect x="20" y="50" width="100" height="44" rx="4" fill="url(#inputGrad)" stroke="#C07A10" stroke-width="1.5"/>
+  <text x="70" y="69" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">xGm</text>
+  <text x="70" y="83" font-size="8" fill="#FFE0B2" text-anchor="middle">(GM)</text>
+
+  <!-- Arrow GM → UB: CopyIn -->
+  <line x1="120" y1="65" x2="175" y2="65" stroke="#F5A623" stroke-width="1.5"/>
+  <polygon points="171,62 178,65 171,68" fill="#F5A623"/>
+  <text x="148" y="58" font-size="8" fill="#E09515" text-anchor="middle">CopyIn</text>
+
+  <!-- Center UB -->
+  <rect x="180" y="45" width="140" height="54" rx="4" fill="url(#ubGrad)" stroke="#2B5F8E" stroke-width="1.5"/>
+  <text x="250" y="65" font-size="11" fill="#fff" text-anchor="middle" font-weight="bold">UB</text>
+  <text x="250" y="80" font-size="9" fill="#B8D4F0" text-anchor="middle">Unified Buffer</text>
+  <text x="250" y="93" font-size="8" fill="#B8D4F0" text-anchor="middle">regbase</text>
+
+  <!-- Arrow UB → GM: CopyOut -->
+  <line x1="320" y1="65" x2="375" y2="65" stroke="#7ED321" stroke-width="1.5"/>
+  <polygon points="371,62 378,65 371,68" fill="#7ED321"/>
+  <text x="348" y="58" font-size="8" fill="#6AB81A" text-anchor="middle">CopyOut</text>
+
+  <!-- Right GM -->
+  <rect x="380" y="50" width="100" height="44" rx="4" fill="url(#outputGrad)" stroke="#509A16" stroke-width="1.5"/>
+  <text x="430" y="69" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">yGm</text>
+  <text x="430" y="83" font-size="8" fill="#D4F5B8" text-anchor="middle">(GM)</text>
+
+  <!-- VF Reg below UB -->
+  <rect x="180" y="126" width="140" height="40" rx="4" fill="url(#regGrad)" stroke="#3B4790" stroke-width="1.5"/>
+  <text x="250" y="144" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">VF Registers</text>
+  <text x="250" y="157" font-size="8" fill="#C5CBEF" text-anchor="middle">Vector Forward Regs</text>
+
+  <!-- Arrow UB → VF Reg (Store) -->
+  <!-- Down arrow from UB to VF Reg -->
+  <line x1="210" y1="99" x2="210" y2="123" stroke="#5B6ABF" stroke-width="1.5"/>
+  <polygon points="207,119 210,126 213,119" fill="#5B6ABF"/>
+  <text x="205" y="115" font-size="8" fill="#5B6ABF" text-anchor="end">Store</text>
+
+  <!-- Arrow VF Reg → UB (Load) -->
+  <!-- Up arrow from VF Reg to UB -->
+  <line x1="290" y1="126" x2="290" y2="102" stroke="#5B6ABF" stroke-width="1.5"/>
+  <polygon points="287,106 290,99 293,106" fill="#5B6ABF"/>
+  <text x="295" y="117" font-size="8" fill="#5B6ABF" text-anchor="start">Load</text>
+
+  <!-- Double-ended arrow indicator label -->
+  <text x="250" y="121" font-size="8" fill="#4A54A0" text-anchor="middle">&#8593;&#8595; Load / Store</text>
+</svg>

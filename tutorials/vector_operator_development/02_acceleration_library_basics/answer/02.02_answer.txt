@@ -1,4 +1,5 @@
-1.√  aclnn两段式调用，先调用aclnnXXXGetWorkspaceSize分配WorkSpace内存，然后调用aclnnXXX执行算子。
-2.B  静态图Shape在编译时已知且明确，动态图Shape在编译时未知（包含-1或-2）。
-3.B  numBlocks表示核函数配置的线程块个数，即启用的核数，支持int32_t和dim3类型。
-4.B  动态编译（-d）模式用动态shape编译，经tiling得到实际shape后执行，适合动态shape场景。
+1.√  aclnn单算子API调用需要先完成算子工程的编译部署，才能调用算子的二进制文件。
+2.√  静态图Shape在编译时已知且明确，动态图Shape在编译时未知（包含-1或-2）。
+3.B  aclnn两段式调用，先调用aclnnAddGetWorkspace分配内存，然后调用aclnnAdd接口。
+4.B  threadsPerBlock表示每个线程块内并发执行的线程数量。
+5.A  动态图执行器按照拓扑序调用每个算子的inferShape和Tiling。

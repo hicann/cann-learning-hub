@@ -1,5 +1,0 @@
-1.√  aclnn单算子API调用需要先完成算子工程的编译部署，才能调用算子的二进制文件。
-2.√  静态图Shape在编译时已知且明确，动态图Shape在编译时未知（包含-1或-2）。
-3.B  aclnn两段式调用，先调用aclnnAddGetWorkspace分配内存，然后调用aclnnAdd接口。
-4.B  threadsPerBlock表示每个线程块内并发执行的线程数量。
-5.A  动态图执行器按照拓扑序调用每个算子的inferShape和Tiling。

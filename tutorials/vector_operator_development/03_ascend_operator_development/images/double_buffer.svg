@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" width="720" height="180">
+  <style>
+    text { font-family: 'Courier New', Courier, monospace; font-size: 11px; fill: #fff; text-anchor: middle; dominant-baseline: central; }
+    .label { fill: #333; font-size: 12px; font-weight: bold; }
+    .sub-label { fill: #555; font-size: 10px; }
+    .arrow { fill: none; stroke: #666; stroke-width: 1.5; marker-end: url(#arrowhead); }
+    .brace { fill: none; stroke: #888; stroke-width: 1; }
+    .brace-label { fill: #444; font-size: 10px; }
+    .title { fill: #222; font-size: 13px; font-weight: bold; text-anchor: start; }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#666"/>
+    </marker>
+    <linearGradient id="orangeG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF8C00"/><stop offset="100%" stop-color="#E07B00"/>
+    </linearGradient>
+    <linearGradient id="blueG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A90D9"/><stop offset="100%" stop-color="#357ABD"/>
+    </linearGradient>
+    <linearGradient id="greenG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5CB85C"/><stop offset="100%" stop-color="#449D44"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ===== BACKGROUND ===== -->
+  <rect x="0" y="0" width="720" height="180" fill="#F9F9F9" rx="4"/>
+
+  <!-- ===== TOP HALF: BUFFER_NUM=1 (serial) ===== -->
+  <text x="10" y="16" class="title">BUFFER_NUM=1 (串行)</text>
+
+  <!-- CopyIn -->
+  <rect x="40" y="26" width="100" height="30" rx="4" fill="url(#orangeG)" stroke="#C06A00" stroke-width="1"/>
+  <text x="90" y="41" font-size="11">CopyIn</text>
+
+  <!-- Arrow -->
+  <line x1="145" y1="41" x2="175" y2="41" class="arrow"/>
+
+  <!-- Compute -->
+  <rect x="180" y="26" width="100" height="30" rx="4" fill="url(#blueG)" stroke="#2E6DA4" stroke-width="1"/>
+  <text x="230" y="41" font-size="11">Compute</text>
+
+  <!-- Arrow -->
+  <line x1="285" y1="41" x2="315" y2="41" class="arrow"/>
+
+  <!-- CopyOut -->
+  <rect x="320" y="26" width="100" height="30" rx="4" fill="url(#greenG)" stroke="#3B8C3B" stroke-width="1"/>
+  <text x="370" y="41" font-size="11">CopyOut</text>
+
+  <!-- Brace under serial -->
+  <path d="M 40,70 L 40,76 Q 40,80 44,80 L 416,80 Q 420,80 420,76 L 420,70" class="brace"/>
+  <text x="230" y="93" class="label" font-size="11">总时间 = CopyIn + Compute + CopyOut</text>
+
+  <!-- ===== BOTTOM HALF: BUFFER_NUM=2 (parallel) ===== -->
+  <text x="10" y="116" class="title">BUFFER_NUM=2 (并行)</text>
+
+  <!-- Row 1: bufA -->
+  <rect x="40" y="128" width="80" height="26" rx="4" fill="url(#orangeG)" stroke="#C06A00" stroke-width="1"/>
+  <text x="80" y="141" font-size="10">CopyIn_bufA</text>
+
+  <line x1="124" y1="141" x2="148" y2="141" class="arrow"/>
+
+  <rect x="152" y="128" width="80" height="26" rx="4" fill="url(#blueG)" stroke="#2E6DA4" stroke-width="1"/>
+  <text x="192" y="141" font-size="10">Compute_bufA</text>
+
+  <line x1="236" y1="141" x2="260" y2="141" class="arrow"/>
+
+  <rect x="264" y="128" width="80" height="26" rx="4" fill="url(#greenG)" stroke="#3B8C3B" stroke-width="1"/>
+  <text x="304" y="141" font-size="10">CopyOut_bufA</text>
+
+  <!-- Row 2: bufB (shifted right by one box width) -->
+  <rect x="152" y="160" width="80" height="26" rx="4" fill="url(#orangeG)" stroke="#C06A00" stroke-width="1" opacity="0.85"/>
+  <text x="192" y="173" font-size="10" fill="#fff" opacity="0.85">CopyIn_bufB</text>
+
+  <line x1="236" y1="173" x2="260" y2="173" class="arrow" opacity="0.85"/>
+
+  <rect x="264" y="160" width="80" height="26" rx="4" fill="url(#blueG)" stroke="#2E6DA4" stroke-width="1" opacity="0.85"/>
+  <text x="304" y="173" font-size="10" fill="#fff" opacity="0.85">Compute_bufB</text>
+
+  <line x1="348" y1="173" x2="372" y2="173" class="arrow" opacity="0.85"/>
+
+  <rect x="376" y="160" width="80" height="26" rx="4" fill="url(#greenG)" stroke="#3B8C3B" stroke-width="1" opacity="0.85"/>
+  <text x="416" y="173" font-size="10" fill="#fff" opacity="0.85">CopyOut_bufB</text>
+
+  <!-- Overlap indicator bracket on right side -->
+  <line x1="490" y1="128" x2="490" y2="186" class="brace" stroke="#999"/>
+  <line x1="490" y1="128" x2="496" y2="128" class="brace" stroke="#999"/>
+  <line x1="490" y1="186" x2="496" y2="186" class="brace" stroke="#999"/>
+  <text x="510" y="157" class="label" font-size="10" text-anchor="start">重叠并行</text>
+
+  <!-- Formula label -->
+  <text x="230" y="93" class="label" font-size="11" visibility="hidden"/>
+  <text x="230" y="180" class="label" font-size="11" visibility="hidden"/>
+  <text x="370" y="150" class="label" font-size="11" text-anchor="start">总时间 ≈ max(CopyIn, Compute+CopyOut)</text>
+
+  <!-- Cleaner approach: put the bottom formula in a dedicated spot -->
+  <text x="40" y="150" class="label" font-size="11" text-anchor="start" fill="#333" opacity="0"/>
+  <text x="10" y="150" class="label" font-size="11" fill="#333" opacity="0"/>
+
+  <!-- Re-add bottom formula cleanly at the bottom edge -->
+  <text x="360" y="188" class="label" font-size="10" text-anchor="start" fill="#444">总时间 ≈ max(CopyIn, Compute+CopyOut)</text>
+
+</svg>

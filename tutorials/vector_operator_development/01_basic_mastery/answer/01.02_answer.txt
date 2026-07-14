@@ -1,7 +1,13 @@
-1.√  Membase的核心特点是所有操作均基于内存进行，API自动处理数据搬运过程，开发者无需关心底层寄存器的操作细节。
-2.×  VECIN、VECCALC、VECOUT虽然在逻辑上是不同位置，但物理上都对应同一块Unified Buffer内存。
-3.B  DataBlock是矢量计算指令处理的数据单元，大小为32字节。
-4.B  Membase编程的典型数据流动路径为：GM → UB(VECIN) → Vector计算 → UB(VECOUT) → GM。
-5.C  一个Repeat = 8个DataBlock = 256字节；对于float类型（4字节），256/4 = 64个元素。
-6.A、B、C  Membase编程采用CopyIn → Compute → CopyOut三段式流水线范式，不存在CopyBack任务。
-7.A、B、C  Membase编程禁止使用高阶封装API（如Softmax、LayerNorm等），应使用基础矢量API。
+1. AI处理器主要包含如下几个部分：
+a. Cube计算单元
+b. Vector计算单元
+c. Scalar计算单元
+d. DMA搬运单元
+e. UB（Unified Buffer）、L1/L2 缓存
+
+2. Vector Unit主要支持如下类型运算：
+- **算术运算**：加减乘除、绝对值、平方等
+- **逻辑运算**：与、或、非、异或等
+- **比较运算**：大于、小于、等于等
+- **数学函数**：sin、cos、exp、log等
+- **类型转换**：FP16↔FP32、INT8↔FP32等

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" font-family="monospace">
+  <defs>
+    <linearGradient id="copyin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5A623" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#E09515" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="compute" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A90D9" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#357ABD" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="copyout" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7ED321" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#6AB81A" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Process title -->
+  <text x="10" y="18" font-size="11" fill="#555" font-weight="bold">Process() 主循环: for i = 0 → tileNum × BUFFER_NUM</text>
+
+  <!-- Loop box -->
+  <rect x="10" y="30" width="700" height="90" rx="5" fill="#F8F9FA" stroke="#DDD" stroke-width="1"/>
+
+  <!-- CopyIn -->
+  <rect x="40" y="50" width="160" height="50" rx="4" fill="url(#copyin)" stroke="#C07A10" stroke-width="1"/>
+  <text x="120" y="72" font-size="12" fill="#fff" text-anchor="middle" font-weight="bold">CopyIn</text>
+  <text x="120" y="88" font-size="9" fill="#FFE0B2" text-anchor="middle">GM → UB</text>
+
+  <!-- Arrow 1 -->
+  <text x="210" y="80" font-size="20" fill="#999" text-anchor="middle">→</text>
+
+  <!-- Compute -->
+  <rect x="240" y="50" width="160" height="50" rx="4" fill="url(#compute)" stroke="#2B5F8E" stroke-width="1"/>
+  <text x="320" y="72" font-size="12" fill="#fff" text-anchor="middle" font-weight="bold">Compute</text>
+  <text x="320" y="88" font-size="9" fill="#B8D4F0" text-anchor="middle">UB 上计算</text>
+
+  <!-- Arrow 2 -->
+  <text x="410" y="80" font-size="20" fill="#999" text-anchor="middle">→</text>
+
+  <!-- CopyOut -->
+  <rect x="440" y="50" width="160" height="50" rx="4" fill="url(#copyout)" stroke="#509A16" stroke-width="1"/>
+  <text x="520" y="72" font-size="12" fill="#fff" text-anchor="middle" font-weight="bold">CopyOut</text>
+  <text x="520" y="88" font-size="9" fill="#D4F5B8" text-anchor="middle">UB → GM</text>
+
+  <!-- Feedback arrow -->
+  <text x="360" y="136" font-size="9" fill="#999" text-anchor="middle">BUFFER_NUM=2: 第 i 次 CopyIn 与 第 i-1 次 Compute 并行</text>
+
+  <!-- Data flow diagram below -->
+  <text x="10" y="168" font-size="9" fill="#888">数据流:</text>
+  <rect x="70" y="156" width="100" height="22" rx="3" fill="#FFF3E0" stroke="#F5A623" stroke-width="1"/>
+  <text x="120" y="171" font-size="9" fill="#E09515" text-anchor="middle">Global Memory</text>
+
+  <text x="178" y="171" font-size="12" fill="#999">→</text>
+
+  <rect x="195" y="156" width="100" height="22" rx="3" fill="#E3F2FD" stroke="#4A90D9" stroke-width="1"/>
+  <text x="245" y="171" font-size="9" fill="#357ABD" text-anchor="middle">UB / Reg</text>
+
+  <text x="303" y="171" font-size="12" fill="#999">→</text>
+
+  <rect x="320" y="156" width="100" height="22" rx="3" fill="#F1F8E9" stroke="#7ED321" stroke-width="1"/>
+  <text x="370" y="171" font-size="9" fill="#6AB81A" text-anchor="middle">Global Memory</text>
+
+  <rect x="460" y="156" width="70" height="22" rx="3" fill="#EEE" stroke="#999" stroke-width="1"/>
+  <text x="495" y="171" font-size="9" fill="#666" text-anchor="middle">Host读取</text>
+</svg>

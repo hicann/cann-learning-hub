@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 130" font-family="monospace">
+  <rect x="30" y="10" width="660" height="110" rx="5" fill="#FFF8E1" stroke="#F5A623" stroke-width="1.5"/>
+  <text x="360" y="30" font-size="10" fill="#E09515" text-anchor="middle" font-weight="bold">TQue&lt;BUFFER_NUM=2&gt; inQueueX — 双缓冲队列状态演变</text>
+
+  <!-- State 0: Empty -->
+  <text x="60" y="55" font-size="8" fill="#999" text-anchor="middle">初始</text>
+  <rect x="35" y="60" width="50" height="30" rx="3" fill="#F5F5F5" stroke="#DDD" stroke-width="1"/>
+  <text x="60" y="80" font-size="9" fill="#BBB" text-anchor="middle">空</text>
+
+  <text x="100" y="80" font-size="14" fill="#CCC">→</text>
+
+  <!-- State 1: EnQue A -->
+  <text x="180" y="55" font-size="8" fill="#999" text-anchor="middle">EnQue(A)</text>
+  <rect x="135" y="60" width="50" height="30" rx="3" fill="#F5A623" opacity="0.8"/>
+  <text x="150" y="80" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">A</text>
+  <rect x="185" y="60" width="50" height="30" rx="3" fill="#F5F5F5" stroke="#DDD" stroke-width="1"/>
+
+  <text x="250" y="80" font-size="14" fill="#CCC">→</text>
+
+  <!-- State 2: EnQue B -->
+  <text x="335" y="55" font-size="8" fill="#999" text-anchor="middle">EnQue(B)</text>
+  <rect x="290" y="60" width="50" height="30" rx="3" fill="#F5A623" opacity="0.8"/>
+  <text x="305" y="80" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">A</text>
+  <rect x="340" y="60" width="50" height="30" rx="3" fill="#7ED321" opacity="0.8"/>
+  <text x="355" y="80" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">B</text>
+
+  <text x="405" y="80" font-size="14" fill="#CCC">→</text>
+
+  <!-- State 3: DeQue A -->
+  <text x="495" y="55" font-size="8" fill="#999" text-anchor="middle">DeQue(A)</text>
+  <rect x="450" y="60" width="50" height="30" rx="3" fill="#F5F5F5" stroke="#DDD" stroke-width="1"/>
+  <rect x="500" y="60" width="50" height="30" rx="3" fill="#7ED321" opacity="0.8"/>
+  <text x="515" y="80" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">B</text>
+
+  <text x="565" y="80" font-size="14" fill="#CCC">→</text>
+
+  <!-- State 4: DeQue B -->
+  <text x="655" y="55" font-size="8" fill="#999" text-anchor="middle">DeQue(B)</text>
+  <rect x="610" y="60" width="50" height="30" rx="3" fill="#F5F5F5" stroke="#DDD" stroke-width="1"/>
+  <rect x="660" y="60" width="50" height="30" rx="3" fill="#F5F5F5" stroke="#DDD" stroke-width="1"/>
+
+  <text x="360" y="116" font-size="8" fill="#999" text-anchor="middle">EnQue 与 DeQue 严格配对，队列容量 = BUFFER_NUM</text>
+</svg>

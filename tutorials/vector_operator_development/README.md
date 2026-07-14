@@ -1,75 +1,72 @@
-# 矢量算子开发系列教程
+# Vector 算子开发课程
 
-本教程将带你学习面向昇腾NPU的矢量算子开发全流程，涵盖芯片架构理解、编程范式掌握、算子执行流程、SIMT编程实践和调试技巧等核心内容。
+本课程专注于华为昇腾 NPU 的 Vector 计算单元，从芯片架构、SIMD/SIMT 编程模型，到实际的算子开发和优化，提供全面的学习路径。
 
-教程按章节划分，每个章节均包含以下内容：
-- Notebooks：包含课程知识点与练习题，可在gitcode提供的轻量级notebook上运行，也可在本地jupyter lab环境中执行。
-- Answer：包含课后练习和章节实践的答案。
-- Images：包含教程配图，辅助理解架构和流程。
+课程以 **FastGelu**（标准 GELU 的 sigmoid 近似：`y = x / (1 + exp(-1.702 * x))`，其中 `1.702` 为经验系数）作为贯穿全课程的示例算子。
+
+## 课程结构
+
+### 第一章：基础掌握
+介绍昇腾 AI 处理器的 Vector 计算架构，包括 A2/A3/A5 芯片架构、SIMD Membase/Regbase 编程、SIMT 编程模型等基础知识。
+
+### 第二章：加速库基础认知
+了解算子执行流程、算子库的目录结构、Tiling 原理以及开发环境的搭建。
+
+### 第三章：Ascend 算子开发
+深入学习 SIMD 和 SIMT 算子开发，包括 membase/regbase 编程、aclnn 和 PTA 接口调用、性能优化和调试技巧。
 
 ## 前置要求
 
-为了充分掌握本教程内容，你应已具备以下能力：
-- 具备 C/C++ 编程基础，包括变量声明、循环、条件语句、指针与数组操作。
-- 了解深度学习基础概念，熟悉常见AI算法的基本原理。
-- 具备基础的计算机体系结构知识，了解并行计算概念。
-- 已完成 [Ascend C算子开发系列教程](../ascendc_operator_development/README.md)，掌握Ascend C编程范式和核函数基本概念。
+- 具备 C/C++ 编程基础
+- 了解深度学习框架（PyTorch/TensorFlow）基本概念
+- 具备一定的并行编程基础
+- 已完成 Ascend C 算子开发系列教程基础部分
 
 ## 环境要求
 
-- **硬件**：昇腾 NPU 硬件（Atlas A2/A3/A5 系列）或云服务器。
-- **软件**：已安装 CANN 开发环境（建议 CANN 8.0 以上版本）。
-- **Python**：Python 3.8+ 环境。
-- **工具**：Jupyter Lab / Notebook。
+- 昇腾 NPU 硬件（A2/A3/A5 系列）或云服务器
+- 已安装 CANN 开发环境（建议 CANN 8.0 以上版本）
+- Python 3.8+ 环境
+- Jupyter Lab / Notebook
 
 > **注意：**
-> 本教程当前仅针对 Atlas A2 系列产品完成验证，A3/A5 系列产品验证正在进行中。不同型号芯片在计算能力和缓存容量上存在差异，具体说明见各章节内容。
-
-## 课程章节规划
-
-### 基础掌握（初级）
-- **覆盖章节**：第1章
-- **核心能力**：理解昇腾AI处理器架构，掌握SIMD/SIMT编程基础概念
-- **典型任务**：能够阅读和理解基础算子代码，掌握核函数基本调用方式
-- **考核方式**：选择题和判断题检验知识点掌握情况
-
-### 加速库基础（中级）
-- **覆盖章节**：第2章
-- **核心能力**：理解算子执行流程，掌握aclnn单算子API调用和GE图模式
-- **典型任务**：能够使用不同执行模式调用算子，理解Host和Device侧分工
-- **考核方式**：流程理解验证和实践操作
-
-### 昇腾算子开发（高级）
-- **覆盖章节**：第3章
-- **核心能力**：掌握SIMT算子开发实践，具备算子调试和性能分析能力
-- **典型任务**：能够独立开发并调试SIMT算子，处理常见运行问题
-- **考核方式**：算子编程实践和调试案例分析
+> 本教程当前仅针对 Atlas A2 系列产品完成验证，A3/A5 系列产品验证正在进行中。
 
 ## 章节目录
 
-### 1. 基础掌握
+### 第一章：基础掌握
 
-| Notebook | 说明 |
-|----------|------|
-| [1.0 章节介绍](01_basic_mastery/01.00_chapter_intro.ipynb) | 章节概述、前置要求、学习目标 |
-| [1.1 芯片架构简介](01_basic_mastery/01.01_chip_architecture.ipynb) | A2/A3/A5芯片架构特点 |
-| [1.2 SIMD Membase编程基础](01_basic_mastery/01.02_simd_membase_basics.ipynb) | Membase编程范式与常见指令 |
-| [1.3 SIMT编程基础](01_basic_mastery/01.03_simt_basics.ipynb) | SIMT线程架构与内存层级 |
-| [1.4 章节实践](01_basic_mastery/01.04_chapter_practice.ipynb) | 章节综合实践题 |
+| 编号 | 标题 | 内容 |
+|------|------|------|
+| 1.1 | 章节介绍 | 章节概述、前置要求、学习目标 |
+| 1.2 | 芯片架构简介 | A2/A3/A5 芯片 AI Core 架构 |
+| 1.3 | SIMD Membase 编程基础 | Membase 编程范式与常见指令 |
+| 1.4 | SIMD Regbase 编程基础 | Regbase 编程模型、VF 寄存器与指令 |
+| 1.5 | SIMT 编程基础 | SIMT 线程架构与内存层级 |
+| 1.6 | 章节实践 | FastGelu regbase 完整实现 |
 
-### 2. 加速库基础
+### 第二章：加速库基础认知
 
-| Notebook | 说明 |
-|----------|------|
-| [2.0 章节介绍](02_acceleration_library_basics/02.00_chapter_intro.ipynb) | 章节概述、前置要求、学习目标 |
-| [2.1 算子执行流程](02_acceleration_library_basics/02.01_operator_execution_flow.ipynb) | aclnn单算子API、GE图模式、Kernel直调 |
-| [2.2 章节实践](02_acceleration_library_basics/02.02_chapter_practice.ipynb) | 章节综合实践题 |
+| 编号 | 标题 | 内容 |
+|------|------|------|
+| 2.1 | 章节介绍 | 章节概述、前置要求、学习目标 |
+| 2.2 | 算子执行流程 | aclnn 单算子 API、GE 图模式、Kernel 直调 |
+| 2.3 | 算子目录结构 | FastGelu 工程目录布局与 Tiling 原理 |
+| 2.4 | 开发环境部署 | CANN Toolkit/Ops 安装与环境配置 |
+| 2.5 | 章节实践 | FastGelu 算子工程搭建 |
 
-### 3. 昇腾算子开发
+### 第三章：Ascend 算子开发
 
-| Notebook | 说明 |
-|----------|------|
-| [3.0 章节介绍](03_ascend_operator_development/03.00_chapter_intro.ipynb) | 章节概述、前置要求、学习目标 |
-| [3.1 SIMT算子开发](03_ascend_operator_development/03.01_simt_operator_development.ipynb) | SIMT算子开发实战 |
-| [3.2 算子调试](03_ascend_operator_development/03.02_operator_debugging.ipynb) | TTK工具使用与调试方法 |
-| [3.3 章节实践](03_ascend_operator_development/03.03_chapter_practice.ipynb) | 章节综合实践题 |
+| 编号 | 标题 | 内容 |
+|------|------|------|
+| 3.1 | 章节介绍 | 章节概述、前置要求、学习目标 |
+| 3.2 | SIMD 算子开发 | membase 与 regbase 模式 FastGelu 完整开发 |
+| 3.3 | SIMT 算子开发 | SIMT 算子开发实战 |
+| 3.4 | 调用接口开发 | aclnn 两段式接口与 PTA 调用模式 |
+| 3.5 | 算子调试 | 调试工具与调试方法 |
+| 3.6 | 算子性能优化 | Double Buffer、UB 优化、Scalar 优化等 |
+| 3.7 | 章节实践 | FastGelu 完整开发 + 性能优化 |
+
+---
+
+本课程从基础概念到实际开发，循序渐进地帮助您掌握 Vector 算子开发的完整流程。

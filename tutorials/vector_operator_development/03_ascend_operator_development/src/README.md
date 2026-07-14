@@ -1,20 +1,22 @@
-# 昇腾算子开发章节源代码
+# Vector 算子开发示例代码
 
-本目录包含昇腾算子开发章节的完整示例代码。
+本目录下的代码由对应的 Notebook（`03.02_simd_operator_development.ipynb`）通过 `%%writefile` 动态生成到 `Sources/` 目录。
 
-> **说明**：内容建设中，示例代码将在后续补充。
+## 编译运行
 
-## 预计内容
+打开 `03.02_simd_operator_development.ipynb`，按顺序点击 ▶ 执行各 Cell：
 
-- SIMD 算子完整示例
-- SIMT 算子完整示例
-- TTK 测试用例示例
+1. 环境初始化
+2. 写入 membase 代码 → 编译 → 运行
+3. 写入 regbase 代码 → 编译 → 运行
 
-## 编译环境
+## FastGelu 算子
 
-- CANN 8.0+
-- Ascend C Toolkit
-- Bisheng 编译器
-- CMake 3.14+
+计算公式：`y = x / (1 + exp(-1.702 * x))`
 
----
+**SIMD 指令分解**（5 条指令）：
+1. `Muls` — 标量乘：`1.702 * x`
+2. `Neg` — 取反：`-1.702 * x`
+3. `Exp` — 指数：`exp(-1.702 * x)`
+4. `Adds` — 加一：`1 + exp(-1.702 * x)`
+5. `Div` — 除法：`x / (1 + exp(-1.702 * x))`

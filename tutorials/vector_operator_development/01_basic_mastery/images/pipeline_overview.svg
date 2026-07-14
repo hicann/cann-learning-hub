@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 160" width="750" height="160">
+  <style>
+    text { font-family: 'Courier New', Courier, monospace; fill: #fff; text-anchor: middle; dominant-baseline: central; }
+    .box-label { font-size: 10px; font-weight: bold; }
+    .sub-label { font-size: 8px; fill: #ddd; }
+    .arrow { fill: none; stroke: #7A8BA0; stroke-width: 1.5; marker-end: url(#arrowhead); }
+    .section-title { fill: #2C3E50; font-size: 11px; font-weight: bold; text-anchor: start; }
+    .note { fill: #5D6D7E; font-size: 9px; text-anchor: start; }
+    .stage-label { font-size: 9px; font-weight: bold; }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#7A8BA0"/>
+    </marker>
+    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5D8AA8"/><stop offset="100%" stop-color="#4A7A96"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6B9EC4"/><stop offset="100%" stop-color="#558BB0"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7BAFD4"/><stop offset="100%" stop-color="#649BC0"/>
+    </linearGradient>
+    <linearGradient id="g4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8CB8D9"/><stop offset="100%" stop-color="#75A5CA"/>
+    </linearGradient>
+    <linearGradient id="g5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9DC4E0"/><stop offset="100%" stop-color="#86B2D2"/>
+    </linearGradient>
+    <linearGradient id="g6" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A6FA5"/><stop offset="100%" stop-color="#3A5E8C"/>
+    </linearGradient>
+    <linearGradient id="g7" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5B7FAF"/><stop offset="100%" stop-color="#4A6E9E"/>
+    </linearGradient>
+    <linearGradient id="g8" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3D5A80"/><stop offset="100%" stop-color="#2E4A6E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- BACKGROUND -->
+  <rect x="0" y="0" width="750" height="160" fill="#F4F6F8" rx="4"/>
+
+  <!-- ===== TOP ROW: Fetch / Decode pipeline ===== -->
+  <text x="12" y="16" class="section-title">前端取指 &amp; 译码流水线</text>
+
+  <!-- Box 1: VFQ -->
+  <rect x="12" y="28" width="56" height="32" rx="4" fill="url(#g1)" stroke="#3A6A86" stroke-width="1"/>
+  <text x="40" y="44" class="box-label" font-size="10">VFQ</text>
+
+  <line x1="72" y1="44" x2="88" y2="44" class="arrow"/>
+
+  <!-- Box 2: Fetch -->
+  <rect x="92" y="28" width="76" height="32" rx="4" fill="url(#g2)" stroke="#457A9E" stroke-width="1"/>
+  <text x="130" y="40" class="box-label" font-size="10">Fetch</text>
+  <text x="130" y="52" class="sub-label" font-size="7">icache+InstBuf</text>
+
+  <line x1="172" y1="44" x2="188" y2="44" class="arrow"/>
+
+  <!-- Box 3: Dispatch1 -->
+  <rect x="192" y="28" width="76" height="32" rx="4" fill="url(#g3)" stroke="#5389AE" stroke-width="1"/>
+  <text x="230" y="40" class="box-label" font-size="10">Dispatch1</text>
+  <text x="230" y="52" class="sub-label" font-size="7">分支解析</text>
+
+  <line x1="272" y1="44" x2="288" y2="44" class="arrow"/>
+
+  <!-- Box 4: Decode -->
+  <rect x="292" y="28" width="88" height="32" rx="4" fill="url(#g4)" stroke="#6393B8" stroke-width="1"/>
+  <text x="336" y="40" class="box-label" font-size="10">Decode</text>
+  <text x="336" y="52" class="sub-label" font-size="7">标量/向量</text>
+
+  <line x1="384" y1="44" x2="400" y2="44" class="arrow"/>
+
+  <!-- Box 5: Rename -->
+  <rect x="404" y="28" width="88" height="32" rx="4" fill="url(#g5)" stroke="#74A2C6" stroke-width="1"/>
+  <text x="448" y="40" class="box-label" font-size="10">Rename</text>
+  <text x="448" y="52" class="sub-label" font-size="7">寄存器重命名</text>
+
+  <line x1="496" y1="44" x2="512" y2="44" class="arrow"/>
+
+  <!-- Box 6: Dispatch2 -->
+  <rect x="516" y="28" width="88" height="32" rx="4" fill="url(#g6)" stroke="#2E4E7A" stroke-width="1"/>
+  <text x="560" y="40" class="box-label" font-size="10">Dispatch2</text>
+  <text x="560" y="52" class="sub-label" font-size="7">送入队列</text>
+
+  <!-- Down arrow from Dispatch2 -->
+  <line x1="560" y1="64" x2="560" y2="84" class="arrow"/>
+
+  <!-- ===== MIDDLE ROW: Issue / Execution ===== -->
+  <text x="12" y="88" class="section-title">后端发射 &amp; 执行</text>
+
+  <!-- Box 7: Issue -->
+  <rect x="12" y="100" width="72" height="28" rx="4" fill="url(#g7)" stroke="#3A5E8E" stroke-width="1"/>
+  <text x="48" y="114" class="box-label" font-size="10">Issue</text>
+
+  <line x1="88" y1="114" x2="104" y2="114" class="arrow"/>
+
+  <!-- Box 8: Execution Units -->
+  <rect x="108" y="100" width="120" height="28" rx="4" fill="url(#g8)" stroke="#1E3A5C" stroke-width="1"/>
+  <text x="168" y="114" class="box-label" font-size="10">Execution Units</text>
+
+  <!-- Note -->
+  <text x="250" y="114" class="note" font-size="9" dominant-baseline="central">标量/向量/存储指令执行</text>
+
+</svg>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" font-family="monospace">
+  <defs>
+    <linearGradient id="tileA" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F5A623"/>
+      <stop offset="100%" stop-color="#E09515"/>
+    </linearGradient>
+    <linearGradient id="tileB" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7ED321"/>
+      <stop offset="100%" stop-color="#6AB81A"/>
+    </linearGradient>
+    <linearGradient id="dbA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5A623" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#E09515" stop-opacity="0.7"/>
+    </linearGradient>
+    <linearGradient id="dbB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7ED321" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#6AB81A" stop-opacity="0.7"/>
+    </linearGradient>
+  </defs>
+
+  <text x="10" y="18" font-size="11" fill="#555">blockLength = 2048, tileNum = 8, BUFFER_NUM = 2</text>
+
+  <!-- blockLength bar -->
+  <rect x="10" y="28" width="680" height="22" rx="3" fill="#E8F0FE" stroke="#4A90D9" stroke-width="1"/>
+  <text x="350" y="43" font-size="10" fill="#4A90D9" text-anchor="middle">单核数据 blockLength = 2048</text>
+
+  <!-- Tile 1 with Double Buffer -->
+  <text x="10" y="68" font-size="9" fill="#F5A623">tile 1</text>
+  <rect x="42" y="58" width="63" height="18" rx="2" fill="url(#tileA)" opacity="0.9"/>
+  <text x="73" y="71" font-size="8" fill="#fff" text-anchor="middle">buf A</text>
+  <rect x="107" y="58" width="63" height="18" rx="2" fill="url(#tileB)" opacity="0.9"/>
+  <text x="138" y="71" font-size="8" fill="#fff" text-anchor="middle">buf B</text>
+  <!-- Annotation for double buffer -->
+  <line x1="73" y1="79" x2="73" y2="96" stroke="#F5A623" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="138" y1="79" x2="138" y2="96" stroke="#7ED321" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <text x="73" y="106" font-size="8" fill="#999" text-anchor="middle">正在 Compute</text>
+  <text x="138" y="106" font-size="8" fill="#999" text-anchor="middle">正在 CopyIn</text>
+
+  <!-- Tile 2 -->
+  <text x="10" y="127" font-size="9" fill="#F5A623">tile 2</text>
+  <rect x="42" y="119" width="63" height="18" rx="2" fill="url(#tileA)" opacity="0.7"/>
+  <text x="73" y="132" font-size="8" fill="#fff" text-anchor="middle">buf A</text>
+  <rect x="107" y="119" width="63" height="18" rx="2" fill="url(#tileB)" opacity="0.7"/>
+  <text x="138" y="132" font-size="8" fill="#fff" text-anchor="middle">buf B</text>
+
+  <!-- Dots -->
+  <text x="73" y="152" font-size="12" fill="#999" text-anchor="middle">...</text>
+  <text x="138" y="152" font-size="12" fill="#999" text-anchor="middle">...</text>
+
+  <!-- Tile 8 -->
+  <text x="10" y="172" font-size="9" fill="#F5A623">tile 8</text>
+  <rect x="42" y="164" width="63" height="18" rx="2" fill="url(#tileA)" opacity="0.5"/>
+  <text x="73" y="177" font-size="8" fill="#fff" text-anchor="middle">buf A</text>
+  <rect x="107" y="164" width="63" height="18" rx="2" fill="url(#tileB)" opacity="0.5"/>
+  <text x="138" y="177" font-size="8" fill="#fff" text-anchor="middle">buf B</text>
+
+  <!-- Formula section -->
+  <rect x="230" y="58" width="260" height="70" rx="4" fill="#FFF8E1" stroke="#F5A623" stroke-width="1"/>
+  <text x="240" y="74" font-size="9" fill="#888">每个 buf = tileLength 个 float</text>
+  <text x="240" y="90" font-size="10" fill="#F5A623" font-weight="bold">tileLength = blockLength / tileNum / BUFFER_NUM</text>
+  <text x="240" y="107" font-size="10" fill="#F5A623" font-weight="bold">          = 2048 / 8 / 2 = 128</text>
+  <text x="240" y="122" font-size="9" fill="#888">共 8 × 2 = 16 次 loop</text>
+
+  <!-- Arrow legend -->
+  <text x="520" y="74" font-size="8" fill="#F5A623">■ Compute</text>
+  <text x="520" y="90" font-size="8" fill="#7ED321">■ CopyIn/CopyOut</text>
+  <text x="520" y="115" font-size="8" fill="#999">双缓冲：搬运与计算并行</text>
+</svg>

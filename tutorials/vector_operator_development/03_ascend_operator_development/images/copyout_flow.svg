@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" font-family="monospace">
+  <defs>
+    <linearGradient id="inputGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5A623" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#E09515" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="ubGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A90D9" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#357ABD" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="outputGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7ED321" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#6AB81A" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="400" height="200" rx="6" fill="#FAFBFC" stroke="#E8ECF0" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="200" y="20" font-size="11" fill="#555" text-anchor="middle" font-weight="bold">CopyOut Data Flow</text>
+
+  <!-- outQueueY at top -->
+  <rect x="135" y="30" width="130" height="32" rx="4" fill="#FFF3E0" stroke="#F5A623" stroke-width="1.5"/>
+  <text x="200" y="50" font-size="11" fill="#E09515" text-anchor="middle" font-weight="bold">outQueueY</text>
+
+  <!-- DeQue arrow down -->
+  <line x1="200" y1="62" x2="200" y2="85" stroke="#4A90D9" stroke-width="1.5"/>
+  <polygon points="195,81 200,88 205,81" fill="#4A90D9"/>
+  <text x="215" y="77" font-size="9" fill="#4A90D9">DeQue</text>
+
+  <!-- yLocal(UB) -->
+  <rect x="135" y="88" width="130" height="36" rx="4" fill="url(#ubGrad)" stroke="#2B5F8E" stroke-width="1.5"/>
+  <text x="200" y="105" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">yLocal</text>
+  <text x="200" y="118" font-size="8" fill="#B8D4F0" text-anchor="middle">(UB)</text>
+
+  <!-- DataCopy arrow down -->
+  <line x1="200" y1="124" x2="200" y2="147" stroke="#7ED321" stroke-width="1.5"/>
+  <polygon points="195,143 200,150 205,143" fill="#7ED321"/>
+  <text x="215" y="139" font-size="9" fill="#6AB81A">DataCopy</text>
+
+  <!-- yGm(GM) -->
+  <rect x="135" y="150" width="130" height="36" rx="4" fill="url(#outputGrad)" stroke="#509A16" stroke-width="1.5"/>
+  <text x="200" y="167" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">yGm</text>
+  <text x="200" y="180" font-size="8" fill="#D4F5B8" text-anchor="middle">(GM)</text>
+
+  <!-- FreeTensor indicator (right side) -->
+  <rect x="305" y="88" width="80" height="36" rx="4" fill="#FFF3E0" stroke="#F5A623" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="345" y="105" font-size="9" fill="#E09515" text-anchor="middle">UB Recycle</text>
+  <text x="345" y="118" font-size="8" fill="#E09515" text-anchor="middle">FreeTensor</text>
+
+  <!-- Arrow from yLocal to FreeTensor -->
+  <line x1="265" y1="106" x2="302" y2="106" stroke="#F5A623" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <polygon points="298,103 305,106 298,109" fill="#F5A623"/>
+
+  <!-- Step labels on left -->
+  <text x="30" y="77" font-size="8" fill="#999" text-anchor="end">Step 1</text>
+  <text x="30" y="107" font-size="8" fill="#999" text-anchor="end">Step 2</text>
+  <text x="30" y="139" font-size="8" fill="#999" text-anchor="end">Step 3</text>
+  <text x="30" y="169" font-size="8" fill="#999" text-anchor="end">Step 4</text>
+</svg>

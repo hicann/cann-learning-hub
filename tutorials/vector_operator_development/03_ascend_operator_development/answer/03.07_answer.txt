@@ -1,0 +1,4 @@
+1.√  SIMT适用于离散访问和复杂分支控制场景，如ScatterUpdate算子。
+2.√  TTK使用CSV文件定义测试用例，支持批量测试。
+3.B  动态编译（-d）模式用动态shape编译，经tiling得到实际shape后执行。
+4.B  aiv_vec_ratio表示向量计算占比，是评估Vector Core性能的关键指标。
