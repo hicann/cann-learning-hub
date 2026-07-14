@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="300" viewBox="0 0 980 300">
+  <defs>
+    <style>
+      .node { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 8; }
+      .input { fill: #eef7ff; stroke: #3b82f6; }
+      .builtin { fill: #f0fdf4; stroke: #22c55e; }
+      .custom { fill: #fff7ed; stroke: #f97316; }
+      .output { fill: #f8f0ff; stroke: #a855f7; }
+      .label { font: 700 18px Arial, "Microsoft YaHei", sans-serif; fill: #111827; }
+      .small { font: 500 14px Arial, "Microsoft YaHei", sans-serif; fill: #475569; }
+      .arrow { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="980" height="300" fill="#ffffff"/>
+
+  <rect x="70" y="60" width="110" height="58" class="node input"/>
+  <text x="125" y="94" text-anchor="middle" class="label">x</text>
+
+  <rect x="70" y="180" width="110" height="58" class="node input"/>
+  <text x="125" y="214" text-anchor="middle" class="label">y</text>
+
+  <rect x="310" y="92" width="180" height="82" class="node builtin"/>
+  <text x="400" y="125" text-anchor="middle" class="label">Add</text>
+  <text x="400" y="151" text-anchor="middle" class="small">builtin</text>
+
+  <rect x="620" y="92" width="210" height="82" class="node custom"/>
+  <text x="725" y="125" text-anchor="middle" class="label">AddCustom</text>
+  <text x="725" y="151" text-anchor="middle" class="small">custom</text>
+
+  <rect x="880" y="104" width="70" height="58" class="node output"/>
+  <text x="915" y="138" text-anchor="middle" class="label">output</text>
+
+  <path d="M180 89 C235 89 250 116 310 116" class="arrow"/>
+  <path d="M180 209 C245 209 250 150 310 150" class="arrow"/>
+  <path d="M490 133 L620 133" class="arrow"/>
+  <path d="M180 209 C360 270 505 204 620 154" class="arrow"/>
+  <path d="M830 133 L880 133" class="arrow"/>
+
+  <text x="250" y="82" text-anchor="middle" class="small">x</text>
+  <text x="252" y="207" text-anchor="middle" class="small">y</text>
+  <text x="555" y="123" text-anchor="middle" class="small">add_builtin</text>
+  <text x="435" y="246" text-anchor="middle" class="small">y</text>
+</svg>

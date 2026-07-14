@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360">
+  <defs>
+    <style>
+      .stage { stroke-width: 2; rx: 10; }
+      .prep { fill: #eef7ff; stroke: #3b82f6; }
+      .opt { fill: #f0fdf4; stroke: #22c55e; }
+      .part { fill: #fff7ed; stroke: #f97316; }
+      .build { fill: #f8f0ff; stroke: #a855f7; }
+      .title { font: 700 22px Arial, "Microsoft YaHei", sans-serif; fill: #111827; }
+      .text { font: 600 17px Arial, "Microsoft YaHei", sans-serif; fill: #1f2937; }
+      .small { font: 500 14px Arial, "Microsoft YaHei", sans-serif; fill: #475569; }
+      .arrow { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="360" fill="#ffffff"/>
+
+  <rect x="48" y="48" width="252" height="244" class="stage prep"/>
+  <text x="174" y="90" text-anchor="middle" class="title">阶段1：预处理</text>
+  <rect x="84" y="122" width="180" height="42" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="174" y="149" text-anchor="middle" class="text">图规范化</text>
+  <rect x="84" y="174" width="180" height="42" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="174" y="201" text-anchor="middle" class="text">Shape 推理</text>
+  <rect x="84" y="226" width="180" height="42" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="174" y="253" text-anchor="middle" class="text">量化准备</text>
+
+  <path d="M300 170 L342 170" class="arrow"/>
+
+  <rect x="360" y="48" width="252" height="244" class="stage opt"/>
+  <text x="486" y="90" text-anchor="middle" class="title">阶段2：图优化</text>
+  <rect x="396" y="110" width="180" height="54" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="486" y="132" text-anchor="middle" class="text">通用优化</text>
+  <text x="486" y="153" text-anchor="middle" class="small">CSE / 常量折叠 / DCE</text>
+  <rect x="396" y="174" width="180" height="42" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="486" y="201" text-anchor="middle" class="text">融合优化</text>
+  <rect x="396" y="226" width="180" height="42" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="486" y="253" text-anchor="middle" class="text">精度 / 格式调整</text>
+
+  <path d="M612 170 L654 170" class="arrow"/>
+
+  <rect x="672" y="48" width="252" height="244" class="stage part"/>
+  <text x="798" y="90" text-anchor="middle" class="title">阶段3：引擎分区</text>
+  <rect x="708" y="106" width="180" height="38" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="798" y="131" text-anchor="middle" class="text">引擎分配</text>
+  <rect x="708" y="154" width="180" height="38" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="798" y="179" text-anchor="middle" class="text">组合引擎分区</text>
+  <rect x="708" y="202" width="180" height="38" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="798" y="227" text-anchor="middle" class="text">原子引擎分区</text>
+  <rect x="708" y="250" width="180" height="38" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="798" y="275" text-anchor="middle" class="text">子图优化</text>
+
+  <path d="M924 170 L966 170" class="arrow"/>
+
+  <rect x="984" y="48" width="252" height="244" class="stage build"/>
+  <text x="1110" y="90" text-anchor="middle" class="title">阶段4：构建</text>
+  <rect x="1020" y="106" width="180" height="38" rx="8" fill="#ffffff" stroke="#e9d5ff"/>
+  <text x="1110" y="131" text-anchor="middle" class="text">流分配</text>
+  <rect x="1020" y="154" width="180" height="38" rx="8" fill="#ffffff" stroke="#e9d5ff"/>
+  <text x="1110" y="179" text-anchor="middle" class="text">内存规划</text>
+  <rect x="1020" y="202" width="180" height="38" rx="8" fill="#ffffff" stroke="#e9d5ff"/>
+  <text x="1110" y="227" text-anchor="middle" class="text">任务生成</text>
+  <rect x="1020" y="250" width="180" height="38" rx="8" fill="#ffffff" stroke="#e9d5ff"/>
+  <text x="1110" y="275" text-anchor="middle" class="text">模型序列化</text>
+</svg>
