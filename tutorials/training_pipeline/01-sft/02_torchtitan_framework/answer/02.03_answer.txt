@@ -1,5 +1,0 @@
-1. A、B、D
-解析：步骤为 Clone 仓库并 checkout teaching-pipeline（A）→ pip install（B）→ 下载权重（D）。CANN 环境假设已由管理员配置好（C 错误）。
-
-2. √
-解析：Debug 模式三大特点：极小模型（hidden_size 小、几层）、随机初始化（不依赖权重）、快速全链路验证。先跑 debug 再跑正式训练可以排除环境配置问题。
