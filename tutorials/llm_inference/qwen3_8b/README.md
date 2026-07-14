@@ -14,8 +14,8 @@
 本课程采用该仓库的 recipes 工作流与 Qwen3-8B 单卡 BF16 推理所需代码子集，保留 YAML 配置、`executor/scripts/infer.sh` 启动方式、离线推理、Profiling 和 Dense RMSNorm NPU 融合验证链路。学习本课程后，可以继续到完整 `cann-recipes-infer` 仓库中查看更多模型和更复杂的部署优化实践。
 
 >- **注意：**
->- 教程支持在CANNLab中执行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）。环境中需包含 CANN、`torch`、`torch_npu`、`transformers`、`modelscope`、`datasets` 和 recipes 推理所需依赖；本地运行前请先执行 `/usr/local/Ascend/ascend-toolkit/set_env.sh` 或等价 CANN 环境脚本。
->- `transformers` 版本需支持 Qwen3 模型结构，建议使用 4.51.0 或更高版本。
+>- 教程支持在CANNLab中执行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）。环境需预置 CANN、`torch` 和 `torch_npu`；公共 `requirements.txt` 只补充推理所需 Python 依赖，不包含 `torch`/`torch_npu`。本地运行前请先执行 `/usr/local/Ascend/ascend-toolkit/set_env.sh` 或等价 CANN 环境脚本。
+>- 本教程锁定 `transformers==5.0.0`、`datasets==3.6.0`、`compressed-tensors==0.6.0` 和 `accelerate==1.0.1`，并安装 `modelscope` 用于模型下载。
 >- `Qwen3-8B` BF16 权重约 16GB，短上下文单卡验证建议使用 64GB HBM NPU，磁盘空间建议至少 40GB。教程默认关闭 thinking 模式并使用短输出，降低在线环境资源压力。
 >- 模型权重使用 `Qwen/Qwen3-8B`。首次运行会通过 ModelScope 下载并缓存权重；如环境中已准备本地权重，可设置 `QWEN3_8B_MODEL_PATH=/path/to/Qwen3-8B`。
 
@@ -38,7 +38,7 @@ Notebook 环境中按顺序打开并 Run All：
 
 首次执行 `02_baseline_inference.ipynb` 的 Baseline 推理 cell 会开始下载并缓存 `Qwen/Qwen3-8B` 权重；如果已设置 `QWEN3_8B_MODEL_PATH`，则直接使用本地权重目录。
 
-`02/03/04` 的环境准备单元会定位仓库目录、创建 `Sources/model_inference_optimization/qwen3_8b` 运行目录、导入 CANN 环境，并打印 recipes 目录、YAML 目录、推理入口和 NPU 可见卡号。手工操作时，进入 `src/inference_scripts/recipe_qwen3_8b/models/qwen/config/` 修改 YAML；Notebook 中会把对应 YAML 复制到 `Sources/.../recipe_yaml/`，只填入当前环境可用的模型路径。启动推理时会显式展示并执行：
+`02/03/04` 的环境准备单元会定位仓库目录、创建 `Sources/model_inference_optimization/qwen3_8b` 运行目录、导入 CANN 环境，并安装公共 `requirements.txt`。手工操作时，进入 `src/inference_scripts/recipe_qwen3_8b/models/qwen/config/` 修改 YAML；Notebook 中会把对应 YAML 复制到 `Sources/.../recipe_yaml/`，只填入当前环境可用的模型路径。启动推理时会显式展示并执行：
 
 ```bash
 cd src/inference_scripts/recipe_qwen3_8b
