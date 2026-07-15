@@ -189,7 +189,7 @@ def collect_recipe_metrics(
     max_new_tokens: int,
     max_input_tokens: int,
     enable_thinking: bool = False,
-    quiet_model_io: bool = True,
+    quiet_model_io: bool = False,
 ) -> dict[str, Any]:
     config = yaml.safe_load(yaml_path.read_text(encoding="utf-8"))
     model_config = config.get("model_config", {})

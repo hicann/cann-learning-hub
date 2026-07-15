@@ -30,7 +30,7 @@ if str(SRC_ROOT) not in sys.path:
 
 
 @contextmanager
-def maybe_silence_output(enabled: bool):
+def maybe_silence_output(enabled: bool = False):
     if not enabled:
         yield
         return
@@ -70,7 +70,7 @@ def messages_to_recipe_prompt(messages: list[dict[str, str]]) -> str:
     return "\n".join(parts)
 
 
-def resolve_model_path(model_path: str, quiet_model_io: bool) -> tuple[str, str]:
+def resolve_model_path(model_path: str, quiet_model_io: bool = False) -> tuple[str, str]:
     local_path = Path(model_path).expanduser()
     if local_path.exists():
         return str(local_path), "local_path"
