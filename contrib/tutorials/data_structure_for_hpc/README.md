@@ -1,28 +1,38 @@
-# Data Structure for High Performance Computing
+# 面向高性能计算的数据结构
 
-课程名称：面向高性能计算的数据结构
+本课程围绕高性能计算场景中的数据组织、内存访问、并行计算和性能优化方法展开。课程通过可运行的 Ascend C 实验，帮助学习者理解数据分块、片上存储和多核并行对计算性能的影响，并掌握面向昇腾 NPU 的基础性能分析与优化方法。
 
-本课程面向已经具备 C/C++ 基础和基本数据结构知识的学习者，围绕高性能计算场景中常见的数据组织、内存访问、并行计算和性能优化方法展开。
+## 课程适用学习人群
 
-## 适用对象
-
-- 了解 C/C++ 基础语法和二维数组存储方式的学习者。
-- 希望理解矩阵、张量、分块、并行计算与硬件执行关系的开发者。
-- 准备在 Ascend C 环境中学习高性能计算数据组织方法的学生。
+- 具备 C/C++ 基础语法和基本数据结构知识的学习者。
+- 具备基础 Linux 命令行和 Jupyter Notebook 使用经验，希望学习 Ascend C 与高性能计算优化的学生或开发者。
 
 ## 整体学习目标
 
-- 理解高性能计算中数据结构与内存访问模式的关系。
-- 掌握矩阵、张量等数据结构在并行计算中的组织方式。
-- 能够通过可执行实验分析数据分块、局部存储和多核划分对性能的影响。
+- 理解高性能计算中数据结构、数据布局与内存访问模式之间的关系。
 
-## 已验证硬件与软件环境
+## 课程支持的硬件产品
 
-- 已验证硬件：Ascend 910B，`SOC_VERSION=ascend910b1`。
-- 已验证软件：CANN 8.3.RC1。
-- 已验证运行环境：华为云 ModelArts Notebook / CANNLab 云开发环境。
+| 硬件产品 | 验证状态 |
+| -- | -- |
+| Atlas A2 系列产品 | ✅ 已验证 |
 
-## 目录结构
+已验证软件版本：CANN 9.0.0。
 
-- `02_parallel_computing`：第 2 章，并行计算。
-- `02_parallel_computing/02.02_extra_ascendc_static_tensor_matmul.ipynb`：课外实验，静态 Tensor 矩阵乘分块优化。
+## 已验证的在线体验环境
+
+- gitcode 在线体验 Notebook
+- CANNLab 云开发环境
+  - NPU 镜像模板：`cann_9.0.0_py3.11-A2-arm`
+  - 规格：`1*NPU 910B3 16vCPUs 32GiB`
+  - Python 内核：Python 3.11.15
+
+CANNLab 环境创建与使用方法请参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)。
+
+## 课程章节目录
+
+### 第二章：并行计算
+
+| Notebook | Link | 状态 |
+| -- | -- | -- |
+| 02.02 矩阵乘法分块优化实验 | - | ✅ 已发布 |
