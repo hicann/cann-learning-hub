@@ -1,0 +1,8 @@
+参考思路（SIMT 一维 Scatter）：
+__global__ void scatter_1d_custom(float* input, int32_t* index, float* output, uint64_t total_length)
+{
+    int32_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= total_length) { return; }
+    output[index[idx]] = input[idx];   // 注意：离散写，多线程可能写同地址需 atomic
+}
+// 启动方式与 gather_1d 相同：<<<48, 256, 0, stream>>>

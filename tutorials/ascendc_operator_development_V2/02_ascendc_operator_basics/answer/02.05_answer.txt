@@ -1,0 +1,5 @@
+参考思路（C API 实现 ReLU）：
+// 核函数内搬运 x 到 x_local 后：
+asc_max(z_local, x_local, 0.0f, block_length);  // 元素级与 0 取最大值
+asc_sync();
+// 也可用 asc_reluf16 等专用接口，具体以当前 CANN C API 为准。
