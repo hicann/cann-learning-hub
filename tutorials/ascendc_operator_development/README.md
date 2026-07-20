@@ -1,13 +1,51 @@
 # Ascend C 算子开发系列教程
-本教程将带你学习面向昇腾 NPU 的Ascend C高性能算子开发全流程教程，包含 Tiling 模板化编程、算子调试、性能优化等核心内容。
+
+本教程将带你学习面向昇腾 NPU 的 Ascend C 高性能算子开发全流程，涵盖从算子基础概念、核函数开发、工程化 Tiling 模板化编程，到矩阵乘高阶 API、融合算子、算子调试与性能优化等核心内容，帮助开发者系统掌握 Ascend C 算子开发技能。
 
 教程按章节划分，每个章节均包含以下内容：
-- Notebooks：包含课程知识点与练习题，适用于自主学习或讲师引导式教学，可在 gitcode 提供的轻量级 notebook 上运行。也可自行搭建jupyter lab，在本地环境执行使用。
+- Notebooks：包含课程知识点与练习题，适用于自主学习或讲师引导式教学，可在 gitcode 提供的轻量级 notebook 上运行。也可自行搭建 jupyter lab，在本地环境执行使用。
 - SRC：包含课程中所有的源码，供开发者自行下载及修改。
 - PPT（建设中）：包含各课时的授课内容。
 
->- **注意：**
->- 本教程当前仅针对Atlas A2系列产品进行验证，其它产品使用存在问题，欢迎开发者提出issue或PR进行共建。
+## 适用人群
+
+- 希望了解并掌握 Ascend C 算子编程方法的开发者
+- AI 算法工程师、C/C++ 开发者、算子开发工程师
+
+## 前置知识要求
+
+在学习本教程之前，建议先完成以下前置学习：
+
+- 阅读 [cann-learning-hub 快速入门](https://gitcode.com/cann/cann-learning-hub/quick_start) 中的 `cann_basics` 章节，了解 AI 基础概念、NPU 硬件架构与 CANN 软件栈
+- 掌握 C/C++ 编程基础
+- 了解并行编程基本概念
+
+## 整体学习目标
+
+- 掌握 Ascend C 核函数开发与调用方式，理解编程范式与 API 体系
+- 掌握工程化算子开发方法，包括 Tiling 模板化编程、Tbuf、Workspace 等机制
+- 掌握基于高阶 API 的矩阵乘算子开发（MIX / Cube 模式）
+- 掌握 VV 融合与 CV 融合等典型融合算子开发
+- 掌握 Ascend C 算子功能调试方法与性能优化工具链（msProf）
+
+## 软硬件配套说明
+
+| 项目 | 要求 |
+| --- | --- |
+| 支持硬件 | Atlas A2 训练/推理系列产品、Atlas A3 训练/推理系列产品 |
+| CANN 版本 | 9.0.0 及以上 |
+| Python | 3.11 |
+
+## 在线体验环境
+
+本教程支持以下在线体验环境：
+
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。
 
 ## Ascend C算子开发系列（初级）
 
