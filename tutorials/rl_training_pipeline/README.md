@@ -21,6 +21,12 @@
 
 3. Notebook 用于阅读教程和章节练习。训练任务需在配备 Ascend NPU 的服务器上独立运行。
 
+## 课程内容
+
+| 序号 | 主题 | 主要内容 | 课件 |
+|---|---|---|---|
+| 01 | RL 强化学习 | verl/vLLM-Ascend 环境、RL 与 GRPO 原理、Wordle AgentLoop、奖励设计、训练指标与稳定性调优 | [01_rl_training_pipeline.pptx](https://gitcode.com/cann/cann-learning-hub/blob/test/tutorials/rl_training_pipeline/slides/01_rl_training_pipeline.pptx) |
+
 
 ## 教程结构
 
