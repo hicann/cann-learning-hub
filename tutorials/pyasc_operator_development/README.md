@@ -42,23 +42,23 @@
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 1.1 章节介绍 | [在线体验](./01_pyasc_overview/01.01_chapter_intro.ipynb) | 🚧 开发中 |
-| 1.2 pyasc简介 | [在线体验](./01_pyasc_overview/01.02_pyasc_introduction.ipynb) | 🚧 开发中 |
-| 1.3 环境准备 | [在线体验](./01_pyasc_overview/01.03_environment_setup.ipynb) | 🚧 开发中 |
-| 1.4 首个样例执行 | [在线体验](./01_pyasc_overview/01.04_first_sample_execution.ipynb) | 🚧 开发中 |
-| 1.5 章节实践 | [在线体验](./01_pyasc_overview/01.05_chapter_practice.ipynb) | 🚧 开发中 |
+| 1.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
+| 1.2 pyasc简介 | 在线体验建设中 | 🚧 开发中 |
+| 1.3 环境准备 | 在线体验建设中 | 🚧 开发中 |
+| 1.4 首个样例执行 | 在线体验建设中 | 🚧 开发中 |
+| 1.5 章节实践 | 在线体验建设中 | 🚧 开发中 |
 
 #### 第二章：pyasc核函数开发基础
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 2.1 章节介绍 | [在线体验](./02_kernel_function_basic/02.01_chapter_intro.ipynb) | 🚧 开发中 |
-| 2.2 pyasc编程范式 | [在线体验](./02_kernel_function_basic/02.02_pyasc_programming_paradigm.ipynb) | 🚧 开发中 |
-| 2.3 核函数定义与JIT编译 | [在线体验](./02_kernel_function_basic/02.03_kernel_function_and_jit.ipynb) | 🚧 开发中 |
-| 2.4 Tensor与数据搬运 | [在线体验](./02_kernel_function_basic/02.04_tensor_and_data_transfer.ipynb) | 🚧 开发中 |
-| 2.5 手动流水同步 | [在线体验](./02_kernel_function_basic/02.05_manual_pipeline_sync.ipynb) | 🚧 开发中 |
-| 2.6 核函数调用与验证 | [在线体验](./02_kernel_function_basic/02.06_kernel_launch_and_verification.ipynb) | 🚧 开发中 |
-| 2.7 章节实践 | [在线体验](./02_kernel_function_basic/02.07_chapter_practice.ipynb) | 🚧 开发中 |
+| 2.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
+| 2.2 pyasc编程范式 | 在线体验建设中 | 🚧 开发中 |
+| 2.3 核函数定义与JIT编译 | 在线体验建设中 | 🚧 开发中 |
+| 2.4 Tensor与数据搬运 | 在线体验建设中 | 🚧 开发中 |
+| 2.5 手动流水同步 | 在线体验建设中 | 🚧 开发中 |
+| 2.6 核函数调用与验证 | 在线体验建设中 | 🚧 开发中 |
+| 2.7 章节实践 | 在线体验建设中 | 🚧 开发中 |
 
 ### pyasc算子开发系列（中级）
 
@@ -66,22 +66,22 @@
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 3.1 章节介绍 | [在线体验](./03_engineering_development/03.01_chapter_intro.ipynb) | 🚧 开发中 |
-| 3.2 TPipe/TQue框架编程 | [在线体验](./03_engineering_development/03.02_tpipe_tque_framework.ipynb) | 🚧 开发中 |
-| 3.3 Python语法约束 | [在线体验](./03_engineering_development/03.03_python_syntax_constraints.ipynb) | 🚧 开发中 |
-| 3.4 ConstExpr与Device函数 | [在线体验](./03_engineering_development/03.04_constexpr_and_device_functions.ipynb) | 🚧 开发中 |
-| 3.5 工程化Vector算子开发 | [在线体验](./03_engineering_development/03.05_engineering_vector_operator.ipynb) | 🚧 开发中 |
-| 3.6 章节实践 | [在线体验](./03_engineering_development/03.06_chapter_practice.ipynb) | 🚧 开发中 |
+| 3.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
+| 3.2 TPipe/TQue框架编程 | 在线体验建设中 | 🚧 开发中 |
+| 3.3 Python语法约束 | 在线体验建设中 | 🚧 开发中 |
+| 3.4 ConstExpr与Device函数 | 在线体验建设中 | 🚧 开发中 |
+| 3.5 工程化Vector算子开发 | 在线体验建设中 | 🚧 开发中 |
+| 3.6 章节实践 | 在线体验建设中 | 🚧 开发中 |
 
 #### 第四章：Matmul高阶API算子开发
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 4.1 章节介绍 | [在线体验](./04_matmul_high_level_api/04.01_chapter_intro.ipynb) | 🚧 开发中 |
-| 4.2 Matmul高阶API介绍 | [在线体验](./04_matmul_high_level_api/04.02_matmul_api_introduction.ipynb) | 🚧 开发中 |
-| 4.3 MIX模式Matmul开发 | [在线体验](./04_matmul_high_level_api/04.03_mix_mode_matmul_development.ipynb) | 🚧 开发中 |
-| 4.4 Cube Only模式Matmul开发 | [在线体验](./04_matmul_high_level_api/04.04_cube_only_mode_matmul_development.ipynb) | 🚧 开发中 |
-| 4.5 章节实践 | [在线体验](./04_matmul_high_level_api/04.05_chapter_practice.ipynb) | 🚧 开发中 |
+| 4.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
+| 4.2 Matmul高阶API介绍 | 在线体验建设中 | 🚧 开发中 |
+| 4.3 MIX模式Matmul开发 | 在线体验建设中 | 🚧 开发中 |
+| 4.4 Cube Only模式Matmul开发 | 在线体验建设中 | 🚧 开发中 |
+| 4.5 章节实践 | 在线体验建设中 | 🚧 开发中 |
 
 ### pyasc算子开发系列（高级）
 
@@ -89,19 +89,19 @@
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 5.1 章节介绍 | [在线体验](./05_fused_operator_development/05.01_chapter_intro.ipynb) | 🚧 开发中 |
-| 5.2 融合算子概念 | [在线体验](./05_fused_operator_development/05.02_fused_operator_concept.ipynb) | 🚧 开发中 |
-| 5.3 Matmul+矢量融合算子开发 | [在线体验](./05_fused_operator_development/05.03_matmul_vector_fusion.ipynb) | 🚧 开发中 |
-| 5.4 章节实践 | [在线体验](./05_fused_operator_development/05.04_chapter_practice.ipynb) | 🚧 开发中 |
+| 5.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
+| 5.2 融合算子概念 | 在线体验建设中 | 🚧 开发中 |
+| 5.3 Matmul+矢量融合算子开发 | 在线体验建设中 | 🚧 开发中 |
+| 5.4 章节实践 | 在线体验建设中 | 🚧 开发中 |
 
 #### 第六章：算子调试与性能调优
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 6.1 章节介绍 | [在线体验](./06_debug_and_profiling/06.01_chapter_intro.ipynb) | 🚧 开发中 |
-| 6.2 功能调试 | [在线体验](./06_debug_and_profiling/06.02_functional_debugging.ipynb) | 🚧 开发中 |
-| 6.3 性能调优 | [在线体验](./06_debug_and_profiling/06.03_performance_profiling.ipynb) | 🚧 开发中 |
-| 6.4 章节实践 | [在线体验](./06_debug_and_profiling/06.04_chapter_practice.ipynb) | 🚧 开发中 |
+| 6.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
+| 6.2 功能调试 | 在线体验建设中 | 🚧 开发中 |
+| 6.3 性能调优 | 在线体验建设中 | 🚧 开发中 |
+| 6.4 章节实践 | 在线体验建设中 | 🚧 开发中 |
 
 ## 在线体验环境
 
