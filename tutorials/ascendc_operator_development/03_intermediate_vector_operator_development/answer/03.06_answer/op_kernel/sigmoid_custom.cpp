@@ -1,6 +1,7 @@
 #include "kernel_operator.h"
 #include "sigmoid_custom_tiling.h"
 constexpr int32_t BUFFER_NUM = 2;
+constexpr int32_t QUEUE_DEPTH = 2;
 
 template<typename TYPE_X, typename TYPE_Y>
 class KernelSigmoid {
@@ -76,8 +77,8 @@ private:
 
 private:
     AscendC::TPipe pipe;
-    AscendC::TQue<AscendC::QuePosition::VECIN, BUFFER_NUM> inQueueX;          // 单输入队列
-    AscendC::TQue<AscendC::QuePosition::VECOUT, BUFFER_NUM> outQueueZ;        // 单输出队列
+    AscendC::TQue<AscendC::QuePosition::VECIN, QUEUE_DEPTH> inQueueX;          // 单输入队列
+    AscendC::TQue<AscendC::QuePosition::VECOUT, QUEUE_DEPTH> outQueueZ;        // 单输出队列
     AscendC::GlobalTensor<TYPE_X> xGm;                                        // 输入全局Tensor
     AscendC::GlobalTensor<TYPE_Y> zGm;                                        // 输出全局Tensor
     uint32_t coreDataNum;
