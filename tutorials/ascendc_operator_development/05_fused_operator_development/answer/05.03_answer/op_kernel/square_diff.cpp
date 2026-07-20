@@ -1,6 +1,7 @@
 #include "kernel_operator.h"
 #include "square_diff_tiling.h"
 constexpr int32_t BUFFER_NUM = 2;
+constexpr int32_t QUEUE_DEPTH = 2;
 
 template<typename TYPE_X, typename TYPE_Y, typename TYPE_Z> class KernelSquareDiff {
 public:
@@ -78,8 +79,8 @@ private:
 
 private:
     AscendC::TPipe pipe;
-    AscendC::TQue<AscendC::QuePosition::VECIN, BUFFER_NUM> inQueueX, inQueueY;
-    AscendC::TQue<AscendC::QuePosition::VECOUT, BUFFER_NUM> outQueueZ;
+    AscendC::TQue<AscendC::QuePosition::VECIN, QUEUE_DEPTH> inQueueX, inQueueY;
+    AscendC::TQue<AscendC::QuePosition::VECOUT, QUEUE_DEPTH> outQueueZ;
     AscendC::GlobalTensor<TYPE_X> xGm;
     AscendC::GlobalTensor<TYPE_Y> yGm;
     AscendC::GlobalTensor<TYPE_Z> zGm;

@@ -2,6 +2,7 @@
 #include "add_custom_template_tiling.h"
 #include "tiling_key_add_custom_template.h"
 constexpr int32_t BUFFER_NUM = 1;
+constexpr int32_t QUEUE_DEPTH = 1;
 
 template <class dtypeX>
 class KernelAdd {
@@ -97,9 +98,9 @@ private:
 
 private:
     AscendC::TPipe pipe;
-    AscendC::TQue<AscendC::TPosition::VECIN, BUFFER_NUM> inQueueX;
-    AscendC::TQue<AscendC::TPosition::VECIN, BUFFER_NUM> inQueueY;
-    AscendC::TQue<AscendC::TPosition::VECOUT, BUFFER_NUM> outQueueZ;
+    AscendC::TQue<AscendC::TPosition::VECIN, QUEUE_DEPTH> inQueueX;
+    AscendC::TQue<AscendC::TPosition::VECIN, QUEUE_DEPTH> inQueueY;
+    AscendC::TQue<AscendC::TPosition::VECOUT, QUEUE_DEPTH> outQueueZ;
     AscendC::TBuf<AscendC::QuePosition::VECCALC> tmp1, tmp2;
     AscendC::GlobalTensor<dtypeX> xGm;
     AscendC::GlobalTensor<dtypeX> yGm;

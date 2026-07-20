@@ -11,6 +11,7 @@ namespace NsSigmoid {
 using namespace AscendC;
 
 constexpr int32_t BUFFER_NUM = 1;
+constexpr int32_t QUEUE_DEPTH = 1;
 
 template <typename T>
 class Sigmoid {
@@ -29,8 +30,8 @@ private:
 
 private:
     TPipe pipe;
-    TQue<QuePosition::VECIN, BUFFER_NUM> XXX;
-    TQue<QuePosition::VECOUT, BUFFER_NUM> YYY;
+    TQue<QuePosition::VECIN, QUEUE_DEPTH> XXX;
+    TQue<QuePosition::VECOUT, QUEUE_DEPTH> YYY;
     AscendC::TBuf<AscendC::QuePosition::VECCALC> tmp1, tmp2;
     AscendC::GlobalTensor<T> xGm;
     AscendC::GlobalTensor<T> yGm;

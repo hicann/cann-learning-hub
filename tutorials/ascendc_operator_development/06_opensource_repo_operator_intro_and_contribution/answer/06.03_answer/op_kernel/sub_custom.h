@@ -12,6 +12,7 @@ namespace NsSub {
 using namespace AscendC;
 
 constexpr int32_t BUFFER_NUM = 1;
+constexpr int32_t QUEUE_DEPTH = 1;
 
 template <typename T>
 class Sub {
@@ -28,9 +29,9 @@ private:
 
 private:
     AscendC::TPipe pipe;
-    AscendC::TQue<AscendC::TPosition::VECIN, BUFFER_NUM> inQueueX;
-    AscendC::TQue<AscendC::TPosition::VECIN, BUFFER_NUM> inQueueX2;
-    AscendC::TQue<AscendC::TPosition::VECOUT, BUFFER_NUM> outQueueY;
+    AscendC::TQue<AscendC::TPosition::VECIN, QUEUE_DEPTH> inQueueX;
+    AscendC::TQue<AscendC::TPosition::VECIN, QUEUE_DEPTH> inQueueX2;
+    AscendC::TQue<AscendC::TPosition::VECOUT, QUEUE_DEPTH> outQueueY;
     AscendC::GlobalTensor<T> xGm;
     AscendC::GlobalTensor<T> x2Gm;
     AscendC::GlobalTensor<T> yGm;

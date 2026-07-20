@@ -12,6 +12,7 @@
 #include "kernel_operator.h"
 
 constexpr uint32_t BUFFER_NUM = 2; // tensor num for each queue
+constexpr uint32_t QUEUE_DEPTH = 2;
 
 struct SinhCustomTilingData
 {
@@ -70,8 +71,8 @@ private:
 
 private:
     AscendC::TPipe pipe;
-    AscendC::TQue<AscendC::TPosition::VECIN, BUFFER_NUM> inQueueX;
-    AscendC::TQue<AscendC::TPosition::VECOUT, BUFFER_NUM> outQueueZ;
+    AscendC::TQue<AscendC::TPosition::VECIN, QUEUE_DEPTH> inQueueX;
+    AscendC::TQue<AscendC::TPosition::VECOUT, QUEUE_DEPTH> outQueueZ;
     AscendC::GlobalTensor<float> xGm;
     AscendC::GlobalTensor<float> zGm;
     uint32_t blockLength;

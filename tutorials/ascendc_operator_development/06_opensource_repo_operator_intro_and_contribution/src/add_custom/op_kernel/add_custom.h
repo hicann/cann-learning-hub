@@ -4,6 +4,7 @@
 #include "add_custom_tiling_key.h"
 
 constexpr int32_t BUFFER_NUM = 1;  // tensor num for each queue
+constexpr int32_t QUEUE_DEPTH = 1;
 
 template <class dtypeX, class dtypeY, class dtypeZ>
 class KernelAdd {
@@ -62,9 +63,9 @@ private:
 
 private:
     AscendC::TPipe pipe;
-    AscendC::TQue<AscendC::TPosition::VECIN, BUFFER_NUM> inQueueX;
-    AscendC::TQue<AscendC::TPosition::VECIN, BUFFER_NUM> inQueueY;
-    AscendC::TQue<AscendC::TPosition::VECOUT, BUFFER_NUM> outQueueZ;
+    AscendC::TQue<AscendC::TPosition::VECIN, QUEUE_DEPTH> inQueueX;
+    AscendC::TQue<AscendC::TPosition::VECIN, QUEUE_DEPTH> inQueueY;
+    AscendC::TQue<AscendC::TPosition::VECOUT, QUEUE_DEPTH> outQueueZ;
     AscendC::GlobalTensor<dtypeX> xGm;
     AscendC::GlobalTensor<dtypeY> yGm;
     AscendC::GlobalTensor<dtypeZ> zGm;
