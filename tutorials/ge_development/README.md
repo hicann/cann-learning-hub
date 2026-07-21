@@ -9,7 +9,27 @@
 >- **注意：**
 >- 本教程面向 GE 用户侧能力学习，重点关注模型编译、执行、部署与扩展开发实践，不深入展开 GE 内部实现细节。
 >- 课程内容以 CANN/昇腾社区公开文档、GE 图开发指南、ATC 使用指南、ACL 推理开发文档及相关示例为参考。
->- 本教程当前仅针对 Atlas A2 系列产品进行验证，其它产品使用存在问题，欢迎开发者提出 issue 或 PR 进行共建。环境要求：CANN 8.5.0 及以上，Linux 已部署 CANN 开发环境（参考 [CANN 下载页面](https://www.hiascend.com/cann/download)）；「基础概念入门」无需 NPU，其余动手实践需 NPU 或昇腾云环境。
+>- 本教程当前仅针对 Atlas A2 系列产品进行验证，其它产品使用存在问题，欢迎开发者提出 issue 或 PR 进行共建。环境要求：CANN 9.0.0 及以上，Linux 已部署 CANN 开发环境（参考 [CANN 下载页面](https://www.hiascend.com/cann/download)）；「基础概念入门」无需 NPU，其余动手实践需 NPU 或昇腾云环境。
+
+## 软硬件配套说明
+
+| 项目 | 要求 |
+| --- | --- |
+| 支持硬件 | Atlas A2 训练/推理系列产品 |
+| CANN 版本 | 9.0.0 及以上 |
+| Python | 3.11 |
+
+## 在线体验环境
+
+本教程支持以下在线体验环境：
+
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 | 参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md) 创建 CANNLab 环境运行 notebook |
+
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。
+> Notebook 用于阅读教程和章节练习；涉及 ATC 编译、ACL/GeSession 执行的动手实践需在配备 Ascend NPU 的服务器或昇腾云环境上运行（「基础概念入门」章节除外，无需 NPU）。
 
 ## 能力分层设计
 
