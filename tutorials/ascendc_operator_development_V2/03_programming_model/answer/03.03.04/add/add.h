@@ -49,7 +49,7 @@ __global__ __vector__ void add_custom(__gm__ uint8_t* src0, __gm__ uint8_t* src1
         // 数据搬入操作完成后才能启动计算
         asc_lock(PIPE_V, mutex_id);
         // 调用VF函数执行计算
-        add_vf(dst_ub, src0_ub, src1_ub);
+        asc_vf_call<add_vf>(dst_ub, src0_ub, src1_ub);
         asc_unlock(PIPE_V, mutex_id);
 
         // 计算完成后才能启动数据搬出
