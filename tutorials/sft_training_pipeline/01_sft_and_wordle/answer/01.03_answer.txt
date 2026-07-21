@@ -1,8 +1,8 @@
 1. B
-解析：两者都使用 Cross-Entropy Loss，但 SFT 通过 Label Masking 只在 assistant 回复上计算 loss，user/system 消息被忽略。数据格式也不同：Pretraining 用任意文本（自监督），SFT 用对话格式（有监督）。
+解析：两者都可使用 next-token Cross-Entropy；本课程 recipe 使用多轮对话，并通过 Label Masking 只让 assistant 目标位置贡献 loss。这是本课程的实现选择，不是所有 SFT 的定义。
 
-2. √
-解析：Label Masking 技术将 user 和 system 对应的 token 标签设为 -100（PyTorch CrossEntropyLoss 的 ignore_index），确保这些位置不产生梯度。
+2. A
+解析：`-100` 让对应目标位置不计入 CE loss；user token 仍在输入序列中，并会影响后续 assistant token 的预测。
 
-3. A、B、D
-解析：SFT 扮演三个角色：格式对齐（A）、反馈理解（B）、初步策略（D）。最优策略（C）是 RL 阶段的目标——随机策略生成的训练数据无法教会模型最优猜词。
+3. A、B
+解析：SFT 可以模仿输出协议和训练轨迹中的条件行为。是否真正理解规则需要行为评测，最优策略也不能由该训练目标保证。

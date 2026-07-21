@@ -1,32 +1,10 @@
-1. √
-解析：Wordle 数据集的每条样本包含 6-10 条多轮 user/assistant 交替消息，不是单轮对话。
-
-2. √
-解析：local_batch_size=2 是每次前向的样本数，global_batch_size=4 是每次更新用的样本数。4÷2=2，每 2 次前向梯度累计后更新一次。
-
-3. √
-解析：min_lr_factor=1.0 表示学习率终点等于起点，cosine 曲线退化为水平线。20 步训练太短，恒定 lr 是合理的。长训练才需要真正的衰减。
-
-4. B
-解析：sample_processor 是胶水函数——把原始 JSON 变成 (input_ids, labels) 对。
-
-5. B
-解析：-1 是自动配置——框架根据 NGPU 自动解析。单卡时=1（不分片），多卡时=卡数（启用 FSDP2）。
-
-6. B
-解析：--checkpoint.last_save_in_hf 在训练最后一步将权重导出为 HuggingFace 格式，便于推理和评测。
-
-7. B
-解析：grad_norm 从 142 骤降到 4.0 是正常现象——模型初始时参数与新数据不匹配，梯度很大，几步后迅速适应并收敛。
-
-8. A
-解析：Step 1→5 的快速下降来自模型学会 <guess> 格式和新的 token 分布（G/Y/X 反馈符号等）。这是 SFT 的「格式对齐」阶段。
-
-9. B
-解析：20 步 SFT 不足以学会策略性猜词。训练数据由随机策略生成，且步数太少。策略能力需要在 RL 阶段通过试错学习。
-
-10. A、B、D
-解析：SFT 后的改进包括 format_reward 0.2→1.0（A）、稳定多轮对话（B）、推理加速（D）。correct_answer 仍为 0%（C 错误），策略留给 RL。
-
-11. A、B、C、E
-解析：Wordle 评测的 4 个 reward 组件：correct_answer、partial_answer、length_bonus、format_reward。bleu_score 是机器翻译指标。
+1. √。
+2. √。
+3. A。
+4. A。
+5. A。
+6. A。
+7. A。
+8. A。
+9. A、B、C。
+10. A、B、C。

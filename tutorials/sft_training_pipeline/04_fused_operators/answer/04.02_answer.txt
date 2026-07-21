@@ -1,14 +1,4 @@
-1. √
-解析：原始 RMSNorm 的 6 步（cast → pow → mean → add+rsqrt → mul → mul）各是一次独立 kernel launch，56 个 RMSNorm × 6 = 336 次调度，对小模型来说 launch overhead 超过了实际计算时间。
-
-2. √
-解析：`npu_rms_norm` 将 6 步融合为 1 个 Ascend C kernel，在 UB（片上 SRAM）内以 fp32 精度完成全部计算，HBM 读写从 6+6 降到 1+1。
-
-3. B
-解析：`self.__dict__.update(parent.__dict__)` 浅拷贝原模块的属性，让 `self.weight` 指向与原模块相同的 Parameter 对象（共享内存），FSDP 分片和优化器状态都不受影响，透明替换。
-
-4. B
-解析：`convert()` 遍历 `model.named_modules()`，用 `isinstance(module, RMSNorm)` 找到所有旧 RMSNorm，用 `replace_module_with_name` 逐个替换为 `NPURMSNorm`。Qwen3-1.7B 共替换 56 处。
-
-5. √
-解析：`@register_model_converter("npu_rms_norm")` 将名字注册到全局表，配置中 `get_model_converter_config("npu_rms_norm")` 按名字查找，框架启动时自动执行转换。
+1. A。`torch_npu.npu_rms_norm` 返回归一化输出 `y` 和供反向计算使用的 `rstd`；实际 HBM 流量与 kernel 数必须按目标 CANN/torch_npu 版本的 trace 实测，不能固定写成某个比例。
+2. B。
+3. A。
+4. A。

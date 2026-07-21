@@ -118,3 +118,4 @@ dist/
 *.whl
 .claude/
 .opencode/
+prime-rl/

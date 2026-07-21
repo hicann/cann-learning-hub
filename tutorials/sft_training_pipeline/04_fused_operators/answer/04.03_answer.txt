@@ -1,8 +1,3 @@
-1. √
-解析：前几步包含 Ascend kernel JIT 编译、显存分配预热、数据加载初始化等一次性开销，采集的 step time 偏大，不能反映稳态性能。第 6 步起 kernel 已缓存，数据更能代表实际训练性能。
-
-2. ×
-解析：Profiling 改小 `global_batch_size` 是为了减少梯度累计等待时间，更快出 profiling 结果——profiling 只关心算子耗时分布，不关心收敛质量。大 batch_size 反而让 step 变慢，浪费 profiling 时间。
-
-3. B
-解析：脚本扫描 `profile_traces/` 下所有子目录，找到 `trace_view.json` 后按文件修改时间（`st_mtime`）升序排列——先跑完的训练时间戳更早 = baseline，后跑完的更晚 = fused。
+1. A。
+2. A。
+3. A。

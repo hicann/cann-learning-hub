@@ -1,17 +1,7 @@
-1. B
-解析：sample_processor 是胶水函数——框架对每条样本调用它一次，把原始 JSON 变成 (input_ids, labels) 对。
+1. √。ChatDataset 会把多局较短对话装入一条固定长度 packed sequence，所以一条 batch element 与一局 Wordle 没有一一对应关系。每个 microbatch 中，每个 rank 读取 2 条，两个 rank 合计 4 条；`64 ÷ (2 × 2) = 16`，因此每个 rank 累计 16 个 microbatch、共处理 32 条 packed sequences 后，两个 rank 合计形成 global batch 64 并更新一次参数。
 
-2. B
-解析：local_batch_size=2 是每次前向的样本数，global_batch_size=4 是每次更新用的样本数。4÷2=2，每 2 次前向梯度累计后更新一次参数。
+2. A。`chat_processor`（当前配置指向 `process_wordle_sample`）直接返回按时间排序的 role/content message 列表。ChatDataset 随后应用 chat template 并分词，再构造 shifted labels 和 assistant mask。
 
-3. √
-解析：min_lr_factor=1.0 表示衰减终点等于起点。20 步太短，还没来得及衰减训练就结束了。长训练（如 2000 步）才需要设成 0.1 或更小。
+3. B。`warmup_steps>0` 先逐步升高学习率，`decay_type="cosine"` 在后期平滑下降，`min_lr_factor=0.1` 将终点设为初始学习率的 10%。具体比例仍需结合有效 batch、总 token 数、模型规模和验证集曲线调整。
 
-4. B
-解析：TP 把单层矩阵乘法切分到多卡，适用于单层太大放不下的场景（>10B 模型）。1.7B 模型单层不大，一张卡放得下，TP=1。
-
-5. B
-解析：-1 是自动配置——框架根据 NGPU 自动解析。单卡时=1（不分片），多卡时=卡数（启用 FSDP2）。
-
-6. √
-解析：1.7B 模型规模不大，DP（FSDP）既能加速又能省显存，足够应对。TP 给 >10B 的模型，PP 给 >100 层的模型，CP 给超长序列，EP 给 MoE 模型。
+4. A、B、C。应检查单层和中间张量能否按目标维度放置、world size 与 attention head 等维度是否整除，以及通信开销后的实测吞吐。

@@ -1,29 +1,29 @@
-1. ×
-解析：Wordle 最多猜 6 轮，不是 7 轮。
+1. √
+解析：先标 A 的 G；目标词剩余一个 L，猜词中的第一个 L 标为 Y，第二个 L 标为 X；E 标为 Y，Y 标为 X。
 
-2. ×
-解析：SFT 的目标是让模型学会输出格式正确的猜测（format_reward 0.2 → 1.0），最优猜词策略是 RL 阶段的目标。
+2. √
+解析：标准 Wordle 每局最多提供 6 次猜词机会。
 
-3. √
-解析：Label Masking 将 user 和 system 消息对应的 token 标签设为 -100（ignore_index），只在 assistant 回复上计算 CE loss。
+3. A
+解析：重复字母按目标词中的剩余数量匹配。唯一可匹配的 L 已分配给前一个 L，因此第二个 L 为 X。
 
-4. ×
-解析：训练数据中的游戏记录由随机策略生成，不是最优策略。SFT 的目标是学习格式规范和基本反馈理解，最优策略留给 RL。
+4. B
+解析：当前 verifier 的 XML parser 读取 `<guess>` 字段，`correct_answer` 将解析结果与带方括号的 `[plane]` 精确比较。
 
-5. B
-解析：Green = 字母和位置都对，Yellow = 字母对但位置错，X = 字母不在单词中。
+5. A
+解析：当前 `_process_wordle_sample` 按顺序拼接 `prompt` 和 `completion`，形成送入 chat template 的训练消息。
 
-6. B
-解析：SFT 最重要的作用是格式对齐——让模型学会按 `<guess>word</guess>` 格式输出。基座模型的 format_reward 只有 ~0.2，SFT 后提升到 ~1.0。
+6. A
+解析：自回归 next-token 训练用前一个位置预测后一个 token，因此输入去掉末 token，标签去掉首 token。
 
-7. C
-解析：SFT 使用 Cross-Entropy Loss，与预训练相同。Policy Gradient Loss 和 KL Divergence 是 RL 使用的损失函数。
+7. A
+解析：`-100` 让相应目标位置不计入 CE；system/user token 仍保留在输入上下文中并影响 assistant token 的预测。
 
-8. B
-解析：SFT 使用对话格式（messages 列表），预训练使用任意文本。这是两者在数据格式上的核心区别。
+8. A
+解析：`format_reward` 衡量评分器定义的 `<guess>` XML 格式要求；猜中结果由 `correct_answer` 等指标分别记录。
 
-9. A、B、D
-解析：SFT 的三大角色——格式对齐（A）、反馈理解（B）、初步策略（D）。最优策略学习（C）是 RL 阶段的目标，SFT 训练数据由随机策略生成，无法学到最优策略。
+9. B
+解析：`correct_answer` 记录 parser 提取的猜词内容与目标答案是否精确匹配。
 
-10. A、B、D
-解析：Wordle 评测指标包括 format_reward（格式）、correct_answer（猜对）、partial_answer（部分正确）、length_bonus（步数奖励）。bleu_score 是机器翻译指标，不用于 Wordle。
+10. A、B
+解析：SFT 拟合训练标签，可以学习输出协议和轨迹中的反馈条件行为。策略表现和规则遵守由独立评测衡量。
