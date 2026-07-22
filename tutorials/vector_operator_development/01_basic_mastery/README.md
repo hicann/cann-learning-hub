@@ -22,6 +22,6 @@
 
 ## 环境要求
 
-- 昇腾 NPU 硬件（A2/A3/A5 系列），或昇腾云服务器/仿真环境
+- 昇腾 NPU 硬件（A5 系列）
 - CANN 开发环境（建议 CANN 8.0 以上版本）
 - Python 3.8+，Jupyter Lab / Notebook

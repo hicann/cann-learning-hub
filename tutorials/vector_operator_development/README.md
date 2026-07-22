@@ -15,22 +15,30 @@
 ### 第三章：Ascend 算子开发
 深入学习 SIMD 和 SIMT 算子开发，包括 membase/regbase 编程、aclnn 和 PTA 接口调用、性能优化和调试技巧。
 
-## 前置要求
+## 前置知识要求
 
 - 具备 C/C++ 编程基础
 - 了解深度学习框架（PyTorch/TensorFlow）基本概念
 - 具备一定的并行编程基础
 - 已完成 Ascend C 算子开发系列教程基础部分
 
-## 环境要求
+## 软硬件配套说明
 
-- 昇腾 NPU 硬件（A2/A3/A5 系列）或云服务器
-- 已安装 CANN 开发环境（建议 CANN 8.0 以上版本）
-- Python 3.8+ 环境
-- Jupyter Lab / Notebook
+| 项目 | 要求 |
+| --- | --- |
+| 支持硬件 | Ascend 950PR/Ascend 950DT |
+| CANN 版本 | 8.0.0 及以上 |
+| Python | 3.8+ |
 
-> **注意：**
-> 本教程当前仅针对 Atlas A2 系列产品完成验证，A3/A5 系列产品验证正在进行中。
+## 在线体验环境
+
+本教程支持以下在线体验环境：
+
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| CANNLab 950尝鲜 | cann_9.0.0-beta.2-py3.12-a5 | Python 3.12 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。
 
 ## 章节目录
 
