@@ -18,7 +18,17 @@
 
 | 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
 | --- | --- | --- | --- |
-| CANNLab 云开发环境 | cann_9.0.0 py3.11-A3-arm Z| Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+| CANNLab 云开发环境 | cann_9.0.0 py3.11-A3-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+
+本课程从 `cann-learning-hub` 课程仓进入 CANNLab，课程 notebook 已随仓库提供，无须再次克隆课程仓。首次进入后，请打开 [01.01 章节介绍](01_environment_setup/01.01_chapter_intro.ipynb)，运行其中的仓库拉取单元格，将 `cann-recipes-train` 克隆到课程仓的同级目录。环境安装、数据准备、检查和 TensorBoard 启动由 notebook 单元格完成，长时间训练在终端运行。
+
+```text
+/mnt/workspace/gitCode/cann/
+├── cann-learning-hub/                 # CANNLab 入口及默认工作目录
+│   └── tutorials/rl_training_pipeline/ # 本课程
+└── cann-recipes-train/                # 01.01 单元格拉取的训练代码仓
+    └── llm_rl/qwen3_wordle/           # 配套训练代码
+```
 
 > **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。\
 > Notebook 用于阅读教程和章节练习。训练任务需在配备 Ascend NPU 的服务器上独立运行。
