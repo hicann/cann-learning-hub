@@ -14,6 +14,25 @@
 > - AutoFuse 自动融合特性仅支持 Atlas 350 加速卡、Atlas A2 训练/推理系列产品、Atlas A3 训练/推理系列产品。
 > - AutoFuse 是昇腾图编译流程中的内置能力，无需额外编写融合代码、也无需修改现有业务逻辑：用户只需配置 `AUTOFUSE_FLAGS` 等环境变量即可启用。AutoFuse 模块会自动识别可融合算子模式、生成融合内核、完成编译优化，整个融合过程在编译阶段自动完成。
 
+## 软硬件配套说明
+
+| 项目 | 要求 |
+| --- | --- |
+| 支持硬件 | Atlas A2 训练/推理系列产品、Atlas A3 训练/推理系列产品 |
+| CANN 版本 | 9.0.0 及以上 |
+| Python | 3.11 |
+
+## 在线体验环境
+
+本教程支持以下在线体验环境：
+
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。
+
 ## 课程目录
 
 ### 第一章 AutoFuse 基础介绍
