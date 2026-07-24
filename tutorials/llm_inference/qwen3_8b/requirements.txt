@@ -1,0 +1,5 @@
+transformers==5.0.0
+datasets==3.6.0
+compressed-tensors==0.6.0
+accelerate==1.0.1
+modelscope

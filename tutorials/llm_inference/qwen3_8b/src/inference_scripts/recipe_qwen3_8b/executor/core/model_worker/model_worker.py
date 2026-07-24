@@ -1,0 +1,406 @@
+# coding=utf-8
+# Copyright (c) 2026 Huawei Technologies Co., Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Model Worker for managing model loading and inference operations.
+
+This module provides the ModelWorker class that handles low-level model operations
+for a single model (either main model or MTP model), including:
+- Model loading
+- Weight processing and KV cache initialization
+- Model inference execution
+- Model compilation for graph mode
+"""
+
+import os
+import logging
+import time
+from typing import Dict, Optional, Tuple
+
+import torch
+import torch_npu
+import torch.distributed as dist
+
+from executor.core.config import InferenceConfig, CommManager
+from executor.core.kv_cache.cache_info import CacheEntry, LayerCacheInfo, ModelCacheInfo
+from executor.utils.forward_metadata import set_forward_metadata, get_forward_metadata
+from executor.model_loader.default_loader import DefaultModelLoader
+from executor.model_loader.dummy_loader import DummyModelLoader
+from module.quantization import (QUANTIZATION_METHODS, get_quant_config)
+
+logger = logging.getLogger(__name__)
+
+
+class ModelWorker:
+    """Worker class for managing a single model's loading and inference operations.
+
+    This class encapsulates all low-level model operations that directly
+    interact with the model, providing a clean separation between the
+    execution engine orchestration and the actual model work.
+
+    Each ModelWorker instance is responsible for one model.
+
+    Member Variables:
+        Config:
+            infer_config: Inference configuration containing all runtime settings.
+            hf_config: HuggingFace model configuration loaded from pretrained.
+            model_name: Name of the model.
+            model_path: Path to the model weights.
+            exe_mode: Execution mode (eager, npugraph_ex, etc.).
+            dtype: Data type for tensors (default: bfloat16).
+
+        Model Components:
+            device: NPU device for computation.
+            model: Loaded inference model instance.
+            model_compiled: Compiled model for graph mode (if enabled).
+            comm_manager: Communication manager for distributed operations.
+            quantization: Quantization method name (if applicable).
+
+        Parallel Settings:
+            global_rank: Global rank for distributed training.
+            attn_tp_size: Attention tensor parallelism size.
+            attn_dp_size: Attention data parallelism size.
+            moe_ep_size: Mixture of Experts expert parallelism size.
+            moe_tp_size: Mixture of Experts tensor parallelism size.
+
+        MoE Load Balance:
+            force_eplb: Flag for force expert per-token load balance.
+            prefill_topk_list: Cached expert indices for prefill phase.
+            decode_topk_list: Cached expert indices for decode phase.
+
+        Runtime Flags:
+            use_pretrained_model: Whether to load pretrained weights.
+            enable_cache_compile: Whether to enable compiled graph cache.
+    """
+
+    def __init__(self, infer_config: InferenceConfig, device):
+        """Initialize ModelWorker with inference configuration and device."""
+        # Config
+        self.infer_config = infer_config
+        self.model_name = self.infer_config.model_config.model_name
+        self.model_path = self.infer_config.model_config.model_path
+        self.exe_mode = self.infer_config.model_config.exe_mode
+        self.enable_static_kernel = self.infer_config.model_config.enable_static_kernel
+        self.use_pretrained_model = self.infer_config.model_config.with_ckpt
+        self.enable_cache_compile = self.infer_config.model_config.enable_cache_compile
+        self.enable_afd = self.infer_config.model_config.custom_params.get("enable_afd", False)
+
+        # Model Components
+        self.device = device
+        self.model = None
+        self.model_compiled: Optional[torch.nn.Module] = None
+        self.kv_cache: Optional[torch.Tensor] = None
+        self.hf_config = None
+        self.comm_manager = None
+        self.dtype = torch.bfloat16
+        self.quant_cache_dtype = None
+        self.quantization = None
+
+        # MoE Load Balance
+        self.force_eplb = self.infer_config.model_config.force_eplb
+        if self.force_eplb:
+            self.prefill_topk_list = None
+            self.decode_topk_list = None
+
+        # Parallel Settings
+        self.global_rank = self.infer_config.parallel_config.global_rank
+        self.attn_tp_size = self.infer_config.parallel_config.attn_tp_size
+        self.attn_dp_size = self.infer_config.parallel_config.attn_dp_size
+        self.moe_ep_size = self.infer_config.parallel_config.moe_ep_size
+        self.moe_tp_size = self.infer_config.parallel_config.moe_tp_size
+
+    def init(
+        self,
+        model_cls,
+        config_cls,
+        comm_manager: Optional[CommManager] = None,
+    ) -> None:
+        """Bring the worker to ready: load HF config, build (or reuse) the
+        comm_manager, instantiate model layers, and load weights.
+
+        When ``comm_manager`` is None this worker creates one — that's the primary worker.
+        Secondary workers (e.g. the MTP draft model worker) pass the main worker's
+        comm_manager to share the single process-wide instance.
+        """
+        # Phase 1: HF config (cpu-only) + custom_params override + quant metadata + validation
+        # Load HuggingFace config
+        self.hf_config = config_cls.from_pretrained(
+            self.model_path,
+            low_cpu_mem_usage=True,
+            ignore_mismatched_sizes=True,
+            runner_settings=self.infer_config
+        )
+
+        # Allow custom_params to override hf_config fields (e.g. num_hidden_layers for reduced-layer testing)
+        custom_params = self.infer_config.model_config.custom_params
+        if "num_hidden_layers" in custom_params:
+            self.hf_config.num_hidden_layers = int(custom_params["num_hidden_layers"])
+
+        # Handle quantization configuration
+        self._verify_quantization()
+        if self.quantization is not None:
+            self.hf_config.quant_config = get_quant_config(self.hf_config, self.quantization, self.model_path)
+            # Set dtype to int8 if KV cache quant mode is explicitly set to "int8"
+            if self.hf_config.quant_config.kv_cache_quant_mode is not None and \
+                self.hf_config.quant_config.kv_cache_quant_mode == "int8":
+                self.quant_cache_dtype = torch.int8
+
+        # Validate configuration
+        self.infer_config.validate(self.hf_config)
+
+        # Phase 2: comm_manager. Secondary workers (MTP) pass the main worker's
+        # comm_manager so we don't recreate process-wide state.
+        if comm_manager is None:
+            comm_manager = self._build_comm_manager()
+        self.comm_manager = comm_manager
+
+        # Phase 3: build model layers and load weights
+        self._load_weights(model_cls)
+
+    def _build_comm_manager(self) -> CommManager:
+        """Construct and initialize the process-wide CommManager."""
+        cfg = self.infer_config.parallel_config
+        platform_version = self.infer_config.model_config.platform_version
+        comm_manager = CommManager(
+            cfg,
+            platform_version=platform_version,
+        )
+        return comm_manager
+
+    def _load_weights(self, model_cls) -> None:
+        """Build model layers (using comm_manager) and load weights into them."""
+        # Select appropriate loader based on configuration
+        if self.use_pretrained_model:
+            logger.info("Try to load pretrained model in path: %s", self.model_path)
+            loader = DefaultModelLoader()
+        else:
+            loader = DummyModelLoader()
+
+        # Load model
+        self.model = loader.load_model(
+            config=self.hf_config,
+            model_cls=model_cls,
+            runner_settings=self.infer_config,
+            model_path=self.model_path,
+            comm_manager=self.comm_manager,
+        )
+
+        # Check model settings
+        if hasattr(self.model, "check_model_settings"):
+            self.model.check_model_settings()
+
+        self.model.to(self.device)
+
+        # Process weights after loading (transpose for NPU)
+        self._process_weights_after_loading()
+
+    def _process_weights_after_loading(self):
+        """Process weights after loading (transpose for NPU format)."""
+        if hasattr(self.model, "process_weights_after_loading"):
+            self.model.process_weights_after_loading()
+            self.model.to(self.device)
+
+    def get_cache_info(self):
+        """Get the model's overall cache information."""
+        if hasattr(self.model, "get_cache_info"):
+            return self.model.get_cache_info()
+        else:
+            return None
+
+    def init_kvcache(self):
+        """Initialize pre-allocated KV cache tensors."""
+        batch_size = self.infer_config.scheduler_config.batch_size_per_dp_rank
+        cache_seq_len = self.infer_config.data_config.input_truncated_len + \
+            self.infer_config.scheduler_config.max_new_tokens
+
+        # Bind kv_cache to model modules
+        if hasattr(self.model, "init_cache"):
+            self.model.init_cache(self.device)
+        else:
+            for module in self.model.modules():
+                # Standard KV cache
+                if hasattr(module, "k_cache") and hasattr(module, "v_cache"):
+                    module.k_cache = torch.empty((batch_size, cache_seq_len, *module.cache_unit), dtype=self.dtype,
+                                                device=self.device)
+                    module.v_cache = torch.empty((batch_size, cache_seq_len, *module.cache_unit), dtype=self.dtype,
+                                                device=self.device)
+
+    # Copied from vllm.config._parse_quant_hf_config
+    def _parse_quant_hf_config(self):
+        """Parse quantization configuration from HuggingFace config."""
+        quant_cfg = getattr(self.hf_config, "quantization_config", None)
+        if quant_cfg is None:
+            # compressed-tensors uses a "compression_config" key
+            quant_cfg = getattr(self.hf_config, "compression_config", None)
+        return quant_cfg
+
+    # Adapted from vllm.config._verify_quantization
+    def _verify_quantization(self) -> None:
+        """Verify quantization configuration is supported."""
+        supported_quantization = QUANTIZATION_METHODS
+
+        # Parse quantization method from the HF model config, if available.
+        quant_cfg = self._parse_quant_hf_config()
+
+        if quant_cfg is not None and quant_cfg:
+            quant_method = quant_cfg.get("quant_method", "").lower()
+            quant_method = quant_method.replace("compressed_tensors", "compressed-tensors")
+            self.quantization = quant_method
+
+        # Verify quantization is supported
+        if self.quantization is not None:
+            if self.quantization not in supported_quantization:
+                raise ValueError(
+                    f"Unknown quantization method: {self.quantization}. Must "
+                    f"be one of {supported_quantization}.")
+
+    def _barrier_before_timing(self) -> None:
+        if self.enable_afd:
+            return
+        if self.infer_config.parallel_config.world_size <= 1:
+            return
+        if not dist.is_available() or not dist.is_initialized():
+            raise RuntimeError("dist.barrier requires an initialized default process group.")
+        dist.barrier()
+
+    def inference(self, model_inputs: Dict, is_prefill: bool, is_mtp: bool = False) -> Tuple[torch.Tensor, float]:
+        """Execute model inference and log timing information."""
+        # Generate expert indices for force EPLB if enabled
+        if self.force_eplb:
+            input_ids = model_inputs["input_ids"]
+            total_tokens = input_ids.numel() if input_ids.dim() == 1 else input_ids.shape[0] * input_ids.shape[1]
+            if is_prefill:
+                self.prefill_topk_list = self.gen_force_eplb_topk_idx(is_prefill, total_tokens)
+            elif self.decode_topk_list is None:
+                # Only generate once for decode phase
+                self.decode_topk_list = self.gen_force_eplb_topk_idx(is_prefill, total_tokens)
+            model_inputs.update({"cur_topk_list": self.prefill_topk_list if is_prefill else self.decode_topk_list})
+
+        prepare_model_inputs = getattr(self.model, "prepare_model_inputs_for_inference", None)
+        if prepare_model_inputs is not None:
+            model_inputs = prepare_model_inputs(model_inputs, is_prefill)
+
+        # Synchronize and start timing
+        self._barrier_before_timing()
+        torch.npu.synchronize()
+        start_time = time.time()
+
+        # Execute model forward
+        with torch.no_grad():
+            if self.exe_mode in ["ge_graph", "npugraph_ex"] and not is_prefill:
+                # Use compiled model for decode phase
+                output = self.model_compiled(**model_inputs)
+            else:
+                # Use eager execution for prefill or non-graph mode
+                output = self.model(**model_inputs)
+
+        # Synchronize and calculate timing
+        torch.npu.synchronize()
+        end_time = time.time()
+        inference_time = end_time - start_time
+
+        # Per-step timing log moved to Scheduler._log_step (the scheduler has
+        # the queue/kv-usage context that makes a single combined log line
+        # more useful than separate per-worker prints).
+
+        return output, inference_time
+
+    def compile_model(self):
+        """Compile model forward for graph mode."""
+        from executor.utils.graph_utils import compile_model_forward
+
+        logger.info("The final model structure is: \n %s", self.model)
+        if self.exe_mode in ["ge_graph", "npugraph_ex"]:
+            logger.info("Try to compile model")
+            self.model_compiled = compile_model_forward(
+                self.model.forward,
+                exe_mode=self.exe_mode,
+                enable_cache_compile=self.enable_cache_compile,
+                cache_dir=os.path.join(self.infer_config.model_config.output_path, "cache_compile"),
+                enable_static_kernel=self.enable_static_kernel,
+            )
+        else:
+            self.model_compiled = None
+
+    def gen_force_eplb_topk_idx(
+        self,
+        is_prefill: bool,
+        total_tokens: int,
+    ) -> Optional[torch.Tensor]:
+        """Generate expert indices for force EPLB (Expert Per-Token Load Balance).
+
+        This function uses round-robin allocation to evenly distribute tokens
+        across experts, ensuring perfect load balance. The allocation pattern
+        depends on the phase (prefill/decode) and parallel configuration.
+        """
+        # Validate model has required MoE attributes
+        if not hasattr(self.model, "num_experts"):
+            raise AttributeError(
+                f"Model {self.model.__class__.__name__} must configure 'num_experts' attribute for EPLB. "
+                f"Please add 'self.num_experts = <value>' in the model's __init__ method."
+            )
+
+        if not hasattr(self.model, "num_experts_per_tok"):
+            raise AttributeError(
+                f"Model {self.model.__class__.__name__} must configure 'num_experts_per_tok' attribute for EPLB. "
+                f"Please add 'self.num_experts_per_tok = <value>' in the model's __init__ method."
+            )
+
+        num_experts = self.model.num_experts
+        num_experts_per_tok = self.model.num_experts_per_tok
+        experts_per_rank = num_experts // self.moe_ep_size
+        use_model_token_count = getattr(self.model, "force_eplb_use_model_token_count", False)
+
+        if is_prefill:
+            # Prefill phase: allocate experts with rank-aware distribution
+            if use_model_token_count:
+                tokens_per_rank_prefill = total_tokens if self.moe_ep_size != 1 else total_tokens * self.attn_dp_size
+            else:
+                tokens_per_rank_prefill = (total_tokens + self.attn_tp_size - 1) // self.attn_tp_size \
+                    if self.moe_ep_size != 1 else total_tokens * self.attn_dp_size
+            step_prefill = tokens_per_rank_prefill * num_experts_per_tok
+            cur_topk_list_prefill = [
+                (i + self.global_rank) % num_experts for i in range(step_prefill)]
+            cur_topk_list = torch.tensor(cur_topk_list_prefill, dtype=torch.int).view(tokens_per_rank_prefill, -1).npu()
+        else:
+            # The input are distributed according to attention parallelism (attn_dp_size),
+            # but when computing topk_list in force_eplb mode, the token count should follow MoE
+            # parallelism (moe_ep_size). Thus, the token count should be recacculated.
+            if not use_model_token_count:
+                total_tokens = total_tokens * self.attn_dp_size // self.moe_ep_size
+            # Decode phase: allocation depends on MoE tensor parallelism
+            if self.moe_tp_size > 1:
+                # MoE TP mode: contiguous expert ranges per EP rank
+                expanded_tokens = total_tokens * num_experts_per_tok
+                cur_topk_list_decode = []
+                for offset in range(self.moe_ep_size):
+                    expert_start = offset * experts_per_rank
+                    expert_end = expert_start + expanded_tokens
+                    cur_topk_list_decode = cur_topk_list_decode + [i for i in range(expert_start, expert_end)]
+                cur_topk_list = torch.tensor(cur_topk_list_decode, dtype=torch.int).view(total_tokens, -1).npu()
+            else:
+                # Non-TP mode: round-robin allocation across EP ranks
+                expanded_tokens = total_tokens * num_experts_per_tok
+                step_gap = num_experts // self.moe_ep_size
+                expanded_offset = expanded_tokens * self.global_rank + self.global_rank
+
+                cur_topk_list_decode = []
+                # Allocate experts using round-robin algorithm
+                for idx in range(expanded_tokens):
+                    col = (expanded_offset + idx) % self.moe_ep_size
+                    row = (expanded_offset + idx) // self.moe_ep_size % step_gap
+                    expert_idx = row + col * step_gap
+                    cur_topk_list_decode.append(expert_idx)
+                cur_topk_list = torch.tensor(cur_topk_list_decode, dtype=torch.int).view(total_tokens, -1).npu()
+        return cur_topk_list
