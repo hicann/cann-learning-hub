@@ -40,6 +40,15 @@ transpose 等基础实践，帮助开发者建立使用 PyPTO 进行算子开发
 - Python：Python 3.10 及以上
 - 工具：Jupyter Lab / Notebook
 
+## 在线体验环境
+
+本教程支持以下在线体验环境：
+
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+
 > 说明：
 > 当前教程按 PyPTO Notebook 交互式学习方式组织，建议在支持 CANN 与
 > torch_npu / pypto 的环境中体验。本教程支持cannlab运行，开始学习前需在cannlab里运行pip install pypto。
