@@ -21,7 +21,7 @@
 | 7 | 发起 PR | 向 `cann/cann-learning-hub` 的 `test` 分支发起 PR。 |
 | 8 | 响应评审 & 迭代修改 | 根据评审意见在环境中修改并更新 PR。 |
 
-详细规范请参见 [新课程上库与上线验收标准](./acceptance_criteria_for_new_course_submission_and_launch.md)，本指南聚焦于 CANNLab 环境下的操作步骤。
+详细规范请参见 [新课程上库与上线验收标准](./course_submission_criteria.md)，本指南聚焦于 CANNLab 环境下的操作步骤。
 
 ---
 
@@ -35,11 +35,12 @@
 
 1. 在 [cann-learning-hub](https://gitcode.com/cann/cann-learning-hub) 仓库页面点击 **Fork**，将仓库 fork 到个人空间。
 
-<img src="./images/CANNLab_env_experience_guide/fork1.png" alt="fork1" width="700px">
+<img src="./images/CANNLab_course_development_guide/fork1.png" alt="fork1" width="700px">
 
-2. 记下个人 fork 仓库地址，例如 `https://gitcode.com/<your_username>/cann-learning-hub.git`。
+2. 记下个人 fork 仓库地址，例如 `https://gitcode.com/<your_username>/cann-learning-hub.git`。Fork 时选择要 Fork 的分支请选择全部。
 
-<img src="./images/CANNLab_env_experience_guide/fork2.png" alt="fork2" width="700px">
+<img src="./images/CANNLab_course_development_guide/fork2.png" alt="fork2" width="700px">
+
 ---
 
 ## 3. 创建并进入 CANNLab 云开发环境
@@ -48,26 +49,26 @@
 
 打开 [cann-learning-hub](https://gitcode.com/cann/cann-learning-hub) 仓库页面，将鼠标移至 **CANNLab** 图标，在弹出选项中选择 **云开发**，使用华为云账号登录并进入开发者空间。
 
-<img src="./images/CANNLab_env_experience_guide/CANNLab.png">
+<img src="./images/CANNLab_course_development_guide/CANNLab.png">
 
-<img src="./images/CANNLab_env_experience_guide/CANNLab2.png" alt="CANNLab2" width="250px">
+<img src="./images/CANNLab_course_development_guide/CANNLab2.png" alt="CANNLab2" width="250px">
 
-> CANNLab 提供两类环境：**云开发环境**（可申请 A2/A3）与 **950 尝鲜体验环境**（可申请 A5）。请根据课程目标硬件选择对应环境。本指南以云开发环境为例。
+> CANNLab 提供两类环境：**云开发环境**（可申请 A2/A3）与 **950 尝鲜体验环境**（可申请 A5）。请根据课程支持的目标硬件选择对应环境。本指南以云开发环境为例。
 
 ### 3.2 创建 NPU 环境
 
 进入页面后点击 **创建** 按钮：
 
-<img src="./images/CANNLab_env_experience_guide/create.png">
+<img src="./images/CANNLab_course_development_guide/create.png">
 
 按课程目标硬件选择规格配置（以 A2 为例）：
 
-<img src="./images/CANNLab_env_experience_guide/create_npu.png" alt="create_npu" width="500px">
+<img src="./images/CANNLab_course_development_guide/select_npu_env.png" alt="select_npu_env" width="500px">
 
 
 点击 **创建** 后，点击 **开机** 启动环境：
 
-<img src="./images/CANNLab_env_experience_guide/start.png">
+<img src="./images/CANNLab_course_development_guide/start.png">
 
 > 注意：如果开机时提示资源不足，说明当前时间段使用人数较多，可稍后再尝试。
 
@@ -75,11 +76,11 @@
 
 环境开机后，点击 **WebIDE** 进入环境（也支持 VS Code 连接）：
 
-<img src="./images/CANNLab_env_experience_guide/webIDE.png">
+<img src="./images/CANNLab_course_development_guide/webIDE.png">
 
 进入后界面类似 VS Code，支持源代码管理、扩展安装、终端等操作：
 
-<img src="./images/CANNLab_env_experience_guide/windows.png">
+<img src="./images/CANNLab_course_development_guide/windows.png">
 
 ---
 
@@ -89,7 +90,7 @@
 
 在 WebIDE 中通过菜单 **Terminal → New Terminal** 打开集成终端。
 
-<img src="./images/CANNLab_env_experience_guide/terminal.png">
+<img src="./images/CANNLab_course_development_guide/terminal.png">
 
 ### 4.2 克隆个人 fork 仓库
 
@@ -117,11 +118,11 @@ git checkout test
 
 克隆完成后，在 WebIDE 中使用快捷键 `Ctrl+K Ctrl+O` 打开工程，在弹出窗口输入 `/mnt/workspace/gitCode/` 目录：
 
-<img src="./images/CANNLab_env_experience_guide/openfile.png">
+<img src="./images/CANNLab_course_development_guide/openfile.png">
 
 选择当前窗口打开：
 
-<img src="./images/CANNLab_env_experience_guide/newwin.png">
+<img src="./images/CANNLab_course_development_guide/newwin.png">
 
 即可在左侧资源管理器中看到自己的 fork 仓库目录结构，直接在其中开发。
 
@@ -194,7 +195,7 @@ tutorials/
 - **+Code**：新增 code cell，用于添加可执行代码。
 - **+Markdown**：新增 markdown cell，用于添加文字说明、图片、表格等。
 
-<img src="./images/CANNLab_env_experience_guide/code.png">
+<img src="./images/CANNLab_course_development_guide/code.png">
 
 ---
 
@@ -229,11 +230,11 @@ git push origin test
 
 进入环境后，点击页签右侧的加号：
 
-<img src="./images/test_branch_course_experience_guide/new.png" width="600">
+<img src="./images/CANNLab_course_development_guide/new.png" width="600">
 
 在弹出菜单中选择打开 Terminal 终端界面：
 
-<img src="./images/test_branch_course_experience_guide/new_terminal.png" width="800">
+<img src="./images/CANNLab_course_development_guide/new_terminal.png" width="800">
 
 在终端中执行以下命令，克隆个人 fork 仓库并切换到 `test` 分支：
 
@@ -247,7 +248,7 @@ git checkout test
 
 从左侧菜单栏点击进入 `cann-learning-hub` 仓库，即可在 Notebook 中查看并打开个人 fork 仓库 `test` 分支下的新增课程内容：
 
-<img src="./images/test_branch_course_experience_guide/cann-learning-hub_contents.png" width="400">
+<img src="./images/CANNLab_course_development_guide/cann-learning-hub_contents.png" width="400">
 
 #### 7.1.2 在 CANNLab 环境中打开
 
@@ -289,9 +290,9 @@ EOF
 
 完成上述配置后，**关机并重新开机**，使内核与环境变量配置生效。开机后通过 WebIDE 重新进入环境，打开每个 `.ipynb` 文件，在右上角 **选择内核**，选择 **Python 3.11.4 (CANN)**：
 
-<img src="./images/CANNLab_env_experience_guide/kernel1.png">
+<img src="./images/CANNLab_course_development_guide/kernel1.png">
 
-<img src="./images/CANNLab_env_experience_guide/kernel2.png">
+<img src="./images/CANNLab_course_development_guide/kernel2.png">
 
 内核选择完成后，从第一个 code cell 开始依次点击运行按钮，确认：
 
@@ -301,9 +302,9 @@ EOF
 
 执行 code cell 及成功结果示意：
 
-<img src="./images/CANNLab_env_experience_guide/run_code_cell.png">
+<img src="./images/CANNLab_course_development_guide/run_code_cell.png">
 
-<img src="./images/CANNLab_env_experience_guide/run_code_cell_success.png">
+<img src="./images/CANNLab_course_development_guide/run_code_cell_success.png">
 
 ### 7.3 验证记录
 
@@ -349,7 +350,7 @@ EOF
 
 ### 8.2 PR 准入自检
 
-提交 PR 前请对照 [PR 准入 Checklist](./acceptance_criteria_for_new_course_submission_and_launch.md#6-pr-准入-checklist) 完成自检，重点关注：
+提交 PR 前请对照 [PR 准入 Checklist](./course_submission_criteria.md#6-pr-准入-checklist) 完成自检，重点关注：
 
 - 课程目录位置、命名规范是否合规。
 - 主 README 是否包含硬件型号与在线体验环境说明。
@@ -419,5 +420,5 @@ git push origin test
 | 文档 | 说明 |
 | --- | --- |
 | [贡献指南](../CONTRIBUTION.md) | 项目整体贡献流程与要求。 |
-| [新课程上库与上线验收标准](./acceptance_criteria_for_new_course_submission_and_launch.md) | 课程目录结构、Notebook 内容、运行验证等准入要求与 PR Checklist。 |
+| [新课程上库与上线验收标准](./course_submission_criteria.md) | 课程目录结构、Notebook 内容、运行验证等准入要求与 PR Checklist。 |
 | [CANNLab 环境体验指南](./CANNLab_env_experience_guide.md) | CANNLab 云开发环境的体验流程（面向学习者）。 |
