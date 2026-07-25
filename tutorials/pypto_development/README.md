@@ -1,13 +1,14 @@
 # PyPTO 算子开发系列教程
 
 本教程面向希望基于 PyPTO 学习昇腾 NPU 算子开发的开发者，围绕
-CANN、芯片基础、PyPTO 编程范式与初级算子实践，提供一套由浅入深的
-Notebook 教程。
+CANN、芯片基础、PyPTO 编程范式、初级算子实践与中高级算子实践，
+提供一套由浅入深的 Notebook 教程。
 
 课程内容覆盖从整体认知建立，到 Hello World 跑通、API 与计算图理解，
 再到 elementwise、matmul、reduction、tiling / shape / slice /
-transpose 等基础实践，帮助开发者建立使用 PyPTO 进行算子开发的系统化
-学习路径。
+transpose 等基础实践，并进一步进入归一化、FFN、动态 shape、Attention、
+Transformer 组合、Cost Model 与 ACLGraph，帮助开发者建立使用 PyPTO
+进行算子开发的系统化学习路径。
 
 教程按章节划分，每个章节包含以下内容：
 
@@ -31,7 +32,8 @@ transpose 等基础实践，帮助开发者建立使用 PyPTO 进行算子开发
 3. 跑通 PyPTO Hello World，并理解基本执行流程
 4. 使用 PyPTO 完成基础 elementwise、matmul、reduction 算子表达
 5. 理解 vec / cube tile shapes，以及 shape、slice、transpose 等基础操作
-6. 具备继续学习更复杂 PyPTO 算子开发与优化的基础
+6. 看懂归一化、FFN、动态 shape、Attention 等中高级模块的 PyPTO 实现
+7. 理解 Cost Model 和 ACLGraph 等系统分析与加速能力的基本使用场景
 
 ## 环境要求
 
@@ -39,15 +41,6 @@ transpose 等基础实践，帮助开发者建立使用 PyPTO 进行算子开发
 - 软件：CANN 8.5.0 及以上版本
 - Python：Python 3.10 及以上
 - 工具：Jupyter Lab / Notebook
-
-## 在线体验环境
-
-本教程支持以下在线体验环境：
-
-| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
-| --- | --- | --- | --- |
-| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
-| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
 
 > 说明：
 > 当前教程按 PyPTO Notebook 交互式学习方式组织，建议在支持 CANN 与
@@ -72,6 +65,7 @@ Notebook 列表：
 | `01.02_CANN.ipynb` | CANN 基础认知 |
 | `01.03_chip.ipynb` | 昇腾芯片基础认知 |
 | `01.04_PyPTO.ipynb` | PyPTO 框架基础介绍 |
+| `01.05_chapter_test.ipynb` | 章节实践 |
 
 ### 第二章：PyPTO 算子开发基础知识
 
@@ -90,6 +84,7 @@ Notebook 列表：
 | `02.02_run_hello_world.ipynb` | PyPTO Hello World 跑通 |
 | `02.03_programming_paradigm_mpmd.ipynb` | 编程范式与 MPMD |
 | `02.04_api_and_compute_graph.ipynb` | API 与计算图基础 |
+| `02.05_chapter_test.ipynb` | 章节实践 |
 
 ### 第三章：初级算子实践
 
@@ -110,6 +105,28 @@ Notebook 列表：
 | `03.04_reduction_ops.ipynb` | reduction 算子 |
 | `03.05_tiling_shape_slice_transpose.ipynb` | tiling / shape / slice / transpose |
 | `03.06_chapter_practice.ipynb` | 章节实践 |
+
+### 第四章：中高级算子实践
+
+目录：`04_intermediate_advanced_operator_practice`
+
+目标：
+
+- 在初级算子实践基础上，学习更接近模型模块的 PyPTO 写法
+- 掌握自定义激活函数、Softmax、归一化、FFN、动态 shape、控制流和 Attention 的组织方式
+- 理解多 kernel 组合、Cost Model 和 ACLGraph 在系统分析与加速中的作用
+
+Notebook 列表：
+
+| Notebook | 说明 |
+| --- | --- |
+| `04.01_chapter_intro.ipynb` | 章节介绍、学习路线与运行准备 |
+| `04.02_operator_composition_and_softmax.ipynb` | 自定义激活函数与 Softmax |
+| `04.03_normalization_and_ffn.ipynb` | LayerNorm、RMSNorm 与 FFN |
+| `04.04_dynamic_shape_and_controlflow.ipynb` | 动态 Shape 与控制流 |
+| `04.05_attention_and_transformer.ipynb` | Attention 与 Transformer 组合 |
+| `04.06_system_and_acceleration.ipynb` | Cost Model、ACLGraph 与系统加速 |
+| `04.07_chapter_practice.ipynb` | 章节实践 |
 
 ## 当前状态说明
 

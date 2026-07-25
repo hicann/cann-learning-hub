@@ -1,0 +1,16 @@
+1. A
+   Cost Model 适合用 Softmax 这类算子观察，是因为 Softmax 同时包含 reduction、elementwise、loop 和输出写回。
+   它的执行路径足够典型，数学结果又容易用 `torch.softmax` 对齐验证。
+
+2. 模拟执行过程、任务阶段和硬件单元之间的关系。
+   换句话说，它帮助观察算子是如何被调度和组织执行的。
+
+3. A
+   ACLGraph 需要 `@allow_in_graph`，是为了避免自定义包装函数被 PyTorch 图捕获过程断开。
+   这样 PyTorch 才能把自定义调用和后续 NPU 图执行连接起来。
+
+4. A
+   FakeTensor 分支不能真正执行 PyPTO kernel，因为 FakeTensor 只提供 shape、dtype、device 等元信息。
+   它没有真实可执行的数据缓冲区，作用是支持编译期继续推导形状。
+
+5. 第一次进入 `with torch.npu.graph(g)` 的执行过程中；捕获完成之后。

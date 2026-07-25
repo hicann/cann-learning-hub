@@ -1,0 +1,16 @@
+1. A
+   因为中高级能力互相交叉，不是孤立出现的。
+   例如 Softmax 会复用 reduction、broadcast 和 elementwise；动态 shape 会复用 view、loop 和 assemble；Attention 又会继续复用 matmul、transpose 和 Softmax。
+
+2. Host；参数描述。
+
+3. A
+   因为中高级 kernel 的正确性很大程度取决于 shape 是否对齐。
+   先看 shape，可以先确认 matmul、transpose、reshape、reduction 和 broadcast 是否能连起来，再看具体算子表达式会更清楚。
+
+4. 动态 shape 或分块处理。
+   它先从完整输入中取出当前 tile，完成局部计算，再把局部结果写回完整输出。
+
+5. B
+   不会。
+   Cost Model 用于观察执行成本，ACLGraph 用于捕获和复用执行图，它们不改变 Softmax 或其他算子的数学含义。

@@ -1,0 +1,20 @@
+1. `x * sigmoid(x)`；`gate`。
+
+2. `gate`。
+   因此它和 SwiGLU 一样是门控激活，只是 gate 分支使用的激活函数不同。
+
+3. 非线性权重；被调制的内容。
+
+4. A
+   部分 PyPTO 版本对 Python float 作为左操作数的 Tensor 运算重载支持不完整，Tensor 放左边更稳妥。
+
+5. A
+   因为 Softmax 沿最后一维做规约，并且使用 `keepdim=True`。
+   对输入 `[B, S, H, D]` 来说，`row_max` 的 shape 是 `[B, S, H, 1]`，这样可以继续和原输入广播相减。
+
+6. 按 batch tile 分块执行 Softmax。
+   它为动态 batch、局部 view、尾块处理和分块写回打基础。
+
+7. A
+   如果把 `output_tensor[b_offset:b_offset_end, ...]` 写成过大的切片，可能覆盖多个 batch 的输出区域。
+   结果是前面或后面的 batch 被错误写入，导致输出错乱或验证失败。

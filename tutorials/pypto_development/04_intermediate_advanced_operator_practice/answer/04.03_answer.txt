@@ -1,0 +1,16 @@
+1. A
+   LayerNorm 会先减均值，再按方差归一化；RMSNorm 不减均值，只按均方根归一化。
+
+2. A
+   因为 LayerNorm 和 RMSNorm 本质上都需要沿最后一维做规约。
+   均值、方差、均方根都可以由 `sum`、乘法、除法、`sqrt` 等基础操作组合得到，再广播回原 shape。
+
+3. SwiGLU。
+   GELU 和 ReLU 分支通常只需要 `up` 投影后激活，再经过 down 投影；SwiGLU 需要 `gate` 和 `up` 两路结果相乘。
+
+4. A
+   动态 FFN 先 `view` 再 `assemble`，是为了处理动态 batch。
+   kernel 每次取一个固定大小的局部块做计算，再把局部输出写回完整输出 Tensor。
+
+5. 决定 FFN 走哪个激活分支。
+   它通常在 `ffn_activation_kernel` 中选择 GELU、SwiGLU 或 ReLU 对应的数据流。
