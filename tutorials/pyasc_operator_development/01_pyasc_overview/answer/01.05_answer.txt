@@ -50,7 +50,7 @@ source /usr/local/Ascend/cann/set_env.sh
 
 参考实现：
 
-!python3 ./src/tutorials/01_add/add.py -r NPU -v Ascend910B1
+!python3 ./src/tutorials/01_add/add.py -r NPU
 
 预期输出（末尾两行）：
 
@@ -62,7 +62,7 @@ INFO:root:[INFO] Sample add run success.
 
 参考实现：
 
-!python3 ./src/tutorials/02_add_framework/add_framework.py -r NPU -v Ascend910B1
+!python3 ./src/tutorials/02_add_framework/add_framework.py -r NPU
 
 预期输出（末尾两行）：
 
@@ -80,6 +80,6 @@ INFO:root:[INFO] Sample add_framework run success.
 原因  ：PyAsc 未安装或 pip install 未执行成功。
 处理  ：重新执行 pip install pyasc，并查看安装日志中的错误信息。
 
-[问题 3] -v 取值与实际 SOC 不匹配
-原因  ：SOC_VERSION 与硬件不一致。
-处理  ：在 NPU 主机上执行 npu-smi info，在 Name 字段前加 Ascend 前缀作为 -v 取值。
+[问题 3] NPU 模式下手动指定 -v 导致报错
+原因  ：NPU 上板模式会自动匹配当前设备的 SOC 版本，手动写死的 -v 取值与实际硬件不符时反而会报错。
+处理  ：NPU 模式下省略 -v，只传 -r NPU 即可。仅 Model 仿真模式才需要 -v，其取值可在 NPU 主机执行 npu-smi info，在 Name 字段前加 Ascend 前缀获得。
