@@ -35,4 +35,5 @@ CANNLab 环境创建与使用方法请参考 [CANNLab 环境体验指南](https:
 
 | Notebook | Link | 状态 |
 | -- | -- | -- |
+- `02_parallel_computing/02.00_intra_prefix_sum_balanced_tree.ipynb`：课内实验2.1 基于平衡二叉树的并行前缀和实现。
 | 02.02 矩阵乘法分块优化实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/02_parallel_computing/02.02_extra_ascendc_static_tensor_matmul.ipynb) | ✅ 已发布 |
