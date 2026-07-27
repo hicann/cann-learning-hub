@@ -29,6 +29,44 @@ TorchAir（Torch Ascend Intermediate Representation）是昇腾Ascend Extension 
 - Atlas A3 训练系列产品/Atlas A3 推理系列产品
 - Atlas A2 训练系列产品/Atlas A2 推理系列产品
 
+
+## TorchAir 版本配套表
+
+TorchAir暂无独立安装包，该组件属于PyTorch昇腾适配插件Ascend Extension for PyTorch的内置三方库，随着torch_npu软件包统一发布，直接安装torch_npu即可调用TorchAir能力。
+TorchAir 需匹配对应版本的PyTorch、TorchNPU、CANN固件与Python 环境。以下为当前各版本的匹配关系：
+
+| TorchAir 主仓分支 | TorchNPU版本  | TorchNPU 主仓分支 | PyTorch版本 | CANN版本      | Python版本                                                 |
+| --------------- | ------------ | --------------- | ---------- | ------------ | -------------------------------------------------------- |
+| 26.0.0          | 2.9.0.post2  | v2.9.0-26.0.0   | 2.9.0      | 9.0.0       | Python3.10.x / Python3.11.x / Python3.12.x / Python3.13.x |
+| 26.0.0          | 2.8.0.post4  | v2.8.0-26.0.0   | 2.8.0      | 9.0.0       | Python3.9.x / Python3.10.x / Python3.11.x / Python3.12.x / Python3.13.x |
+| 26.0.0          | 2.7.1.post4  | v2.7.1-26.0.0   | 2.7.1      | 9.0.0       | Python3.9.x / Python3.10.x / Python3.11.x / Python3.12.x / Python3.13.x |
+| 7.3.0           | 2.9.0        | v2.9.0-7.3.0    | 2.9.0      | 8.5.0       | Python3.10.x / Python3.11.x / Python3.12.x / Python3.13.x |
+| 7.3.0           | 2.8.0.post2  | v2.8.0-7.3.0    | 2.8.0      | 8.5.0       | Python3.9.x / Python3.10.x / Python3.11.x / Python3.12.x / Python3.13.x |
+| 7.3.0           | 2.7.1.post2  | v2.7.1-7.3.0    | 2.7.1      | 8.5.0       | Python3.9.x / Python3.10.x / Python3.11.x / Python3.12.x / Python3.13.x |
+| 7.3.0           | 2.6.0.post5  | v2.6.0-7.3.0    | 2.6.0      | 8.5.0       | Python3.9.x / Python3.10.x / Python3.11.x                |
+| 7.2.0           | 2.8.0        | v2.8.0-7.2.0    | 2.8.0      | 8.3.RC1     | Python3.9.x / Python3.10.x / Python3.11.x / Python3.12.x / Python3.13.x |
+| 7.2.0           | 2.7.1        | v2.7.1-7.2.0    | 2.7.1      | 8.3.RC1     | Python3.9.x / Python3.10.x / Python3.11.x / Python3.12.x / Python3.13.x |
+| 7.2.0           | 2.6.0.post3  | v2.6.0-7.2.0    | 2.6.0      | 8.3.RC1     | Python3.9.x / Python3.10.x / Python3.11.x                |
+| 7.2.0           | 2.1.0.post17 | v2.1.0-7.2.0    | 2.1.0      | 8.3.RC1     | Python3.8.x / Python3.9.x / Python3.10.x / Python3.11.x  |
+| 7.1.0           | 2.6.0        | v2.6.0-7.1.0    | 2.6.0      | 8.2.RC1     | Python3.9.x / Python3.10.x / Python3.11.x                |
+| 7.1.0           | 2.5.1.post1  | v2.5.1-7.1.0    | 2.5.1      | 8.2.RC1     | Python3.9.x / Python3.10.x / Python3.11.x                |
+| 7.1.0           | 2.1.0.post13 | v2.1.0-7.1.0    | 2.1.0      | 8.2.RC1     | Python3.8.x / Python3.9.x / Python3.10.x / Python3.11.x  |
+| 7.0.0           | 2.5.1        | v2.5.1-7.0.0    | 2.5.1      | 8.1.RC1     | Python3.9.x / Python3.10.x / Python3.11.x                |
+| 7.0.0           | 2.4.0.post4  | v2.4.0-7.0.0    | 2.4.0      | 8.1.RC1     | Python3.8.x / Python3.9.x / Python3.10.x / Python3.11.x  |
+| 7.0.0           | 2.3.1.post6  | v2.3.1-7.0.0    | 2.3.1      | 8.1.RC1     | Python3.8.x / Python3.9.x / Python3.10.x / Python3.11.x  |
+| 7.0.0           | 2.1.0.post12 | v2.1.0-7.0.0    | 2.1.0      | 8.1.RC1     | Python3.8.x / Python3.9.x / Python3.10.x / Python3.11.x  |
+
+## 在线体验环境
+
+本教程支持以下在线体验环境：
+
+| 体验环境                            | 镜像模板 / 版本                  | Python 内核      | 说明                                                                                                                                          |
+| ------------------------------- | -------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| cann-learning-hub 在线体验 notebook | cann\_9.0.0\_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行                                                                                                              |
+| CANNLab 云开发环境                   | cann\_9.0.0\_py3.11-A2-arm | Python 3.11.4  | 参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab%5Fenv%5Fexperience%5Fguide.md)创建CANNLab环境运行notebook |
+
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy%5F03%5F0001.html)。
+
 ---
 
 ## 教程章节导航
