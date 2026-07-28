@@ -1,0 +1,20 @@
+model_config:
+  model_name: "qwen3_8b"
+  model_path: "/path/to/your/checkpoint"
+  exe_mode: "eager"        # ["ge_graph", "eager", "npugraph_ex"]
+  enable_profiler: False  # [False, True]
+  with_ckpt: True # [False, True]
+  enable_cache_compile: False # [False, True]
+  enable_static_kernel: False # [False, True] only for npugraph_ex
+data_config:
+  dataset: "default"  # ["default", "LongBench"]
+  input_truncated_len: 512
+parallel_config:
+  world_size: 1
+  attn_tp_size: 1
+  moe_tp_size: 1
+  embed_tp_size: 1
+  lmhead_tp_size: 1
+scheduler_config:
+  max_new_tokens: 64
+  batch_size: 1
