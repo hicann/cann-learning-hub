@@ -1,0 +1,49 @@
+课后练习参考答案
+
+1. C - 工程化开发不直接使用<<<>>>启动符，而是通过aclnn两段式接口调用。
+
+2. B - msOpGen的-c参数使用全小写+子型号格式，如ascend910b1。
+
+3. B - 推荐使用标准C++ POD结构体方式，更简洁直观。仅在需要嵌套TCubeTiling时使用宏定义方式。
+
+4. A, B, C - GET_TILING_DATA用于反序列化TilingData，标准C++方式使用两参数形式，宏定义方式使用三参数形式。D错误，需要对应的注册宏（REGISTER_TILING_DEFAULT或REGISTER_TILING_DATA_CLASS）。
+
+5. 正确 - 第一段GetWorkspaceSize计算workspace大小并生成executor，第二段Execute执行实际计算。
+
+6. 错误 - 标准C++方式的TilingData结构体不支持指针和引用类型成员，这是6条使用约束之一。
+
+7. reduce_dim - 属性名从大驼峰转换为下划线格式：reduceDim -> reduce_dim。
+
+8. ReduceMaxCustom TilingData 和 TilingFunc 参考代码：
+
+```cpp
+// TilingData 结构体定义（标准C++方式）
+struct ReduceMaxCustomTilingData {
+    uint32_t totalDataLength;   // 总数据长度
+    int64_t reduceAxisLen;      // reduce轴长度（从属性传递）
+    bool isKeepDim;             // 是否保持维度（从属性传递）
+};
+
+// TilingFunc 实现
+static ge::graphStatus TilingFunc(gert::TilingContext *context) {
+    // 1. 获取 TilingData 指针
+    ReduceMaxCustomTilingData *tilingData = context->GetTilingData<ReduceMaxCustomTilingData>();
+
+    // 2. 获取输入 tensor 的 shape
+    auto xShape = context->GetInputTensor(0)->GetStorageShape();
+    tilingData->totalDataLength = xShape.GetStorageShape().GetShapeSize();
+
+    // 3. 获取属性值
+    auto attrs = context->GetAttrs();
+    tilingData->reduceAxisLen = *attrs->GetAttrPointer<int64_t>("reduceAxisLen");
+    tilingData->isKeepDim = *attrs->GetAttrPointer<bool>("isKeepDim");
+
+    // 4. 设置 BlockDim
+    context->SetBlockDim(1);
+
+    return ge::GRAPH_SUCCESS;
+}
+
+// 注册 TilingFunc
+REGISTER_TILING_FUNC_DEFAULT(ReduceMaxCustom, TilingFunc);
+```
