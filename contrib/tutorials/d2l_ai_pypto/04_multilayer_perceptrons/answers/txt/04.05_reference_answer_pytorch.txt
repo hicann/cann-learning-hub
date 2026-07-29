@@ -1,0 +1,107 @@
+4.5 权重衰减 练习参考答案
+
+练习4.5.1
+
+在本节的估计问题中，尝试使用不同的λ值进行实验。绘制训练精度和测试精度关于λ的函数图。能观察到什么现象？
+
+解答：
+
+随着λ增加，训练精度和测试精度逐渐靠近，但最终没有完全重合（具体图像和训练过程详见answers/04.05_reference_answer.ipynb）。
+
+import torch
+from d2l import torch as d2l
+from torch import nn
+
+n_train, n_test, num_inputs, batch_size=20, 100, 200, 5
+true_w, true_b = torch.ones((num_inputs, 1)) * 0.01, 0.05
+train_data = d2l.synthetic_data(true_w, true_b, n_train)
+train_iter = d2l.load_array(train_data, batch_size)
+test_data = d2l.synthetic_data(true_w, true_b, n_test)
+test_iter = d2l.load_array(test_data, batch_size, is_train=False)
+net = nn.Sequential(nn.Linear(num_inputs, 1))
+loss = nn.MSELoss(reduction='none')
+def train_wd(wdlist,net,loss,train_data,test_iter,layer=[0],num_epochs=100,lr=0.003):
+animator = d2l.Animator(xlabel='λ', ylabel='loss', yscale='log',
+xlim=[wdlist[0],wdlist[-1]], legend=['train', 'test'])
+for param in net.parameters():
+param.data.normal_()
+
+# 偏置参数没有衰减
+for wd in wdlist:
+for i in layer:
+            trainer = torch.optim.SGD([
+                {"params":net[i].weight,'weight_decay': wd},
+                {"params":net[i].bias}], lr=lr)
+
+for epoch in range(num_epochs):
+for X, y in train_iter:
+trainer.zero_grad()
+l = loss(net(X), y)
+l.mean().backward()
+trainer.step()
+
+animator.add(wd,(d2l.evaluate_loss(net, train_iter, loss),
+d2l.evaluate_loss(net, test_iter, loss)))
+train_wd(np.linspace(0.,100.,150),net,loss,train_iter,test_iter)
+
+---
+
+练习4.5.2
+
+使用验证集来找到最佳值λ。它真的是最优值吗？这有关系吗？
+
+解答：
+
+不一定是最优的参数值，但至少可以有效防止过拟合。
+
+---
+
+练习4.5.3
+
+如果我们使用 L₁ 正则化（即惩罚项为所有权重的绝对值之和 Σᵢ |wᵢ|），那么更新方程会是什么样？
+
+解答：
+
+L₁正则化的损失函数为：L(w, b) + λ‖w‖₁，其中‖w‖₁表示所有权重的绝对值之和。
+
+对应的更新方程为：
+w ← w − η·λ·sign(w) − (η/|B|)·Σ_{i∈B} x^{(i)}(wᵀx^{(i)}+b−y^{(i)})
+
+---
+
+练习4.5.4
+
+我们知道|w|^2 = w^T w。能找到类似的矩阵方程吗？（见2.3.10节中的弗罗贝尼乌斯范数）
+
+解答：
+
+‖W‖_F = (Σ_{i,j} W[i,j]²)^(1/2)，即将矩阵展平为向量后的 L₂ 范数。
+
+---
+
+练习4.5.5
+
+回顾训练误差和泛化误差之间的关系。除了权重衰减、增加训练数据、使用适当复杂度的模型之外，还能想出其他什么方法来处理过拟合？
+
+解答：
+
+可以在验证误差下降到最低点的时候停止训练，防止过拟合。
+
+---
+
+练习4.5.6
+
+在贝叶斯统计中，我们使用先验和似然的乘积，通过公式 P(w|x) ∝ P(x|w) P(w) 得到后验。如何得到带正则化的 P(w)？
+
+解答：
+
+考虑最大后验估计（MAP）：
+w = argmax_w P(w|x) = argmax_w P(x|w)·P(w) = argmax_w [log P(x|w) + log P(w)]
+
+如果考虑P(w)为正态分布，即w_i ~ N(0, σ²)：
+log P(w) = log Π_i [1/(√(2π)σ)]·exp(−w_i²/(2σ²)) = −(1/(2σ²)) Σ_i w_i² + C
+代入MAP公式后将得到L₂正则化的结果。
+
+如果考虑P(w)为拉普拉斯分布，即w_i ~ Laplace(0, b)：
+log P(w) = log Π_i (1/(2b))·exp(−|w_i|/b) = −(1/b) Σ_i |w_i| + C
+代入MAP公式后将得到L₁正则化的结果。

@@ -1,0 +1,143 @@
+4.4 模型选择、欠拟合和过拟合 练习参考答案
+
+练习4.4.1
+
+这个多项式回归问题可以准确地解出吗？提示：使用线性代数。
+
+解答：
+
+这是一个多项式回归问题，可以精确求解。下面是解析解的推导过程。
+
+对于N个样本{(xᵢ, yᵢ)}，用M次多项式进行拟合：
+f(x) = w₀ + w₁·x + w₂·x² + ... + wₘ·xᴹ
+
+损失函数使用均方误差，乘1/2是为了求导时消去因子2：
+L(w) = (1/2) · Σ_{i=1}^{N} (f(xᵢ) − yᵢ)²
+
+要找到使损失最小的系数wₖ，需要对每个wₖ求偏导数并令其为零：
+
+∂L / ∂wₖ = Σ_{i=1}^{N} (f(xᵢ) − yᵢ) · xᵢᵏ = 0
+
+将f(xᵢ)的展开式代入：
+Σ_{i=1}^{N} ( Σ_{j=0}^{M} wⱼ · xᵢʲ − yᵢ ) · xᵢᵏ = 0
+
+整理后得到关于系数w的线性方程组：
+Σ_{j=0}^{M} wⱼ · ( Σ_{i=1}^{N} xᵢ^{j+k} ) = Σ_{i=1}^{N} xᵢᵏ · yᵢ
+其中k依次取 0, 1, 2, ..., M。
+
+以上共M+1个方程、M+1个未知数(w₀到wₘ)，可以写成矩阵方程 X·W = Y 的形式。
+
+矩阵X是一个(M+1)×(M+1)的方阵。其第j行第k列的元素等于所有样本的x^{j+k}之和：
+也就是说，X[j][k] = Σ_{i=1}^{N} xᵢ^{j+k}。
+
+向量W是待求的系数列向量，元素依次为 w₀, w₁, w₂, ..., wₘ。
+
+向量Y是右端项列向量，其第k行的元素为 Σ_{i=1}^{N} xᵢᵏ · yᵢ。
+
+当矩阵X可逆时，该方程组的唯一解为：
+W = X⁻¹ · Y
+
+这表明在数据无噪声且X满秩的理想情况下，多项式回归问题可以直接通过矩阵求逆得到精确的最优系数，完全不需要使用梯度下降等迭代优化。不过当多项式阶数M较大时，矩阵X容易变得病态，导致数值计算不稳定，因此在工程实践中梯度下降仍是主流方法。
+
+---
+
+练习4.4.2
+
+考虑多项式的模型选择。
+1. 绘制训练损失与模型复杂度（多项式的阶数）的关系图。观察到了什么？需要多少阶的多项式才能将训练损失减少到0？
+2. 在这种情况下绘制测试的损失图。
+3. 生成同样的图，作为数据量的函数。
+
+解答：
+
+1. 在多项式阶数没有达到4之前，阶数增加使得训练损失下降。当阶数超过4时，训练损失几乎不再变化，稳定在0.01这个数量级（具体图像和训练过程详见answers/04.04_reference_answer.ipynb）。
+
+2. 绘制测试的损失图。
+
+import math
+import torch
+from d2l import torch as d2l
+from torch import nn
+import numpy as np
+
+n_train, n_test = 100, 100 # 训练和测试数据集大小
+
+def train4_4_2(orderlist,n_train, n_test,num_epochs=400,show=True):
+max_degree = 20 # 多项式的最大阶数
+true_w = np.zeros(max_degree) # 分配大量的空间
+true_w[0:4] = np.array([5, 1.2,-3.4, 5.6])
+
+features = np.random.normal(size=(n_train + n_test, 1))
+np.random.shuffle(features)
+poly_features = np.power(features, np.arange(max_degree).reshape(1,-1))
+for i in range(max_degree):
+poly_features[:, i] /= math.gamma(i + 1) # gamma(n)=(n-1)!
+# labels的维度:(n_train+n_test,)
+labels = np.dot(poly_features, true_w)
+labels += np.random.normal(scale=0.1, size=labels.shape)
+true_w, features, poly_features, labels = [torch.tensor(x, dtype=torch.float32) for x in [true_w, features, poly_features, labels]]
+if show==True:
+animator = d2l.Animator(xlabel='order', ylabel='log(loss)', yscale='log',
+xlim=[1, orderlist[-1]], ylim=[1e-3, 1e2],
+legend=['train', 'test'])
+#animator2 = d2l.Animator(xlabel='order', ylabel='loss',
+xlim=[1, orderlist[-1]], ylim=[0.005, 0.02],
+legend=['train', 'test'])
+train_losslist,test_losslist=[],[]
+for i in orderlist:
+train_features, test_features, train_labels, test_labels=poly_features[:n_train, :i],poly_features[n_test:, :i],labels[:n_train], labels[n_test:]
+loss = nn.MSELoss(reduction='none')
+input_shape = train_features.shape[-1]
+# 不设置偏置，因为我们已经在多项式中实现了它
+net = nn.Sequential(nn.Linear(input_shape, 1, bias=False))
+batch_size=min(10, train_labels.shape[0])
+train_iter = d2l.load_array((train_features, train_labels.reshape(-1,1)),batch_size)
+test_iter = d2l.load_array((test_features, test_labels.reshape(-1,1)),
+batch_size, is_train=False)
+trainer = torch.optim.SGD(net.parameters(), lr=0.01)
+for epoch in range(num_epochs):
+d2l.train_epoch_ch3(net, train_iter, loss, trainer)
+train_loss=d2l.evaluate_loss(net, train_iter, loss)
+test_loss=d2l.evaluate_loss(net, test_iter, loss)
+train_losslist.append(train_loss)
+test_losslist.append(test_loss)
+if show==True:
+animator.add(i, (train_loss,test_loss))
+#animator2.add(i, (train_loss,test_loss))
+return train_losslist,test_losslist
+#print('weight:', net[0].weight.data.numpy())
+#return d2l.evaluate_loss(net, train_iter, loss),d2l.evaluate_loss(net, test_iter, loss)
+train4_4_2(np.arange(1,21),n_train, n_test,400);
+
+3. 生成同样的图，作为数据量的函数。
+
+animator = d2l.Animator(xlabel='datasize', ylabel='log(trainloss)', yscale='log',
+xlim=[90, 1100], ylim=[1e-3, 1e2],
+legend=list(map(lambda x: "阶数 {}".format(x),np.arange(1,21,5))))
+animator2 = d2l.Animator(xlabel='datasize', ylabel='log(testloss)', yscale='log',
+xlim=[90, 1100], ylim=[1e-3, 1e2],
+legend=list(map(lambda x: "阶数 {}".format(x),np.arange(1,21,5))))
+for datasize in range(100,1100,100):
+train_losslist,test_losslist=train4_4_2(np.arange(1,21,5),datasize, datasize,num_epochs=400,show=False)
+animator.add(datasize, list(train_losslist))
+animator2.add(datasize, list(test_losslist))
+
+---
+
+练习4.4.3
+
+如果不对多项式特征x^i进行标准化(1/i!)，会发生什么事情？能用其他方法解决这个问题吗？
+
+解答：
+
+这样做是为了避免出现较大的梯度值或者损失值。除了这个办法，我们也可以让每个特征减去该特征数据的平均值并除以标准差。
+
+---
+
+练习4.4.4
+
+泛化误差可能为零吗？
+
+解答：
+
+在训练数据足够多的时候，泛化误差接近经验误差。实际上，对于存在精确解、且数据没有噪声的问题，泛化误差可以为零。

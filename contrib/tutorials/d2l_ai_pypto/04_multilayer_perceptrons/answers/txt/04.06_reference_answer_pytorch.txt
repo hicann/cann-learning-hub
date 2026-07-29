@@ -1,0 +1,364 @@
+4.6 暂退法 练习参考答案
+
+练习4.6.1
+
+如果更改第一层和第二层的暂退法概率，会发生什么情况？具体地说，如果交换这两个层，会发生什么情况？设计一个实验来回答这些问题，定量描述该结果，并总结定性的结论。
+
+解答：
+
+交换两层的暂退概率会导致结果变差。提高暂退概率也会使损失值更大，训练和预测的准确度均下降；同时，调整第一层暂退概率带来的影响比第二层大（具体图像和训练过程详见answers/04.06_reference_answer.ipynb）。
+
+import torch
+from d2l import torch as d2l
+from torch import nn
+import numpy as np
+# 修改Animator定义，用来画多行多列的图
+class myAnimator:
+"""在动画中绘制数据"""
+def __init__(self, xlabel=None, ylabel=None, legend=None, xlim=None,
+ylim=None, xscale='linear', yscale='linear',
+fmts=('-', 'm--', 'g-.', 'r:'), nrows=1, ncols=1,
+figsize=(4.5, 3.5),wspace=0.5, hspace=0.8):
+# 增量地绘制多条线
+if legend is None:
+legend = []
+d2l.use_svg_display()
+self.fig, self.axes = d2l.plt.subplots(nrows, ncols, figsize=figsize)
+if nrows * ncols== 1:
+self.axes = [self.axes, ]
+# 使用lambda函数捕获参数
+
+self.config_axes =lambda axesnx,axesny: d2l.set_axes(self.axes[axesnx,axesny], xlabel, ylabel, xlim, ylim, xscale, yscale, legend) if axesnx==0 and axesny==0 else d2l.set_axes(self.axes[axesnx,axesny], xlabel, ylabel, xlim, ylim, xscale, yscale,[])
+
+d2l.plt.subplots_adjust(wspace=wspace, hspace=hspace)
+self.X, self.Y, self.fmts = None, None, fmts
+
+def add(self,axesnx,axesny, x, y,title=None):
+# 向图表中添加多个数据点
+if not hasattr(y, "__len__"):
+y = [y]
+n = len(y)
+if not hasattr(x, "__len__"):
+x = [x] * n
+if not self.X:
+self.X = [[] for _ in range(n)]
+if not self.Y:
+self.Y = [[] for _ in range(n)]
+for i, (a, b) in enumerate(zip(x, y)):
+if a is not None and b is not None:
+self.X[i].append(a)
+self.Y[i].append(b)
+self.axes[axesnx,axesny].cla()
+if title:
+self.axes[axesnx,axesny].set_title(title)
+for x, y, fmt in zip(self.X, self.Y, self.fmts):
+self.axes[axesnx,axesny].plot(x, y, fmt)
+self.config_axes(axesnx,axesny)
+d2l.display.display(self.fig)
+d2l.display.clear_output(wait=True)
+def init_weights(m):
+if type(m) == nn.Linear:
+nn.init.normal_(m.weight, std=0.01)
+def Net(dropout1=0.5,dropout2=0.2,num_inputs=784, num_outputs=10, num_hiddens1=256, num_hiddens2=256):
+net = nn.Sequential(nn.Flatten(),
+nn.Linear(num_inputs, num_hiddens1),
+nn.ReLU(),
+nn.Dropout(dropout1),
+nn.Linear(num_hiddens1, num_hiddens2),
+nn.ReLU(),
+nn.Dropout(dropout2),
+nn.Linear(num_hiddens2, num_outputs))
+return net
+
+def changedropout(dropout1list=[0.5], dropout2list=[0.2], num_epochs=10, lr=0.5,batch_size=256,
+num_inputs=784, num_outputs=10, num_hiddens1=256, num_hiddens2=256,wd=None,figsize=(15, 10),
+wspace=0.2, hspace=0.3,xlim=[1, 10], ylim=[0.3, 0.9],show=True):
+ndropout1,ndropout2=len(dropout1list),len(dropout2list)#计算要画几行几列的图
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+if show==True:
+if (ndropout1==1)&(ndropout2==1):
+animator = d2l.Animator(xlabel='epoch',ylabel='Y', xlim=xlim, ylim=ylim,
+legend=['train loss', 'train acc', 'test acc'],figsize=figsize)
+else:
+animator = myAnimator(xlabel='epoch',ylabel='Y', xlim=[1,num_epochs], ylim=ylim,
+legend=['train loss', 'train acc', 'test acc'],nrows=ndropout1, ncols=ndropout2,figsize=figsize,wspace=wspace, hspace=hspace)
+
+train_losslist, train_acclist,test_acclist=np.zeros((ndropout1,ndropout2,num_epochs)),np.zeros((ndropout1,ndropout2,num_epochs)),np.zeros((ndropout1,ndropout2,num_epochs))
+for i in range(ndropout1):
+for j in range(ndropout2):
+dropout1,dropout2=dropout1list[i],dropout2list[j]
+net = Net(dropout1,dropout2)
+net.apply(init_weights);
+loss = nn.CrossEntropyLoss(reduction='none')
+if wd==None:
+trainer=torch.optim.SGD(net.parameters(),lr=lr)
+else:
+paramslist=[]
+for m in net:
+if type(m) == nn.Linear:
+            paramslist.append({"params": m.weight,'weight_decay': wd})
+paramslist.append({"params":m.bias})
+trainer=torch.optim.SGD(paramslist,lr=lr)#设置权重衰减
+
+for epoch in range(num_epochs):
+train_metrics = d2l.train_epoch_ch3(net, train_iter, loss, trainer)
+test_acc = d2l.evaluate_accuracy(net, test_iter)
+train_losslist[i,j,epoch],train_acclist[i,j,epoch],test_acclist[i,j,epoch]=train_metrics[0],train_metrics[1],test_acc
+if show==True:
+            if ndropout1==1 and ndropout2==1:
+animator.add(epoch + 1, train_metrics + (test_acc,))
+else:
+                    animator.add(i,j,epoch + 1, train_metrics + (test_acc,),title=f"dropout1:{dropout1},dropout2:{dropout2}")
+                    #animator.axes[i,j].set_title(f"dropout1:{dropout1},dropout2:{dropout2}")
+if show==True:
+animator.X,animator.Y=None, None
+
+train_loss, train_acc = train_metrics
+    #实验中不能保证loss较低，所以不使用后面这段代码
+assert train_loss < 0.5, train_loss
+assert train_acc <=1 and train_acc > 0.7, train_acc
+assert test_acc <=1 and test_acc > 0.7, test_acc
+return train_losslist,train_acclist,test_acclist
+dropout1list,dropout2list=[0.2,0.5,0.7],[0.2,0.5,0.7]
+train_losslist,train_acclist,test_acclist=changedropout(dropout1list=[0.2,0.5,0.7],dropout2list=[0.2,0.5,0.7])
+d2l.plt.figure(figsize=(12, 5.5))
+d2l.plt.subplot(131)
+d2l.plot(list(range(1,11)),np.vstack([train_losslist[i,:,:] for i in range(3)]),'epoch', 'train_loss',
+legend=[f'dropout1:{dropout1},dropout2:{dropout2}' for dropout1 in dropout1list for dropout2 in dropout2list])
+d2l.plt.subplot(132)
+d2l.plot(list(range(1,11)),np.vstack([train_acclist[i,:,:] for i in range(3)]),'epoch', 'train_acc')
+#legend=[f'dropout1:{dropout1},dropout2:{dropout2}' for dropout1 in dropout1list for dropout2 in dropout2list],figsize=(10, 8))
+d2l.plt.subplot(133)
+d2l.plot(list(range(1,11)),np.vstack([test_acclist[i,:,:] for i in range(3)]),'epoch', 'test_acc')
+#legend=[f'dropout1:{dropout1},dropout2:{dropout2}' for dropout1 in dropout1list for dropout2 in dropout2list],figsize=(10, 8))
+d2l.plt.subplots_adjust(wspace=0.3, hspace=0)
+
+---
+
+练习4.6.2
+
+增加训练轮数，并将使用暂退法和不使用暂退法时获得的结果进行比较。
+
+解答：
+
+不使用暂退法时会出现损失值突然上升的情况（这可能是因为学习率设置过高），而使用暂退法后这种情况则会消失。
+
+# 导入见4.6.1
+num_epochs=50
+dropout1list,dropout2list=[0,0.2],[0,0.5]
+train_losslist,train_acclist,test_acclist=changedropout(dropout1list=dropout1list,dropout2list=dropout2list,num_epochs=num_epochs,wspace=0.1, hspace=0.2,ylim=[0,1])
+d2l.plt.figure(figsize=(12.5, 6))
+d2l.plt.subplot(131)
+d2l.plot(list(range(1,num_epochs+1)),np.vstack((train_losslist[0,0,:],train_losslist[1,1,:])),'epoch', 'train_loss')
+d2l.plt.subplot(132)
+d2l.plot(list(range(1,num_epochs+1)),np.vstack((train_acclist[0,0,:],train_acclist[1,1,:])),'epoch', 'train_acc')
+d2l.plt.subplot(133)
+d2l.plot(list(range(1,num_epochs+1)),np.vstack((test_acclist[0,0,:],test_acclist[1,1,:])),'epoch', 'test_acc',
+legend=['dropout1:0,dropout2:0','dropout1:0.2,dropout2:0.5'])
+d2l.plt.subplots_adjust(wspace=0.4, hspace=0)
+
+---
+
+练习4.6.3
+
+当使用或不使用暂退法时，每个隐藏层中激活值的方差是多少？绘制一个曲线图，以显示这两个模型的每个隐藏层中激活值的方差是如何随时间变化的。
+
+解答：
+
+在使用暂退法时，每个中间激活值h以暂退概率p被随机变量h'替代，具体定义为：
+
+h' = 0       （概率为p）
+h' = h/(1-p) （概率为1-p，即其他情况）
+
+在该定义下，h'的期望值保持不变，即 E[h'] = h。其方差推导如下：
+
+D(h') = E[(h' - E(h'))^2] = E(h'^2) - E^2(h')
+      = 0^2 × p + [h/(1-p)]^2 × (1-p) - h^2
+      = h^2/(1-p) - h^2
+      = h^2 × p/(1-p)
+
+可见方差随暂退概率p增大而增大，这表明暂退法在训练过程中向激活值注入了额外的随机性（方差变大），从而起到了正则化作用。
+
+# 导入见4.6.1
+def dropout_layer(X, dropout):
+assert 0 <=dropout <=1
+# 在本情况中，所有元素都被丢弃
+if dropout == 1:
+return torch.zeros_like(X)
+# 在本情况中，所有元素都被保留
+if dropout == 0:
+return X
+mask = (torch.rand(X.shape) > dropout).float()
+return mask * X / (1.0 - dropout)
+X= torch.arange(16, dtype=torch.float32).reshape((2, 8))
+dropout0,dropout0d5,var_dropout0d5,var_dropout0=dropout_layer(torch.ones(1,dtype=torch.float32), 0),dropout_layer(torch.ones(1,dtype=torch.float32), 0.5),torch.empty(1),torch.empty(1)
+#torch.var(dropout_layer(torch.ones(1,dtype=torch.float32), 0.5))
+for _ in range(1000):
+dropout0d5=torch.cat([dropout0d5,dropout_layer(torch.ones(1,dtype=torch.float32), 0.5)])
+dropout0=torch.cat([dropout0,dropout_layer(torch.ones(1,dtype=torch.float32), 0)])
+
+var_dropout0d5=torch.cat([var_dropout0d5,torch.var(dropout0d5).reshape(1)])
+var_dropout0=torch.cat([var_dropout0,torch.var(dropout0).reshape(1)])
+
+d2l.plot(torch.arange(2,1003)[2:-1:50], [var_dropout0.detach()[2:-1:50],var_dropout0d5.detach()[2:-1:50]],
+legend=['dropout=0','dropout=0.5'])
+d2l.plt.xlabel("X");
+d2l.plt.ylabel("var");
+
+#, figsize=(4.5, 2.5)
+
+---
+
+练习4.6.4
+
+为什么在测试时通常不使用暂退法？
+
+解答：
+
+训练时使用暂退法是为了防止模型过拟合，提高网络泛化能力。测试时我们不再需要防止过拟合，且希望模型的输出是确定的、可重复的，因此不使用暂退法。
+
+---
+
+练习4.6.5
+
+以本节中的模型为例，比较使用暂退法和权重衰减的效果。如果同时使用暂退法和权重衰减，会发生什么情况？结果是累加的吗？收益是否减少（或者说更糟）？它们互相抵消了吗？
+
+解答：
+
+同时使用暂退法和权重衰减的结果好于只使用暂退法或者只使用权重衰减。暂退法和权重衰减使用不同的方式防止模型过拟合，同时使用有累加的效果。下表是某次实验的结果。由于训练存在随机性，实际结果可能会有所不同。
+
+method                   λ        dropout1  dropout2  train loss  train_acc  test acc
+dropout                  —        0.2       0.5       0.3475      0.8727     0.8491
+dropout and weight decay  0.0001  0.2       0.5       0.3523      0.8707     0.8538
+weight decay              0.0001  —         —         0.3224      0.8797     0.8008
+
+# 导入见4.6.1
+# 只用暂退法
+train_loss1,train_acc1,test_acc1=0.,0.,0.
+for i in range(10):
+show=False if i<9 else True
+train_losslist1,train_acclist1,test_acclist1=changedropout(dropout1list=[0.2],dropout2list=[0.5],figsize=(7, 5),show=show)
+train_loss1+=train_losslist1[-1][-1][-1]/10.0
+train_acc1+=train_acclist1[-1][-1][-1]/10.0
+test_acc1+=test_acclist1[-1][-1][-1]/10.0
+        print("only dropout train loss {:.4f} train acc {:.4f} test acc {:.4f} ".format(train_loss1,train_acc1,test_acc1))
+# 输出：only dropout train loss 0.3475 train acc 0.8727 test acc 0.8491
+
+# 暂退法加权重衰减
+train_loss2,train_acc2,test_acc2=0.,0.,0.
+for i in range(10):
+show=False if i<9 else True
+train_losslist2,train_acclist2,test_acclist2=changedropout(dropout1list=[0.2],dropout2list=[0.5],wd=1e-4,ylim=[0,1],figsize=(7, 5),show=show)
+train_loss2+=train_losslist2[-1][-1][-1]/10.0
+train_acc2+=train_acclist2[-1][-1][-1]/10.0
+test_acc2+=test_acclist2[-1][-1][-1]/10.0
+print("dropout and weight decay train loss {:.4f} train acc {:.4f} test acc {:.4f} ".format(train_loss2,train_acc2,test_acc2))
+# 输出：dropout and weight decay train loss 0.3523 train acc 0.8707 test acc 0.8538
+
+# 导入见4.6.1
+# 仅有权重衰减
+train_losslist3,train_acclist3,test_acclist3=changedropout(dropout1list=[0],dropout2list=[0],wd=1e-4,ylim=[0,1],figsize=(7, 5))
+print("weight decay train loss {:.4f} train acc {:.4f} test acc {:.4f} ".format(train_losslist3[-1][-1][-1],train_acclist3[-1][-1][-1],test_acclist3[-1][-1][-1]))
+# 输出：weight decay train loss 0.3224 train acc 0.8797 test acc 0.8008
+
+---
+
+练习4.6.7
+
+如果我们将暂退法应用到权重矩阵的各个权重，而不是激活值，会发生什么？
+
+解答：
+
+考虑一个简单的单层无偏置神经网络 ŷ = φ(W x)，其中ŷ是输出，φ是激活函数，W是权重，x是输入。
+
+定义dropout函数为：以概率p输出0，以概率1-p输出 h/(1-p)。该函数在概率p下导数为0，在概率1-p下导数为 1/(1-p)。
+
+记L为损失函数，z = W x。
+
+情形一：dropout放在激活层之后（标准做法）。
+
+前向传播：输出 ŷ 以概率p变为0，以概率1-p变为 φ(W x)/(1-p)。这意味着被丢弃的神经元对输出完全不产生贡献。
+
+反向传播时，权重梯度 ∂L/∂W 以概率p为0（神经元被丢弃，梯度不传播），以概率1-p为 (∂L/∂ŷ) · φ'(z) · x / (1-p)（对存活神经元缩放补偿）。被丢弃的神经元既不参与前向计算，也不参与反向梯度更新。
+
+情形二：dropout放在激活层之前。
+
+前向传播：线性输出 z = W x 先经过dropout得到 ẑ，再通过激活函数得到 ŷ = φ(ẑ)。当神经元以概率p被丢弃时，ẑ = 0，此时 ŷ = φ(0)；当神经元存活时，ẑ = W x/(1-p)，ŷ = φ(W x/(1-p))。
+
+反向传播时，权重梯度 ∂L/∂W 以概率p为0（线性层输出被置零），以概率1-p为 (∂L/∂ŷ) · φ'(ẑ) · x / (1-p)。
+
+关键区别在于：当dropout放在激活层之前时，被丢弃的神经元在前向传播中仍然输出 φ(0)，而不是0。对于ReLU来说 φ(0)=0，影响不大；但对于sigmoid或tanh等激活函数，φ(0) ≠ 0，这意味着被"丢弃"的神经元实际上仍然对网络输出产生贡献，削弱了dropout的正则化效果。因此标准做法是将dropout放在激活层之后，确保被丢弃的神经元完全不参与前向计算。
+
+以下展示dropout前置的实验结果（具体图像和训练过程详见answers/04.06_reference_answer.ipynb）。
+
+# 导入见4.6.1
+dropout1=0.2;dropout2=0.5;num_inputs=784; num_outputs=10; num_hiddens1=256; num_hiddens2=256;num_epochs=10;
+net = nn.Sequential(nn.Flatten(),
+nn.Linear(num_inputs, num_hiddens1),
+nn.Dropout(dropout1),
+nn.ReLU(),
+nn.Linear(num_hiddens1, num_hiddens2),
+nn.Dropout(dropout2),
+nn.ReLU(),
+nn.Linear(num_hiddens2, num_outputs))
+
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+animator = d2l.Animator(xlabel='epoch',ylabel='Y',xlim=[1,num_epochs], ylim=[0.2, 1.0],
+legend=['train loss', 'train acc', 'test acc'])
+
+net.apply(init_weights);
+loss = nn.CrossEntropyLoss(reduction='none')
+trainer = torch.optim.SGD(net.parameters(), lr=lr)
+
+for epoch in range(num_epochs):
+train_metrics = d2l.train_epoch_ch3(net, train_iter, loss, trainer)
+test_acc = d2l.evaluate_accuracy(net, test_iter)
+animator.add(epoch + 1, train_metrics + (test_acc,))
+
+train_loss, train_acc = train_metrics
+
+---
+
+练习4.6.8
+
+开发另一种用于在每一层注入随机噪声的技术，该技术不同于标准的暂退法技术。尝试开发一种在Fashion-MNIST数据集（对于固定架构）上性能优于暂退法的方法。
+
+解答：
+
+对每个ReLU层的输出添加高斯噪声，可以作为一种替代标准暂退法的正则化方法。
+
+# 导入见4.6.1
+def noise_layer(X,rate=0.1):
+return X+rate*torch.rand(X.shape)
+class Net4_6_8(nn.Module):
+def __init__(self, num_inputs, num_outputs, num_hiddens1, num_hiddens2,
+is_training=True):
+super(Net4_6_8, self).__init__()
+self.num_inputs=num_inputs
+self.training = is_training
+self.lin1 = nn.Linear(num_inputs, num_hiddens1)
+self.lin2 = nn.Linear(num_hiddens1, num_hiddens2)
+self.lin3 = nn.Linear(num_hiddens2, num_outputs)
+self.relu = nn.ReLU()
+
+def forward(self, X):
+H1 = self.relu(self.lin1(X.reshape((-1, self.num_inputs))))
+# 只有在训练模型时才使用dropout
+if self.training == True:
+
+H1 = noise_layer(H1)
+H2 = self.relu(self.lin2(H1))
+if self.training == True:
+
+H2 = noise_layer(H2)
+out = self.lin3(H2)
+return out
+
+num_inputs, num_outputs, num_hiddens1, num_hiddens2=784, 10, 256, 256
+
+net = Net4_6_8(num_inputs, num_outputs, num_hiddens1, num_hiddens2)
+num_epochs, lr, batch_size=10, 0.5, 256
+loss = nn.CrossEntropyLoss(reduction='none')
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+trainer = torch.optim.SGD(net.parameters(), lr=lr)
+d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, trainer)
