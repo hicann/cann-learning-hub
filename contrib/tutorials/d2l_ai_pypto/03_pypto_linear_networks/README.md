@@ -13,6 +13,6 @@
 | 03.03 线性回归（简洁实现） | [在线阅读](./03.03_linear_regression_concise.ipynb) | ✅ 已发布 |
 | 03.04 softmax 回归（简介） | [在线阅读](./03.04_softmax_regression.ipynb) | ✅ 已发布 |
 | 03.05 图像分类数据集 | [在线阅读](./03.05_image_classification_dataset.ipynb) | ✅ 已发布 |
-| 03.06 Softmax 回归（从零开始） | - | 编写中 |
-| 03.07 Softmax 回归（简洁实现） | - | 编写中 |
+| 03.06 Softmax 回归（从零开始） | [在线阅读](./03.06_softmax_regression_scratch.ipynb) | ✅ 已发布 |
+| 03.07 Softmax 回归（简洁实现） | [在线阅读](./03.07_softmax_regression_concise.ipynb) | ✅ 已发布 |
 
