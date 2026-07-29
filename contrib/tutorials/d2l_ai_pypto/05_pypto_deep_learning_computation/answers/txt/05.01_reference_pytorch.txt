@@ -1,0 +1,54 @@
+练习5.1.1
+
+如果将 MySequential 中存储块的方式更改为 Python 列表，会出现什么样的问题？
+
+解答：
+
+把 MySequential 中存储块的方式从 _modules（OrderedDict）改成 Python 列表后，前向传播本身不会报错，代码仍能正常计算。结合代码运行结果可以看到两个明显的问题：
+
+   （1）无法查看网络结构。print(net) 用 _modules 存储时，会打印出完整的子模块结构（Linear、ReLU、Linear）；而用列表存储的 print(net_list) 只输出一个空的 "MySequential_list()"，看不到里面有哪些层。
+
+   （2）无法访问模型参数。net.state_dict() 会返回包含所有权重和偏置的 OrderedDict；而 net_list.state_dict() 返回的是空的 OrderedDict()，一个参数都拿不到。
+
+   这正是因为 nn.Module 只把写入 _modules 的子模块当作"自己的子模块"来管理。改用普通列表后，这些层虽然还能在 forward 里被调用，但却脱离了模块体系，也就无法再通过 state_dict() 等接口访问它们的结构和参数。
+
+练习5.1.2
+
+实现一个块，它以两个块为参数，例如net1和net2，并返回前向传播中两个网络的串联输出。这也被称为平行块。
+
+解答：
+
+class Parallel(nn.Module):
+    def __init__(self, net1, net2):
+        super().__init__()
+        self.net1=net1 # 第一个子网络
+        self.net2=net2 # 第二个子网络
+        
+    def forward(self,X):
+        x1= self.net1(X) # 第一个子网络的输出
+        x2= self.net2(X) # 第二个子网络的输出
+        return torch.cat((x1,x2),dim=1) # 在通道维度上合并输出结果
+
+练习5.1.3
+
+假设我们想要连接同一网络的多个实例。实现一个函数，该函数生成同一个块的多个实例，并在此基础上构建更大的网络。
+
+解答：
+
+def create_network(num_instances, input_size, hidden_size, output_size):
+    # 工厂函数：每次调用都返回一个全新的、参数独立的块
+    def make_block():
+        return nn.Sequential(
+            nn.Linear(input_size, hidden_size), nn.ReLU(),
+            nn.Linear(hidden_size, input_size)
+        )
+
+    # 每次循环都调用工厂函数，产生 num_instances 个独立实例
+    instances = [make_block() for _ in range(num_instances)]
+    network = nn.Sequential(*instances)
+
+    # 添加输出层
+    output_layer = nn.Linear(input_size, output_size)
+    network.add_module("output", output_layer)
+
+    return network

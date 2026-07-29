@@ -1,0 +1,70 @@
+练习5.2.1
+
+查看初始化模块文档以了解不同的初始化方法。
+
+解答：
+
+通过查看深度学习框架文档，有以下初始化方法 （参考链接：https://pytorch.org/docs/stable/nn.init.html ）
+torch.nn.init.uniform_(tensor, a=0.0, b=1.0)：从均匀分布 U(a,b) 中提取填充输入张量。
+torch.nn.init.normal_(tensor, mean=0.0, std=1.0)：从正态分布 N(mean,std²) 中提取填充输入张量。
+torch.nn.init.constant_(tensor, val)：以一确定数值初始化张量。
+torch.nn.init.ones_(tensor)：用标量值 1 填充输入张量。
+torch.nn.init.zeros_(tensor)：用标量值 0 填充输入张量。
+torch.nn.init.eye_(tensor)：用单位矩阵填充二维输入张量。
+torch.nn.init.xavier_uniform_(tensor, gain=1.0)：从均匀分布 U(−a,a) 中采样，初始化输入张量。
+torch.nn.init.xavier_normal_(tensor, gain=1.0):从正态分布 N(0,std²) 中采样，初始化输入张量。
+torch.nn.init.kaiming_uniform_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu'):服从均匀分布 U(−bound,bound)。
+torch.nn.init.kaiming_normal_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu'):服从从正态分布 N(0,std²) 中采样。
+torch.nn.init.trunc_normal_(tensor, mean=0.0, std=1.0, a=- 2.0, b=2.0):用从截断的正态分布中提取的值填充输入张量。这些值实际上是从正态分布 N(mean,std²) 中提取的。
+torch.nn.init.sparse_(tensor, sparsity, std=0.01)：将 2D 输入张量填充为稀疏矩阵，其中非零元素将从正态分布 N(0,0.01) 中提取。
+
+练习5.2.2
+
+构建包含共享参数层的多层感知机并对其进行训练。在训练过程中，观察模型各层的参数和梯度。
+
+解答：
+
+# 模型参数
+input_size = 4
+hidden_size = 8
+output_size = 4
+lr = 0.01
+epochs = 2
+
+# 构建带有共享参数层的多层感知机
+shared_fc = nn.Linear(hidden_size, hidden_size)
+MLP = nn.Sequential(nn.Linear(input_size, hidden_size), nn.ReLU(),
+                    shared_fc, nn.ReLU(),
+                    shared_fc, nn.ReLU(),
+                    nn.Linear(hidden_size, output_size)
+)
+
+# 训练数据
+X = torch.randn(1, input_size)
+Y = torch.randn(1, output_size)
+# 优化器
+optimizer = optim.SGD(MLP.parameters(), lr=lr)
+# 训练模型
+for epoch in range(epochs):
+    # 前向传播和计算损失
+    Y_pred = MLP(X)
+    loss = nn.functional.mse_loss(Y_pred, Y)
+    # 反向传播和更新梯度
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    # 打印每层的参数和梯度
+    for name, param in MLP.named_parameters():
+        print(name, param.data, param.grad)
+    print('Epoch: {}, Loss: {}'.format(epoch, loss.item()))
+
+练习5.2.3
+
+为什么共享参数是个好主意？
+
+解答：
+
+1. 节约内存：共享参数可以减少模型中需要存储的参数数量，从而减少内存占用。
+2. 加速收敛：共享参数可以让模型更加稳定，加速收敛。
+3. 提高泛化能力：共享参数可以帮助模型更好地捕捉数据中的共性，提高模型的泛化能力。
+4. 加强模型的可解释性：共享参数可以让模型更加简洁明了，加强模型的可解释性。
