@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">mmad_gelu_adv 优化结构</title>
+  <desc id="desc">静态分块、Cube Core 多级流水、Vector Core RegBase GELU、CV 直通和验证五个组成部分。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748B"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="500" fill="#F8FAFC"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#172033">
+    <text x="48" y="54" font-size="28" font-weight="700">mmad_gelu_adv 优化结构</text>
+    <text x="48" y="83" font-size="16" fill="#596579">MMAD-GELU 的计算、存储和核间协同</text>
+
+    <g stroke="#64748B" stroke-width="2" marker-end="url(#arrow)">
+      <line x1="250" y1="248" x2="276" y2="248"/>
+      <line x1="472" y1="248" x2="498" y2="248"/>
+      <line x1="694" y1="248" x2="720" y2="248"/>
+      <line x1="916" y1="248" x2="942" y2="248"/>
+    </g>
+
+    <g>
+      <rect x="48" y="114" width="202" height="270" rx="8" fill="#FFFFFF" stroke="#3568A8" stroke-width="3"/>
+      <text x="70" y="153" font-size="19" font-weight="700">静态分块</text>
+      <line x1="70" y1="171" x2="228" y2="171" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="70" y="208" font-size="14">M/N 二维核心映射</text>
+      <text x="70" y="236" font-size="14">240 × 64 × 256 Tile</text>
+      <text x="70" y="264" font-size="14">L1/L0/UB 容量断言</text>
+      <rect x="70" y="310" width="158" height="42" rx="6" fill="#EAF0FA" stroke="#B8CAE5" stroke-width="2"/>
+      <text x="149" y="336" font-size="13" text-anchor="middle">32 个 AI Core</text>
+    </g>
+
+    <g>
+      <rect x="270" y="114" width="202" height="270" rx="8" fill="#FFFFFF" stroke="#B7791F" stroke-width="3"/>
+      <text x="292" y="153" font-size="19" font-weight="700">Cube Core 多级流水</text>
+      <line x1="292" y1="171" x2="450" y2="171" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="292" y="208" font-size="14">L1 批量深度：4</text>
+      <text x="292" y="236" font-size="14">L1/L0 Double Buffer</text>
+      <text x="292" y="264" font-size="14">正向/反向硬件事件</text>
+      <rect x="292" y="310" width="158" height="42" rx="6" fill="#FFF0D6" stroke="#E0BE83" stroke-width="2"/>
+      <text x="371" y="328" font-size="13" text-anchor="middle">MTE2 · MTE1</text>
+      <text x="371" y="345" font-size="13" text-anchor="middle">Cube 重叠</text>
+    </g>
+
+    <g>
+      <rect x="492" y="114" width="202" height="270" rx="8" fill="#FFFFFF" stroke="#6B4FA1" stroke-width="3"/>
+      <text x="514" y="144" font-size="18" font-weight="700">
+        <tspan x="514" dy="0">Vector Core</tspan>
+        <tspan x="514" dy="22">RegBase</tspan>
+      </text>
+      <line x1="514" y1="181" x2="672" y2="181" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="514" y="212" font-size="14">GELU 八级算术链</text>
+      <text x="514" y="240" font-size="14">RegTensor 中间值</text>
+      <text x="514" y="268" font-size="14">尾块 Mask</text>
+      <rect x="514" y="310" width="158" height="42" rx="6" fill="#EEE8F8" stroke="#C7B6E2" stroke-width="2"/>
+      <text x="593" y="328" font-size="13" text-anchor="middle">1 LoadAlign</text>
+      <text x="593" y="345" font-size="13" text-anchor="middle">1 StoreAlign</text>
+    </g>
+
+    <g>
+      <rect x="714" y="114" width="202" height="270" rx="8" fill="#FFFFFF" stroke="#2F855A" stroke-width="3"/>
+      <text x="736" y="153" font-size="19" font-weight="700">CV 直通</text>
+      <line x1="736" y1="171" x2="894" y2="171" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="736" y="208" font-size="14">Fixpipe 双目标</text>
+      <text x="736" y="236" font-size="14">双 Vector Core 行分区</text>
+      <text x="736" y="264" font-size="14">跨核 ready 事件</text>
+      <rect x="736" y="310" width="158" height="42" rx="6" fill="#E5F3EA" stroke="#A9D3B9" stroke-width="2"/>
+      <text x="815" y="328" font-size="13" text-anchor="middle">L0C → UB</text>
+      <text x="815" y="345" font-size="13" text-anchor="middle">无中间 GM</text>
+    </g>
+
+    <g>
+      <rect x="936" y="114" width="216" height="270" rx="8" fill="#FFFFFF" stroke="#334155" stroke-width="3"/>
+      <text x="958" y="153" font-size="19" font-weight="700">验证闭环</text>
+      <line x1="958" y1="171" x2="1130" y2="171" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="958" y="208" font-size="14">全量 float32 精度</text>
+      <text x="958" y="236" font-size="14">Task Duration</text>
+      <text x="958" y="264" font-size="14">PipeUtilization</text>
+      <rect x="958" y="310" width="172" height="42" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="1044" y="328" font-size="13" text-anchor="middle">同 Shape 基线</text>
+      <text x="1044" y="345" font-size="13" text-anchor="middle">单变量口径</text>
+    </g>
+
+    <rect x="48" y="414" width="1104" height="54" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="600" y="447" font-size="15" text-anchor="middle">公开工程只包含 mmad_gelu_adv；MemBase 串行实现仅作为同 Shape 性能对照。</text>
+  </g>
+</svg>

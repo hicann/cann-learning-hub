@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 600" role="img" aria-labelledby="title desc">
+  <title id="title">GELU 的 MemBase 与 RegBase 数据流</title>
+  <desc id="desc">MemBase 的八条基础 API 通过 UB 中间值连接；RegBase 在一次加载和存储之间完成相同的八级寄存器算术链。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="1120" height="600" fill="#F8FAFC"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#172033">
+    <text x="48" y="54" font-size="28" font-weight="700">GELU 的 MemBase 与 RegBase 数据流</text>
+    <text x="48" y="82" font-size="16" fill="#596579">y = x / (1 + exp(-1.595769 × (x + 0.044715 × x³)))</text>
+
+    <rect x="48" y="108" width="490" height="416" rx="8" fill="#FFFFFF" stroke="#C94C4C" stroke-width="3"/>
+    <text x="76" y="147" font-size="22" font-weight="700">MemBase 对照</text>
+    <text x="76" y="174" font-size="15" fill="#596579">八条基础 API；相邻数据依赖由 PIPE_V 屏障保护</text>
+    <g font-size="14" text-anchor="middle">
+      <rect x="76" y="208" width="82" height="48" rx="6" fill="#DCEBFA" stroke="#3568A8" stroke-width="2"/>
+      <text x="117" y="237">UB: x</text>
+      <rect x="194" y="208" width="82" height="48" rx="6" fill="#FFF0D6" stroke="#B7791F" stroke-width="2"/>
+      <text x="235" y="237">Mul x²</text>
+      <rect x="312" y="208" width="82" height="48" rx="6" fill="#FFF0D6" stroke="#B7791F" stroke-width="2"/>
+      <text x="353" y="237">Mul x³</text>
+      <rect x="430" y="208" width="82" height="48" rx="6" fill="#FFF0D6" stroke="#B7791F" stroke-width="2"/>
+      <text x="471" y="237">Muls A</text>
+      <line x1="158" y1="232" x2="188" y2="232" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="276" y1="232" x2="306" y2="232" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="394" y1="232" x2="424" y2="232" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <path d="M471 256V285H117V304" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <rect x="76" y="310" width="82" height="48" rx="6" fill="#FFF0D6" stroke="#B7791F" stroke-width="2"/>
+      <text x="117" y="339">Add x</text>
+      <rect x="194" y="310" width="82" height="48" rx="6" fill="#FFF0D6" stroke="#B7791F" stroke-width="2"/>
+      <text x="235" y="339">Muls B</text>
+      <rect x="312" y="310" width="82" height="48" rx="6" fill="#FFF0D6" stroke="#B7791F" stroke-width="2"/>
+      <text x="353" y="339">Exp</text>
+      <rect x="430" y="310" width="82" height="48" rx="6" fill="#FFF0D6" stroke="#B7791F" stroke-width="2"/>
+      <text x="471" y="339">Adds 1</text>
+      <line x1="158" y1="334" x2="188" y2="334" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="276" y1="334" x2="306" y2="334" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="394" y1="334" x2="424" y2="334" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <path d="M471 358V389H235V408" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <rect x="194" y="414" width="82" height="48" rx="6" fill="#FFF0D6" stroke="#B7791F" stroke-width="2"/>
+      <text x="235" y="443">Div</text>
+      <line x1="276" y1="438" x2="324" y2="438" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <rect x="330" y="414" width="108" height="48" rx="6" fill="#E5F3EA" stroke="#2F855A" stroke-width="2"/>
+      <text x="384" y="443">UB: y</text>
+    </g>
+    <text x="293" y="496" font-size="14" text-anchor="middle" fill="#8B2F2F">7 个中间状态写回并再次读取 UB</text>
+
+    <rect x="582" y="108" width="490" height="416" rx="8" fill="#FFFFFF" stroke="#2F855A" stroke-width="3"/>
+    <text x="610" y="147" font-size="22" font-weight="700">RegBase 数据流</text>
+    <text x="610" y="174" font-size="15" fill="#596579">一个 Vector Length 的中间状态全部驻留 RegTensor</text>
+    <g font-size="14" text-anchor="middle">
+      <rect x="610" y="214" width="104" height="64" rx="6" fill="#DCEBFA" stroke="#3568A8" stroke-width="2"/>
+      <text x="662" y="239">UB: x</text><text x="662" y="260">LoadAlign</text>
+      <line x1="714" y1="246" x2="752" y2="246" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <rect x="758" y="196" width="180" height="210" rx="8" fill="#EEE8F8" stroke="#6B4FA1" stroke-width="3"/>
+      <text x="848" y="228" font-size="17" font-weight="700">RegTensor</text>
+      <text x="848" y="260">Mul x²</text>
+      <text x="848" y="283">Mul x³</text>
+      <text x="848" y="306">Muls A · Add x</text>
+      <text x="848" y="329">Muls B · Exp</text>
+      <text x="848" y="352">Adds 1 · Div</text>
+      <text x="848" y="382" font-size="13" fill="#596579">无中间 UB 访问</text>
+      <line x1="938" y1="301" x2="970" y2="301" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <rect x="976" y="269" width="72" height="64" rx="6" fill="#E5F3EA" stroke="#2F855A" stroke-width="2"/>
+      <text x="1012" y="294">UB: y</text><text x="1012" y="315">Store</text>
+    </g>
+    <rect x="610" y="438" width="438" height="54" rx="6" fill="#EEF7F2" stroke="#A9D3B9" stroke-width="2"/>
+    <text x="829" y="460" font-size="14" text-anchor="middle">每段：1 × LoadAlign + 8 × Reg API</text>
+    <text x="829" y="480" font-size="14" text-anchor="middle">+ 1 × StoreAlign</text>
+
+    <text x="560" y="568" font-size="14" text-anchor="middle" fill="#596579">A=0.044715，B=-1.595769；两种路径使用相同近似公式与 float32 输入输出。</text>
+  </g>
+</svg>

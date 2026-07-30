@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">L0C-UB 双目标数据路径</title>
+  <desc id="desc">Cube Core 的 Fixpipe 将一个 L0C Tile 沿 M 维分发到两个 Vector Core 的 UB，跨核事件保证数据就绪，两个 Vector Core 分别执行 GELU 并写回 GM。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="520" fill="#F8FAFC"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#172033">
+    <text x="48" y="54" font-size="28" font-weight="700">L0C-UB 双目标数据路径</text>
+    <text x="48" y="83" font-size="16" fill="#596579">一个 AI Core：1 个 Cube Core + 2 个 Vector Core；中间矩阵不经过 GM</text>
+
+    <rect x="48" y="112" width="1104" height="334" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+    <g font-size="14" text-anchor="middle">
+      <rect x="76" y="226" width="128" height="88" rx="8" fill="#FFF0D6" stroke="#B7791F" stroke-width="2"/>
+      <text x="140" y="257" font-size="17" font-weight="700">L0C Tile</text>
+      <text x="140" y="281">240 × 256</text>
+      <text x="140" y="300">float32</text>
+      <line x1="204" y1="270" x2="250" y2="270" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+
+      <rect x="256" y="202" width="190" height="136" rx="8" fill="#EEE8F8" stroke="#6B4FA1" stroke-width="3"/>
+      <text x="351" y="236" font-size="17" font-weight="700">Fixpipe 双目标</text>
+      <text x="351" y="265">dualDstCtl = 0b01</text>
+      <text x="351" y="290">M 维均分</text>
+      <text x="351" y="315" fill="#596579">unitFlag = 3</text>
+
+      <path d="M446 270H486V175H522" fill="none" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+      <path d="M446 270H486V365H522" fill="none" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+
+      <rect x="528" y="130" width="154" height="90" rx="8" fill="#DCEBFA" stroke="#3568A8" stroke-width="2"/>
+      <text x="605" y="160" font-size="15" font-weight="700">Vector Core 0 xUB</text>
+      <text x="605" y="184">rows 0-119</text>
+      <text x="605" y="204">120 × 256</text>
+      <rect x="528" y="320" width="154" height="90" rx="8" fill="#DCEBFA" stroke="#3568A8" stroke-width="2"/>
+      <text x="605" y="350" font-size="15" font-weight="700">Vector Core 1 xUB</text>
+      <text x="605" y="374">rows 120-239</text>
+      <text x="605" y="394">120 × 256</text>
+
+      <line x1="682" y1="175" x2="722" y2="175" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+      <line x1="682" y1="365" x2="722" y2="365" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+      <rect x="728" y="136" width="142" height="78" rx="8" fill="#FFFFFF" stroke="#6B4FA1" stroke-width="2"/>
+      <text x="799" y="165">ready 事件</text><text x="799" y="190">WaitFlag(0x8)</text>
+      <rect x="728" y="326" width="142" height="78" rx="8" fill="#FFFFFF" stroke="#6B4FA1" stroke-width="2"/>
+      <text x="799" y="355">ready 事件</text><text x="799" y="380">WaitFlag(0x8)</text>
+
+      <line x1="870" y1="175" x2="910" y2="175" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+      <line x1="870" y1="365" x2="910" y2="365" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+      <rect x="916" y="130" width="116" height="90" rx="8" fill="#E5F3EA" stroke="#2F855A" stroke-width="2"/>
+      <text x="974" y="160" font-size="16">GELU</text><text x="974" y="184">RegBase</text><text x="974" y="204">Vector 0</text>
+      <rect x="916" y="320" width="116" height="90" rx="8" fill="#E5F3EA" stroke="#2F855A" stroke-width="2"/>
+      <text x="974" y="350" font-size="16">GELU</text><text x="974" y="374">RegBase</text><text x="974" y="394">Vector 1</text>
+
+      <line x1="1032" y1="175" x2="1062" y2="175" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+      <line x1="1032" y1="365" x2="1062" y2="365" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+      <rect x="1068" y="142" width="58" height="66" rx="6" fill="#EAF0FA" stroke="#3568A8" stroke-width="2"/>
+      <text x="1097" y="169">MTE3</text><text x="1097" y="190">GM</text>
+      <rect x="1068" y="332" width="58" height="66" rx="6" fill="#EAF0FA" stroke="#3568A8" stroke-width="2"/>
+      <text x="1097" y="359">MTE3</text><text x="1097" y="380">GM</text>
+    </g>
+
+    <text x="600" y="482" font-size="14" text-anchor="middle" fill="#596579">CrossCoreSetFlag 在 Fixpipe 完成后发出；Vector Core 的最终 GM 偏移由 GetSubBlockIdx() 区分。</text>
+  </g>
+</svg>

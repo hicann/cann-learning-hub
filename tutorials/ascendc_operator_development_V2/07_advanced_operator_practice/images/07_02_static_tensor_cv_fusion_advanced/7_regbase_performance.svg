@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">GELU MemBase 与 RegBase Vector 性能对比</title>
+  <desc id="desc">纯 GELU 与融合算子两个场景中，RegBase 的向量计算时间均比 MemBase 降低约百分之五十三。</desc>
+  <rect width="1200" height="520" fill="#F8FAFC"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#172033">
+    <text x="48" y="56" font-size="28" font-weight="700">MemBase 与 RegBase 的 aiv_vec_time</text>
+    <text x="48" y="86" font-size="16" fill="#596579">3510 · Block 0 · msprof 独立采样 · 每个场景仅切换 GELU Vector 实现</text>
+
+    <rect x="48" y="118" width="540" height="330" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="72" y="158" font-size="20" font-weight="700">纯 GELU 隔离实验</text>
+    <text x="72" y="184" font-size="14" fill="#596579">64 个 Vector Core · tileLen=8192 · 5 轮中位数</text>
+    <text x="72" y="236" font-size="16">MemBase</text>
+    <rect x="170" y="207" width="360" height="42" rx="5" fill="#FADDDD" stroke="#C94C4C" stroke-width="3"/>
+    <text x="514" y="234" font-size="17" font-weight="700" text-anchor="end" fill="#8B2F2F">142.688 us</text>
+    <text x="72" y="306" font-size="16">RegBase</text>
+    <rect x="170" y="277" width="163" height="42" rx="5" fill="#DDF1E5" stroke="#2F855A" stroke-width="3"/>
+    <text x="317" y="304" font-size="17" font-weight="700" text-anchor="end" fill="#246B48">64.689 us</text>
+    <rect x="72" y="354" width="492" height="64" rx="6" fill="#EEF7F2" stroke="#2F855A" stroke-width="2"/>
+    <text x="318" y="382" font-size="15" text-anchor="middle" fill="#246B48">aiv_vec_time 降低 54.66%</text>
+    <text x="318" y="404" font-size="18" font-weight="700" text-anchor="middle" fill="#246B48">2.206x</text>
+
+    <rect x="612" y="118" width="540" height="330" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="636" y="158" font-size="20" font-weight="700">融合算子 Vector 阶段</text>
+    <text x="636" y="184" font-size="14" fill="#596579">Cube 流水、Shape、Tile 与 CV 交接保持不变</text>
+    <text x="636" y="236" font-size="16">MemBase</text>
+    <rect x="734" y="207" width="360" height="42" rx="5" fill="#FADDDD" stroke="#C94C4C" stroke-width="3"/>
+    <text x="1078" y="234" font-size="17" font-weight="700" text-anchor="end" fill="#8B2F2F">7.447 us</text>
+    <text x="636" y="306" font-size="16">RegBase</text>
+    <rect x="734" y="277" width="169" height="42" rx="5" fill="#DDF1E5" stroke="#2F855A" stroke-width="3"/>
+    <text x="887" y="304" font-size="17" font-weight="700" text-anchor="end" fill="#246B48">3.499 us</text>
+    <rect x="636" y="354" width="492" height="64" rx="6" fill="#EEF7F2" stroke="#2F855A" stroke-width="2"/>
+    <text x="882" y="382" font-size="15" text-anchor="middle" fill="#246B48">aiv_vec_time 降低 53.01%</text>
+    <text x="882" y="404" font-size="18" font-weight="700" text-anchor="middle" fill="#246B48">2.128x</text>
+
+    <text x="600" y="486" font-size="15" text-anchor="middle" fill="#596579">两组数据只比较 Vector 计算阶段，不包含其他硬件流水的执行时间。</text>
+  </g>
+</svg>

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">单 Buffer 与 Double Buffer 时序</title>
+  <desc id="desc">单 Buffer 因同址复用形成写、读、再写的串行顺序；Double Buffer 使用 Ping 和 Pong 交替，使写入方对下一块的写入与读取方对当前块的读取重叠。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748B"/>
+    </marker>
+    <marker id="readyArrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2F855A"/>
+    </marker>
+    <marker id="releaseArrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#B7791F"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="700" fill="#F8FAFC"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#172033">
+    <text x="48" y="54" font-size="28" font-weight="700">单 Buffer 与 Double Buffer 时序</text>
+    <text x="48" y="84" font-size="16" fill="#596579">写入方将数据写入缓冲区，读取方从缓冲区读取数据；横向表示执行先后关系</text>
+
+    <g transform="translate(48 110)">
+      <rect width="1104" height="236" rx="8" fill="#FFFFFF" stroke="#C94C4C" stroke-width="2"/>
+      <text x="24" y="35" font-size="20" font-weight="700">单 Buffer：同一地址只能依次写入、读取、再写入</text>
+      <text x="24" y="66" font-size="15" fill="#596579">共享槽位：Buffer0</text>
+      <line x1="154" y1="84" x2="1052" y2="84" stroke="#CBD5E1" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="1072" y="90" font-size="14" fill="#596579">时间</text>
+
+      <text x="24" y="124" font-size="16" font-weight="700">写入方</text>
+      <text x="24" y="190" font-size="16" font-weight="700">读取方</text>
+      <rect x="174" y="101" width="190" height="42" rx="7" fill="#DCEBFA" stroke="#3568A8" stroke-width="2"/>
+      <text x="269" y="128" font-size="15" text-anchor="middle">Write0 → Buffer0</text>
+      <rect x="364" y="101" width="250" height="42" rx="7" fill="#FDECEC" stroke="#C94C4C" stroke-width="2" stroke-dasharray="8 5"/>
+      <text x="489" y="128" font-size="15" text-anchor="middle">等待 Read0 释放同一地址</text>
+      <rect x="614" y="101" width="190" height="42" rx="7" fill="#DCEBFA" stroke="#3568A8" stroke-width="2"/>
+      <text x="709" y="128" font-size="15" text-anchor="middle">Write1 → Buffer0</text>
+
+      <rect x="174" y="167" width="190" height="42" rx="7" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2" stroke-dasharray="8 5"/>
+      <text x="269" y="194" font-size="15" text-anchor="middle">等待 Write0 就绪</text>
+      <rect x="364" y="167" width="250" height="42" rx="7" fill="#E5F3EA" stroke="#2F855A" stroke-width="2"/>
+      <text x="489" y="194" font-size="15" text-anchor="middle">Read0 ← Buffer0</text>
+      <rect x="614" y="167" width="190" height="42" rx="7" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2" stroke-dasharray="8 5"/>
+      <text x="709" y="194" font-size="15" text-anchor="middle">等待 Write1 就绪</text>
+
+      <line x1="364" y1="143" x2="364" y2="165" stroke="#2F855A" stroke-width="3" marker-end="url(#readyArrow)"/>
+      <text x="375" y="158" font-size="13" fill="#2F855A">ready</text>
+      <line x1="614" y1="165" x2="614" y2="145" stroke="#B7791F" stroke-width="3" marker-end="url(#releaseArrow)"/>
+      <text x="624" y="158" font-size="13" fill="#B7791F">release</text>
+      <text x="846" y="128" font-size="15" font-weight="700" fill="#C94C4C">Write0 → Read0 → Write1</text>
+      <text x="846" y="155" font-size="14" fill="#596579">同址复用建立串行依赖，</text>
+      <text x="846" y="178" font-size="14" fill="#596579">写入方不能提前写入下一块数据。</text>
+    </g>
+
+    <g transform="translate(48 370)">
+      <rect width="1104" height="250" rx="8" fill="#FFFFFF" stroke="#2F855A" stroke-width="2"/>
+      <text x="24" y="35" font-size="20" font-weight="700">Double Buffer：Ping 与 Pong 交替承担当前块和下一块</text>
+      <text x="24" y="66" font-size="15" fill="#596579">两个物理槽位：Ping、Pong</text>
+      <line x1="154" y1="84" x2="1052" y2="84" stroke="#CBD5E1" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="1072" y="90" font-size="14" fill="#596579">时间</text>
+
+      <rect x="364" y="91" width="210" height="128" fill="#E5F3EA" opacity="0.55"/>
+      <text x="469" y="237" font-size="14" text-anchor="middle" fill="#2F855A">重叠区间</text>
+      <text x="24" y="124" font-size="16" font-weight="700">写入方</text>
+      <text x="24" y="190" font-size="16" font-weight="700">读取方</text>
+
+      <rect x="174" y="101" width="190" height="42" rx="7" fill="#DCEBFA" stroke="#3568A8" stroke-width="2"/>
+      <text x="269" y="128" font-size="15" text-anchor="middle">Write0 → Ping</text>
+      <rect x="364" y="101" width="210" height="42" rx="7" fill="#EEE8F8" stroke="#6B4FA1" stroke-width="2"/>
+      <text x="469" y="128" font-size="15" text-anchor="middle">Write1 → Pong</text>
+      <rect x="614" y="101" width="190" height="42" rx="7" fill="#DCEBFA" stroke="#3568A8" stroke-width="2"/>
+      <text x="709" y="128" font-size="15" text-anchor="middle">Write2 → Ping</text>
+
+      <rect x="174" y="167" width="190" height="42" rx="7" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2" stroke-dasharray="8 5"/>
+      <text x="269" y="194" font-size="15" text-anchor="middle">等待 Ping 就绪</text>
+      <rect x="364" y="167" width="250" height="42" rx="7" fill="#DCEBFA" stroke="#3568A8" stroke-width="2"/>
+      <text x="489" y="194" font-size="15" text-anchor="middle">Read0 ← Ping</text>
+      <rect x="614" y="167" width="250" height="42" rx="7" fill="#EEE8F8" stroke="#6B4FA1" stroke-width="2"/>
+      <text x="739" y="194" font-size="15" text-anchor="middle">Read1 ← Pong</text>
+
+      <line x1="364" y1="143" x2="364" y2="165" stroke="#2F855A" stroke-width="3" marker-end="url(#readyArrow)"/>
+      <text x="375" y="158" font-size="13" fill="#2F855A">ready：写完才可读</text>
+      <line x1="614" y1="165" x2="614" y2="145" stroke="#B7791F" stroke-width="3" marker-end="url(#releaseArrow)"/>
+      <text x="624" y="158" font-size="13" fill="#B7791F">release：读完才可复用 Ping</text>
+      <text x="890" y="125" font-size="14" fill="#596579">读 Ping 时可写 Pong；</text>
+      <text x="890" y="149" font-size="14" fill="#596579">两个槽位交替复用。</text>
+    </g>
+
+    <g transform="translate(48 644)">
+      <rect width="1104" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="552" y="24" font-size="14" text-anchor="middle" fill="#596579">概念时序：矩形宽度不表示真实硬件周期；后续章节再给出 L1/L0 的实际索引与事件配置。</text>
+    </g>
+  </g>
+</svg>

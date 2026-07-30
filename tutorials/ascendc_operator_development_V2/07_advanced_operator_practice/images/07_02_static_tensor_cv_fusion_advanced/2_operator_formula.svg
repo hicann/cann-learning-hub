@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">MMAD-GELU 算子公式</title>
+  <desc id="desc">MMAD 计算得到中间矩阵 C，再以八级向量算术链计算 GELU。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748B"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="500" fill="#F8FAFC"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#172033">
+    <text x="48" y="56" font-size="28" font-weight="700">MMAD-GELU 计算定义</text>
+    <text x="48" y="86" font-size="16" fill="#596579">Cube Core 生成 float32 中间矩阵，Vector Core 在 UB 中完成 GELU</text>
+
+    <g text-anchor="middle">
+      <rect x="48" y="116" width="220" height="72" rx="8" fill="#DCEBFA" stroke="#3568A8" stroke-width="3"/>
+      <text x="158" y="145" font-size="20" font-weight="700">A</text>
+      <text x="158" y="172" font-size="15" fill="#42546C">[M, K] · half</text>
+
+      <rect x="48" y="218" width="220" height="72" rx="8" fill="#DCEBFA" stroke="#3568A8" stroke-width="3"/>
+      <text x="158" y="247" font-size="20" font-weight="700">B</text>
+      <text x="158" y="274" font-size="15" fill="#42546C">[K, N] · half</text>
+
+      <rect x="48" y="320" width="220" height="72" rx="8" fill="#E5F3EA" stroke="#2F855A" stroke-width="3"/>
+      <text x="158" y="349" font-size="20" font-weight="700">Bias</text>
+      <text x="158" y="376" font-size="15" fill="#42546C">[N] · half</text>
+
+      <rect x="374" y="184" width="310" height="140" rx="8" fill="#FFF0D6" stroke="#B7791F" stroke-width="3"/>
+      <text x="529" y="229" font-size="18" fill="#805514">MMAD</text>
+      <text x="529" y="275" font-size="25" font-weight="700">C = A &#215; B + Bias</text>
+      <text x="529" y="302" font-size="15" fill="#805514">[M, N] · float32</text>
+    </g>
+
+    <path d="M268 152H328V220H362" fill="none" stroke="#64748B" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M268 254H362" fill="none" stroke="#64748B" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M268 356H328V288H362" fill="none" stroke="#64748B" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <path d="M684 254H734" fill="none" stroke="#64748B" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="746" y="140" width="406" height="228" rx="8" fill="#FFFFFF" stroke="#2F855A" stroke-width="3"/>
+    <text x="778" y="180" font-size="18" fill="#246B48">Vector Core · RegBase GELU</text>
+    <text x="949" y="230" font-size="23" font-weight="700" text-anchor="middle">Y = C / [1 + exp(E)]</text>
+    <text x="949" y="278" font-size="19" text-anchor="middle">
+      E = -1.595769 &#215; (C + 0.044715 &#215; C<tspan baseline-shift="super" font-size="13">3</tspan>)
+    </text>
+    <text x="949" y="324" font-size="15" text-anchor="middle" fill="#596579">Y: [M, N] · float32</text>
+    <text x="949" y="348" font-size="14" text-anchor="middle" fill="#596579">Mul / Muls / Add / Exp / Adds / Div</text>
+
+    <text x="48" y="468" font-size="14" fill="#596579">静态规格：M=1920 · K=2048 · N=2048 · B 以转置布局存储</text>
+  </g>
+</svg>

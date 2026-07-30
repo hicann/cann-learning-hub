@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-labelledby="title desc">
+  <title id="title">M/N 二维分区与 AI Core 映射</title>
+  <desc id="desc">M 方向 4 个分区作为行，N 方向 8 个分区作为列；AI Core 编号等于 nIterIdx 乘 4 再加 mIterIdx。</desc>
+  <rect width="1120" height="560" fill="#F8FAFC"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#172033">
+    <text x="48" y="54" font-size="28" font-weight="700">M/N 二维分区与 AI Core 映射</text>
+    <text x="48" y="84" font-size="16" fill="#596579">单个 AI Core: 480 x 256；__mix__(1,2): 1 个 Cube Core + 2 个 Vector Core</text>
+
+    <rect x="190" y="102" width="768" height="44" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="574" y="130" font-size="17" text-anchor="middle">
+      aiCoreId = nIterIdx * mIter + mIterIdx，mIter = ceil(1920 / 480) = 4
+    </text>
+
+    <g transform="translate(190 184)">
+      <g font-size="14" text-anchor="middle" fill="#596579">
+        <text x="48" y="-16">nIterIdx=0</text><text x="144" y="-16">nIterIdx=1</text>
+        <text x="240" y="-16">nIterIdx=2</text><text x="336" y="-16">nIterIdx=3</text>
+        <text x="432" y="-16">nIterIdx=4</text><text x="528" y="-16">nIterIdx=5</text>
+        <text x="624" y="-16">nIterIdx=6</text><text x="720" y="-16">nIterIdx=7</text>
+      </g>
+      <g font-size="14" text-anchor="end" fill="#596579">
+        <text x="-12" y="40">mIterIdx=0</text><text x="-12" y="110">mIterIdx=1</text>
+        <text x="-12" y="180">mIterIdx=2</text><text x="-12" y="250">mIterIdx=3</text>
+      </g>
+
+      <rect width="768" height="280" fill="#FFFFFF" stroke="#334155" stroke-width="3"/>
+      <g stroke="#CBD5E1" stroke-width="2">
+        <path d="M96 0V280 M192 0V280 M288 0V280 M384 0V280 M480 0V280 M576 0V280 M672 0V280"/>
+        <path d="M0 70H768 M0 140H768 M0 210H768"/>
+      </g>
+      <g>
+        <g fill="#DCEBFA">
+          <rect x="2" y="2" width="92" height="66"/><rect x="98" y="2" width="92" height="66"/>
+          <rect x="194" y="2" width="92" height="66"/><rect x="290" y="2" width="92" height="66"/>
+          <rect x="386" y="2" width="92" height="66"/><rect x="482" y="2" width="92" height="66"/>
+          <rect x="578" y="2" width="92" height="66"/><rect x="674" y="2" width="92" height="66"/>
+        </g>
+        <g fill="#E5F3EA">
+          <rect x="2" y="72" width="92" height="66"/><rect x="98" y="72" width="92" height="66"/>
+          <rect x="194" y="72" width="92" height="66"/><rect x="290" y="72" width="92" height="66"/>
+          <rect x="386" y="72" width="92" height="66"/><rect x="482" y="72" width="92" height="66"/>
+          <rect x="578" y="72" width="92" height="66"/><rect x="674" y="72" width="92" height="66"/>
+        </g>
+        <g fill="#FFF0D6">
+          <rect x="2" y="142" width="92" height="66"/><rect x="98" y="142" width="92" height="66"/>
+          <rect x="194" y="142" width="92" height="66"/><rect x="290" y="142" width="92" height="66"/>
+          <rect x="386" y="142" width="92" height="66"/><rect x="482" y="142" width="92" height="66"/>
+          <rect x="578" y="142" width="92" height="66"/><rect x="674" y="142" width="92" height="66"/>
+        </g>
+        <g fill="#EEE8F8">
+          <rect x="2" y="212" width="92" height="66"/><rect x="98" y="212" width="92" height="66"/>
+          <rect x="194" y="212" width="92" height="66"/><rect x="290" y="212" width="92" height="66"/>
+          <rect x="386" y="212" width="92" height="66"/><rect x="482" y="212" width="92" height="66"/>
+          <rect x="578" y="212" width="92" height="66"/><rect x="674" y="212" width="92" height="66"/>
+        </g>
+      </g>
+      <g font-size="15" text-anchor="middle" fill="#172033">
+        <text x="48" y="41">AI Core 0</text><text x="144" y="41">4</text><text x="240" y="41">8</text><text x="336" y="41">12</text>
+        <text x="432" y="41">16</text><text x="528" y="41">20</text><text x="624" y="41">24</text><text x="720" y="41">28</text>
+        <text x="48" y="111">1</text><text x="144" y="111">5</text><text x="240" y="111">9</text><text x="336" y="111">13</text>
+        <text x="432" y="111">17</text><text x="528" y="111">21</text><text x="624" y="111">25</text><text x="720" y="111">29</text>
+        <text x="48" y="181">2</text><text x="144" y="181">6</text><text x="240" y="181">10</text><text x="336" y="181">14</text>
+        <text x="432" y="181">18</text><text x="528" y="181">22</text><text x="624" y="181">26</text><text x="720" y="181">30</text>
+        <text x="48" y="251">3</text><text x="144" y="251">7</text><text x="240" y="251">11</text><text x="336" y="251">15</text>
+        <text x="432" y="251">19</text><text x="528" y="251">23</text><text x="624" y="251">27</text><text x="720" y="251">31</text>
+      </g>
+      <text x="384" y="322" font-size="17" text-anchor="middle">N: 2048 / 8 个分区（列）</text>
+      <text x="-150" y="-132" transform="rotate(-90)" font-size="17" text-anchor="middle">M: 1920 / 4 个分区（行）</text>
+    </g>
+  </g>
+</svg>
