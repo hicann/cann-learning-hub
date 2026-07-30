@@ -2,17 +2,17 @@ import torch
 import torch_npu
 from torch_npu.testing.testcase import TestCase, run_tests
 
-torch.ops.load_library("libpractice_matmul_ops.so")
+torch.ops.load_library("libpractice_sub_ops.so")
 
 
-class TestPracticeMatmulAnswer(TestCase):
-    def test_practice_matmul(self):
+class TestPracticeSubAnswer(TestCase):
+    def test_practice_sub(self):
         torch.manual_seed(0)
-        a = torch.rand([256, 64], device="cpu", dtype=torch.float16)
-        b = torch.rand([64, 256], device="cpu", dtype=torch.float16)
+        x = torch.rand([8, 2048], device="cpu", dtype=torch.float16)
+        y = torch.rand([8, 2048], device="cpu", dtype=torch.float16)
 
-        output = torch.ops.practice_matmul_ops.practice_matmul(a.npu(), b.npu()).cpu()
-        expected = torch.matmul(a.float(), b.float()).half()
+        output = torch.ops.practice_sub_ops.practice_sub(x.npu(), y.npu()).cpu()
+        expected = x - y
         self.assertRtolEqual(output, expected)
 
 

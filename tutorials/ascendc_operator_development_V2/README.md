@@ -98,10 +98,10 @@
 | Notebook | 状态 |
 | --- | --- |
 | [4.1 章节介绍](04_simple_operator_practice/04.01_chapter_intro.ipynb) | 🚧 开发中 |
-| [4.2 基于静态 Tensor 的 CV 融合算子开发](04_simple_operator_practice/04.02_static_tensor_cv_fusion.ipynb) | 🚧 开发中 |
-| [4.3 Softmax 算子教程](04_simple_operator_practice/04.03_softmax.ipynb) | 🚧 开发中 |
-| [4.4 CV 融合算子教程](04_simple_operator_practice/04.04_cv_fusion.ipynb) | 🚧 开发中 |
-| [4.5 Tensor API 矩阵算子优化实践](04_simple_operator_practice/04.05_tensor_api_matmul.ipynb) | 🚧 开发中 |
+| [4.2 Softmax 算子教程](04_simple_operator_practice/04.02_softmax.ipynb) | 🚧 开发中 |
+| [4.3 Tensor API 矩阵算子优化实践](04_simple_operator_practice/04.03_tensor_api_matmul.ipynb) | 🚧 开发中 |
+| [4.4 基于静态 Tensor 的 CV 融合算子开发](04_simple_operator_practice/04.04_static_tensor_cv_fusion.ipynb) | 🚧 开发中 |
+| [4.5 CV 融合算子教程](04_simple_operator_practice/04.05_cv_fusion.ipynb) | 🚧 开发中 |
 | [4.6 SIMT Gather 算子开发](04_simple_operator_practice/04.06_simt_gather_operator.ipynb) | 🚧 开发中 |
 
 ## 第五章：框架集成
