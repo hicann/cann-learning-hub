@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="780" viewBox="0 0 1440 780" role="img" aria-labelledby="title desc">
+<title id="title">Eager Attention 与 FlashAttention 的数据流对比</title>
+<desc id="desc">上方 eager 路径在多个 kernel 之间物化并反复读写完整 score；下方 FlashAttention 将 tile 搬入片上存储，在融合 kernel 中完成 online softmax 与 PV 累加，只写最终输出。</desc>
+<!-- svg-source:excalidraw; editable source is the sibling .excalidraw file -->
+<defs>
+<marker id="arrow-15803d" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#15803d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-2563eb" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-b45309" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#b45309" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-c2410c" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#c2410c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+<rect width="1440" height="780" fill="#fffdf7"/>
+<g aria-label="nodes">
+<path d="M 88.0 175.0 L 232.0 175.8 Q 250.0 175.0 250.0 193.0 L 249.4 267.0 Q 250.0 285.0 232.0 285.0 L 88.0 284.3 Q 70.0 285.0 70.0 267.0 L 70.7 193.0 Q 70.0 175.0 88.0 175.0 Z" fill="#f1f5f9" stroke="#1f2937" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 89.1 174.2 L 233.1 175.0 Q 251.1 174.2 251.1 192.2 L 250.5 266.2 Q 251.1 284.2 233.1 284.2 L 89.1 283.5 Q 71.1 284.2 71.1 266.2 L 71.8 192.2 Q 71.1 174.2 89.1 174.2 Z" fill="none" stroke="#1f2937" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="600" fill="#1f2937"><tspan x="160.0" y="216.8">Q / K / V</tspan><tspan x="160.0" y="248.0">在 HBM</tspan></text>
+<path d="M 333.0 175.0 L 457.0 175.8 Q 475.0 175.0 475.0 193.0 L 474.4 267.0 Q 475.0 285.0 457.0 285.0 L 333.0 284.3 Q 315.0 285.0 315.0 267.0 L 315.7 193.0 Q 315.0 175.0 333.0 175.0 Z" fill="#ffe4e6" stroke="#c2410c" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 334.1 174.2 L 458.1 175.0 Q 476.1 174.2 476.1 192.2 L 475.5 266.2 Q 476.1 284.2 458.1 284.2 L 334.1 283.5 Q 316.1 284.2 316.1 266.2 L 316.8 192.2 Q 316.1 174.2 334.1 174.2 Z" fill="none" stroke="#c2410c" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="600" fill="#c2410c"><tspan x="395.0" y="216.8">QK^T</tspan><tspan x="395.0" y="248.0">kernel</tspan></text>
+<path d="M 558.0 155.0 L 752.0 155.8 Q 770.0 155.0 770.0 173.0 L 769.4 287.0 Q 770.0 305.0 752.0 305.0 L 558.0 304.3 Q 540.0 305.0 540.0 287.0 L 540.7 173.0 Q 540.0 155.0 558.0 155.0 Z" fill="#ffedd5" stroke="#c2410c" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 559.1 154.2 L 753.1 155.0 Q 771.1 154.2 771.1 172.2 L 770.5 286.2 Q 771.1 304.2 753.1 304.2 L 559.1 303.5 Q 541.1 304.2 541.1 286.2 L 541.8 172.2 Q 541.1 154.2 559.1 154.2 Z" fill="none" stroke="#c2410c" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#c2410c"><tspan x="655.0" y="216.2">完整 S×S score</tspan><tspan x="655.0" y="248.8">写回 HBM</tspan></text>
+<path d="M 853.0 175.0 L 1002.0 175.8 Q 1020.0 175.0 1020.0 193.0 L 1019.4 267.0 Q 1020.0 285.0 1002.0 285.0 L 853.0 284.3 Q 835.0 285.0 835.0 267.0 L 835.7 193.0 Q 835.0 175.0 853.0 175.0 Z" fill="#ffe4e6" stroke="#c2410c" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 854.1 174.2 L 1003.1 175.0 Q 1021.1 174.2 1021.1 192.2 L 1020.5 266.2 Q 1021.1 284.2 1003.1 284.2 L 854.1 283.5 Q 836.1 284.2 836.1 266.2 L 836.8 192.2 Q 836.1 174.2 854.1 174.2 Z" fill="none" stroke="#c2410c" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="600" fill="#c2410c"><tspan x="927.5" y="217.4">Mask +</tspan><tspan x="927.5" y="247.3">Softmax</tspan></text>
+<path d="M 1103.0 175.0 L 1337.0 175.8 Q 1355.0 175.0 1355.0 193.0 L 1354.4 267.0 Q 1355.0 285.0 1337.0 285.0 L 1103.0 284.3 Q 1085.0 285.0 1085.0 267.0 L 1085.7 193.0 Q 1085.0 175.0 1103.0 175.0 Z" fill="#f1f5f9" stroke="#1f2937" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 1104.1 174.2 L 1338.1 175.0 Q 1356.1 174.2 1356.1 192.2 L 1355.5 266.2 Q 1356.1 284.2 1338.1 284.2 L 1104.1 283.5 Q 1086.1 284.2 1086.1 266.2 L 1086.8 192.2 Q 1086.1 174.2 1104.1 174.2 Z" fill="none" stroke="#1f2937" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="600" fill="#1f2937"><tspan x="1220.0" y="217.4">概率读回 → PV</tspan><tspan x="1220.0" y="247.3">写最终输出 O</tspan></text>
+<path d="M 88.0 445.0 L 262.0 445.8 Q 280.0 445.0 280.0 463.0 L 279.4 542.0 Q 280.0 560.0 262.0 560.0 L 88.0 559.3 Q 70.0 560.0 70.0 542.0 L 70.7 463.0 Q 70.0 445.0 88.0 445.0 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 89.1 444.2 L 263.1 445.0 Q 281.1 444.2 281.1 462.2 L 280.5 541.2 Q 281.1 559.2 263.1 559.2 L 89.1 558.5 Q 71.1 559.2 71.1 541.2 L 71.8 462.2 Q 71.1 444.2 89.1 444.2 Z" fill="none" stroke="#2563eb" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="600" fill="#2563eb"><tspan x="175.0" y="489.3">Q / K / V tiles</tspan><tspan x="175.0" y="520.5">在 HBM</tspan></text>
+<path d="M 368.0 445.0 L 542.0 445.8 Q 560.0 445.0 560.0 463.0 L 559.4 542.0 Q 560.0 560.0 542.0 560.0 L 368.0 559.3 Q 350.0 560.0 350.0 542.0 L 350.7 463.0 Q 350.0 445.0 368.0 445.0 Z" fill="#cffafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 369.1 444.2 L 543.1 445.0 Q 561.1 444.2 561.1 462.2 L 560.5 541.2 Q 561.1 559.2 543.1 559.2 L 369.1 558.5 Q 351.1 559.2 351.1 541.2 L 351.8 462.2 Q 351.1 444.2 369.1 444.2 Z" fill="none" stroke="#2563eb" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="600" fill="#2563eb"><tspan x="455.0" y="489.9">当前 tile</tspan><tspan x="455.0" y="519.8">搬入片上 SRAM</tspan></text>
+<path d="M 653.0 410.0 L 1027.0 410.8 Q 1045.0 410.0 1045.0 428.0 L 1044.4 577.0 Q 1045.0 595.0 1027.0 595.0 L 653.0 594.3 Q 635.0 595.0 635.0 577.0 L 635.7 428.0 Q 635.0 410.0 653.0 410.0 Z" fill="#dcfce7" stroke="#15803d" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 654.1 409.2 L 1028.1 410.0 Q 1046.1 409.2 1046.1 427.2 L 1045.5 576.2 Q 1046.1 594.2 1028.1 594.2 L 654.1 593.5 Q 636.1 594.2 636.1 576.2 L 636.8 427.2 Q 636.1 409.2 654.1 409.2 Z" fill="none" stroke="#15803d" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#15803d"><tspan x="840.0" y="472.5">一个融合 tile loop</tspan><tspan x="840.0" y="505.0">QK^T → mask → online softmax</tspan><tspan x="840.0" y="537.5">→ PV 局部累加</tspan></text>
+<path d="M 1138.0 445.0 L 1337.0 445.8 Q 1355.0 445.0 1355.0 463.0 L 1354.4 542.0 Q 1355.0 560.0 1337.0 560.0 L 1138.0 559.3 Q 1120.0 560.0 1120.0 542.0 L 1120.7 463.0 Q 1120.0 445.0 1138.0 445.0 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 1139.1 444.2 L 1338.1 445.0 Q 1356.1 444.2 1356.1 462.2 L 1355.5 541.2 Q 1356.1 559.2 1338.1 559.2 L 1139.1 558.5 Q 1121.1 559.2 1121.1 541.2 L 1121.8 462.2 Q 1121.1 444.2 1139.1 444.2 Z" fill="none" stroke="#2563eb" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="600" fill="#2563eb"><tspan x="1237.5" y="489.9">只写最终输出 O</tspan><tspan x="1237.5" y="519.8">不物化完整 score</tspan></text>
+<path d="M 383.0 665.0 L 1057.0 665.8 Q 1075.0 665.0 1075.0 683.0 L 1074.4 719.0 Q 1075.0 737.0 1057.0 737.0 L 383.0 736.3 Q 365.0 737.0 365.0 719.0 L 365.7 683.0 Q 365.0 665.0 383.0 665.0 Z" fill="#fef3c7" stroke="#b45309" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 384.1 664.2 L 1058.1 665.0 Q 1076.1 664.2 1076.1 682.2 L 1075.5 718.2 Q 1076.1 736.2 1058.1 736.2 L 384.1 735.5 Q 366.1 736.2 366.1 718.2 L 366.8 682.2 Q 366.1 664.2 384.1 664.2 Z" fill="none" stroke="#b45309" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#b45309"><tspan x="720.0" y="688.9">结果仍是 exact dense attention，复杂度仍为 O(S²)；</tspan><tspan x="720.0" y="717.5">改变的是 HBM 往返、峰值增长与 kernel 碎片。</tspan></text>
+</g><g aria-label="connectors">
+<path d="M 250.0 230.0 L 315.0 230.0" fill="none" stroke="#c2410c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-c2410c)"/>
+<path d="M 475.0 230.0 L 540.0 230.0" fill="none" stroke="#c2410c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-c2410c)"/>
+<path d="M 770.0 230.0 L 835.0 230.0" fill="none" stroke="#c2410c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-c2410c)"/>
+<path d="M 1020.0 230.0 L 1085.0 230.0" fill="none" stroke="#c2410c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-c2410c)"/>
+<path d="M 280.0 502.0 L 350.0 502.0" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-2563eb)"/>
+<path d="M 560.0 502.0 L 635.0 502.0" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-2563eb)"/>
+<path d="M 1045.0 502.0 L 1120.0 502.0" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-15803d)"/>
+<path d="M 840.0 595.0 L 840.0 665.0" fill="none" stroke="#b45309" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-b45309)"/>
+<rect x="264.5" y="206.0" width="36" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#c2410c"><tspan x="282.5" y="226.0">读</tspan></text>
+<rect x="489.5" y="206.0" width="36" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#c2410c"><tspan x="507.5" y="226.0">写</tspan></text>
+<rect x="784.5" y="206.0" width="36" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#c2410c"><tspan x="802.5" y="226.0">读</tspan></text>
+<rect x="1020.5" y="206.0" width="64" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#c2410c"><tspan x="1052.5" y="226.0">写/读</tspan></text>
+<rect x="297.0" y="478.0" width="36" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#2563eb"><tspan x="315.0" y="498.0">读</tspan></text>
+<rect x="1064.5" y="478.0" width="36" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#15803d"><tspan x="1082.5" y="498.0">写</tspan></text>
+</g><g aria-label="labels">
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700" fill="#1f2937"><tspan x="720.0" y="54.0">同一份 dense Attention：差别发生在执行与 IO</tspan></text>
+<text text-anchor="start" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#c2410c"><tspan x="70.0" y="128.0">Eager：多个 kernel + 完整中间张量</tspan></text>
+<text text-anchor="start" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#2563eb"><tspan x="70.0" y="382.0">FlashAttention：tiling + online softmax + 融合</tspan></text>
+</g></svg>

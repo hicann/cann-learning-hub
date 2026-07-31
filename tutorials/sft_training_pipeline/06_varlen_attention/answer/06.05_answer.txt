@@ -1,0 +1,6 @@
+06.05 参考答案
+
+1. ×。dense block-causal mask 修复语义，但不保证设备 kernel 按相同比例跳过被遮蔽 pair。
+2. B。NPU VarLen 路线用 TND、actual_seq 累计长度和 sparse_mode=7 表达分段 causal 计算。
+3. √。理论 pair ratio 是工作量模型，不能直接当作端到端 wall-time 加速比。
+4. A、B、C。切到可用 VarLen 路线时，要同时核对 inner Attention config、block-causal 语义和 trainer 生成的边界 metadata。

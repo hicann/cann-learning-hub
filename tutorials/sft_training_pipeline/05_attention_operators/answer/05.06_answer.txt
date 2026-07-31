@@ -1,0 +1,13 @@
+05.06 参考答案
+
+1. Score 矩阵：`B × Nq × S × S = 2 × 16 × 4096²` 个 BF16 元素，占 1,024 MiB。GQA 把 KV heads 从 16 减到 8，但 Q heads 仍是 16，每个 Q head 仍产生一张 `S × S` score，因此逻辑 score 大小不变；减少的是 K/V 投影和缓存。
+
+2. `build_attention(...)` 根据 `AttentionConfig` 构造已注册的 inner-attention 模块。切换 FlexAttention 应修改 attention backend/config，而不是在模型 forward 里临时改调用。切换 NPUVarlenAttention 后，训练器还必须提供由 packed sample 边界生成的 VarlenMetadata；只换类名、没有正确 `actual_seq_*`，语义并不完整。
+
+3. 相同 shape 下 SDPA 与直接 FusionAttention V3 的 device time 接近，最多说明当前 dispatch 很可能落到相同或等价的融合设备路径，额外差异主要在 CPU 调用层。它不能单独证明训练 step 等速、端到端加速或显存相同；这些需要同步 wall-time、完整 forward/backward 和训练 trace。
+
+4. 结论不能信。没有 warmup 会把首次编译、缓存和初始化混入；删除计时前同步会继承前序异步工作，删除计时后同步只测 launch；只跑一次无法判断波动；只测一个 shape 也不能外推。应预热、前后同步并重复计时，同时固定 dtype、shape、软件和硬件。05.03 当前报告 20 次循环的平均 wall-time；若改为保存逐次样本，才可进一步报告 median/P95。
+
+5. `aten::scaled_dot_product_attention` 是上层算子名，不能据此断定设备侧是否融合；`npu_fusion_attention_v3` 也只能确认调用进入了该 NPU 算子入口。还要继续查看带 `Task Type` 的设备事件：本节实际出现的 `aclnnFlashAttentionScore*` 才能确认设备侧 FlashAttention kernel。kernel 数量减少说明算子碎片减少，但性能仍要看 device time 和同步 wall-time。
+
+6. 本题没有唯一数字答案。合格结论必须同时写出固定 shape `(B=2,S=4096,Nq=16,Nkv=8,D=128)`、BF16、具体 NPU/软件版本、比较对象、5 次预热、20 次重复、同步边界、forward 或 fwd+bwd 口径，并明确当前代码报告的是重复循环的平均 wall-time。结论限定于当前 causal 固定长度 shape，不能外推到 packed VarLen 或端到端训练。

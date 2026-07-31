@@ -1,0 +1,6 @@
+06.03 参考答案
+
+1. √。Greedy packing 提高利用率，但只重置 positions 不会自动改变 Attention mask。
+2. C。当前 trainer 通过位置编号重新从 0 开始识别新的隔离区间。
+3. A、B、C。positions、labels 和 padding 分别承担边界、loss 和容器补齐职责。
+4. √。末尾 padding 也可能自成一个隔离区间，所以区间总数可能大于 raw sample 数。

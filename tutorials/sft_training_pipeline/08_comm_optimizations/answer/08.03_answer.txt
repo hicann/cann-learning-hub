@@ -1,0 +1,6 @@
+08.03 参考答案
+
+1. ×。只采 rank 0 的 trace 不足以判断双卡训练的关键路径和 rank skew。
+2. √。profiler 用来确认路径，稳定吞吐应依赖关闭 profiler 的重复 wall-time 统计。
+3. A。Stage、Computing 和 Communication(Not Overlapped) 主要读 step_trace_time.csv。
+4. A、B、C。一次可审计的重采应保留双 rank trace、独立输出目录和对应配置/日志。

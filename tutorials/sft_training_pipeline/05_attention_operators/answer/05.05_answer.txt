@@ -1,0 +1,6 @@
+05.05 参考答案
+
+1. ×。只换 kernel 不换 block_causal，trainer 不会自动生成正确 metadata。
+2. A。当前 VarLen 配置要同时选择 NPUVarlenAttention 并声明 block_causal 语义。
+3. √。trace 只能证明算子执行了；要证明边界正确，还要看 DataLoader 的样本起点和 cu_seq。
+4. A、B、C。验证全链路要看数据层、配置层和调用执行层，不能只看 loss。

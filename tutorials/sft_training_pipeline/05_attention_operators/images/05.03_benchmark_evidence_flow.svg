@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+<title id="title">Attention 算子 benchmark 的证据链</title>
+<desc id="desc">实验固定 S=4096 并只改变一个变量，再进行数值语义校验；通过后分别采集无 profiler 的重复 wall-time、固定 shape 的峰值显存、profiler trace 和结构化对照，最后合并证据给出带边界的 PASS 或 CAVEAT。</desc>
+<!-- svg-source:excalidraw; editable source is the sibling .excalidraw file -->
+<defs>
+<marker id="arrow-15803d" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#15803d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-1f2937" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#1f2937" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-2563eb" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-7c3aed" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-b45309" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#b45309" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-c2410c" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#c2410c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+<rect width="1500" height="900" fill="#fffdf7"/>
+<g aria-label="nodes">
+<path d="M 563.0 105.0 L 937.0 105.8 Q 955.0 105.0 955.0 123.0 L 954.4 177.0 Q 955.0 195.0 937.0 195.0 L 563.0 194.3 Q 545.0 195.0 545.0 177.0 L 545.7 123.0 Q 545.0 105.0 563.0 105.0 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 564.1 104.2 L 938.1 105.0 Q 956.1 104.2 956.1 122.2 L 955.5 176.2 Q 956.1 194.2 938.1 194.2 L 564.1 193.5 Q 546.1 194.2 546.1 176.2 L 546.8 122.2 Q 546.1 104.2 564.1 104.2 Z" fill="none" stroke="#2563eb" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#2563eb"><tspan x="750.0" y="136.8">固定 shape / dtype / device</tspan><tspan x="750.0" y="168.0">一次只改变一个变量</tspan></text>
+<polygon points="750.0,245.0 880.0,317.5 750.0,390.0 620.0,317.5" fill="#fef3c7" stroke="#b45309" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="751.2,244.4 881.2,316.9 751.2,389.4 621.2,316.9" fill="none" stroke="#b45309" stroke-opacity="0.22" stroke-width="1.5" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#b45309"><tspan x="750.0" y="303.8">数值与 mask</tspan><tspan x="750.0" y="336.2">语义一致？</tspan></text>
+<path d="M 113.0 265.0 L 407.0 265.8 Q 425.0 265.0 425.0 283.0 L 424.4 347.0 Q 425.0 365.0 407.0 365.0 L 113.0 364.3 Q 95.0 365.0 95.0 347.0 L 95.7 283.0 Q 95.0 265.0 113.0 265.0 Z" fill="#ffedd5" stroke="#c2410c" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 114.1 264.2 L 408.1 265.0 Q 426.1 264.2 426.1 282.2 L 425.5 346.2 Q 426.1 364.2 408.1 364.2 L 114.1 363.5 Q 96.1 364.2 96.1 346.2 L 96.8 282.2 Q 96.1 264.2 114.1 264.2 Z" fill="none" stroke="#c2410c" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#c2410c"><tspan x="260.0" y="302.9">NO：停止性能归因</tspan><tspan x="260.0" y="331.5">先修 shape / mask / fallback</tspan></text>
+<path d="M 212.0 425.0 L 1288.0 425.8 Q 1290.0 425.0 1290.0 427.0 L 1289.4 431.0 Q 1290.0 433.0 1288.0 433.0 L 212.0 432.3 Q 210.0 433.0 210.0 431.0 L 210.7 427.0 Q 210.0 425.0 212.0 425.0 Z" fill="#f1f5f9" stroke="#64748b" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 213.1 424.2 L 1289.1 425.0 Q 1291.1 424.2 1291.1 426.2 L 1290.5 430.2 Q 1291.1 432.2 1289.1 432.2 L 213.1 431.5 Q 211.1 432.2 211.1 430.2 L 211.8 426.2 Q 211.1 424.2 213.1 424.2 Z" fill="none" stroke="#64748b" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<path d="M 63.0 455.0 L 357.0 455.8 Q 375.0 455.0 375.0 473.0 L 374.4 597.0 Q 375.0 615.0 357.0 615.0 L 63.0 614.3 Q 45.0 615.0 45.0 597.0 L 45.7 473.0 Q 45.0 455.0 63.0 455.0 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 64.1 454.2 L 358.1 455.0 Q 376.1 454.2 376.1 472.2 L 375.5 596.2 Q 376.1 614.2 358.1 614.2 L 64.1 613.5 Q 46.1 614.2 46.1 596.2 L 46.8 472.2 Q 46.1 454.2 64.1 454.2 Z" fill="none" stroke="#2563eb" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="650" fill="#2563eb"><tspan x="210.0" y="508.6">重复 wall-time</tspan><tspan x="210.0" y="537.2">关闭 profiler</tspan><tspan x="210.0" y="565.8">回答：快不快？</tspan></text>
+<path d="M 423.0 455.0 L 717.0 455.8 Q 735.0 455.0 735.0 473.0 L 734.4 597.0 Q 735.0 615.0 717.0 615.0 L 423.0 614.3 Q 405.0 615.0 405.0 597.0 L 405.7 473.0 Q 405.0 455.0 423.0 455.0 Z" fill="#ede9fe" stroke="#7c3aed" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 424.1 454.2 L 718.1 455.0 Q 736.1 454.2 736.1 472.2 L 735.5 596.2 Q 736.1 614.2 718.1 614.2 L 424.1 613.5 Q 406.1 614.2 406.1 596.2 L 406.8 472.2 Q 406.1 454.2 424.1 454.2 Z" fill="none" stroke="#7c3aed" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="650" fill="#7c3aed"><tspan x="570.0" y="508.6">固定-shape 峰值显存</tspan><tspan x="570.0" y="537.2">S=4096 + 理论 score</tspan><tspan x="570.0" y="565.8">回答：是否物化 S²？</tspan></text>
+<path d="M 783.0 455.0 L 1077.0 455.8 Q 1095.0 455.0 1095.0 473.0 L 1094.4 597.0 Q 1095.0 615.0 1077.0 615.0 L 783.0 614.3 Q 765.0 615.0 765.0 597.0 L 765.7 473.0 Q 765.0 455.0 783.0 455.0 Z" fill="#dcfce7" stroke="#15803d" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 784.1 454.2 L 1078.1 455.0 Q 1096.1 454.2 1096.1 472.2 L 1095.5 596.2 Q 1096.1 614.2 1078.1 614.2 L 784.1 613.5 Q 766.1 614.2 766.1 596.2 L 766.8 472.2 Q 766.1 454.2 784.1 454.2 Z" fill="none" stroke="#15803d" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="650" fill="#15803d"><tspan x="930.0" y="508.6">Profiler trace</tspan><tspan x="930.0" y="537.2">kernel 名 / 数量 / duration</tspan><tspan x="930.0" y="565.8">回答：实际跑了什么？</tspan></text>
+<path d="M 1143.0 455.0 L 1437.0 455.8 Q 1455.0 455.0 1455.0 473.0 L 1454.4 597.0 Q 1455.0 615.0 1437.0 615.0 L 1143.0 614.3 Q 1125.0 615.0 1125.0 597.0 L 1125.7 473.0 Q 1125.0 455.0 1143.0 455.0 Z" fill="#fef3c7" stroke="#b45309" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 1144.1 454.2 L 1438.1 455.0 Q 1456.1 454.2 1456.1 472.2 L 1455.5 596.2 Q 1456.1 614.2 1438.1 614.2 L 1144.1 613.5 Q 1126.1 614.2 1126.1 596.2 L 1126.8 472.2 Q 1126.1 454.2 1144.1 454.2 Z" fill="none" stroke="#b45309" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="650" fill="#b45309"><tspan x="1290.0" y="508.6">结构化对照</tspan><tspan x="1290.0" y="537.2">GQA / mask / cu_seq</tspan><tspan x="1290.0" y="565.8">回答：变化由谁造成？</tspan></text>
+<path d="M 212.0 650.0 L 1288.0 650.8 Q 1290.0 650.0 1290.0 652.0 L 1289.4 656.0 Q 1290.0 658.0 1288.0 658.0 L 212.0 657.3 Q 210.0 658.0 210.0 656.0 L 210.7 652.0 Q 210.0 650.0 212.0 650.0 Z" fill="#f1f5f9" stroke="#64748b" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 213.1 649.2 L 1289.1 650.0 Q 1291.1 649.2 1291.1 651.2 L 1290.5 655.2 Q 1291.1 657.2 1289.1 657.2 L 213.1 656.5 Q 211.1 657.2 211.1 655.2 L 211.8 651.2 Q 211.1 649.2 213.1 649.2 Z" fill="none" stroke="#64748b" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<path d="M 453.0 690.0 L 1047.0 690.8 Q 1065.0 690.0 1065.0 708.0 L 1064.4 767.0 Q 1065.0 785.0 1047.0 785.0 L 453.0 784.3 Q 435.0 785.0 435.0 767.0 L 435.7 708.0 Q 435.0 690.0 453.0 690.0 Z" fill="#f1f5f9" stroke="#1f2937" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 454.1 689.2 L 1048.1 690.0 Q 1066.1 689.2 1066.1 707.2 L 1065.5 766.2 Q 1066.1 784.2 1048.1 784.2 L 454.1 783.5 Q 436.1 784.2 436.1 766.2 L 436.8 707.2 Q 436.1 689.2 454.1 689.2 Z" fill="none" stroke="#1f2937" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#1f2937"><tspan x="750.0" y="739.9">合并证据：速度 × 语义 × kernel × 增长趋势</tspan></text>
+<path d="M 509.5 825.0 L 990.5 825.8 Q 1005.0 825.0 1005.0 839.5 L 1004.4 868.5 Q 1005.0 883.0 990.5 883.0 L 509.5 882.3 Q 495.0 883.0 495.0 868.5 L 495.7 839.5 Q 495.0 825.0 509.5 825.0 Z" fill="#dcfce7" stroke="#15803d" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 510.6 824.2 L 991.6 825.0 Q 1006.1 824.2 1006.1 838.7 L 1005.5 867.7 Q 1006.1 882.2 991.6 882.2 L 510.6 881.5 Q 496.1 882.2 496.1 867.7 L 496.8 838.7 Q 496.1 824.2 510.6 824.2 Z" fill="none" stroke="#15803d" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="700" fill="#15803d"><tspan x="750.0" y="856.3">PASS / CAVEAT + 环境与 shape 边界</tspan></text>
+</g><g aria-label="connectors">
+<path d="M 750.0 195.0 L 750.0 245.0" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-2563eb)"/>
+<path d="M 620.0 318.0 L 425.0 318.0" fill="none" stroke="#c2410c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-c2410c)"/>
+<path d="M 750.0 390.0 L 750.0 425.0" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-15803d)"/>
+<path d="M 210.0 433.0 L 210.0 455.0" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-2563eb)"/>
+<path d="M 570.0 433.0 L 570.0 455.0" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-7c3aed)"/>
+<path d="M 930.0 433.0 L 930.0 455.0" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-15803d)"/>
+<path d="M 1290.0 433.0 L 1290.0 455.0" fill="none" stroke="#b45309" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-b45309)"/>
+<path d="M 210.0 615.0 L 210.0 650.0" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-2563eb)"/>
+<path d="M 570.0 615.0 L 570.0 650.0" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-7c3aed)"/>
+<path d="M 930.0 615.0 L 930.0 650.0" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-15803d)"/>
+<path d="M 1290.0 615.0 L 1290.0 650.0" fill="none" stroke="#b45309" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-b45309)"/>
+<path d="M 750.0 658.0 L 750.0 690.0" fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-1f2937)"/>
+<path d="M 750.0 785.0 L 750.0 825.0" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-15803d)"/>
+<rect x="498.5" y="294.0" width="48" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#c2410c"><tspan x="522.5" y="314.0">NO</tspan></text>
+<rect x="718.0" y="383.5" width="64" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#15803d"><tspan x="750.0" y="403.5">YES</tspan></text>
+</g><g aria-label="labels">
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700" fill="#1f2937"><tspan x="750.0" y="50.0">从“跑得快”到“为什么快”：一条可审计的证据链</tspan></text>
+</g></svg>

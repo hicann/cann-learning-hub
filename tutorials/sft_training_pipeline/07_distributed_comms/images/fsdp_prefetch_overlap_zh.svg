@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480" role="img" aria-labelledby="title desc">
+  <title id="title">FSDP 参数预取与计算重叠</title>
+  <desc id="desc">时间线显示当前层反向计算持续进行时，下一层参数 all-gather 提前启动并在计算结束前完成，从而减少等待。</desc>
+  <defs>
+    <marker id="arrow-teal" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#0f8b8d"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#d97706"/>
+    </marker>
+    <style>
+      text { font-family: Inter, "Noto Sans SC", "Microsoft YaHei", sans-serif; fill: #172033; }
+      .title { font-size: 28px; font-weight: 750; }
+      .subtitle { font-size: 16px; fill: #526076; }
+      .lane { font-size: 18px; font-weight: 700; }
+      .bar-label { font-size: 17px; font-weight: 700; fill: #ffffff; }
+      .small { font-size: 15px; fill: #526076; }
+      .callout { font-size: 17px; font-weight: 700; fill: #0f766e; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="480" rx="24" fill="#f8fafc"/>
+  <text x="56" y="58" class="title">FSDP 参数预取：把下一层 AG 放进当前层计算</text>
+  <text x="56" y="90" class="subtitle">通信提前启动；只要在计算结束前完成，AG 就不会单独阻塞关键路径。</text>
+
+  <line x1="300" y1="142" x2="1080" y2="142" stroke="#cbd5e1" stroke-width="2"/>
+  <path d="M1080 142 l-10 -6 v12 z" fill="#94a3b8"/>
+  <text x="300" y="128" class="small">开始</text>
+  <text x="1030" y="128" class="small">时间 →</text>
+
+  <text x="56" y="218" class="lane">当前层反向计算</text>
+  <rect x="300" y="178" width="760" height="64" rx="14" fill="#0f8b8d"/>
+  <text x="680" y="218" text-anchor="middle" class="bar-label">计算梯度 · 持续进行</text>
+
+  <text x="56" y="328" class="lane">下一层参数 AG</text>
+  <rect x="430" y="288" width="300" height="64" rx="14" fill="#d97706"/>
+  <text x="580" y="328" text-anchor="middle" class="bar-label">all-gather</text>
+
+  <line x1="430" y1="160" x2="430" y2="374" stroke="#d97706" stroke-width="2" stroke-dasharray="7 7"/>
+  <line x1="730" y1="160" x2="730" y2="374" stroke="#d97706" stroke-width="2" stroke-dasharray="7 7"/>
+  <text x="430" y="402" text-anchor="middle" class="small">AG 提前启动</text>
+  <text x="730" y="402" text-anchor="middle" class="small">计算尚未结束</text>
+
+  <path d="M760 319 C820 319 850 278 910 278" fill="none" stroke="#0f8b8d" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <text x="924" y="273" class="callout">AG 已完成 → 少一次等待</text>
+
+  <rect x="56" y="430" width="1088" height="1" fill="#e2e8f0"/>
+  <text x="56" y="457" class="small">若计算太短或通信太慢，AG 会延伸到计算结束之后，未覆盖部分仍会暴露。</text>
+</svg>

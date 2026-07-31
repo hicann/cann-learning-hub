@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="840" viewBox="0 0 1500 840" role="img" aria-labelledby="title desc">
+<title id="title">Packed 样本区间转换为 NPU VarLen Attention 参数</title>
+<desc id="desc">三个 packed 样本的位置编号都从零开始；这些起点先变成样本长度和 cu_seq。TorchTitan 保留开头零，CANN 接收去掉零的累计结束位置；QKV 同时从 BSND reshape 为 TND，二者一起送入 FusionAttention V3 sparse_mode 7。</desc>
+<!-- svg-source:excalidraw; editable source is the sibling .excalidraw file -->
+<defs>
+<marker id="arrow-15803d" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#15803d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-2563eb" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-7c3aed" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arrow-b45309" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M1,1 L11,6 L1,11" fill="none" stroke="#b45309" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+<rect width="1500" height="840" fill="#fffdf7"/>
+<g aria-label="nodes">
+<path d="M 78.0 170.0 L 282.0 170.8 Q 300.0 170.0 300.0 188.0 L 299.4 272.0 Q 300.0 290.0 282.0 290.0 L 78.0 289.3 Q 60.0 290.0 60.0 272.0 L 60.7 188.0 Q 60.0 170.0 78.0 170.0 Z" fill="#ede9fe" stroke="#7c3aed" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 79.1 169.2 L 283.1 170.0 Q 301.1 169.2 301.1 187.2 L 300.5 271.2 Q 301.1 289.2 283.1 289.2 L 79.1 288.5 Q 61.1 289.2 61.1 271.2 L 61.8 187.2 Q 61.1 169.2 79.1 169.2 Z" fill="none" stroke="#7c3aed" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="600" fill="#7c3aed"><tspan x="180.0" y="216.8">packed tokens</tspan><tspan x="180.0" y="248.0">AAA | BBB | CC</tspan></text>
+<path d="M 383.0 180.0 L 547.0 180.8 Q 565.0 180.0 565.0 198.0 L 564.4 262.0 Q 565.0 280.0 547.0 280.0 L 383.0 279.3 Q 365.0 280.0 365.0 262.0 L 365.7 198.0 Q 365.0 180.0 383.0 180.0 Z" fill="#f1f5f9" stroke="#1f2937" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 384.1 179.2 L 548.1 180.0 Q 566.1 179.2 566.1 197.2 L 565.5 261.2 Q 566.1 279.2 548.1 279.2 L 384.1 278.5 Q 366.1 279.2 366.1 261.2 L 366.8 197.2 Q 366.1 179.2 384.1 179.2 Z" fill="none" stroke="#1f2937" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="600" fill="#1f2937"><tspan x="465.0" y="217.4">文档长度</tspan><tspan x="465.0" y="247.3">[3, 3, 2]</tspan></text>
+<path d="M 648.0 165.0 L 862.0 165.8 Q 880.0 165.0 880.0 183.0 L 879.4 277.0 Q 880.0 295.0 862.0 295.0 L 648.0 294.3 Q 630.0 295.0 630.0 277.0 L 630.7 183.0 Q 630.0 165.0 648.0 165.0 Z" fill="#ede9fe" stroke="#7c3aed" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 649.1 164.2 L 863.1 165.0 Q 881.1 164.2 881.1 182.2 L 880.5 276.2 Q 881.1 294.2 863.1 294.2 L 649.1 293.5 Q 631.1 294.2 631.1 276.2 L 631.8 182.2 Q 631.1 164.2 649.1 164.2 Z" fill="none" stroke="#7c3aed" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="700" fill="#7c3aed"><tspan x="755.0" y="217.4">TorchTitan cu_seq</tspan><tspan x="755.0" y="247.3">[0, 3, 6, 8]</tspan></text>
+<path d="M 973.0 180.0 L 1172.0 180.8 Q 1190.0 180.0 1190.0 198.0 L 1189.4 262.0 Q 1190.0 280.0 1172.0 280.0 L 973.0 279.3 Q 955.0 280.0 955.0 262.0 L 955.7 198.0 Q 955.0 180.0 973.0 180.0 Z" fill="#fef3c7" stroke="#b45309" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 974.1 179.2 L 1173.1 180.0 Q 1191.1 179.2 1191.1 197.2 L 1190.5 261.2 Q 1191.1 279.2 1173.1 279.2 L 974.1 278.5 Q 956.1 279.2 956.1 261.2 L 956.8 197.2 Q 956.1 179.2 974.1 179.2 Z" fill="none" stroke="#b45309" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#b45309"><tspan x="1072.5" y="217.9">CANN actual_seq</tspan><tspan x="1072.5" y="246.5">[3, 6, 8]</tspan></text>
+<path d="M 178.0 430.0 L 422.0 430.8 Q 440.0 430.0 440.0 448.0 L 439.4 527.0 Q 440.0 545.0 422.0 545.0 L 178.0 544.3 Q 160.0 545.0 160.0 527.0 L 160.7 448.0 Q 160.0 430.0 178.0 430.0 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 179.1 429.2 L 423.1 430.0 Q 441.1 429.2 441.1 447.2 L 440.5 526.2 Q 441.1 544.2 423.1 544.2 L 179.1 543.5 Q 161.1 544.2 161.1 526.2 L 161.8 447.2 Q 161.1 429.2 179.1 429.2 Z" fill="none" stroke="#2563eb" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="600" fill="#2563eb"><tspan x="300.0" y="474.9">Q / K / V</tspan><tspan x="300.0" y="504.8">[B, S, N, D] (BSND)</tspan></text>
+<path d="M 573.0 430.0 L 817.0 430.8 Q 835.0 430.0 835.0 448.0 L 834.4 527.0 Q 835.0 545.0 817.0 545.0 L 573.0 544.3 Q 555.0 545.0 555.0 527.0 L 555.7 448.0 Q 555.0 430.0 573.0 430.0 Z" fill="#cffafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 574.1 429.2 L 818.1 430.0 Q 836.1 429.2 836.1 447.2 L 835.5 526.2 Q 836.1 544.2 818.1 544.2 L 574.1 543.5 Q 556.1 544.2 556.1 526.2 L 556.8 447.2 Q 556.1 429.2 574.1 429.2 Z" fill="none" stroke="#2563eb" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="700" fill="#2563eb"><tspan x="695.0" y="474.9">reshape</tspan><tspan x="695.0" y="504.8">[T, N, D] (TND)</tspan></text>
+<path d="M 983.0 405.0 L 1282.0 405.8 Q 1300.0 405.0 1300.0 423.0 L 1299.4 552.0 Q 1300.0 570.0 1282.0 570.0 L 983.0 569.3 Q 965.0 570.0 965.0 552.0 L 965.7 423.0 Q 965.0 405.0 983.0 405.0 Z" fill="#dcfce7" stroke="#15803d" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 984.1 404.2 L 1283.1 405.0 Q 1301.1 404.2 1301.1 422.2 L 1300.5 551.2 Q 1301.1 569.2 1283.1 569.2 L 984.1 568.5 Q 966.1 569.2 966.1 551.2 L 966.8 422.2 Q 966.1 404.2 984.1 404.2 Z" fill="none" stroke="#15803d" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#15803d"><tspan x="1132.5" y="458.7">FusionAttention V3</tspan><tspan x="1132.5" y="489.9">input_layout = TND</tspan><tspan x="1132.5" y="521.1">sparse_mode = 7</tspan></text>
+<path d="M 1208.0 675.0 L 1432.0 675.8 Q 1450.0 675.0 1450.0 693.0 L 1449.4 767.0 Q 1450.0 785.0 1432.0 785.0 L 1208.0 784.3 Q 1190.0 785.0 1190.0 767.0 L 1190.7 693.0 Q 1190.0 675.0 1208.0 675.0 Z" fill="#dcfce7" stroke="#15803d" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 1209.1 674.2 L 1433.1 675.0 Q 1451.1 674.2 1451.1 692.2 L 1450.5 766.2 Q 1451.1 784.2 1433.1 784.2 L 1209.1 783.5 Q 1191.1 784.2 1191.1 766.2 L 1191.8 692.2 Q 1191.1 674.2 1209.1 674.2 Z" fill="none" stroke="#15803d" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#15803d"><tspan x="1320.0" y="716.8">逐文档 causal</tspan><tspan x="1320.0" y="748.0">跨文档 tile 不计算</tspan></text>
+<path d="M 113.0 650.0 L 847.0 650.8 Q 865.0 650.0 865.0 668.0 L 864.4 767.0 Q 865.0 785.0 847.0 785.0 L 113.0 784.3 Q 95.0 785.0 95.0 767.0 L 95.7 668.0 Q 95.0 650.0 113.0 650.0 Z" fill="#fef3c7" stroke="#b45309" stroke-width="3" stroke-linejoin="round"/>
+<path d="M 114.1 649.2 L 848.1 650.0 Q 866.1 649.2 866.1 667.2 L 865.5 766.2 Q 866.1 784.2 848.1 784.2 L 114.1 783.5 Q 96.1 784.2 96.1 766.2 L 96.8 667.2 Q 96.1 649.2 114.1 649.2 Z" fill="none" stroke="#b45309" stroke-opacity="0.2" stroke-width="1.4" stroke-linejoin="round"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="650" fill="#b45309"><tspan x="480.0" y="704.8">边界既定义语义，也暴露可跳过的结构：</tspan><tspan x="480.0" y="734.7">文档内保留下三角；文档间整块不可见；padding 也可移除。</tspan></text>
+</g><g aria-label="connectors">
+<path d="M 300.0 230.0 L 365.0 230.0" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-7c3aed)"/>
+<path d="M 565.0 230.0 L 630.0 230.0" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-7c3aed)"/>
+<path d="M 880.0 230.0 L 955.0 230.0" fill="none" stroke="#b45309" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-b45309)"/>
+<path d="M 440.0 487.0 L 555.0 487.0" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-2563eb)"/>
+<path d="M 835.0 487.0 L 965.0 487.0" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-2563eb)"/>
+<path d="M 1072.0 280.0 L 1072.0 405.0" fill="none" stroke="#b45309" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-b45309)"/>
+<path d="M 1132.0 570.0 L 1132.0 630.0 L 1320.0 630.0 L 1320.0 675.0" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-15803d)"/>
+<path d="M 965.0 525.0 L 915.0 525.0 L 915.0 700.0 L 865.0 700.0" fill="none" stroke="#b45309" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-b45309)" stroke-dasharray="10 8"/>
+<rect x="877.5" y="206.0" width="80" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#b45309"><tspan x="917.5" y="226.0">去掉 0</tspan></text>
+<rect x="852.0" y="463.0" width="96" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#2563eb"><tspan x="900.0" y="483.0">Q/K/V</tspan></text>
+<rect x="1048.0" y="318.5" width="48" height="30" rx="8" fill="#fffdf7"/>
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#b45309"><tspan x="1072.0" y="338.5">边界</tspan></text>
+</g><g aria-label="labels">
+<text text-anchor="middle" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700" fill="#1f2937"><tspan x="750.0" y="52.0">样本区间如何变成 kernel 能跳算的结构</tspan></text>
+<text text-anchor="start" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#7c3aed"><tspan x="60.0" y="126.0">边界 metadata</tspan></text>
+<text text-anchor="start" font-family="Virgil, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#2563eb"><tspan x="60.0" y="390.0">张量 layout</tspan></text>
+</g></svg>

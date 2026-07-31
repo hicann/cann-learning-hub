@@ -1,0 +1,6 @@
+05.01 参考答案
+
+本节没有单独练习。关键结论是：
+- attention 优化要分清配置层、kernel 层、trace 层和 step-time 层。
+- 只看函数名或单个 kernel 不足以下结论，必须配合 profiler 和同步 wall-time。
+- 后续章节会用真实 packed 边界和 metadata 继续验证。

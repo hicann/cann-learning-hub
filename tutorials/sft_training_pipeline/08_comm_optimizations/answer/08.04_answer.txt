@@ -1,0 +1,6 @@
+08.04 参考答案
+
+1. ×。IGNORE_INDEX 只屏蔽 loss，不会让 padding 位置自动跳过 embedding、QKV、MLP 和 Norm。
+2. √。trace 中的隔离区间数必须与当前 workload 重放一致，才能作为 correctness gate。
+3. √。communication.json 里的不同链路层级可能描述同一 collective，不能直接相加。
+4. A。当前结果支持 CP+8192 物理 step 略慢，但有效 token、监督 token 和 raw sample 吞吐更高。

@@ -1,0 +1,6 @@
+06.06 参考答案
+
+1. A。三条受控路线是 causal SDPA、dense block-causal SDPA 和 NPU TND VarLen。
+2. √。trace 负责证明实际算子路径，关闭 profiler 的重复 wall-time 更适合看稳定速度。
+3. ×。VarLen 只减少 Attention 中不需要的 pair，其他模块不会自动全部跳过。
+4. A。原生 TPS 只统计容器位置，可能掩盖 padding 和监督量差异。

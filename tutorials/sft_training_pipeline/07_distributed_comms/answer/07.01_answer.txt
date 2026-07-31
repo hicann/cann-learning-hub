@@ -1,0 +1,6 @@
+07.01 参考答案
+
+1. √。独立 collective demo 主要建立通信账本，不直接代替完整训练的 loss 或吞吐。
+2. A。和 Ascend Profiler 的 Transit Size 对照时，MB 采用 1,000,000 bytes。
+3. ×。collective 要等所有参与 rank，不能只看 rank 0。
+4. A、B、C。要区分逻辑张量、跨卡 payload 和慢 rank latency 分布，单个最快 kernel 不够。

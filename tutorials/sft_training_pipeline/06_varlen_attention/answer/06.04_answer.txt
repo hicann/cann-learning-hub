@@ -1,0 +1,6 @@
+06.04 参考答案
+
+1. √。第 1 步通常包含首次编译，用第 2 步更适合看稳定性能数量级。
+2. √。原生 TPS 只统计定长 container slots，不能单独说明 packing 后的有效数据吞吐。
+3. A。raw samples/s、non-padding tokens/s、supervised tokens/s 最能补足 slot TPS。
+4. √。如果每个 step 的监督 token 数不同，短程 validation loss 不能直接用于公平排名。

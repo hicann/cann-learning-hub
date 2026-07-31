@@ -1,0 +1,6 @@
+07.05 参考答案
+
+1. √。payload、collective latency 和 step 关键路径上的暴露时间是三个不同口径。
+2. √。Overlap 可以减少暴露时间，但不会减少 collective 实际交换的字节数。
+3. A。真实训练的调用顺序、rank skew、等待和 overlap 会改变关键路径。
+4. A、B、C。选择 FSDP、TP 或 CP 前要核对内存约束、resolved config 和双 rank 证据。

@@ -1,0 +1,6 @@
+08.01 参考答案
+
+1. √。CP ranks 共同处理同一批上下文，global batch size 不能把 CP degree 当作数据并行副本数。
+2. ×。相同容器位置数不代表 raw sample、non-padding token 和 supervised token 完全相同。
+3. A。本章比较的是 VarLen+FSDP 4096 与 VarLen+CP 8192。
+4. A、B、C。最终结论需要 resolved config、trace 和多种归一化吞吐，单个最快 kernel 不够。

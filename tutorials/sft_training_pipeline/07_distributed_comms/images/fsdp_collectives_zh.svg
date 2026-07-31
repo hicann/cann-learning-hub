@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">FSDP 的 all-gather 与 reduce-scatter</title>
+  <desc id="desc">上半部分展示两张卡通过 all-gather 拼接参数分片，各自临时得到完整参数；下半部分展示两张卡的完整梯度贡献先求和，再由 reduce-scatter 各自保留一个梯度分片。</desc>
+  <defs>
+    <marker id="arrow-teal" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#0f8b8d"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#d97706"/>
+    </marker>
+    <style>
+      text { font-family: Inter, "Noto Sans SC", "Microsoft YaHei", sans-serif; fill: #172033; }
+      .title { font-size: 30px; font-weight: 750; }
+      .subtitle { font-size: 17px; fill: #526076; }
+      .panel-title { font-size: 21px; font-weight: 700; }
+      .label { font-size: 17px; font-weight: 700; }
+      .body { font-size: 15px; }
+      .small { font-size: 14px; fill: #526076; }
+      .mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 16px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <text x="48" y="50" class="title">FSDP：参数先拼完整，梯度再求和切回</text>
+  <text x="48" y="80" class="subtitle">两卡示例 · 蓝色表示 rank 0，紫色表示 rank 1；完整参数只在计算窗口内临时存在。</text>
+
+  <!-- Forward panel -->
+  <rect x="40" y="112" width="1120" height="244" rx="18" fill="#ffffff" stroke="#d8e0ea" stroke-width="2"/>
+  <rect x="58" y="132" width="8" height="29" rx="4" fill="#0f8b8d"/>
+  <text x="78" y="154" class="panel-title">前向：all-gather = 收集并拼接，不做 SUM</text>
+
+  <rect x="82" y="190" width="270" height="58" rx="12" fill="#e9f2ff" stroke="#2563eb" stroke-width="2"/>
+  <circle cx="106" cy="219" r="8" fill="#2563eb"/>
+  <text x="124" y="214" class="label">Rank 0</text>
+  <text x="124" y="236" class="mono">参数分片 W₀</text>
+
+  <rect x="82" y="270" width="270" height="58" rx="12" fill="#f2edff" stroke="#7c3aed" stroke-width="2"/>
+  <circle cx="106" cy="299" r="8" fill="#7c3aed"/>
+  <text x="124" y="294" class="label">Rank 1</text>
+  <text x="124" y="316" class="mono">参数分片 W₁</text>
+
+  <rect x="474" y="207" width="252" height="104" rx="16" fill="#e8f7f5" stroke="#0f8b8d" stroke-width="2.5"/>
+  <text x="600" y="244" text-anchor="middle" class="label">all-gather</text>
+  <text x="600" y="271" text-anchor="middle" class="body">把 W₀ 与 W₁ 拼起来</text>
+  <text x="600" y="294" text-anchor="middle" class="small">没有数值规约</text>
+
+  <path d="M352 219 L474 235" fill="none" stroke="#0f8b8d" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-teal)"/>
+  <path d="M352 299 L474 283" fill="none" stroke="#0f8b8d" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-teal)"/>
+  <path d="M726 235 L848 219" fill="none" stroke="#0f8b8d" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-teal)"/>
+  <path d="M726 283 L848 299" fill="none" stroke="#0f8b8d" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-teal)"/>
+
+  <rect x="848" y="190" width="270" height="58" rx="12" fill="#e9f2ff" stroke="#2563eb" stroke-width="2"/>
+  <circle cx="872" cy="219" r="8" fill="#2563eb"/>
+  <text x="890" y="214" class="label">Rank 0</text>
+  <text x="890" y="236" class="mono">完整参数 [W₀ | W₁]</text>
+
+  <rect x="848" y="270" width="270" height="58" rx="12" fill="#f2edff" stroke="#7c3aed" stroke-width="2"/>
+  <circle cx="872" cy="299" r="8" fill="#7c3aed"/>
+  <text x="890" y="294" class="label">Rank 1</text>
+  <text x="890" y="316" class="mono">完整参数 [W₀ | W₁]</text>
+
+  <!-- Backward panel -->
+  <rect x="40" y="382" width="1120" height="260" rx="18" fill="#ffffff" stroke="#d8e0ea" stroke-width="2"/>
+  <rect x="58" y="402" width="8" height="29" rx="4" fill="#d97706"/>
+  <text x="78" y="424" class="panel-title">反向：reduce-scatter = 先 SUM，再各留一个分片</text>
+
+  <rect x="82" y="458" width="270" height="62" rx="12" fill="#e9f2ff" stroke="#2563eb" stroke-width="2"/>
+  <circle cx="106" cy="489" r="8" fill="#2563eb"/>
+  <text x="124" y="484" class="label">Rank 0</text>
+  <text x="124" y="507" class="body">对完整 W 的梯度贡献 G⁽⁰⁾</text>
+
+  <rect x="82" y="538" width="270" height="62" rx="12" fill="#f2edff" stroke="#7c3aed" stroke-width="2"/>
+  <circle cx="106" cy="569" r="8" fill="#7c3aed"/>
+  <text x="124" y="564" class="label">Rank 1</text>
+  <text x="124" y="587" class="body">对完整 W 的梯度贡献 G⁽¹⁾</text>
+
+  <rect x="474" y="477" width="252" height="104" rx="16" fill="#fff4df" stroke="#d97706" stroke-width="2.5"/>
+  <text x="600" y="514" text-anchor="middle" class="label">reduce-scatter</text>
+  <text x="600" y="541" text-anchor="middle" class="body">同一位置先求和</text>
+  <text x="600" y="564" text-anchor="middle" class="small">然后按参数位置切分</text>
+
+  <path d="M352 489 L474 505" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-orange)"/>
+  <path d="M352 569 L474 553" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-orange)"/>
+  <path d="M726 505 L848 489" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-orange)"/>
+  <path d="M726 553 L848 569" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-orange)"/>
+
+  <rect x="848" y="458" width="270" height="62" rx="12" fill="#e9f2ff" stroke="#2563eb" stroke-width="2"/>
+  <circle cx="872" cy="489" r="8" fill="#2563eb"/>
+  <text x="890" y="484" class="label">Rank 0</text>
+  <text x="890" y="507" class="body">只保留 ΣG 的分片 0</text>
+
+  <rect x="848" y="538" width="270" height="62" rx="12" fill="#f2edff" stroke="#7c3aed" stroke-width="2"/>
+  <circle cx="872" cy="569" r="8" fill="#7c3aed"/>
+  <text x="890" y="564" class="label">Rank 1</text>
+  <text x="890" y="587" class="body">只保留 ΣG 的分片 1</text>
+
+  <rect x="184" y="668" width="832" height="34" rx="17" fill="#e8f7f5"/>
+  <text x="600" y="691" text-anchor="middle" class="body">核心循环：参数分片 → 临时完整参数 → 本地梯度贡献 → 规约后的梯度分片</text>
+</svg>
