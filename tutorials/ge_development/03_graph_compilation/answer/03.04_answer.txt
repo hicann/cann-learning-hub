@@ -1,0 +1,15 @@
+03.04 课后练习答案
+
+1. 正确。默认情况下 OM 是自包含的二进制，已把计算固化成芯片可执行形态，加载即可推理，不再依赖原始 onnx/pb 文件或前端框架运行时，因此可独立分发。
+
+2. 错误。图编译缓存通过 ge.graph_compiler_cache_dir 和 ge.graph_key 两个选项联合控制，二者必须同时设置且均非空才生效。
+
+3. B。开启外置权重后，编译期会把图中的 Const/Constant 节点转换为 FileConstant 类型，权重数据落盘到独立文件，节点只保存路径/偏移/大小等元信息。
+
+4. A。SO in OM 把模型实际用到的算子 .so 按需打包进 OM 的 SO_BINS 分区。B 错，它是按需打包而非全部打包；C 错，把权重分离出去的是外置权重；D 错，动态 shape 模型恰恰会打包 SpaceRegistry 类的 infer shape/tiling so。
+
+5. ABC。A 正确，两个选项必须同时非空才生效；B 正确，缓存目录必须已存在否则编译失败；C 正确，图结构变化后旧缓存不可用，需删缓存或换 graph_key 重编。D 错误，跨 CANN 版本的缓存兼容性不保证，升级后须清理缓存目录重编。
+
+6. ABD。A 正确，OM 依次由 ModelFileHeader、独立的 ModelPartitionTable 和分区数据组成，权重与算子二进制的正式分区名分别是 WEIGHTS_DATA 和 TBE_KERNELS；B 正确，OM 与目标芯片版本绑定，换芯片需重编；D 正确，通过 ATC/Build 保存外置权重 OM 时，权重文件位于 OM 同级的 weight/ 目录。C 错误，OM 不包含原始 .onnx/.pb 文件，计算已固化。在线 GeSession 的外置权重则默认落入 tmp_weight_<pid>_<sessionid> 目录，或由 ge.externalWeightDir 指定。
+
+7. B。模型缓存可跳过重复编译、加速冷启动；外置权重给 OM 瘦身、支持权重共享，二者组合是服务化部署的常见做法。A、D 是性能/精度调试方向，C 仅解决算子包依赖，均不能同时满足"加速冷启动 + OM 瘦身"。

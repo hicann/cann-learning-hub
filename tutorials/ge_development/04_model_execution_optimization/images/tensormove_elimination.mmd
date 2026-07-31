@@ -1,0 +1,10 @@
+flowchart LR
+    subgraph before["优化前"]
+        direction LR
+        A1["op1"] --> A2["TensorMove"] --> A3["op2"]
+    end
+    subgraph after["优化后"]
+        direction LR
+        B1["op1"] --> |直连，省掉拷贝| B2["op2"]
+    end
+    before ~~~ after

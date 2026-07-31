@@ -28,7 +28,7 @@
 | cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
 | CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 | 参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md) 创建 CANNLab 环境运行 notebook |
 
-> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。
 > Notebook 用于阅读教程和章节练习；涉及 ATC 编译、ACL/GeSession 执行的动手实践需在配备 Ascend NPU 的服务器或昇腾云环境上运行（「基础概念入门」章节除外，无需 NPU）。
 
 ## 能力分层设计
@@ -67,24 +67,24 @@
 
 | Notebook | Link | 状态 |
 | --- | --- | --- |
-| 3.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
-| 3.2 图的构建与输入：AscendIR 构图与 Parser 解析 | 在线体验建设中 | 🚧 开发中 |
-| 3.3 编译配置：融合、精度、buffer、stream 等选项 | 在线体验建设中 | 🚧 开发中 |
-| 3.4 编译产物：OM 结构、外置权重、SO in OM、模型缓存 | 在线体验建设中 | 🚧 开发中 |
-| 3.5 图编译扩展能力：自定义算子入图 | 在线体验建设中 | 🚧 开发中 |
-| 3.6 图编译扩展能力：自定义融合 Pass | 在线体验建设中 | 🚧 开发中 |
-| 3.7 章节练习 | 在线体验建设中 | 🚧 开发中 |
+| 3.1 章节介绍 | 在线体验建设中 | ✅ 已发布 |
+| 3.2 图的构建与输入：AscendIR 构图与 Parser 解析 | 在线体验建设中 | ✅ 已发布 |
+| 3.3 编译配置：融合、精度、buffer、stream 等选项 | 在线体验建设中 | ✅ 已发布 |
+| 3.4 编译产物：OM 结构、外置权重、SO in OM、模型缓存 | 在线体验建设中 | ✅ 已发布 |
+| 3.5 图编译扩展能力：自定义算子入图 | 在线体验建设中 | ✅ 已发布 |
+| 3.6 图编译扩展能力：自定义融合 Pass | 在线体验建设中 | ✅ 已发布 |
+| 3.7 章节练习 | 在线体验建设中 | ✅ 已发布 |
 
 ### 第四章：模型执行与优化
 
 | Notebook | Link | 状态 |
 | --- | --- | --- |
-| 4.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
-| 4.2 静态 Shape 执行流程：整图下沉 | 在线体验建设中 | 🚧 开发中 |
-| 4.3 动态 Shape 执行流程：Host 调度 | 在线体验建设中 | 🚧 开发中 |
-| 4.4 静态 Shape 执行优化技术 | 在线体验建设中 | 🚧 开发中 |
-| 4.5 动态 Shape 执行优化技术 | 在线体验建设中 | 🚧 开发中 |
-| 4.6 章节练习 | 在线体验建设中 | 🚧 开发中 |
+| 4.1 章节介绍 | 在线体验建设中 | ✅ 已发布 |
+| 4.2 静态 Shape 执行流程：整图下沉 | 在线体验建设中 | ✅ 已发布 |
+| 4.3 动态 Shape 执行流程：Host 调度 | 在线体验建设中 | ✅ 已发布 |
+| 4.4 静态 Shape 执行优化技术 | 在线体验建设中 | ✅ 已发布 |
+| 4.5 动态 Shape 执行优化技术 | 在线体验建设中 | ✅ 已发布 |
+| 4.6 章节练习 | 在线体验建设中 | ✅ 已发布 |
 
 ## GE 图引擎开发系列（高阶应用）
 

@@ -1,0 +1,9 @@
+flowchart LR
+    A["① 全新构建<br/>（算子原型 / ES）"]
+    B["② Parser 解析<br/>（onnx / pb / caffe）"]
+    C["AscendIR Graph<br/>（统一的图对象）"]
+    D["GE 编译流程<br/>（编译/优化/产出 OM）"]
+
+    A --> C
+    B --> C
+    C --> D

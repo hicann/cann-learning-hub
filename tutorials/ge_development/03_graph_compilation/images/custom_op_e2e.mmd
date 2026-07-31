@@ -1,0 +1,7 @@
+flowchart LR
+    A["[1] 算子工程<br/>REG_OP 原型 / REG_AUTO_MAPPING_OP"]
+    B["[2] 实现能力接口<br/>EagerExecuteOp / ShapeInferOp<br/>CompilableOp / PortableOp + kernel"]
+    C["[3] 编译部署<br/>cmake → libcust_opapi.so<br/>安装 OPP / ASCEND_CUSTOM_OPP_PATH"]
+    D["[4] 入图执行<br/>在线：构图→GE 编译→执行<br/>离线：构图→AIR→ATC→OM→ACL"]
+
+    A --> B --> C --> D

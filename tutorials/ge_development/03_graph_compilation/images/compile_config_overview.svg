@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="420" viewBox="0 0 860 420"
+     role="img" aria-labelledby="title desc">
+  <title id="title">三类编译选项与传入入口</title>
+  <desc id="desc">离线编译与在线编译的选项传入入口对比。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#555"/>
+    </marker>
+    <style>
+      text { font-family: "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif; fill: #222; }
+      .box { fill: #f4f1ff; stroke: #7057b8; stroke-width: 1.5; }
+      .group { fill: #fffdf0; stroke: #aaa33a; stroke-width: 1.5; stroke-dasharray: 6 4; }
+      .title { font-size: 16px; font-weight: 600; text-anchor: middle; }
+      .detail { font-size: 13px; text-anchor: middle; fill: #444; }
+      .group-title { font-size: 15px; font-weight: 600; text-anchor: middle; }
+      .arrow { stroke: #555; stroke-width: 1.6; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <!-- 左侧：离线编译 -->
+  <rect class="group" x="15" y="15" width="400" height="390" rx="10"/>
+  <text class="group-title" x="215" y="42">离线编译（ATC / Build 接口）</text>
+
+  <rect class="box" x="35" y="60" width="360" height="110" rx="8"/>
+  <text class="title" x="215" y="88">aclgrphBuildInitialize(global_options)</text>
+  <text class="detail" x="215" y="112">─ 初始化级：soc_version /</text>
+  <text class="detail" x="215" y="132">BUFFER_OPTIMIZE /</text>
+  <text class="detail" x="215" y="152">FUSION_SWITCH_FILE ...</text>
+
+  <line class="arrow" x1="215" y1="170" x2="215" y2="200"/>
+
+  <rect class="box" x="35" y="205" width="360" height="110" rx="8"/>
+  <text class="title" x="215" y="233">aclgrphBuildModel(g, build_options, model)</text>
+  <text class="detail" x="215" y="257">─ 编译级：PRECISION_MODE_V2 /</text>
+  <text class="detail" x="215" y="277">INPUT_SHAPE / OUTPUT_TYPE /</text>
+  <text class="detail" x="215" y="297">OPTIMIZATION_SWITCH ...</text>
+
+  <!-- 右侧：在线编译 -->
+  <rect class="group" x="445" y="15" width="400" height="390" rx="10"/>
+  <text class="group-title" x="645" y="42">在线编译（GeSession）</text>
+
+  <rect class="box" x="465" y="60" width="360" height="130" rx="8"/>
+  <text class="title" x="645" y="90">GeSession(session_options)</text>
+  <text class="detail" x="645" y="114">.AddGraph(id, g, graph_options)</text>
+  <text class="detail" x="645" y="138">─ ge.xxx 形式的 options</text>
+  <text class="detail" x="645" y="158">（全局 / session / graph）</text>
+</svg>

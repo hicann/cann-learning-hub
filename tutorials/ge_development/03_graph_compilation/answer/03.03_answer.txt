@@ -1,0 +1,15 @@
+03.03 课后练习答案
+
+1. 错误。PRECISION_MODE 与 PRECISION_MODE_V2 在同一张图中不能同时使用，建议统一使用语义更清晰的 PRECISION_MODE_V2。
+
+2. 正确。内存复用默认开启（EXEC_DISABLE_REUSED_MEMORY=0）；关闭（设为 1）会导致 Device 侧内存不复用，大模型场景可能因此内存不足。
+
+3. B。PRECISION_MODE_V2 的默认值为 fp16，表示把原图 fp16/bf16/fp32 算子强制选 float16，取向为性能优先；若出现精度问题建议改为 origin。
+
+4. D。修改 PRECISION_MODE_V2 为 origin 是精度配置，不是关闭融合规则的手段。A、B、C 都是关闭/控制融合规则的合理方式（开关文件、按 Pass、ALL+单独打开）。
+
+5. ABC。A 正确，初始化级选项经 aclgrphBuildInitialize 传入；B 正确，编译级选项经 aclgrphBuildModel 传入；C 正确，在线 options 使用文档规定的原始字符串 key，多数以 ge. 开头，也有 ac_parallel_enable 等例外，并按各参数文档声明的 global/session/graph 层级生效。D 错误，配置分布在三个层面，并非都在 aclgrphBuildInitialize 设置。
+
+6. ABD。A 正确，BUFFER_OPTIMIZE 默认 l2_optimize；B 正确，出现精度问题可尝试关闭数据缓存优化复测；D 正确，ge.exec.inputReuseMemIndexes 可复用输入内存降低内存峰值。C 错误，EXEC_DISABLE_REUSED_MEMORY 设为 1 是关闭内存复用，0 才是开启。
+
+7. B。AC_PARALLEL_ENABLE 开启后，在动态 shape 图中可让 AI CPU 与 AI Core 算子并行运行。A 错，EXCLUDE_ENGINES 是排除引擎而非增加 stream；C 错，GE 会在编译期自动完成 stream 分配；D 错，EXCLUDE_ENGINES 的多个引擎之间用竖线 | 分隔。

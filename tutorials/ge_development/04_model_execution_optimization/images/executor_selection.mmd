@@ -1,0 +1,15 @@
+flowchart LR
+    A["API 入口<br/>ACL / GeSession"]
+    B{"图属性 + API 场景<br/>+ 运行配置"}
+    C["完整 Known Shape<br/>静态执行器 / Task Sink"]
+    D["包含 Unknown Shape<br/>CANN 9.0 默认 RT2"]
+    E["特殊路径<br/>单算子 / 显式配置等"]
+    F["Unknown Shape 部分<br/>运行时 ExecuteGraph 节点"]
+    G["Known Shape 子图<br/>静态模型任务"]
+
+    A --> B
+    B -->|满足静态执行条件| C
+    B -->|动态或已分区且 RT2 开启| D
+    B -->|入口/配置有特殊约束| E
+    D --> F
+    D --> G

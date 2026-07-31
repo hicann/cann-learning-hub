@@ -1,0 +1,13 @@
+flowchart TB
+    A["BaseCustomOp（公共基类）"]
+    B["EagerExecuteOp → Execute(ctx)<br/>运行时执行（最核心，几乎必选）"]
+    C["ShapeInferOp → InferShape(ctx)<br/>→ InferDataType(ctx)<br/>编译期 Shape/DataType 推导"]
+    D["CompilableOp → Compile(ctx)<br/>在线编译（RTC 等）"]
+    E["PortableOp → Serialize(buf)<br/>→ Deserialize(buf)<br/>序列化到/从 OM"]
+    F["ArgsUpdater → UpdateHostArgs(ctx)<br/>I/O 地址刷新（零拷贝/下沉场景）"]
+
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F

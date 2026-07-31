@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" style="max-width: 1040px; background-color: transparent;" viewBox="0 0 1040 210" role="img" aria-labelledby="title desc">
+  <title id="title">自定义融合 Pass 两条实现路线</title>
+  <desc id="desc">路线 A（Pattern 匹配，推荐）在左，路线 B（改图接口）在右。</desc>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#555"/>
+    </marker>
+    <style>
+      text { font-family: "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif; fill: #222; }
+      .box { fill: #f4f1ff; stroke: #7057b8; stroke-width: 1.5; }
+      .group { fill: #fffdf0; stroke: #aaa33a; stroke-width: 1.5; stroke-dasharray: 6 4; }
+      .group-title { font-size: 16px; font-weight: 600; text-anchor: middle; }
+      .node-text { font-size: 14px; text-anchor: middle; }
+      .arrow { stroke: #555; stroke-width: 1.6; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <!-- 路线 A：Pattern 匹配（推荐）— 左侧 -->
+  <rect class="group" x="10" y="10" width="500" height="190" rx="10"/>
+  <text class="group-title" x="260" y="38">路线 A：Pattern 匹配（推荐）</text>
+
+  <rect class="box" x="30" y="58" width="460" height="44" rx="8"/>
+  <text class="node-text" x="260" y="85">继承 PatternFusionPass / DecomposePass</text>
+
+  <line class="arrow" x1="260" y1="102" x2="260" y2="118"/>
+
+  <rect class="box" x="30" y="118" width="460" height="44" rx="8"/>
+  <text class="node-text" x="260" y="145">重写 Patterns() → MeetRequirements() → Replacement()</text>
+
+  <line class="arrow" x1="260" y1="162" x2="260" y2="178"/>
+
+  <rect class="box" x="30" y="178" width="460" height="22" rx="8"/>
+  <text class="node-text" x="260" y="194" style="font-size:13px;">REG_FUSION_PASS / REG_DECOMPOSE_PASS 注册</text>
+
+  <!-- 路线 B：改图接口 — 右侧 -->
+  <rect class="group" x="530" y="10" width="500" height="190" rx="10"/>
+  <text class="group-title" x="780" y="38">路线 B：改图接口</text>
+
+  <rect class="box" x="550" y="58" width="460" height="44" rx="8"/>
+  <text class="node-text" x="780" y="85">编写 graphStatus CustomPassFunc(graph, ctx)</text>
+
+  <line class="arrow" x1="780" y1="102" x2="780" y2="118"/>
+
+  <rect class="box" x="550" y="118" width="460" height="44" rx="8"/>
+  <text class="node-text" x="780" y="145">手动 FindNodes → CreateNode → AddDataEdge → RemoveNode</text>
+
+  <line class="arrow" x1="780" y1="162" x2="780" y2="178"/>
+
+  <rect class="box" x="550" y="178" width="460" height="22" rx="8"/>
+  <text class="node-text" x="780" y="194" style="font-size:13px;">REGISTER_CUSTOM_PASS 注册</text>
+</svg>

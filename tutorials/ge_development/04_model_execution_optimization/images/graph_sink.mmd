@@ -1,0 +1,11 @@
+flowchart LR
+    subgraph host["Host 侧"]
+        A["加载：整图下沉一次"]
+        B["执行：下发 1 个模型执行 Task<br/>（多次执行=多次下发这一个 Task）"]
+    end
+    subgraph device["Device 侧"]
+        C["[Task1][Task2]...[TaskN]<br/>已预分发，不立即执行"]
+        D["触发后 Device 按预置依赖调度整图 Task"]
+    end
+    A --> C
+    B --> D

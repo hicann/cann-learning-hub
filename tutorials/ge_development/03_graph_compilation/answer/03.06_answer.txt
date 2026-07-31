@@ -1,0 +1,15 @@
+03.06 课后练习答案
+
+1. 正确。自定义融合 Pass 的目标是在图中找到符合规则的结构并替换为等价、更高效的结构（如 MatMul+Add 融合为 GEMM、Add(x,0) 替换为 x），这类变换不改变模型语义，只减少算子数量/中间 Tensor 读写或改善后端执行形态。
+
+2. 错误。基于 Pattern 匹配的融合 Pass 不支持控制边匹配（matcher 仅按数据边匹配），也不支持嵌套子图（Pattern 必须是扁平 DAG），且不支持动态输入/输出个数的节点。若需要这类能力，应改用「基于改图接口」的方式。
+
+3. B。Patterns 用于定义在目标图中匹配的模板拓扑，是必须重写的函数；Replacement（定义替换结构）也必须重写。MeetRequirements 可选（默认返回 true），Run 由基类实现，Serialize 是自定义算子（PortableOp）的接口，与融合 Pass 无关。
+
+4. B。kBeforeInferShape（InferShape 前）是最常用阶段，replacement 后续会进入统一的 shape 推导流程，无需自己处理 shape。kAfterInferShape 阶段下 replacement 需自行保证输出 shape 正确。
+
+5. B。DecomposePass 适用于「单个算子替换为多个算子组成的子图」的场景，不需要先定义 pattern 图，构造时直接声明目标算子类型即可。PatternFusionPass 面向子图整体替换；EagerExecuteOp、CompilableOp 是自定义算子接口。
+
+6. ABC。A、B、C 均为正确的边界规则：外部输入要用占位符声明、外部还要用的输出要声明为 pattern 输出、输入个数要与真实图精确一致。D 错误，pattern 内部创建的常量（如 Add(x,0) 里的 0）属于 pattern 内部节点，不是外部输入，不需要声明为外部输入。
+
+7. ABD。A 正确，Pass .so 安装到 opp/vendors/<xxx>/custom_fusion_passes/ 被 GE 扫描加载。B 正确，DUMP_GE_GRAPH=1 后对比融合前后 dump 图（如 PreRunBegin 与 RunCustomPassBeforeInfershape）可确认 Pass 生效。D 正确，开启强制单流开关（ge.enableSingleStream=true）时自定义逻辑流分配 Pass 不会被执行。C 错误，编译 Pass 时禁止链接软件包中的其他 so，否则后续升级可能导致兼容性问题。

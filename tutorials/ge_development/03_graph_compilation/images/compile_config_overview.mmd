@@ -1,0 +1,12 @@
+flowchart LR
+    subgraph offline["离线编译（ATC / Build 接口）"]
+        direction TB
+        A["aclgrphBuildInitialize(global_options)<br/>─ 初始化级：soc_version /<br/>BUFFER_OPTIMIZE /<br/>FUSION_SWITCH_FILE ..."]
+        B["aclgrphBuildModel(g, build_options, model)<br/>─ 编译级：PRECISION_MODE_V2 /<br/>INPUT_SHAPE / OUTPUT_TYPE /<br/>OPTIMIZATION_SWITCH ..."]
+        A --> B
+    end
+    subgraph online["在线编译（GeSession）"]
+        direction TB
+        C["GeSession(session_options)<br/>.AddGraph(id, g, graph_options)<br/>─ ge.xxx 形式的 options<br/>（全局/session/graph）"]
+    end
+    offline ~~~ online

@@ -1,0 +1,15 @@
+03.02 课后练习答案
+
+1. 错误。GE 全新构建和 Parser 解析两条入口产出的都是 AscendIR Graph，并可进入统一的 GE 编译流程；实际图内容由构图代码或 Parser 转换结果决定，并不保证天然完全相同。
+
+2. 正确。Data 算子是图的输入节点，必须通过 update_input_desc_x / update_output_desc_y 设置 shape、format、dtype，否则编译会出错。
+
+3. C。aclgrphParseONNX 将 ONNX 模型文件解析为 Graph；aclgrphParseTensorFlow 解析 TF pb，aclgrphParseCaffe 解析 Caffe，aclgrphBuildModel 是编译接口。
+
+4. B。DYNAMIC_INPUT 用于注册个数不固定的动态多输入，构图时通过 create_dynamic_input_* 按指定数量实例化输入槽位。A 错，REQUIRED_ATTR 无默认值、必须设置；C 错，OPTIONAL_INPUT 是可选输入；D 错，OP_END_FACTORY_REG 用于结束算子注册。
+
+5. ABC。A 正确，算子 name 必须唯一；B 正确，必选/可选输入用 set_input_<输入名> 设置；C 正确，控制边用 AddControlInput 仅约束执行顺序。D 错误，SetInputs 的入参顺序必须与 Data 的 index 属性顺序一致，否则编译报错。
+
+6. ABC。A 正确，ES 是函数风格 API，提供 C 风格、C++ 和 Python 三种接口形式；CANN 9.1.0 的 C 风格头文件当前仍需按 C++ 源文件编译。B 正确，C++ 与 Python 重载了运算符，可直接用 + 表达 Add；C 正确，C 风格接口函数名带 Es 前缀。D 错误，ES 与算子原型构图产出的都是 AscendIR Graph。
+
+7. C。ENABLE_SCOPE_FUSION_PASSES 用于指定生效的 Scope 融合规则，仅 aclgrphParseTensorFlow 支持该参数。
