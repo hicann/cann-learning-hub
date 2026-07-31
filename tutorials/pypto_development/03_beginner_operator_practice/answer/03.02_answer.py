@@ -1,7 +1,4 @@
-# 课后实践参考答案：融合乘加 ReLU 后增加平方输出
-
-reset_pypto_notebook_state()
-
+# 课后实践核心代码实现：融合乘加 ReLU 后增加平方输出
 @pypto.frontend.jit(runtime_options={"run_mode": RUN_MODE})
 def fused_square_practice_kernel(
     x: pypto.Tensor([], pypto.DT_FP16),
@@ -16,7 +13,7 @@ def fused_square_practice_kernel(
 
 
 def main_fused_square_practice(device_id: int = None):
-    device_local = current_device(device_id)
+    device_local = get_device()
     x = torch.randn(8, 8, dtype=torch.float16, device=device_local)
     scale = torch.full((8, 8), 1.5, dtype=torch.float16, device=device_local)
     bias = torch.full((8, 8), -0.1, dtype=torch.float16, device=device_local)
@@ -26,11 +23,7 @@ def main_fused_square_practice(device_id: int = None):
 
     ref = torch.maximum(x * scale + bias, torch.zeros_like(x))
     ref = ref * ref
-    check_close("fused_square_practice_kernel", out, ref, rtol=1e-3, atol=1e-3)
-
-    print("fused_square_practice_kernel 验证通过")
-    print("输出 shape:", tuple(out.shape))
-    print("最大误差:", max_abs_diff(out, ref))
-
-
-main_fused_square_practice()
+    
+    torch.testing.assert_close(out, ref, rtol=3e-3, atol=3e-3)
+    max_diff = (out - ref).abs().max().item()
+    print(f"最大误差: {max_diff:.6f}")

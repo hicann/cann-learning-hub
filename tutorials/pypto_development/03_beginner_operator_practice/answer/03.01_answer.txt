@@ -1,15 +1,5 @@
 1. B
-   PyPTO JIT 函数会进入 PyPTO 编译和运行流程，普通 Python 函数只是由 Python 解释器执行。
-
-2. 填空答案：
-   `pypto.Tensor` 是 kernel 参数描述；调用 kernel 时传入的 `torch.Tensor` 是真实输入输出数据。
-
+2. `pypto.Tensor` 是 kernel 参数描述；调用 kernel 时传入的 `torch.Tensor` 是真实输入输出数据。
 3. C
-   PyPTO kernel 通常把计算结果写入调用者提前分配好的输出 Tensor。
-
 4. B
-   不会。
-   `set_vec_tile_shapes` 影响底层执行组织方式，不改变数学语义。
-
-5. 填空答案：
-   `(out - ref).abs().max().item()` 表示 PyPTO 输出和 PyTorch 参考结果之间的最大绝对误差。
+5. `(out - ref).abs().max().item()` 表示 PyPTO 输出和 PyTorch 参考结果之间的最大绝对误差。

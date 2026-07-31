@@ -1,16 +1,5 @@
-1. 如果 `Q` 是 `[B, heads, Q, D]`，`K^T` 是 `[B, heads, D, K]`。
-   那么 `Q @ K^T` 的输出 shape 是 `[B, heads, Q, K]`。
-
+1. [B, heads, Q, K]
 2. A
-   Attention score 要除以 `sqrt(head_dim)`，是为了稳定 softmax 前的数值范围。
-   点积维度越大，score 数值越容易变大，缩放可以降低 softmax 饱和风险。
-
 3. A
-   Q/K/V 投影后的 Tensor 通常仍是扁平 hidden 维。
-   需要 reshape 拆成多个 head，再 transpose 到 attention 计算需要的 `[B, heads, S, D]` 排布。
-
 4. A
-   多函数组合时，Host 侧要提前分配中间 Tensor，是因为每个 JIT kernel 只负责写自己的输出。
-   跨 kernel 的数据流需要由 Host 侧 Tensor 承接，再作为下一步 kernel 的输入。
-
 5. 表达核心计算公式；JIT 包装、接收输入输出参数并写回输出 Tensor。

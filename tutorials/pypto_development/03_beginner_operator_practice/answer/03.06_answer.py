@@ -8,9 +8,6 @@
 # 5. A
 # 6. 把计算表达式的最终结果写回调用者传入的输出 Tensor
 
-reset_pypto_notebook_state()
-
-
 @pypto.frontend.jit(runtime_options={"run_mode": RUN_MODE})
 def row_softmax_practice_kernel(
     x: pypto.Tensor([], pypto.DT_FP32),
@@ -25,10 +22,6 @@ def row_softmax_practice_kernel(
 
 
 def main_row_softmax_practice():
-    if device == "cpu":
-        print("当前环境未执行 NPU 验证；NPU 环境中可执行本模块。")
-        return
-
     x = torch.randn((8, 8), dtype=torch.float32, device=device)
     out = torch.empty_like(x)
 

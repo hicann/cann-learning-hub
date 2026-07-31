@@ -1,5 +1,5 @@
 1. B
-2. AI Core；多级内存；多精度支持。
+2. 专用计算单元；多核并行能力；多级内存层次；多精度支持。
 3. A
-4. L0 Buffer；L1 Buffer；Unified Buffer；Global Memory。
+4. L0 Buffer；L1 Buffer；Unified Buffer；Global Memory；片外 HBM。
 5. A
