@@ -1,0 +1,43 @@
+======================================================================
+3.2 基础功能介绍 章节练习答案
+======================================================================
+
+1. （单选题）`force_eager=True` 的主要作用是什么？
+   答案：B
+   解析：force_eager 保留 npugraph_ex 的上层图增强处理，但不执行 NPUGraph Capture-Replay，可用于区分上层图处理与 Runtime 问题。
+
+2. （单选题）设置 `force_recapture=True` 后，最符合其行为的是？
+   答案：A
+   解析：force_recapture 会在每次执行前重新 Capture，可用于区分图捕获执行与输入输出内存处理问题。
+
+3. （单选题）业务需要在多次 Replay 后仍长期持有某次输出时，应优先开启哪个选项？
+   答案：B
+   解析：clone_output 用于避免长期持有的输出被后续 Replay 覆盖。
+
+4. （单选题）`fullgraph=True` 的含义是？
+   答案：B
+   解析：fullgraph=True 要求目标逻辑形成单一图，出现图中断时会直接暴露问题。
+
+5. （单选题）下列哪个基础选项的默认值为 `False`？
+   答案：B
+   解析：clone_output 默认值为 False；clone_input、inplace_pass 和 pattern_fusion_pass 默认值均为 True。
+
+6. （单选题）`pattern_fusion_pass=True` 的主要目的是什么？
+   答案：B
+   解析：pattern_fusion_pass 会用融合算子替换匹配的 FX 子图。
+
+7. （多选题）进行图模式问题定界时，哪些做法是合理的？
+   答案：ABC
+   解析：应选择 A（先以 Eager 结果确认模型数值正确性）、B（使用 `force_eager=True` 区分上层图处理与 NPUGraph Runtime 问题）、C（使用 `force_recapture=True` 判断问题是否与回放或地址复用有关）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
+
+8. （多选题）关于 `clone_input=True`，正确的说法有哪些？
+   答案：ABC
+   解析：应选择 A（会对 user_inputs 类输入进行 clone）、B（clone 后的输入可用于多张 NPUGraph 间的内存复用）、C（输入较大时可能带来额外显存压力）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
+
+9. （多选题）比较 Replay 性能时，哪些原则是正确的？
+   答案：ABC
+   解析：应选择 A（先建立 Eager 精度基线）、B（保持输入、随机种子和精度阈值一致）、C（将首次的 Dynamo/Capture 编译开销与后续 Replay 分开统计）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
+
+10. （多选题）关于基础 Options 的对应关系，正确的有哪些？
+   答案：ABC
+   解析：应选择 A（`input_inplace_pass` 面向模型输入相关的原地更新优化）、B（`inplace_pass` 主要处理模型中间节点的原地化机会）、C（`pattern_fusion_pass` 可对匹配的子图执行融合替换）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。

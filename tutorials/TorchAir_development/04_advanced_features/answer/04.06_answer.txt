@@ -1,0 +1,43 @@
+======================================================================
+4.6 SuperKernel 融合优化功能 章节练习答案
+======================================================================
+
+1. （单选题）SuperKernel 的核心优化方式是？
+   答案：B
+   解析：SuperKernel 在已编译 Kernel 任务层面进行二进制融合，而不是改写算子源码。
+
+2. （单选题）开启 SuperKernel 融合优化时，必须同时开启哪个功能？
+   答案：B
+   解析：SuperKernel 依赖静态 Kernel 编译能力。
+
+3. （单选题）用于标定 SuperKernel 融合范围的一对接口是？
+   答案：B
+   解析：super_kernel_scope_begin/end 用于标定候选融合范围。
+
+4. （单选题）当 `super_kernel_scope_begin` 传入的 `scope_name` 为 `None` 时，表示什么？
+   答案：A
+   解析：scope_name=None 表示该范围不参与 SuperKernel 融合。
+
+5. （单选题）开启 SuperKernel 融合后，哪项功能将失效？
+   答案：A
+   解析：开启 SuperKernel 融合后，算子 Data Dump 功能会失效。
+
+6. （单选题）`super_kernel_debug_options` 的推荐使用场景是？
+   答案：B
+   解析：调试选项可能影响融合效果或性能，只建议在功能调试和问题定界时开启。
+
+7. （多选题）关于 SuperKernel 的描述，正确的有哪些？
+   答案：ABC
+   解析：应选择 A（可减少任务下发、调度等待和算子头部开销）、B（融合结果受算子依赖、同步行为和资源占用影响）、C（需要使用 Profiling 和精度结果评估收益）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
+
+8. （多选题）关于 SuperKernel 范围标定，正确的说法有哪些？
+   答案：ABC
+   解析：应选择 A（scope_name 用于标识标定范围融合后的 SuperKernel 名称）、B（标定范围不代表最终一定会融合成功）、C（标记为 `None` 的范围具有最高优先级且不参与融合）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
+
+9. （多选题）下列哪些是 `super_kernel_optimize_options` 中介绍的优化参数？
+   答案：ABC
+   解析：应选择 A（auto_op_parallel）、B（early_start）、C（aggressive_opt_strategies）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
+
+10. （多选题）定位 SuperKernel 问题或评估收益时，合理的做法有哪些？
+   答案：ABC
+   解析：应选择 A（使用 `debug_op_exec_trace` 等调试选项辅助定界）、B（使用 Profiling 确认融合结果和性能表现）、C（与未融合版本做数值精度对比）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
