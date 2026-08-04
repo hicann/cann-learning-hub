@@ -30,7 +30,7 @@
     └── llm_rl/qwen3_wordle/           # 配套训练代码
 ```
 
-> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。\
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/softwareinst/instg/index.html)。\
 > Notebook 用于阅读教程和章节练习。训练任务需在配备 Ascend NPU 的服务器上独立运行。
 
 ## 课程内容
@@ -42,9 +42,7 @@
 
 ## 教程结构
 
-### 01-sft：Wordle SFT 监督微调
-
-#### 第 1 章：SFT 概念与 Wordle 任务 (`01_sft_and_wordle/`)
+### 第 1 章：强化学习训练环境准备
 
 | Notebook | 内容 |
 |---|---|
@@ -84,7 +82,7 @@
 
 ## 参考
 
-- [Prime-RL Wordle 示例](https://github.com/PrimeIntellect-ai/prime-rl/tree/main/examples/wordle)
-- [Verifiers Wordle 奖励源码](https://github.com/PrimeIntellect-ai/verifiers/blob/main/environments/wordle/wordle.py)
+- [Prime-RL Wordle 示例](https://github.com/PrimeIntellect-ai/prime-rl/tree/main/examples/basic/wordle)
+- [Verifiers Wordle 奖励源码（课程参考版本）](https://github.com/PrimeIntellect-ai/verifiers/blob/8d4b332477aea4a34bbf9fb821e3e3bc8b0e2e74/environments/wordle/wordle.py)
 - [verl](https://github.com/volcengine/verl)
 - [cann-recipes-train](https://gitcode.com/cann/cann-recipes-train)
