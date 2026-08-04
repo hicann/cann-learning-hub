@@ -65,11 +65,10 @@
 | [2.2 SIMT 与 SIMD 介绍](02_ascendc_operator_basics/02.02_simt_simd_introduction.ipynb) | 🚧 开发中 |
 | [2.3 对应典型算子结构](02_ascendc_operator_basics/02.03_typical_operator_structure.ipynb) | 🚧 开发中 |
 | [2.4 Ascend C 的 Hello World](02_ascendc_operator_basics/02.04_hello_world.ipynb) | 🚧 开发中 |
-| [2.5 SIMD 连续类矢量算子示例（Add 算子）](02_ascendc_operator_basics/02.05_simd_continuous_vector_c_api.ipynb) | 🚧 开发中 |
+| [2.5 SIMD 连续类矢量算子示例（C API Add 算子）](02_ascendc_operator_basics/02.05_simd_continuous_vector_c_api.ipynb) | 🚧 开发中 |
 | [2.6 SIMD 矩阵算子示例（Tensor 编程）](02_ascendc_operator_basics/02.06_simd_matrix_tensor_api.ipynb) | 🚧 开发中 |
 | [2.7 SIMT 离散类矢量算子示例（Gather 算子）](02_ascendc_operator_basics/02.07_simt_discrete_vector.ipynb) | 🚧 开发中 |
 | [2.8 章节测试](02_ascendc_operator_basics/02.08_chapter_test.ipynb) | 🚧 开发中 |
-| [2.9 SIMD 矩阵算子示例（Matmul 高阶 API）](02_ascendc_operator_basics/02.09_simd_matmul_advanced_api.ipynb) | 🚧 开发中 |
 
 ## 第三章：Ascend C 编程模型
 

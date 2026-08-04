@@ -6,7 +6,7 @@
 ## 章节大纲
 
 ### 1.1 章节介绍
-- 课程定位：面向 Ascend 950PR/950DT（dav-3510），SIMD 部分跨代兼容 910B/910C
+- 课程定位：面向 Ascend 950PR/950DT（dav-3510），SIMD 部分跨代兼容 Atlas A2/A3
 - 950 关键特性总览：SIMD 编程、SIMT 编程、SIMD/SIMT 混合编程、纯 C API、Reg 编程、Tensor API
 - 与前序 A2/A3 课程（v1）的关系与迁移路径
 - 学习路径图与环境前置要求
@@ -23,7 +23,7 @@
 - 存储层级：L1 / AUB / LUB / UB / GM
 - Host-Device 异构计算模型
 - SIMD vs SIMT 硬件执行模型差异
-- 950 与 910B/910C 架构对比
+- 950 与 Atlas A2/A3 架构对比
 
 ### 1.4 算子开发的基本概念
 - 算子定义、算子名称、算子类型

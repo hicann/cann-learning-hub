@@ -1,7 +1,7 @@
 # 第2章 算子入门
 
 ## 章节概述
-本章为面向 Ascend 950 的算子开发入门实践章节，介绍 SIMT 与 SIMD 编程模型及对应典型算子结构，通过 Hello World、SIMD 连续类矢量算子（Add）、SIMD 矩阵算子（Tensor 编程与 Matmul 高阶 API）、SIMT 离散类矢量算子（Gather）五个由浅入深的示例，带你完成从理论到代码的第一步落地。
+本章为面向 Ascend 950 的算子开发入门实践章节，介绍 SIMT 与 SIMD 编程模型及对应典型算子结构，通过 Hello World、SIMD 连续类矢量算子（Add）、SIMD 矩阵算子（Tensor 编程）、SIMT 离散类矢量算子（Gather）四个由浅入深的示例，带你完成从理论到代码的第一步落地。
 
 ## 章节大纲
 
@@ -28,15 +28,14 @@
 - 工程目录结构
 - `<<<>>>` 核函数调用方式
 - 验证
-- 兼容性：910B/910C/950
+- 兼容性：Atlas A2/Atlas A3/950
 
-### 2.5 SIMD 连续类矢量算子示例（Add 算子）
+### 2.5 SIMD 连续类矢量算子示例（C API Add 算子）
 - 绑定 `c_api_async_add` 样例
 - 语言扩展层纯 C 接口编程范式：指针型计算、数组 `[]` 内存分配
-- 异步搬运 + 计算流程：GM→Local→Add→GM
-- 同步管理
-- 与 C++ Tensor 写法对比
-- 兼容性：910B/910C/950
+- Memory C API 搬运与计算流程：GM→UB→`asc_add`→GM
+- 通过 `asc_sync` 管理搬运与计算阶段之间的同步
+- 兼容性：Atlas A2/Atlas A3/950
 
 ### 2.6 SIMD 矩阵算子示例（Tensor 编程）
 - 绑定 `matmul_tensor_api` 样例：静态 Tensor API、多核 Matmul
@@ -57,10 +56,3 @@
 ### 2.8 章节测试
 - 选择题 + 判断题
 - 覆盖 API 层级选择、SIMD/SIMT 区别、C API 与 Tensor 写法、兼容性判断
-
-### 2.9 SIMD 矩阵算子示例（Matmul 高阶 API）
-- 绑定 `matmul_advanced_api` 样例
-- Matmul 高阶 API 封装数据搬运与 Cube 计算调度
-- 矩阵规格配置、tiling 生成、输入输出 Tensor 设置与结果写回
-- CMake 构建流程
-- 兼容性：910B/910C/950
