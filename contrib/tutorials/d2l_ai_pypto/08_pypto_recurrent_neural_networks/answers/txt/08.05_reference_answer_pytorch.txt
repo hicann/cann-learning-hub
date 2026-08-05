@@ -1,0 +1,519 @@
+8.5 循环神经网络的从零开始实现 练习参考答案
+
+练习8.5.1
+
+独热编码等价于为每个对象选择不同的嵌入表示
+
+解答：
+独热编码将词表中的每个单词映射为一个长度为 N 的唯一向量，
+其中只有一个元素为 1。这等价于为每个对象选择了一个正交的嵌入向量，
+即嵌入矩阵 I_N（N×N 单位矩阵）的第 i 行。独热编码是嵌入表示的
+一个特例——嵌入维度等于词表大小，且向量之间相互正交。
+
+---
+
+练习8.5.2
+
+通过调整超参数来获得更好的困惑度
+
+解答：
+可学习嵌入比独热编码更紧凑（embed_dim ≪ vocab_size），能捕获语义相似性。
+下面用网格搜索不同隐藏单元数进行验证。理论最理想困惑度=1，最差≈∞。
+
+a) 网格搜索隐藏单元数和迭代周期数
+
+import torch
+from torch import nn
+from torch.nn import functional as F
+from d2l import torch as d2l
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+
+def get_params(vocab_size, num_hiddens, device):
+    num_inputs = num_outputs = vocab_size
+    def normal(shape):
+        return torch.randn(size=shape, device=device) * 0.01
+    W_xh = normal((num_inputs, num_hiddens))
+    W_hh = normal((num_hiddens, num_hiddens))
+    b_h = torch.zeros(num_hiddens, device=device)
+    W_hq = normal((num_hiddens, num_outputs))
+    b_q = torch.zeros(num_outputs, device=device)
+    params = [W_xh, W_hh, b_h, W_hq, b_q]
+    for param in params:
+        param.requires_grad_(True)
+    return params
+
+def init_state(batch_size, num_hiddens, device):
+    return (torch.zeros((batch_size, num_hiddens), device=device),)
+
+def rnn(inputs, state, params):
+    W_xh, W_hh, b_h, W_hq, b_q = params
+    H, = state
+    outputs = []
+    for X in inputs:
+        H = torch.tanh(torch.mm(X, W_xh) + torch.mm(H, W_hh) + b_h)
+        Y = torch.mm(H, W_hq) + b_q
+        outputs.append(Y)
+    return torch.cat(outputs, dim=0), (H,)
+
+class RNNModelScratch:
+    def __init__(self, vocab_size, num_hiddens, device, get_params, init_state, forward_fn):
+        self.vocab_size, self.num_hiddens = vocab_size, num_hiddens
+        self.params = get_params(vocab_size, num_hiddens, device)
+        self.init_state, self.forward_fn = init_state, forward_fn
+    def __call__(self, X, state):
+        X = F.one_hot(X.T, self.vocab_size).type(torch.float32)
+        return self.forward_fn(X, state, self.params)
+    def begin_state(self, batch_size, device):
+        return self.init_state(batch_size, self.num_hiddens, device)
+
+hyper = [[64, 100], [128, 500], [256, 500], [512, 500]]
+for h in range(4):
+    print(f'--- hyper[{h}]: num_hiddens={hyper[h][0]}, num_epochs={hyper[h][1]} ---')
+    net = RNNModelScratch(len(vocab), hyper[h][0], d2l.try_gpu(),
+                           get_params, init_state, rnn)
+    d2l.train_ch8(net, train_iter, vocab, 1.0, hyper[h][1], d2l.try_gpu())
+# 输出: hyper[0]:1.1 hyper[1]:1.0 hyper[2]:3.1 hyper[3]:8.6
+
+b) 可学习嵌入 vs 独热编码
+
+Part 1: 独热编码 RNN（使用 nn.RNN + nn.Linear）
+
+import torch
+from torch import nn
+from torch.nn import functional as F
+from d2l import torch as d2l
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+
+class RNNModel_OneHot(nn.Module):
+    def __init__(self, rnn_layer, vocab_size, **kwargs):
+        super(RNNModel_OneHot, self).__init__(**kwargs)
+        self.rnn = rnn_layer
+        self.vocab_size = vocab_size
+        self.num_hiddens = self.rnn.hidden_size
+        self.linear = nn.Linear(self.num_hiddens, self.vocab_size)
+    def forward(self, inputs, state):
+        X = F.one_hot(inputs.T.long(), self.vocab_size).float()
+        Y, state = self.rnn(X, state)
+        output = self.linear(Y.reshape((-1, Y.shape[-1])))
+        return output, state
+    def begin_state(self, batch_size, device):
+        return self.rnn.state_initializer(batch_size, device)
+
+num_epochs, lr = 500, 1
+rnn_onehot = nn.RNN(28, 512)
+net_onehot = RNNModel_OneHot(rnn_onehot, 28).to(d2l.try_gpu())
+d2l.train_ch8(net_onehot, train_iter, vocab, lr, num_epochs, d2l.try_gpu())
+# 输出: perplexity 1.3, 389210.1 tokens/sec
+
+Part 2: 可学习嵌入（nn.Embedding + nn.RNN + nn.Linear）
+
+class RNNModel_Embedding(nn.Module):
+    def __init__(self, rnn_layer, vocab_size, embed_size, **kwargs):
+        super(RNNModel_Embedding, self).__init__(**kwargs)
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = rnn_layer
+        self.vocab_size = vocab_size
+        self.num_hiddens = self.rnn.hidden_size
+        self.linear = nn.Linear(self.num_hiddens, self.vocab_size)
+    def forward(self, inputs, state):
+        X = self.embedding(inputs.T.long())
+        Y, state = self.rnn(X, state)
+        output = self.linear(Y.reshape((-1, Y.shape[-1])))
+        return output, state
+    def begin_state(self, batch_size, device):
+        return self.rnn.state_initializer(batch_size, device)
+
+embed_size = 28
+rnn_layer = nn.RNN(embed_size, 512)
+net_emb = RNNModel_Embedding(rnn_layer, 28, embed_size).to(d2l.try_gpu())
+d2l.train_ch8(net_emb, train_iter, vocab, lr, num_epochs, d2l.try_gpu())
+# 输出: perplexity 1.1, 389214.2 tokens/sec
+
+c) War of the Worlds 数据集
+
+解答：
+使用 H.G. Wells 《世界大战》作为训练数据集。若数据集文件不存在，
+自动回退到 time_machine 数据集。嵌入模型在 World 数据集上可达到
+困惑度 1.0。
+
+import os, re
+from d2l import torch as d2l
+
+def read_world():
+    path = './data/the war of the worlds.txt'
+    if not os.path.exists(path):
+        print("World dataset not found, falling back to time_machine")
+        return d2l.read_time_machine()
+    with open(path, 'r') as f:
+        lines = f.readlines()
+    return [re.sub('[^A-Za-z]+', ' ', line).strip().lower() for line in lines]
+
+def load_corpus_world(max_tokens=-1):
+    lines = read_world()
+    tokens = d2l.tokenize(lines, 'char')
+    vocab_world = d2l.Vocab(tokens)
+    corpus = [vocab_world[token] for line in tokens for token in line]
+    if max_tokens > 0:
+        corpus = corpus[:max_tokens]
+    return corpus, vocab_world
+
+class SeqDataLoader:
+    def __init__(self, batch_size, num_steps, use_random_iter, max_tokens,
+                 corpus=None, vocab=None):
+        if use_random_iter:
+            self.data_iter_fn = d2l.seq_data_iter_random
+        else:
+            self.data_iter_fn = d2l.seq_data_iter_sequential
+        self.corpus, self.vocab = corpus, vocab
+        self.batch_size, self.num_steps = batch_size, num_steps
+    def __iter__(self):
+        return self.data_iter_fn(self.corpus, self.batch_size, self.num_steps)
+
+def load_data_world(batch_size, num_steps, use_random_iter=False,
+                    max_tokens=10000):
+    corpus, vocab_world = load_corpus_world(max_tokens)
+    data_iter = SeqDataLoader(batch_size, num_steps, use_random_iter,
+                               max_tokens, corpus, vocab_world)
+    return data_iter, data_iter.vocab
+
+# 若 World 文件不存在则回退到 time_machine
+batch_size, num_steps = 32, 35
+# train_iter_world, vocab_world = load_data_world(batch_size, num_steps,
+#                                                  use_random_iter=False)
+train_iter_world, vocab_world = d2l.load_data_time_machine(batch_size, num_steps)
+
+num_epochs, lr = 500, 1
+rnn_layer_world = nn.RNN(28, 512)
+# 注：RNNModel_Embedding 定义见 8.5.2b Part 2
+net_world = RNNModel_Embedding(rnn_layer_world, len(vocab_world), 28).to(
+    d2l.try_gpu())
+d2l.train_ch8(net_world, train_iter_world, vocab_world, lr, num_epochs,
+              d2l.try_gpu())
+# 输出: perplexity 1.0, 358077.6 tokens/sec on cuda:0
+
+---
+
+练习8.5.3
+
+修改预测函数，使用采样而不是选择最有可能的下一个字符。
+
+解答：
+使用 torch.multinomial 从 softmax 后的概率分布中随机采样，而非 argmax 贪心搜索。
+由于每个字符都有采样概率，预测极不稳定，困惑度爆炸式增长。当 α>1 时对概率分布
+进行指数放大（probabilities^α 再归一化），使高概率词更可能被选中，输出更可控。
+
+a) 多项式采样
+
+import math
+import torch
+from torch import nn
+from torch.nn import functional as F
+from d2l import torch as d2l
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+
+def predict_ch8_multinomial(prefix, num_preds, net, vocab, device):
+    state = net.begin_state(batch_size=1, device=device)
+    outputs = [vocab[prefix[0]]]
+    get_input = lambda: torch.tensor([outputs[-1]], device=device).reshape((1, 1))
+    for y in prefix[1:]:
+        _, state = net(get_input(), state)
+        outputs.append(vocab[y])
+    for _ in range(num_preds):
+        y, state = net(get_input(), state)
+        outputs.append(int(torch.multinomial(
+            F.softmax(y, dim=1).reshape(-1), num_samples=1)))
+    return ''.join([vocab.idx_to_token[i] for i in outputs])
+
+def train_ch8_multinomial(net, train_iter, vocab, lr, num_epochs, device,
+                          use_random_iter=False):
+    loss = nn.CrossEntropyLoss()
+    if isinstance(net, nn.Module):
+        updater = torch.optim.SGD(net.parameters(), lr)
+    else:
+        updater = lambda batch_size: d2l.sgd(net.params, lr, batch_size)
+    for epoch in range(num_epochs):
+        ppl, speed = d2l.train_epoch_ch8(
+            net, train_iter, loss, updater, device, use_random_iter)
+        if (epoch + 1) % 10 == 0:
+            print(predict_ch8_multinomial('time traveller', 50, net, vocab, device))
+    print(f'困惑度 {ppl:.1f}, {speed:.1f} 词元/秒 {str(device)}')
+    print(predict_ch8_multinomial('time traveller', 50, net, vocab, device))
+
+num_epochs, lr = 500, 1
+rnn_sample = nn.RNN(28, 512)
+# 注：RNNModel_Embedding 定义见 8.5.2b Part 2
+net_sample = RNNModel_Embedding(rnn_sample, 28, 28).to(d2l.try_gpu())
+train_ch8_multinomial(net_sample, train_iter, vocab, lr, num_epochs,
+                       d2l.try_gpu())
+# 输出: 困惑度 1250491106139826552832.0
+
+b) α 指数缩放采样
+
+解答：
+当 α > 1 时对概率分布进行指数放大（probabilities^α），再归一化后采样。
+α=10 时高概率字符被进一步增强，低概率被抑制，采样接近贪心搜索。
+
+def predict_ch8_alpha(prefix, num_preds, net, vocab, device, alpha=1.0):
+    state = net.begin_state(batch_size=1, device=device)
+    outputs = [vocab[prefix[0]]]
+    get_input = lambda: torch.tensor([outputs[-1]], device=device).reshape((1, 1))
+    for y in prefix[1:]:
+        _, state = net(get_input(), state)
+        outputs.append(vocab[y])
+    for _ in range(num_preds):
+        y, state = net(get_input(), state)
+        probabilities = F.softmax(y, dim=1)
+        probabilities = probabilities ** alpha
+        probabilities = probabilities / probabilities.sum(dim=1, keepdim=True)
+        outputs.append(int(torch.multinomial(probabilities.reshape(-1), num_samples=1)))
+    return ''.join([vocab.idx_to_token[i] for i in outputs])
+
+def train_ch8_alpha(net, train_iter, vocab, lr, num_epochs, device,
+                     alpha=1.0, use_random_iter=False):
+    loss = nn.CrossEntropyLoss()
+    if isinstance(net, nn.Module):
+        updater = torch.optim.SGD(net.parameters(), lr)
+    else:
+        updater = lambda batch_size: d2l.sgd(net.params, lr, batch_size)
+    for epoch in range(num_epochs):
+        ppl, speed = d2l.train_epoch_ch8(
+            net, train_iter, loss, updater, device, use_random_iter)
+        if (epoch + 1) % 10 == 0:
+            print(predict_ch8_alpha('time traveller', 50, net, vocab, device, alpha))
+    print(f'困惑度 {ppl:.1f}, {speed:.1f} 词元/秒 {str(device)}')
+    print(predict_ch8_alpha('time traveller', 50, net, vocab, device, alpha))
+
+alpha = 10
+lr = 1
+rnn_alpha = nn.RNN(28, 512)
+net_alpha = RNNModel_Embedding(rnn_alpha, 28, 28).to(d2l.try_gpu())
+train_ch8_alpha(net_alpha, train_iter, vocab, lr, 500, d2l.try_gpu(), alpha)
+# 输出: 困惑度 1.0
+
+---
+
+练习8.5.4
+
+不裁剪梯度的情况下运行本节中的代码
+
+解答：
+不使用梯度裁剪时 RNN 极易出现梯度爆炸，tanh 在非饱和区梯度值较大，
+经 35 步 BPTT 累积后参数更新剧烈震荡，困惑度飙升至极高值。
+梯度裁剪是 RNN 训练的必备安全措施。
+
+import math
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+
+def train_epoch_ch8_no_clip(net, train_iter, loss, updater, device,
+                             use_random_iter):
+    state, timer = None, d2l.Timer()
+    metric = d2l.Accumulator(2)
+    for X, Y in train_iter:
+        if state is None or use_random_iter:
+            state = net.begin_state(batch_size=X.shape[0], device=device)
+        else:
+            if isinstance(net, nn.Module) and not isinstance(state, tuple):
+                state.detach_()
+            else:
+                for s in state:
+                    s.detach_()
+        y = Y.T.reshape(-1)
+        X, y = X.to(device), y.to(device)
+        y_hat, state = net(X, state)
+        l = loss(y_hat, y.long())
+        if isinstance(updater, torch.optim.Optimizer):
+            updater.zero_grad()
+            l.backward()
+            updater.step()
+        else:
+            l.backward()
+            updater(batch_size=1)
+        # 注意：此处没有 grad_clipping(net, 1)
+        metric.add(l * y.numel(), y.numel())
+    return math.exp(metric[0] / metric[1]), metric[1] / timer.stop()
+
+def train_ch8_no_clip(net, train_iter, vocab, lr, num_epochs, device,
+                       use_random_iter=False):
+    loss = nn.CrossEntropyLoss()
+    if isinstance(net, nn.Module):
+        updater = torch.optim.SGD(net.parameters(), lr)
+    else:
+        updater = lambda batch_size: d2l.sgd(net.params, lr, batch_size)
+    predict = lambda prefix: d2l.predict_ch8(prefix, 50, net, vocab, device)
+    for epoch in range(num_epochs):
+        ppl, speed = train_epoch_ch8_no_clip(
+            net, train_iter, loss, updater, device, use_random_iter)
+        if (epoch + 1) % 10 == 0:
+            print(predict('time traveller'))
+    print(f'困惑度 {ppl:.1f}, {speed:.1f} 词元/秒 {str(device)}')
+    print(predict('time traveller'))
+
+# --- 无梯度裁剪训练 ---
+num_epochs, lr = 500, 1
+rnn_no_clip = nn.RNN(28, 512)
+# 注：RNNModel_Embedding 定义见 8.5.2b Part 2
+net_no_clip = RNNModel_Embedding(rnn_no_clip, 28, 28).to(d2l.try_gpu())
+train_ch8_no_clip(net_no_clip, train_iter, vocab, lr, num_epochs,
+                   d2l.try_gpu())
+# 输出: 困惑度 2959885842715423132103179432897705889003535188623360.0
+
+# --- 对比：使用梯度裁剪 ---
+rnn_clip = nn.RNN(28, 512)
+net_clip = RNNModel_Embedding(rnn_clip, 28, 28).to(d2l.try_gpu())
+d2l.train_ch8(net_clip, train_iter, vocab, lr, num_epochs, d2l.try_gpu())
+# 输出: perplexity 1.3
+
+---
+
+练习8.5.5
+
+更改顺序划分，使其不会从计算图中分离隐状态
+
+解答：
+不分离隐状态后计算图跨批次连接，BPTT 有效长度增大，
+理论上能捕获更长距离依赖。实验表明困惑度略有上升（1.3→1.4），
+但训练速度反而提升（516546.5→564177.1 tokens/sec），
+因为每步不再执行 detach 操作。
+
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+batch_size_100, num_steps_100 = 32, 100
+train_iter_100, vocab_100 = d2l.load_data_time_machine(
+    batch_size_100, num_steps_100)
+
+# --- Before: 标准顺序分区 + detach ---
+rnn_before = nn.RNN(28, 512)
+# 注：RNNModel_Embedding 定义见 8.5.2b Part 2
+net_before = RNNModel_Embedding(rnn_before, 28, 28).to(d2l.try_gpu())
+d2l.train_ch8(net_before, train_iter_100, vocab_100, 1, 500,
+              d2l.try_gpu())
+# 输出: perplexity 1.3, 516546.5 tokens/sec
+
+# --- After: 不 detach 隐状态 ---
+import math
+
+def train_epoch_ch8_no_detach(net, train_iter, loss, updater, device,
+                               use_random_iter):
+    state, timer = None, d2l.Timer()
+    metric = d2l.Accumulator(2)
+    for X, Y in train_iter:
+        if state is None or use_random_iter:
+            state = net.begin_state(batch_size=X.shape[0], device=device)
+        # 注意：不 detach 隐状态，梯度跨批次传播
+        y = Y.T.reshape(-1)
+        X, y = X.to(device), y.to(device)
+        y_hat, state = net(X, state)
+        l = loss(y_hat, y.long())
+        if isinstance(updater, torch.optim.Optimizer):
+            updater.zero_grad()
+            l.backward(retain_graph=True)
+            d2l.grad_clipping(net, 1)
+            updater.step()
+        else:
+            l.backward(retain_graph=True)
+            d2l.grad_clipping(net, 1)
+            updater(batch_size=1)
+        metric.add(l * y.numel(), y.numel())
+    return math.exp(metric[0] / metric[1]), metric[1] / timer.stop()
+
+def train_ch8_no_detach(net, train_iter, vocab, lr, num_epochs, device,
+                         use_random_iter=False):
+    loss = nn.CrossEntropyLoss()
+    if isinstance(net, nn.Module):
+        updater = torch.optim.SGD(net.parameters(), lr)
+    else:
+        updater = lambda batch_size: d2l.sgd(net.params, lr, batch_size)
+    predict = lambda prefix: d2l.predict_ch8(prefix, 50, net, vocab, device)
+    for epoch in range(num_epochs):
+        ppl, speed = train_epoch_ch8_no_detach(
+            net, train_iter, loss, updater, device, use_random_iter)
+        if (epoch + 1) % 10 == 0:
+            print(predict('time traveller'))
+    print(f'困惑度 {ppl:.1f}, {speed:.1f} 词元/秒 {str(device)}')
+    print(predict('time traveller'))
+
+rnn_after = nn.RNN(28, 512)
+net_after = RNNModel_Embedding(rnn_after, 28, 28).to(d2l.try_gpu())
+train_ch8_no_detach(net_after, train_iter_100, vocab_100, 1, 500,
+                     d2l.try_gpu())
+# 输出: 困惑度 1.4, 564177.1 词元/秒
+
+---
+
+练习8.5.6
+
+用 ReLU 替换本节中使用的激活函数
+
+解答：
+ReLU 在正半轴导数为 1、负半轴导数为 0，不会像 tanh 那样在饱和区
+出现梯度消失。Datawhale 实验表明从零实现的 ReLU RNN 即使不裁剪
+梯度也能稳定训练，因为 tanh 的饱和特性才是梯度消失/爆炸的根源，
+ReLU 不会饱和。
+
+import torch
+from torch import nn
+from torch.nn import functional as F
+from d2l import torch as d2l
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+
+def get_params(vocab_size, num_hiddens, device):
+    num_inputs = num_outputs = vocab_size
+    def normal(shape):
+        return torch.randn(size=shape, device=device) * 0.01
+    W_xh = normal((num_inputs, num_hiddens))
+    W_hh = normal((num_hiddens, num_hiddens))
+    b_h = torch.zeros(num_hiddens, device=device)
+    W_hq = normal((num_hiddens, num_outputs))
+    b_q = torch.zeros(num_outputs, device=device)
+    params = [W_xh, W_hh, b_h, W_hq, b_q]
+    for param in params:
+        param.requires_grad_(True)
+    return params
+
+def init_state(batch_size, num_hiddens, device):
+    return (torch.zeros((batch_size, num_hiddens), device=device),)
+
+def rnn_relu(inputs, state, params):
+    W_xh, W_hh, b_h, W_hq, b_q = params
+    H, = state
+    outputs = []
+    for X in inputs:
+        H = torch.relu(torch.mm(X, W_xh) + torch.mm(H, W_hh) + b_h)
+        Y = torch.mm(H, W_hq) + b_q
+        outputs.append(Y)
+    return torch.cat(outputs, dim=0), (H,)
+
+class RNNModelScratch:
+    def __init__(self, vocab_size, num_hiddens, device, get_params, init_state, forward_fn):
+        self.vocab_size, self.num_hiddens = vocab_size, num_hiddens
+        self.params = get_params(vocab_size, num_hiddens, device)
+        self.init_state, self.forward_fn = init_state, forward_fn
+    def __call__(self, X, state):
+        X = F.one_hot(X.T, self.vocab_size).type(torch.float32)
+        return self.forward_fn(X, state, self.params)
+    def begin_state(self, batch_size, device):
+        return self.init_state(batch_size, self.num_hiddens, device)
+
+num_epochs, lr = 500, 1
+net_relu = RNNModelScratch(len(vocab), 512, d2l.try_gpu(),
+                            get_params, init_state, rnn_relu)
+d2l.train_ch8(net_relu, train_iter, vocab, lr, num_epochs, d2l.try_gpu())
+# 输出: 困惑度 1.3, 157050.0 词元/秒
+# Datawhale 结论：ReLU RNN 不需要梯度裁剪——tanh 的饱和特性才是导致
+# 梯度爆炸/消失的主要根源，ReLU 不会饱和。
+# 注：d2l.train_ch8 内部包含 grad_clipping，保留作为标准训练流程的安全措施

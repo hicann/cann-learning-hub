@@ -1,0 +1,136 @@
+8.4 循环神经网络 练习参考答案
+
+练习8.4.1
+
+预测文本序列下一个字符时的输出维度
+
+解答：
+根据循环神经网络隐藏层与输出层计算公式：
+  H_t = φ(X_t W_xh + H_{t-1} W_hh + b_h)
+  O_t = H_t W_hq + b_q
+
+其中 W_xh ∈ R^{d×h}, W_hh ∈ R^{h×h}, W_hq ∈ R^{h×q}
+
+对于文本序列：
+- 输入维度为 (时间步, 批量大小, 词表大小)
+- 每个时间步输入维度为 (批量大小 × 词表大小)
+- 隐状态 H_t 维度: (批量大小 × 词表大小) × (词表大小 × h) = 批量大小 × h
+- 输出 O_t 维度: (批量大小 × h) × (h × q) = 批量大小 × q
+
+由于输入和输出均来自同一词表，q = 词表大小，即输出维度 = 词表大小。
+
+import torch
+import torch.nn as nn
+from d2l import torch as d2l
+from torch.nn import functional as F
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+
+X = torch.arange(10).reshape((2, 5))
+print(f'X 经过 one_hot 后的形状: {F.one_hot(X.T, 28).shape}')
+# 输出: torch.Size([5, 2, 28])  → (时间步, 批量大小, 词表大小)
+
+def get_params(vocab_size, num_hiddens, device):
+    num_inputs = num_outputs = vocab_size
+    def normal(shape):
+        return torch.randn(size=shape, device=device) * 0.01
+    W_xh = normal((num_inputs, num_hiddens))
+    W_hh = normal((num_hiddens, num_hiddens))
+    b_h = torch.zeros(num_hiddens, device=device)
+    W_hq = normal((num_hiddens, num_outputs))
+    b_q = torch.zeros(num_outputs, device=device)
+    params = [W_xh, W_hh, b_h, W_hq, b_q]
+    for param in params:
+        param.requires_grad_(True)
+    return params
+
+def init_rnn_state(batch_size, num_hiddens, device):
+    return (torch.zeros((batch_size, num_hiddens), device=device),)
+
+def rnn(inputs, state, params):
+    W_xh, W_hh, b_h, W_hq, b_q = params
+    H, = state
+    outputs = []
+    for X in inputs:
+        H = torch.tanh(torch.mm(X, W_xh) + torch.mm(H, W_hh) + b_h)
+        Y = torch.mm(H, W_hq) + b_q
+        outputs.append(Y)
+    Y_stack = torch.stack(outputs)
+    print(f'Y 堆叠后形状: {Y_stack.shape}')  # (时间步, 批量大小, 词表大小)
+    return torch.cat(outputs, dim=0), (H,)
+
+class RNNModelScratch:
+    def __init__(self, vocab_size, num_hiddens, device,
+                 get_params, init_state, forward_fn):
+        self.vocab_size, self.num_hiddens = vocab_size, num_hiddens
+        self.params = get_params(vocab_size, num_hiddens, device)
+        self.init_state, self.forward_fn = init_state, forward_fn
+
+    def __call__(self, X, state):
+        X = F.one_hot(X.T, self.vocab_size).type(torch.float32)
+        print(f'X 独热编码后形状: {X.shape}')
+        return self.forward_fn(X, state, self.params)
+
+    def begin_state(self, batch_size, device):
+        return self.init_state(batch_size, self.num_hiddens, device)
+
+num_hiddens = 256
+net = RNNModelScratch(len(vocab), num_hiddens, d2l.try_gpu(),
+                       get_params, init_rnn_state, rnn)
+state = net.begin_state(X.shape[0], d2l.try_gpu())
+Y, new_state = net(X.to(d2l.try_gpu()), state)
+print(f'隐状态形状: {new_state[0].shape}')
+# 输出: torch.Size([2, 256])
+
+---
+
+练习8.4.2
+
+为什么 RNN 可以基于先前所有词元表示当前词元的条件概率？
+
+解答：
+因为语言模型的目标是根据过去和当前的词元来预测下一个词元。
+在循环神经网络中，通过引入隐状态 H_t 的概念，RNN 将直到当前时间步
+的历史信息编码进隐状态中。根据这些过去历史信息，循环神经网络可以
+计算出当前词元出现的条件概率 P(x_t | x_{t-1}, ..., x_1)。
+
+核心机制：H_t = f(H_{t-1}, X_t)
+递推后：H_t = f(f(...f(H_0, X_1), X_2), ..., X_t)
+因此 H_t 包含了从时间步 1 到 t 的所有历史信息。
+
+---
+
+练习8.4.3
+
+基于长序列反向传播时梯度的变化
+
+解答：
+基于长序列进行反向传播时，假设序列长度为 T，则迭代计算 T 个
+时间步的梯度时，会产生长度为 O(T) 的矩阵乘法链。这类似于多层感知机
+中层数为 T 的情况：
+- 当梯度 < 1 时 → 连乘趋近于 0 → 梯度消失
+- 当梯度 > 1 时 → 连乘发散 → 梯度爆炸
+因此，当序列长度过长时，会导致数值不稳定，出现梯度爆炸或梯度消失。
+
+---
+
+练习8.4.4
+
+与本节省描述的语言模型相关的问题
+
+解答：
+循环神经网络在语言模型中的应用场景包括：
+
+1. 文本生成：根据给定文本序列内容预测下一个词的生成
+   - 如：给定 "the time"，预测 "machine"
+
+2. 文本分类 / 情感分析：根据给定序列内容，输出序列的类型
+   - 如：判断影评是正面还是负面
+
+3. 机器翻译：将源语言序列输入完成后，翻译为目标语言
+   - 如：英文 "hello world" → 中文 "你好世界"
+
+4. 语音识别：将声音信号序列转换为文字序列
+
+5. 命名实体识别 (NER)：对序列中每个词元进行标签预测（人名、地名、组织名等）。

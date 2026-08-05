@@ -1,0 +1,115 @@
+8.4 循环神经网络 - PyPTO 参考答案
+
+注意：本节为纯理论章节（课本 08.04 不含代码），练习答案与 PyTorch 版本一致。
+以下回答中附带的代码演示采用 src 模块中的 PyPTO 算子。
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+练习8.4.1
+
+预测文本序列下一个字符时的输出维度
+
+解答：
+根据 RNN 前向传播公式：
+  H_t = φ(X_t W_xh + H_{t-1} W_hh + b_h)
+  O_t = H_t W_hq + b_q
+其中 W_xh ∈ R^{d×h}, W_hh ∈ R^{h×h}, W_hq ∈ R^{h×q}
+
+对于字符级语言模型：
+- 每个时间步输入为 one-hot 向量，维度 = 词表大小 = N
+- 隐状态维度: 批量大小 × h（h 为隐藏单元数）
+- 输出维度: 批量大小 × q，其中 q = N（输入输出共享同一词表）
+因此任意输出所需维度 = 词表大小。
+
+X = torch.arange(10).reshape((2, 5))
+X_onehot = torch.nn.functional.one_hot(X.T, 28)
+print(f'X one_hot 形状: {X_onehot.shape}')  # (5, 2, 28)
+
+# PyPTO 版 RNN 前向验证：
+def init_rnn_state(batch_size, num_hiddens, device):
+    return (torch.zeros((batch_size, num_hiddens), device=device),)
+
+def rnn_forward_pypto(inputs, state, params):
+    W_xh, W_hh, b_h, W_hq, b_q = params
+    (H,) = state
+    outputs = []
+    for X_t in inputs:
+        XW = PyPTOMatmul.apply(X_t, W_xh)
+        HW = PyPTOMatmul.apply(H, W_hh)
+        summed = PyPTOAdd.apply(XW, HW)
+        biased = PyPTOBiasAdd.apply(summed, b_h)
+        H = PyPTOTanh.apply(biased)
+        Y = PyPTOBiasAdd.apply(PyPTOMatmul.apply(H, W_hq), b_q)
+        outputs.append(Y)
+    Y_stack = torch.stack(outputs)
+    print(f'Y 堆叠后形状: {Y_stack.shape}')
+    return torch.cat(outputs, dim=0), (H,)
+
+vocab_size = len(vocab)
+num_hiddens = 256
+def normal(shape):
+    return torch.randn(size=shape) * 0.01
+W_xh = normal((vocab_size, num_hiddens))
+W_hh = normal((num_hiddens, num_hiddens))
+b_h = torch.zeros(num_hiddens)
+W_hq = normal((num_hiddens, vocab_size))
+b_q = torch.zeros(vocab_size)
+params = [W_xh, W_hh, b_h, W_hq, b_q]
+
+state0 = init_rnn_state(2, num_hiddens, torch.device('cpu'))
+Y, new_state = rnn_forward_pypto(X_onehot.float(), state0, params)
+print(f'隐状态形状: {new_state[0].shape}')  # (2, 256)
+print(f'Y 形状: {Y.shape}')  # (10, 28) → (时间步×批量, 词表大小)
+
+练习8.4.2
+
+为什么 RNN 可以基于先前所有词元表示当前词元的条件概率？
+
+解答：
+RNN 通过隐状态的递推关系：
+  H_t = f(H_{t-1}, X_t)
+使得 H_t 编码了从时间步 1 到 t 的所有历史信息：
+  H_t = f(f(...f(H_0, X_1), X_2), ..., X_t)
+因此输出 O_t = g(H_t) 实际上基于所有先前的词元，从而能够建模
+条件概率 P(x_t | x_1, ..., x_{t-1})。
+
+练习8.4.3
+
+基于长序列反向传播时梯度的变化
+
+解答：
+BP 过程中梯度需沿时间步反向传播：
+  ∂L/∂h_t = ∂L/∂h_T · ∏_{k=t}^{T-1} ∂h_{k+1}/∂h_k
+对于 T 个时间步的序列，梯度乘积累 T 次：
+- 若梯度值普遍 < 1 → 连乘趋近 0 → 梯度消失
+- 若梯度值普遍 > 1 → 连乘发散 → 梯度爆炸
+这导致长序列训练中前端时间步的参数几乎得不到有效更新。
+这也是引入梯度裁剪和 LSTM/GRU 等门控机制的原因。
+
+练习8.4.4
+
+与本节省描述的语言模型相关的问题
+
+解答：
+RNN 语言模型的应用场景：
+
+1. 文本生成：根据前缀生成后续文本
+   - 如：给定 "time traveller " 继续生成
+
+2. 文本分类 / 情感分析：
+   - 将序列最后一个时间步的隐状态输入分类器进行二分类或多分类
+
+3. 机器翻译 (seq2seq)：
+   - 编码器 RNN 读入源语言序列 → 解码器 RNN 生成目标语言序列
+
+4. 语音识别：
+   - 将声学特征序列映射为文字序列
+
+5. 命名实体识别 (NER)：
+   - 对序列中每个词元进行标签预测（人名、地名、组织名等）
+
+6. 在 NPU 场景下需要注意：
+   - PyPTO 算子需要 JIT 编译，首次运行较慢
+   - 梯度裁剪对 NPU 训练同样重要
+   - 可利用 NPU 批量并行处理多个时间步
