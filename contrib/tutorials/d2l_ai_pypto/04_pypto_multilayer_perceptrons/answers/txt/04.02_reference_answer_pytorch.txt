@@ -1,0 +1,304 @@
+4.2 多层感知机的从零开始实现 练习参考答案
+
+练习4.2.1
+
+在所有其他参数保持不变的情况下，更改超参数`num_hiddens`的值，并查看此超参数的变化对结果有何影响。确定此超参数的最佳值。
+
+解答：
+
+在230到360范围内取不同整数值作为num_hiddens进行实验，得到的训练和测试精度基本一致，因此num_hiddens取256即可，能保证在其他参数不变时取得较好的结果。
+
+以下使用torch编程进行实验：
+
+import torch
+from d2l import torch as d2l
+from torch import nn
+train_iter, test_iter = d2l.load_data_fashion_mnist(256, resize=None)
+
+def initweight4_2_1(num_inputs=784, num_outputs=10, num_hiddens=256):
+    W1 = nn.Parameter(torch.randn(num_inputs, num_hiddens, requires_grad=True) * 0.01) # PyTorch中的nn.Parameter函数创建了一个需要梯度的模型参数。torch.randn(num_inputs, num_hiddens)生成一个大小为num_inputs x num_hiddens的张量，其中的值是从均值为0，方差为1的正态分布中随机采样得到的。接着乘以0.01，这是一个常见的权重初始化方法，目的是将权重初始化为一个比较小的值，以便在训练过程中更快地收敛。最后，使用nn.Parameter将这个张量转换为模型的可学习参数，这意味着在训练过程中，PyTorch会自动计算这个参数的梯度，并更新它的数值。
+    b1 = nn.Parameter(torch.zeros(num_hiddens, requires_grad=True))
+    W2 = nn.Parameter(torch.randn(num_hiddens, num_outputs, requires_grad=True) * 0.01)
+    b2 = nn.Parameter(torch.zeros(num_outputs, requires_grad=True))
+    params = [W1, b1, W2, b2]
+    return W1, b1, W2, b2, params
+showtrain=0 # showtrain=1 可以展示训练过程的情况
+num_inputs=784
+num_outputs=10
+num_hiddenslist=list(range(230,370,10))
+animatornum_hiddens=d2l.Animator(xlabel='num_hiddens',ylabel='Y',xlim=[num_hiddenslist[0],num_hiddenslist[-1]], ylim=[0.8, 0.9],
+legend=[ 'train acc', 'test acc'])
+for num_hiddens in num_hiddenslist:
+    num_epochs, lr = 10, 0.1
+    loss = nn.CrossEntropyLoss(reduction='none')
+    W1, b1, W2, b2, params = initweight4_2_1(num_inputs=num_inputs, num_outputs=num_outputs, num_hiddens=num_hiddens)
+    updater = torch.optim.SGD(params, lr=lr)
+    def relu(X):
+        a = torch.zeros_like(X)
+        return torch.max(X, a)
+    def net(X):
+        X = X.reshape((-1, num_inputs))
+        H = relu(X@W1 + b1) # 这里“@”代表矩阵乘法
+        return (H@W2 + b2)
+    if showtrain==1:
+        animator = d2l.Animator(xlabel=f'epoch num_hiddens:{num_hiddens}',ylabel='Y',xlim=[1, num_epochs], ylim=[0.25, 0.9],legend=['train loss', 'train acc', 'test acc'])
+    for epoch in range(num_epochs):
+        train_metrics = d2l.train_epoch_ch3(net, train_iter, loss, updater)
+        test_acc = d2l.evaluate_accuracy(net, test_iter)
+        if showtrain==1:
+            animator.add(epoch + 1, train_metrics + (test_acc,))
+        train_loss, train_acc = train_metrics
+        print(f'num_hiddens={num_hiddens}, train_loss={train_loss}, train_acc={train_acc}, test_acc={test_acc}')
+    animatornum_hiddens.add(num_hiddens, (train_acc, test_acc))
+    assert train_loss < 0.5, train_loss # assert语法：assert expression [, arguments] ，如果expression不成立，则输出arguments
+    assert train_acc <= 1 and train_acc > 0.7, train_acc
+    assert test_acc <= 1 and test_acc > 0.7, test_acc
+
+# 输出：num_hiddens=300, train_loss=0.3826211281458537, train_acc=0.8655666666666667, test_acc=0.85
+
+---
+
+练习4.2.2
+
+尝试添加更多的隐藏层，并查看它对结果有何影响。
+
+解答：
+
+在其他参数不变的情况下单纯增加隐藏层数会减少准确率。
+
+以下使用torch编程进行实验：
+
+# import见4.2.1
+train_iter, test_iter = d2l.load_data_fashion_mnist(256, resize=None)
+
+def initweight4_2_2(num_inputs=784, num_outputs=10, num_hiddens=256, num_hiddenlayers=1):
+    params = []
+    for i in range(num_hiddenlayers):
+        a = num_inputs if i == 0 else num_hiddens
+        b = num_hiddens
+        params.append(nn.Parameter(torch.randn(a, b, requires_grad=True) * 0.01))
+        params.append(nn.Parameter(torch.zeros(b, requires_grad=True)))
+    params.append(nn.Parameter(torch.randn(num_hiddens, num_outputs, requires_grad=True) * 0.01))
+    params.append(nn.Parameter(torch.zeros(num_outputs, requires_grad=True)))
+    return params
+showtrain = 0  # showtrain=1 可以展示训练过程的情况
+num_inputs = 784
+num_outputs = 10
+num_hiddens = 256
+num_hiddenlayerslist = list(range(1, 5))
+animatornum_hiddenlayers = d2l.Animator(xlabel='hiddenlayers', ylabel='Y', xlim=[num_hiddenlayerslist[0], num_hiddenlayerslist[-1]], ylim=[0.2, 0.88],
+                              legend=['train acc', 'test acc'])
+for num_hiddenlayers in num_hiddenlayerslist:
+    num_epochs, lr = 10, 0.1
+    loss = nn.CrossEntropyLoss(reduction='none')
+    params = initweight4_2_2(num_inputs=num_inputs, num_outputs=num_outputs, num_hiddens=num_hiddens, num_hiddenlayers=num_hiddenlayers)
+    updater = torch.optim.SGD(params, lr=lr)
+    def relu(X):
+        a = torch.zeros_like(X)
+        return torch.max(X, a)
+    def net(X):
+        X = X.reshape((-1, num_inputs))
+        H = relu(X@params[0] + params[1])
+        for i in range(2, 2 * num_hiddenlayers, 2):
+            H = relu(H@(params[i]) + params[i + 1])  # 这里"@"代表矩阵乘法
+        return (H@(params[-2]) + params[-1])
+    if showtrain == 1:
+        animator = d2l.Animator(xlabel=f'epoch num_hiddenlayers:{num_hiddenlayers}', ylabel='Y', xlim=[1, num_epochs], ylim=[0.25, 0.9], legend=['train loss', 'train acc', 'test acc'])
+    for epoch in range(num_epochs):
+        train_metrics = d2l.train_epoch_ch3(net, train_iter, loss, updater)
+        test_acc = d2l.evaluate_accuracy(net, test_iter)
+        if showtrain == 1:
+            animator.add(epoch + 1, train_metrics + (test_acc,))
+        train_loss, train_acc = train_metrics
+        print(f'num_hiddenlayers={num_hiddenlayers}, train_loss={train_loss}, train_acc={train_acc}, test_acc={test_acc}')
+        animatornum_hiddenlayers.add(num_hiddenlayers, (train_acc, test_acc))
+
+---
+
+练习4.2.3
+
+改变学习率会如何影响结果？保持模型架构和其他超参数（包括轮数）不变，学习率设置为多少会带来最好的结果？
+
+解答：
+
+较大的学习率可以让loss下降更快，在训练初期更快地训练模型。但过大的学习率也可能造成参数更新幅度过大，导致参数在最优解附近来回跳跃，无法收敛或收敛到错误的值。而过小的学习率则要求更多的训练轮数才能达到收敛。最理想的学习率不是固定值，而是一个随着训练次数衰减的值。在训练初期学习率较大，随着训练的进行逐步减小，直到模型收敛。
+
+以下使用torch编程进行实验：
+
+# import见4.2.1
+listlr = [1.0, 0.1, 0.01, 0.001]
+train_iter, test_iter = d2l.load_data_fashion_mnist(256, resize=None)
+num_epochs = 20
+loss = nn.CrossEntropyLoss(reduction='none')
+d2l.plt.figure(figsize=(10, 10))
+for lr in listlr:
+    num_inputs = 784; num_outputs = 10; num_hiddens = 256
+    W1, b1, W2, b2, params = initweight4_2_1()  # initweight4_2_1定义见4.2.1
+    updater = torch.optim.SGD(params, lr=lr)
+    epoch_loss = []
+    def relu(X):
+        a = torch.zeros_like(X)
+        return torch.max(X, a)
+    def net(X):
+        X = X.reshape((-1, num_inputs))
+        H = relu(X@W1 + b1)  # 这里"@"代表矩阵乘法
+        return (H@W2 + b2)
+
+    for epoch in range(num_epochs):
+        train_metrics = d2l.train_epoch_ch3(net, train_iter, loss, updater)
+        test_acc = d2l.evaluate_accuracy(net, test_iter)
+
+        epoch_loss.append(train_metrics[0])
+        train_loss, train_acc = train_metrics
+    d2l.plt.plot(range(1, num_epochs + 1), epoch_loss, label=(f'lr={lr}'))
+
+补充说明：关于学习率的动态调整算法，可参考pytorch官方文档：https://pytorch.org/docs/stable/optim.html
+下面以指数衰减策略为例调整学习率。
+num_inputs = 784; num_outputs = 10; num_hiddens = 256
+W1, b1, W2, b2, params = initweight4_2_1()  # initweight4_2_1定义见4.2.1
+optimizer_ExpLR = torch.optim.SGD(params, lr=0.1)  # 定义一个优化器，初始学习率为0.1
+scheduler_ExpLR = torch.optim.lr_scheduler.ExponentialLR(optimizer_ExpLR, gamma=0.98)  # 定义指数衰减学习率调度器，根据给定的衰减率 gamma 对优化器的学习率进行指数衰减
+epoch_loss = []
+def relu(X):
+    a = torch.zeros_like(X)
+    return torch.max(X, a)
+def net(X):
+    X = X.reshape((-1, num_inputs))
+    H = relu(X@W1 + b1)  # 这里"@"代表矩阵乘法
+    return (H@W2 + b2)
+
+for epoch in range(num_epochs):
+    train_metrics = d2l.train_epoch_ch3(net, train_iter, loss, optimizer_ExpLR)
+    scheduler_ExpLR.step()  # 每个epoch结束后更新学习率
+    test_acc = d2l.evaluate_accuracy(net, test_iter)
+
+    epoch_loss.append(train_metrics[0])
+    train_loss, train_acc = train_metrics
+    d2l.plt.plot(range(1, num_epochs + 1), epoch_loss, label='按轮数动态调整学习率')
+
+d2l.plt.xlim(1, num_epochs)
+d2l.plt.xticks(list(range(1, num_epochs + 1)))
+d2l.plt.xlabel('epoch')
+d2l.plt.ylabel('loss')
+d2l.plt.grid();
+d2l.plt.legend();
+d2l.plt.show();
+
+---
+
+练习4.2.4
+
+通过对所有超参数（学习率、轮数、隐藏层数、每层的隐藏单元数）进行联合优化，能取得的最佳结果是什么？
+
+解答：
+
+考虑隐藏层数固定为1，学习轮数固定为10。每层的隐藏单元数在（256、128、64、32、16）中选取，学习率在（0.0001、0.001、0.01、0.1、1）范围内选取，batch_size（批大小）在（512、256、128、64、32、16）范围内选取，对这些超参数组合进行优化。以下展示部分实验数据（由于训练的随机性，后面展示的实验结果与此表格中的数据可能会有一些出入）。
+
+num_epochs batch_size lr num_hiddens test_acc train_acc train_loss
+10 256 0.1 32 0.8459 0.854367 0.41196403
+10 128 0.1 256 0.8629 0.8808833 0.33219405
+10 64 0.1 256 0.8769 0.89346 0.291003041
+10 32 0.1 256 0.8865 0.9014 0.26649176
+10 16 0.1 512 0.8824 0.90453 0.2544131
+
+（最优结果的训练过程详见answers/04.02_reference_answer.ipynb）
+
+# import见4.2.1
+num_inputs, num_outputs, num_hiddens = 784, 10, 256
+num_epochs, lr, batch_size = 10, 0.1, 32
+loss = nn.CrossEntropyLoss(reduction='none')
+W1, b1, W2, b2, params = initweight4_2_1(num_inputs=num_inputs, num_outputs=num_outputs, num_hiddens=num_hiddens)  # initweight4_2_1定义见4.2.1
+updater = torch.optim.SGD(params, lr=lr)
+def relu(X):
+    a = torch.zeros_like(X)
+    return torch.max(X, a)
+def net(X):
+    X = X.reshape((-1, num_inputs))
+    H = relu(X@W1 + b1)  # 这里"@"代表矩阵乘法
+    return (H@W2 + b2)
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+animator = d2l.Animator(xlabel='epoch', ylabel='Y', xlim=[1, num_epochs], ylim=[0.25, 0.91],
+                         legend=['train loss', 'train acc', 'test acc'])
+for epoch in range(num_epochs):
+    train_metrics = d2l.train_epoch_ch3(net, train_iter, loss, updater)
+    test_acc = d2l.evaluate_accuracy(net, test_iter)
+
+    animator.add(epoch + 1, train_metrics + (test_acc,))
+    train_loss, train_acc = train_metrics
+    assert train_loss < 0.5, train_loss
+    assert train_acc <= 1 and train_acc > 0.7, train_acc
+    assert test_acc <= 1 and test_acc > 0.7, test_acc
+    print(f'epochs={num_epochs}, num_hiddens={num_hiddens}, lr={lr}, batch_size={batch_size}, train_loss={train_loss}, train_acc={train_acc}, test_acc={test_acc}')
+
+# 输出：epochs=10, num_hiddens=512, lr=0.1, batch_size=16, train_loss=0.25638708310673636, train_acc=0.9039666666666667, test_acc=0.8697
+
+考虑隐藏层数固定为2，并取第二层隐藏单元数为第一层隐藏单元数的一半和10两个数中较大的值，学习轮数固定为10。第一层的隐藏单元数在（256、128、64、32、16）中选取，学习率在（0.0001、0.001、0.01、0.1、1）范围内选取，batch_size（批大小）在（512、256、128、64、32、16）范围内选取，对这些超参数组合进行优化。以下展示部分实验数据（由于训练的随机性，后面展示的实验结果与此表格中的数据可能会有一些出入）。
+
+num_epochs batch_size lr num_hiddens1 num_hiddens2 test_acc train_acc train_loss
+10 256 0.1 512 256 0.8854 0.90515 0.24805
+10 128 0.1 256 128 0.8822 0.9017166 0.25835
+10 64 0.1 512 256 0.8811 0.90435 0.248654
+10 32 0.1 512 256 0.8837 0.906683 0.2463282
+10 16 0.1 512 256 0.8789 0.90626 0.24752787
+
+（最优结果的训练过程详见answers/04.02_reference_answer.ipynb）
+
+# import见4.2.1
+def initweight4_2_4(num_inputs=784, num_outputs=10, num_hiddens=256):
+    num_hiddens2 = int(num_hiddens / 2) if (num_hiddens / 2) > 10 else 10
+    W1 = nn.Parameter(torch.randn(num_inputs, num_hiddens, requires_grad=True) * 0.01)
+    b1 = nn.Parameter(torch.zeros(num_hiddens, requires_grad=True))
+    W2 = nn.Parameter(torch.randn(num_hiddens, num_hiddens2, requires_grad=True) * 0.01)
+    b2 = nn.Parameter(torch.zeros(num_hiddens2, requires_grad=True))
+    W3 = nn.Parameter(torch.randn(num_hiddens2, num_outputs, requires_grad=True) * 0.01)
+    b3 = nn.Parameter(torch.zeros(num_outputs, requires_grad=True))
+    params = [W1, b1, W2, b2, W3, b3]
+    return W1, b1, W2, b2, W3, b3, params
+num_inputs, num_outputs, num_hiddens = 784, 10, 512
+num_epochs, lr, batch_size = 10, 0.1, 256
+loss = nn.CrossEntropyLoss(reduction='none')
+W1, b1, W2, b2, W3, b3, params = initweight4_2_4(num_inputs=num_inputs, num_outputs=num_outputs, num_hiddens=num_hiddens)
+updater = torch.optim.SGD(params, lr=lr)
+def relu(X):
+    a = torch.zeros_like(X)
+    return torch.max(X, a)
+def net(X):
+    X = X.reshape((-1, num_inputs))
+    H = relu(X@W1 + b1)  # 这里"@"代表矩阵乘法
+    X2 = H@W2 + b2
+    H2 = relu(X2)
+    return (H2@W3 + b3)
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+animator = d2l.Animator(xlabel='epoch', ylabel='Y', xlim=[1, num_epochs], ylim=[0.25, 0.91],
+                         legend=['train loss', 'train acc', 'test acc'])
+for epoch in range(num_epochs):
+    train_metrics = d2l.train_epoch_ch3(net, train_iter, loss, updater)
+    test_acc = d2l.evaluate_accuracy(net, test_iter)
+
+    animator.add(epoch + 1, train_metrics + (test_acc,))
+    train_loss, train_acc = train_metrics
+    assert train_loss < 0.5, train_loss
+    assert train_acc <= 1 and train_acc > 0.7, train_acc
+    assert test_acc <= 1 and test_acc > 0.7, test_acc
+    print(f'epochs={num_epochs}, num_hiddens={num_hiddens}, num_hiddens2={num_hiddens2}, lr={lr}, batch_size={batch_size}, train_loss={train_loss}, train_acc={train_acc}, test_acc={test_acc}')
+# 输出：epochs=10, num_hiddens=512, num_hiddens2=256, lr=0.1, batch_size=256, train_loss=0.38585775864919025, train_acc=0.8599333333333333, test_acc=0.838
+
+---
+
+练习4.2.5
+
+描述为什么同时调优多个超参数更具挑战性。
+
+解答：
+
+超参数无法通过常规的优化手段确定。每次调整超参数都要依据训练结果，导致调整一次需要的成本很大。而过多的超参数将导致更多的参数组合，这使得通过训练来确定最优的超参数非常困难。
+
+---
+
+练习4.2.6
+
+如果想要构建多个超参数的搜索方法，请想出一个聪明的策略。
+
+解答：
+
+首先，超参数无法通过常规的优化手段确定。每次调整超参数都要依据训练结果，导致调整一次需要的成本很大。而过多的超参数将导致更多的参数组合，这使得通过训练来确定最优的超参数非常困难。其次，根据过往的经验（文献或以前的实践）选定一组超参数，从调整后计算成本最小的参数入手，确定它的值以后，再去确定计算成本比它大一点的参数，一步确定一个超参数，最后得到所有超参数的值。然后重复以上步骤，直到结果满意为止。

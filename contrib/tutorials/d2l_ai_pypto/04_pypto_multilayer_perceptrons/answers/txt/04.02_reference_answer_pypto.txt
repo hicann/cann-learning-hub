@@ -1,0 +1,270 @@
+## 4.2 多层感知机的从零开始实现
+
+### 环境配置
+
+```python
+import os
+import sys
+import warnings
+import logging
+sys.path.insert(0, "..")
+os.environ["TILE_FWK_DEVICE_ID"] = "0"
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+warnings.filterwarnings("ignore", message="TASK_QUEUE_ENABLE")
+warnings.filterwarnings("ignore", message="Permission mismatch")
+warnings.filterwarnings("ignore", message="Cannot create tensor with internal format")
+import matplotlib_inline.backend_inline
+matplotlib_inline.backend_inline.set_matplotlib_formats("png")
+import pypto
+import torch
+from torch import nn
+import torch_npu
+from d2l import torch as d2l
+import numpy as np
+
+device_id = int(os.environ["TILE_FWK_DEVICE_ID"])
+torch.npu.set_device(device_id)
+device = f"npu:{device_id}"
+```
+
+### 练习4.2.1
+在所有其他参数保持不变的情况下，更改超参数`num_hiddens`的值，并查看此超参数的变化对结果有何影响。确定此超参数的最佳值。
+
+**解答：**
+在实验的 [128, 256, 512] 三种取值中，num_hiddens=256 在本超参数设置下效果最好。
+
+```python
+from src.utils import load_data_fashion_mnist, Animator
+from src.pypto_ops import PyPTOLinear, PyPTOReLU, PyPTOSoftmaxCrossEntropyLossFunction
+
+train_iter, test_iter = load_data_fashion_mnist(256, resize=None)
+
+
+def build_mlp(dims):
+    """按维度列表 [784, h1, ..., 10] 构造 MLP：每层 PyPTOLinear，隐藏层后接 PyPTOReLU。"""
+    layers = [nn.Flatten()]
+    for i in range(len(dims) - 1):
+        layers.append(PyPTOLinear(dims[i], dims[i + 1]))
+        if i < len(dims) - 2:
+            layers.append(PyPTOReLU())
+    return nn.Sequential(*layers).to(device)
+
+def loss_ce_none(y_hat, y):
+    """逐样本交叉熵（reduction='none'），前向/反向均在 NPU 上计算。"""
+    return PyPTOSoftmaxCrossEntropyLossFunction.apply(y_hat, y, 10)
+
+def train_epoch_npu(net, train_iter, updater):
+    """在 NPU 上训练一个迭代周期，返回 (平均损失, 训练准确率)。指标在设备上累加，每 epoch 仅同步一次。"""
+    net.train()
+    loss_sum = torch.zeros((), device=device)
+    acc_sum = torch.zeros((), device=device)
+    n = 0
+    for X, y in train_iter:
+        X, y = X.to(device), y.to(device)
+        y_hat = net(X)
+        l = loss_ce_none(y_hat, y)
+        updater.zero_grad()
+        l.mean().backward()
+        updater.step()
+        loss_sum += l.detach().sum()
+        acc_sum += (y_hat.detach().argmax(dim=1) == y).sum()
+        n += y.numel()
+    return loss_sum.item() / n, acc_sum.item() / n
+
+def evaluate_accuracy_npu(net, data_iter):
+    net.eval()
+    acc_sum = torch.zeros((), device=device)
+    n = 0
+    with torch.no_grad():
+        for X, y in data_iter:
+            X, y = X.to(device), y.to(device)
+            acc_sum += (net(X).argmax(dim=1) == y).sum()
+            n += y.numel()
+    return acc_sum.item() / n
+```
+
+```python
+# 练习：不同隐藏单元数对结果的影响（NPU + pypto）
+showtrain = 0  # showtrain=1 可展示每个配置的训练过程
+num_hiddenslist = [128, 256, 512]
+animatornum_hiddens = Animator(xlabel='num_hiddens', ylabel='Y',
+                               xlim=[num_hiddenslist[0], num_hiddenslist[-1]], ylim=[0.8, 0.9],
+                               legend=['train acc', 'test acc'])
+for num_hiddens in num_hiddenslist:
+    num_epochs, lr = 10, 0.1
+    net = build_mlp([784, num_hiddens, 10])
+    updater = torch.optim.SGD(net.parameters(), lr=lr)
+    if showtrain == 1:
+        animator = Animator(xlabel=f'epoch num_hiddens:{num_hiddens}', ylabel='Y',
+                            xlim=[1, num_epochs], ylim=[0.25, 0.9],
+                            legend=['train loss', 'train acc', 'test acc'])
+    for epoch in range(num_epochs):
+        train_metrics = train_epoch_npu(net, train_iter, updater)
+        test_acc = evaluate_accuracy_npu(net, test_iter)
+        if showtrain == 1:
+            animator.add(epoch + 1, train_metrics + (test_acc,))
+    train_loss, train_acc = train_metrics
+    print(f'num_hiddens={num_hiddens}, train_loss={train_loss}, train_acc={train_acc}, test_acc={test_acc}')
+    animatornum_hiddens.add(num_hiddens, (train_acc, test_acc))
+    assert train_loss < 0.5, train_loss
+    assert train_acc <= 1 and train_acc > 0.7, train_acc
+    assert test_acc <= 1 and test_acc > 0.7, test_acc
+```
+
+### 练习4.2.2
+尝试添加更多的隐藏层，并查看它对结果有何影响。
+
+**解答：**
+在其他参数不变的情况下单纯增加隐藏层数会减少准确率。
+
+```python
+# 练习：不同隐藏层数对结果的影响（NPU + pypto）
+showtrain = 0
+num_hiddens = 256
+num_hiddenlayerslist = list(range(1, 4))
+animatornum_hiddenlayers = Animator(xlabel='hiddenlayers', ylabel='Y',
+                                    xlim=[num_hiddenlayerslist[0], num_hiddenlayerslist[-1]], ylim=[0.2, 0.88],
+                                    legend=['train acc', 'test acc'])
+for num_hiddenlayers in num_hiddenlayerslist:
+    num_epochs, lr = 10, 0.1
+    net = build_mlp([784] + [num_hiddens] * num_hiddenlayers + [10])
+    updater = torch.optim.SGD(net.parameters(), lr=lr)
+    if showtrain == 1:
+        animator = Animator(xlabel=f'epoch num_hiddenlayers:{num_hiddenlayers}', ylabel='Y',
+                            xlim=[1, num_epochs], ylim=[0.25, 0.9],
+                            legend=['train loss', 'train acc', 'test acc'])
+    for epoch in range(num_epochs):
+        train_metrics = train_epoch_npu(net, train_iter, updater)
+        test_acc = evaluate_accuracy_npu(net, test_iter)
+        if showtrain == 1:
+            animator.add(epoch + 1, train_metrics + (test_acc,))
+    train_loss, train_acc = train_metrics
+    print(f'num_hiddenlayers={num_hiddenlayers}, train_loss={train_loss}, train_acc={train_acc}, test_acc={test_acc}')
+    animatornum_hiddenlayers.add(num_hiddenlayers, (train_acc, test_acc))
+```
+
+### 练习4.2.3
+改变学习速率会如何影响结果？保持模型架构和其他超参数（包括轮数）不变，学习率设置为多少会带来最好的结果？
+
+**解答：**
+较大的学习速率可以让 loss 下降更快，但也可能造成参数更新值过大导致无法收敛。过小的学习率会要求更多的训练轮数。在实验的 lr=[0.01, 0.1, 0.5, 1.0] 中，lr=0.1 达到了最好的测试准确率。此外，使用随迭代周期指数衰减的学习率可以进一步稳定后期收敛。
+
+```python
+# 练习：不同学习率 + 指数衰减策略对训练损失的影响（NPU + pypto）
+import matplotlib.pyplot as plt
+num_epochs = 20
+listlr = [1.0, 0.1, 0.01, 0.001]
+train_iter, test_iter = load_data_fashion_mnist(256, resize=None)
+plt.figure(figsize=(10, 10))
+for lr in listlr:
+    net = build_mlp([784, 256, 10])
+    updater = torch.optim.SGD(net.parameters(), lr=lr)
+    epoch_loss = []
+    for epoch in range(num_epochs):
+        train_metrics = train_epoch_npu(net, train_iter, updater)
+        test_acc = evaluate_accuracy_npu(net, test_iter)
+        epoch_loss.append(train_metrics[0])
+    train_loss, train_acc = train_metrics
+    plt.plot(range(1, num_epochs + 1), epoch_loss, label=f'lr={lr}')
+# 指数衰减策略
+net = build_mlp([784, 256, 10])
+optimizer_ExpLR = torch.optim.SGD(net.parameters(), lr=0.1)
+scheduler_ExpLR = torch.optim.lr_scheduler.ExponentialLR(optimizer_ExpLR, gamma=0.98)
+epoch_loss = []
+for epoch in range(num_epochs):
+    train_metrics = train_epoch_npu(net, train_iter, optimizer_ExpLR)
+    scheduler_ExpLR.step()
+    test_acc = evaluate_accuracy_npu(net, test_iter)
+    epoch_loss.append(train_metrics[0])
+plt.plot(range(1, num_epochs + 1), epoch_loss, label='adjust the learning rate based on the number of epochs')
+plt.xlim(1, num_epochs)
+plt.xticks(list(range(1, num_epochs + 1)))
+plt.xlabel('epoch')
+plt.ylabel('loss')
+plt.grid()
+plt.legend()
+plt.show()
+```
+
+### 练习4.2.4
+通过对所有超参数（学习率、轮数、隐藏层数、每层的隐藏单元数）进行联合优化，可以得到的最佳结果是什么？
+
+**解答：**
+
+一层隐藏层结果如下：
+
+| num_epochs | batch_size |  lr  | num_hiddens | test_acc | train_acc | train_loss  |
+| ---------- | ---------- | :--: | ----------- | -------- | --------- | ----------- |
+| 10         | 256        | 0.1  | 32          | 0.8459   | 0.854367  | 0.41196403  |
+| 10         | 128        | 0.1  | 256         | 0.8629   | 0.8808833 | 0.33219405  |
+| 10         | 64         | 0.1  | 256         | 0.8769   | 0.89346   | 0.291003041 |
+| 10         | 32         | 0.1  | 256         | 0.8865   | 0.9014    | 0.26649176  |
+| 10         | 16         | 0.1  | 512         | 0.8824   | 0.90453   | 0.2544131   |
+
+最佳结果（单层隐藏层）：
+
+```python
+# 练习：较小批量（batch_size=32）下的训练（NPU + pypto）
+num_epochs, lr = 10, 0.1
+batch_size = 32
+num_hiddens = 256
+net = build_mlp([784, num_hiddens, 10])
+updater = torch.optim.SGD(net.parameters(), lr=lr)
+train_iter, test_iter = load_data_fashion_mnist(batch_size)
+animator = Animator(xlabel='epoch', ylabel='Y', xlim=[1, num_epochs], ylim=[0.25, 0.91],
+                    legend=['train loss', 'train acc', 'test acc'])
+for epoch in range(num_epochs):
+    train_metrics = train_epoch_npu(net, train_iter, updater)
+    test_acc = evaluate_accuracy_npu(net, test_iter)
+    animator.add(epoch + 1, train_metrics + (test_acc,))
+    train_loss, train_acc = train_metrics
+assert train_loss < 1.0, train_loss
+assert train_acc <= 1 and train_acc > 0.6, train_acc
+assert test_acc <= 1 and test_acc > 0.6, test_acc
+print(f'epochs={num_epochs}, num_hiddens={num_hiddens}, lr={lr}, batch_size={batch_size}, train_loss={train_loss}, train_acc={train_acc}, test_acc={test_acc}')
+```
+
+两层隐藏层结果如下：
+
+| num_epochs | batch_size |  lr  | num_hiddens1 | num_hiddens2 | test_acc | train_acc | train_loss |
+| ---------- | ---------- | :--: | ------------ | ------------ | -------- | --------- | ---------- |
+| 10         | 256        | 0.1  | 512          | 256          | 0.8854   | 0.90515   | 0.24805    |
+| 10         | 128        | 0.1  | 256          | 128          | 0.8822   | 0.9017166 | 0.25835    |
+| 10         | 64         | 0.1  | 512          | 256          | 0.8811   | 0.90435   | 0.248654   |
+| 10         | 32         | 0.1  | 512          | 256          | 0.8837   | 0.906683  | 0.2463282  |
+| 10         | 16         | 0.1  | 512          | 256          | 0.8789   | 0.90626   | 0.24752787 |
+
+最佳结果（两层隐藏层）：
+
+```python
+# 练习：更深的两隐藏层网络（512 -> 256 -> 10）（NPU + pypto）
+num_hiddens = 512
+num_hiddens2 = int(num_hiddens / 2) if (num_hiddens / 2) > 10 else 10
+num_epochs, lr, batch_size = 10, 0.1, 256
+net = build_mlp([784, num_hiddens, num_hiddens2, 10])
+updater = torch.optim.SGD(net.parameters(), lr=lr)
+train_iter, test_iter = load_data_fashion_mnist(batch_size)
+animator = Animator(xlabel='epoch', ylabel='Y', xlim=[1, num_epochs], ylim=[0.25, 0.91],
+                    legend=['train loss', 'train acc', 'test acc'])
+for epoch in range(num_epochs):
+    train_metrics = train_epoch_npu(net, train_iter, updater)
+    test_acc = evaluate_accuracy_npu(net, test_iter)
+    animator.add(epoch + 1, train_metrics + (test_acc,))
+    train_loss, train_acc = train_metrics
+assert train_loss < 0.5, train_loss
+assert train_acc <= 1 and train_acc > 0.7, train_acc
+assert test_acc <= 1 and test_acc > 0.7, test_acc
+print(f'epochs={num_epochs}, num_hiddens={num_hiddens},num_hiddens2={num_hiddens2},lr={lr}, batch_size={batch_size}, train_loss={train_loss}, train_acc={train_acc}, test_acc={test_acc}')
+```
+
+### 练习4.2.5
+描述为什么涉及多个超参数更具挑战性。
+
+**解答：**
+超参数无法通过常规的优化手段确定，每次调整超参数要依据训练结果导致调整一次需要的成本很大，而过多的超参数将导致更多的参数组合，使得通过训练来确定好最优的超参数很困难。
+
+### 练习4.2.6
+如果想要构建多个超参数的搜索方法，请想出一个聪明的策略。
+
+**解答：**
+根据过往的经验选定好一组超参数，从调整后计算成本最小的参数入手确定好它的值以后，再去确定计算成本比它大一点的参数，一步确定一个超参数，最后得到所有超参数的值，然后重复之前步骤，直到结果满意为止。
