@@ -1,0 +1,145 @@
+8.6 循环神经网络的简洁实现 练习参考答案
+
+练习8.6.1
+
+尝试使用高级API，能使循环神经网络模型过拟合吗？
+
+解答：
+使用小数据集、高学习率（lr=10），并训练较多周期（num_epochs=500），
+可以显著过拟合。训练困惑度会飙升至极大值，而预测出的文本变成连续重复
+的单个字符，说明模型已经崩溃，只能输出它认为最"安全"的预测。
+
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+
+num_hiddens = 256
+rnn_layer = nn.RNN(len(vocab), num_hiddens)
+
+device = d2l.try_gpu()
+net = d2l.RNNModel(rnn_layer, vocab_size=len(vocab))
+net = net.to(device)
+num_epochs, lr = 500, 10
+d2l.train_ch8(net, train_iter, vocab, lr, num_epochs, device)
+
+# 输出:
+# perplexity 62334304447965890753852937863168.0, 111439.5 tokens/sec
+# time travellereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee...
+# travellereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee...
+
+---
+
+练习8.6.2
+
+如果在循环神经网络模型中增加隐藏层的数量会发生什么？
+
+解答：
+增加隐藏层数量可以增加模型容量，使训练困惑度降低（如从1.2降到1.0），
+但也会显著降低训练/推理速度（如从564185到188061 tokens/sec），且当层数
+过多时（如20层），模型可能因梯度消失或梯度爆炸而无法有效训练，困惑度
+反而上升。需要在模型容量和计算效率之间取得平衡。
+
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+batch_size, num_steps = 32, 100
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+
+device = d2l.try_gpu()
+
+# num_layers=1
+rnn_layer_1 = nn.RNN(len(vocab), 256, num_layers=1)
+net_1 = d2l.RNNModel(rnn_layer_1, len(vocab)).to(device)
+d2l.train_ch8(net_1, train_iter, vocab, 1.0, 500, device)
+# 输出: perplexity 1.2, 564185.0 tokens/sec
+
+# num_layers=3
+rnn_layer_3 = nn.RNN(len(vocab), 256, num_layers=3)
+net_3 = d2l.RNNModel(rnn_layer_3, len(vocab)).to(device)
+d2l.train_ch8(net_3, train_iter, vocab, 1.0, 500, device)
+# 输出: perplexity 1.0, 188061.7 tokens/sec
+
+# num_layers=20
+rnn_layer_20 = nn.RNN(len(vocab), 256, num_layers=20)
+net_20 = d2l.RNNModel(rnn_layer_20, len(vocab)).to(device)
+d2l.train_ch8(net_20, train_iter, vocab, 1.0, 500, device)
+# 输出: perplexity 17.4, 29693.7 tokens/sec
+
+---
+
+练习8.6.3
+
+尝试使用循环神经网络实现 8.1 节的自回归模型
+
+解答：
+将 08.1 节的正弦序列预测问题建模为 sequence-to-sequence 任务，
+使用 nn.RNN 替代 MLP。RNN 的隐状态可以穿越时间步，能够捕捉序列中的
+长程依赖关系，理论上比固定窗口 tau=4 的 MLP 更适合序列预测。
+
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+# 数据生成
+T = 1000
+time = torch.arange(1, T + 1, dtype=torch.float32)
+x = torch.sin(0.01 * time) + torch.normal(0, 0.2, (T,))
+
+tau = 4
+features = torch.zeros((T - tau, tau))
+for i in range(tau):
+    features[:, i] = x[i: T - tau + i]
+labels = x[tau:].reshape((-1, 1))
+
+batch_size, n_train = 16, 600
+train_iter = d2l.load_array((features[:n_train], labels[:n_train]),
+                             batch_size, is_train=True)
+
+# 构建 RNN 自回归模型
+# RNNCell 每次将单个时间步的特征 (batch, tau) 作为输入，输出 hidden_size
+# 再用 Linear 层映射到标量预测
+class RNNAutoRegressive(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.rnn = nn.RNN(input_size=4, hidden_size=200)
+        self.linear = nn.Linear(200, 1)
+    
+    def forward(self, X):
+        # X: (batch_size, tau), 在第1维增加 seq_len 维度
+        out, _ = self.rnn(X.unsqueeze(0))
+        return self.linear(out)
+
+loss = nn.MSELoss(reduction='none')
+
+lr = 0.01
+device = d2l.try_gpu()
+net = RNNAutoRegressive().to(device)
+trainer = torch.optim.Adam(net.parameters(), lr)
+
+epochs = 50
+for epoch in range(epochs):
+    for X, y in train_iter:
+        X, y = X.to(device), y.to(device)
+        trainer.zero_grad()
+        l = loss(net(X), y)
+        l.sum().backward()
+        trainer.step()
+    print(f'epoch {epoch + 1}, loss: {d2l.evaluate_loss(net, train_iter, loss):f}')
+
+# 输出: epoch 1, loss: 0.1340
+# 输出: epoch 2, loss: 0.1181
+# 输出: ...
+# 输出: epoch 49, loss: 0.0568
+# 输出: epoch 50, loss: 0.0581
+
+# 单步预测
+features_device = features.to(device)
+onestep_preds = net(features_device).cpu()
+
+d2l.plot([time, time[tau:]],
+         [x.detach().numpy(), onestep_preds.squeeze(1).detach().numpy()], 'time',
+         'x', legend=['data', '1-step preds'], xlim=[1, 1000], figsize=(6, 3))

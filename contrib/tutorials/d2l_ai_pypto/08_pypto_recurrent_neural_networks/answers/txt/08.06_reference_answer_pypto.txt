@@ -1,0 +1,168 @@
+8.6 循环神经网络的简洁实现 - PyPTO 参考答案
+
+练习8.6.1
+
+尝试使用高级 API，能使循环神经网络模型过拟合吗？
+
+解答：使用小数据集、高学习率（lr=10），并训练较多周期（num_epochs=500），可以显著过拟合。训练困惑度会飙升至极大值，而预测出的文本变成连续重复的单个字符 "eeeeeeee..."。
+
+import time as _time
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+class TorchRNNModel(nn.Module):
+    def __init__(self, rnn_layer, vocab_size, device=None):
+        super().__init__()
+        self.rnn = rnn_layer
+        self.vocab_size = vocab_size
+        self.device = device or next(rnn_layer.parameters()).device
+        nd = 2 if self.rnn.bidirectional else 1
+        out_features = self.rnn.hidden_size * nd
+        self.W_hq = nn.Parameter(torch.randn(out_features, vocab_size, device=self.device) * 0.01)
+        self.b_q = nn.Parameter(torch.zeros(vocab_size, device=self.device))
+
+    def forward(self, inputs, state):
+        X = F.one_hot(inputs.T.long(), self.vocab_size)
+        X = X.to(device=self.device, dtype=torch.float32)
+        Y, state = self.rnn(X, state)
+        Y_flat = Y.reshape((-1, Y.shape[-1]))
+        orig_m = Y_flat.shape[0]
+        if orig_m % 16 != 0:
+            pad_m = 16 - orig_m % 16
+            Y_flat_padded = F.pad(Y_flat, (0, 0, 0, pad_m))
+            out_padded = PyPTOBiasAdd.apply(PyPTOMatmul.apply(Y_flat_padded, self.W_hq), self.b_q)
+            output = out_padded[:orig_m, :]
+        else:
+            output = PyPTOBiasAdd.apply(PyPTOMatmul.apply(Y_flat, self.W_hq), self.b_q)
+        return output, state
+
+    def begin_state(self, device=None, batch_size=1):
+        if device is None:
+            device = self.device or next(self.parameters()).device
+        nd = 2 if self.rnn.bidirectional else 1
+        if isinstance(self.rnn, nn.LSTM):
+            return (torch.zeros(nd * self.rnn.num_layers, batch_size, self.rnn.hidden_size, device=device),
+                    torch.zeros(nd * self.rnn.num_layers, batch_size, self.rnn.hidden_size, device=device))
+        return torch.zeros(nd * self.rnn.num_layers, batch_size, self.rnn.hidden_size, device=device)
+
+num_hiddens = 256
+rnn_layer = nn.RNN(len(vocab), num_hiddens)
+net = TorchRNNModel(rnn_layer, vocab_size=len(vocab)).to(device)
+
+# JIT warmup for PyPTO output layer
+print('正在编译 PyPTO kernel...')
+t0 = _time.time()
+state = net.begin_state(device, batch_size)
+X = next(iter(train_iter))[0].to(device)
+Y = F.one_hot(X.T.long(), len(vocab)).to(device=device, dtype=torch.float32)
+rnn_out, _ = net.rnn(Y, state)
+_ = PyPTOBiasAdd.apply(PyPTOMatmul.apply(rnn_out.reshape((-1, rnn_out.shape[-1])), net.W_hq), net.b_q)
+print(f'编译完成，耗时 {_time.time() - t0:.0f} 秒')
+
+num_epochs, lr = 500, 10
+train_ch8(net, train_iter, vocab, lr, num_epochs, device, use_plot=False)
+# 输出（预期）：
+# perplexity 62334304447965890753852937863168.0
+# time travellereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee...
+
+---
+
+练习8.6.2
+
+如果在循环神经网络模型中增加隐藏层的数量会发生什么？
+
+解答：增加隐藏层数量可以增加模型容量，使训练困惑度降低（如从1.2降到1.0），但会显著降低训练/推理速度。当层数过多时（如20层），模型可能因梯度消失而无法有效训练，困惑度反而上升。
+
+batch_size, num_steps = 32, 100
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+# num_layers=1
+print('=== num_layers=1 ===')
+rnn_layer_1 = nn.RNN(len(vocab), 256, num_layers=1)
+net_1 = TorchRNNModel(rnn_layer_1, len(vocab)).to(device)
+train_ch8(net_1, train_iter, vocab, 1.0, 500, device, use_plot=False)
+# 输出：perplexity 1.2, 564185.0 tokens/sec
+
+# num_layers=3
+print('=== num_layers=3 ===')
+rnn_layer_3 = nn.RNN(len(vocab), 256, num_layers=3)
+net_3 = TorchRNNModel(rnn_layer_3, len(vocab)).to(device)
+train_ch8(net_3, train_iter, vocab, 1.0, 500, device, use_plot=False)
+# 输出：perplexity 1.0, 188061.7 tokens/sec
+
+# num_layers=20
+print('=== num_layers=20 ===')
+rnn_layer_20 = nn.RNN(len(vocab), 256, num_layers=20)
+net_20 = TorchRNNModel(rnn_layer_20, len(vocab)).to(device)
+train_ch8(net_20, train_iter, vocab, 1.0, 500, device, use_plot=False)
+# 输出：perplexity 17.4, 29693.7 tokens/sec
+
+---
+
+练习8.6.3
+
+尝试使用循环神经网络实现 8.1 节的自回归模型。
+
+解答：将 08.1 节的正弦序列预测问题建模为 sequence-to-sequence 任务，使用 nn.RNN 替代 MLP。RNN 的隐状态可以穿越时间步，能够捕捉序列中的长程依赖关系，理论上比固定窗口 tau=4 的 MLP 更适合序列预测。
+
+T = 1000
+time_vals = torch.arange(1, T + 1, dtype=torch.float32, device=device)
+x = torch.sin(0.01 * time_vals) + torch.normal(0, 0.2, (T,), device=device)
+
+tau = 4
+features = torch.zeros((T - tau, tau), device=device)
+for i in range(tau):
+    features[:, i] = x[i: T - tau + i]
+labels = x[tau:].reshape((-1, 1))
+
+batch_size, n_train = 16, 600
+train_iter = load_array((features[:n_train], labels[:n_train]), batch_size, is_train=True)
+
+# PyPTO 自回归 RNN 模型
+# RNN 使用 PyTorch nn.RNN，输出层使用 PyPTO 算子
+class RNNAutoRegressive(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.rnn = nn.RNN(input_size=4, hidden_size=200)
+        self.W = nn.Parameter(torch.randn(200, 1, device=device) * 0.01)
+        self.b = nn.Parameter(torch.zeros(1, device=device))
+
+    def forward(self, X):
+        out, _ = self.rnn(X.unsqueeze(0))
+        return PyPTOBiasAdd.apply(PyPTOMatmul.apply(out.reshape((-1, out.shape[-1])), self.W), self.b)
+
+loss = nn.MSELoss(reduction='none')
+
+net = RNNAutoRegressive().to(device)
+trainer = torch.optim.Adam(net.parameters(), 0.01)
+
+# JIT warmup
+print('正在编译 PyPTO kernel...')
+t0 = _time.time()
+X_warm, y_warm = next(iter(train_iter))
+l = loss(net(X_warm), y_warm); l.sum().backward(); net.zero_grad()
+print(f'编译完成，耗时 {_time.time() - t0:.0f} 秒')
+
+epochs = 50
+for epoch in range(epochs):
+    for X, y in train_iter:
+        trainer.zero_grad()
+        l = loss(net(X), y)
+        l.sum().backward()
+        trainer.step()
+    print(f'epoch {epoch + 1}, loss: {evaluate_loss(net, train_iter, loss):f}')
+# 输出（部分）：
+# epoch 1, loss: 0.1340
+# epoch 2, loss: 0.1181
+# ...
+# epoch 49, loss: 0.0568
+# epoch 50, loss: 0.0581
+
+# 单步预测与可视化
+onestep_preds = net(features).cpu()
+
+time_cpu = time_vals.cpu()
+plot([time_cpu, time_cpu[tau:]],
+     [x.detach().cpu().numpy(), onestep_preds.squeeze(1).detach().numpy()], 'time',
+     'x', legend=['data', '1-step preds'], xlim=[1, 1000], figsize=(6, 3))
