@@ -45,7 +45,7 @@
 样例需要合入到contrib目录下，您可以参考以下结构组织您的代码和文档（样例名建议全部小写，多个单词之间用下划线连接，比如yolov3_inference）：
 ```
 ├── contrib                                     # 开发者贡献样例目录
-|  ├── turtoris1                                # 您的样例名（如yolov3_inference）
+|  ├── tutorials1                                # 您的样例名（如yolov3_inference）
 |  |   ├── 01_xxx                               # 第一个章节，若只有一个章节可不创建
 |  |   |   ├── answer                               # answer目录：存放章节实践答案
 |  |   |   ├── images                               # images目录：存放jupyter配图
@@ -55,7 +55,7 @@
 |  |   ├── 02_xxx                               # 第二个章节，若只有一个章节可不创建
 |  |   ├── README.md                            # 教程README文档
 |  |   └── ...                                  # 其他必要文件（如环境配置文件等）
-|  ├── turtoris2
+|  ├── tutorials2
 │  └── ...
 ```
 
