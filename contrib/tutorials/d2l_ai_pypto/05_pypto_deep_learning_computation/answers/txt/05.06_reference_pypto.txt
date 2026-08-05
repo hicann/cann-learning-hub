@@ -1,0 +1,109 @@
+练习5.6.1
+
+尝试一个计算量更大的任务，比如大矩阵的乘法，看看 CPU 和 NPU 之间的速度差异。再试一个计算量很小的任务呢？
+
+解答：
+
+# 计算量较大的任务
+X = torch.rand((10000, 10000))
+Y = X.npu(0)
+
+time_start = time.time()
+Z = torch.mm(X, X)
+time_end = time.time()
+print(f'cpu time cost: {round((time_end - time_start) * 1000, 2)}ms')
+
+torch.npu.synchronize()
+time_start = time.time()
+Z = torch.mm(Y, Y)
+torch.npu.synchronize()
+time_end = time.time()
+print(f'npu time cost: {round((time_end - time_start) * 1000, 2)}ms')
+
+# 计算量很小的任务
+X = torch.rand((100, 100))
+Y = X.npu(0)
+
+time_start = time.time()
+Z = torch.mm(X, X)
+time_end = time.time()
+print(f'cpu time cost: {round((time_end - time_start) * 1000)}ms')
+
+torch.npu.synchronize()
+time_start = time.time()
+Z = torch.mm(Y, Y)
+torch.npu.synchronize()
+time_end = time.time()
+print(f'npu time cost: {round((time_end - time_start) * 1000)}ms')
+
+练习5.6.2
+
+我们应该如何在 NPU 上读写模型参数？
+
+解答：
+
+class MLP(nn.Module):             # 定义 MLP 类
+    def __init__(self):
+        super().__init__()
+        self.hidden = PyPTOLinear(20, 256)   # 定义隐藏层，输入尺寸为 20，输出尺寸为 256
+        self.output = PyPTOLinear(256, 10)   # 定义输出层，输入尺寸为 256，输出尺寸为 10
+
+    def forward(self, x):          # 定义前向传播函数
+        return self.output(F.relu(self.hidden(x)))  # 使用 ReLU 激活函数，计算隐藏层和输出层的输出
+
+# 创建模型实例对象（PyPTOLinear 默认将参数创建在 npu:0 上）
+net = MLP()
+# 访问模型参数
+net.state_dict()
+
+练习5.6.3
+
+测量计算1000个 100×100 矩阵的矩阵乘法所需的时间，并记录输出矩阵的 Frobenius 范数，一次记录一个结果，而不是在 NPU 上保存日志并仅传输最终结果。
+
+解答：
+
+device = torch.device("npu:0" if torch.npu.is_available() else "cpu")
+
+# 生成随机矩阵并放到 device 上
+matrices = [torch.randn(100, 100, device=device) for i in range(1000)]
+
+# 实验一：仅计算 Frobenius 范数，不逐次打印
+start_time_1 = time.time()
+for i in range(1000):
+    result = torch.mm(matrices[i], matrices[i].t())
+    frobenius_norm = torch.norm(result)
+torch.npu.synchronize()
+end_time_1 = time.time()
+print("Time taken:", end_time_1 - start_time_1)
+
+# 实验二：计算范数并逐次打印（每次打印都会触发 NPU→CPU 的数据搬运）
+start_time_2 = time.time()
+for i in range(1000):
+    result = torch.mm(matrices[i], matrices[i].t())
+    frobenius_norm = torch.norm(result)
+    print(frobenius_norm)
+end_time_2 = time.time()
+print("Time taken:", end_time_2 - start_time_2)
+
+print(f'实验一消耗时间：{end_time_1 - start_time_1}，实验二消耗时间：{end_time_2 - start_time_2}')
+
+练习5.6.4
+
+测量同时在两个 NPU 上执行两个矩阵乘法与在一个 NPU 上按顺序执行两个矩阵乘法所需的时间。提示：应该看到近乎线性的缩放。
+
+解答：
+
+# 创建两个随机矩阵并放到 NPU 上
+a = torch.randn(10000, 10000, device='npu')
+b = torch.randn(10000, 10000, device='npu')
+
+# 单 NPU 上顺序执行两次矩阵乘法
+torch.npu.synchronize()
+start_time = time.time()
+c1 = torch.matmul(a, b)
+c2 = torch.matmul(a, b)
+torch.npu.synchronize()
+end_time = time.time()
+sequential_time = end_time - start_time
+
+print(f"Sequential time: {sequential_time:.8f} seconds")

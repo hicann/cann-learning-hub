@@ -1,0 +1,64 @@
+练习5.4.1
+
+设计一个接受输入并计算张量降维的层，它返回 yₖ = ∑ᵢⱼ Wᵢⱼₖ xᵢ xⱼ
+
+解答：
+
+这个公式表示一个线性变换，将输入张量 x 中所有可能的二元组 (xᵢ, xⱼ) 进行组合，并对它们进行加权求和。其中，Wᵢⱼₖ 表示权重张量中第 i,j,k 个元素的值。具体而言，该公式计算了输入张量 x 中所有二元组 (xᵢ, xⱼ) 对应的特征向量 uᵢⱼ 为：uᵢⱼ = xᵢ ⋅ xⱼ。然后，根据权重张量 W 中的权重 Wᵢⱼₖ，对所有特征向量 uᵢⱼ 进行线性组合，得到输出向量 yₖ 为：yₖ = ∑ᵢⱼ Wᵢⱼₖ uᵢⱼ = ∑ᵢⱼ Wᵢⱼₖ xᵢ xⱼ。该操作可以被视为一种降维操作，将高维输入 x 映射到低维输出空间 y 中。
+
+class TensorReduction(nn.Module):
+    def __init__(self, dim1, dim2):
+        super(TensorReduction, self).__init__()
+        # 定义一个可训练的权重参数，维度为(dim2, dim1, dim1)
+        self.weight = nn.Parameter(torch.rand(dim2, dim1, dim1))
+
+    def forward(self, X):
+        # 初始化一个全零张量，大小为(X.shape[0], self.weight.shape[0])
+        Y = torch.zeros(X.shape[0], self.weight.shape[0])
+        for k in range(self.weight.shape[0]):
+            # 计算temp = X @ weight[k] @ X^T
+            temp = torch.matmul(X, self.weight[k]) @ X.T
+            # 取temp的对角线元素，存入Y[:, k]
+            Y[:, k] = temp.diagonal()
+        return Y
+
+# 创建一个TensorReduction层，dim1=10, dim2=5
+layer = TensorReduction(10, 5)
+# 创建一个大小为(2, 10)的张量X
+X = torch.rand(2, 10)
+# 对layer(X)进行前向传播，返回一个大小为(2, 5)的张量
+layer(X).shape
+
+练习5.4.2
+
+设计一个返回输入数据的傅立叶系数前半部分的层。
+
+解答：
+
+傅里叶级数将任意周期函数表示为一组正弦和余弦函数的无限级数。设 f(x) 定义在区间 [-L, L] 上、周期为 2L，其傅里叶级数可表示为：
+f(x) = a₀/2 + ∑ₙ=1^∞ [ aₙ cos(nπx/L) + bₙ sin(nπx/L) ]
+其中系数 a_0、a_n、b_n 可由以下公式计算：
+a₀ = 1/(2L) ∫₋Lᴸ f(x)dx
+aₙ = 1/L ∫₋Lᴸ f(x) cos(nπx/L) dx, n > 0
+bₙ = 1/L ∫₋Lᴸ f(x) sin(nπx/L) dx, n > 0
+aₙ、bₙ 实际上是 f(x) 与 cos(nπx/L)、sin(nπx/L) 的内积，a₀ 是 f(x) 平均值的一半。
+在 torch 中可用相应函数方便地实现傅里叶变换，如下代码所示：
+
+class FourierLayer(nn.Module):
+    def __init__(self):
+        super(FourierLayer, self).__init__()
+
+    def forward(self, x):
+        # 对输入的张量 x 进行快速傅里叶变换
+        x = fft.fftn(x)
+        # 取出第三个维度的前半部分，即去掉直流分量和镜像分量
+        x = x[:, :, :x.shape[2] // 2]
+        # 返回处理后的张量
+        return x
+
+# 创建一个随机数值为 [0, 1) 的形状为 (1, 2, 5) 的张量 X
+X = torch.rand(1, 2, 5)
+# 实例化一个 FourierLayer 的网络对象 net
+net = FourierLayer()
+# 将 X 输入到网络 net 中进行前向计算，并输出结果
+net(X)

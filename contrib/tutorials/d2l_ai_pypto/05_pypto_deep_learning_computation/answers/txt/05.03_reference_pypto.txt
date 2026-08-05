@@ -1,0 +1,53 @@
+练习5.3.1
+
+如果指定了第一层的输入尺寸，但没有指定后续层的尺寸，会发生什么？是否立即进行初始化？
+
+解答：
+"""延后初始化"""
+net = nn.Sequential(PyPTOLinear(20, 256), PyPTOReLU(), PyPTOLazyLinear(10))
+# 尚未初始化
+print(net)
+
+X = torch.rand(2, 20).npu()
+net(X)
+print(net)
+
+练习5.3.2
+
+如果指定了不匹配的维度会发生什么？
+
+解答：
+
+net = nn.Sequential(
+    PyPTOLinear(20, 256), PyPTOReLU(),
+    PyPTOLazyLinear(128), PyPTOReLU(),
+    PyPTOLazyLinear(10))
+
+X = torch.rand(2, 10).npu()
+try:
+    net(X)
+except Exception as e:
+    print(e)
+
+练习5.3.3
+
+如果输入具有不同的维度，需要做什么？提示：查看参数绑定的相关内容。
+
+解答：
+
+# 原始网络（输入维度 20）
+shared = PyPTOLinear(256, 128)          # 后续层，形状不随输入维度变化，可用于参数绑定
+net = nn.Sequential(
+    PyPTOLinear(20, 256), PyPTOReLU(),
+    shared, PyPTOReLU(),
+    PyPTOLinear(128, 10))
+
+# 输入维度改为 10：PyPTOLinear 会校验 in_features，且 _kernel 按维度编译，
+# 入口层不能只替换 weight，需整体替换；后续层通过参数绑定（共享 shared）复用。
+net2 = nn.Sequential(
+    PyPTOLinear(10, 256), PyPTOReLU(),
+    shared, PyPTOReLU(),
+    PyPTOLinear(128, 10))
+
+X = torch.rand(2, 10).npu()
+net2(X)

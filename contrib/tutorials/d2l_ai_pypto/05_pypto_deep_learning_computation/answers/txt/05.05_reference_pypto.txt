@@ -1,0 +1,69 @@
+练习5.5.1
+
+即使不需要将经过训练的模型部署到不同的设备上，存储模型参数还有什么实际的好处？
+
+解答：
+
+1. 加速模型训练：存储模型参数可以避免每次重新训练模型时需要重复计算之前已经计算过的权重和偏置。
+2. 节省内存空间：保存模型参数比保存完整的模型文件更加节省内存空间，这在处理大型模型或使用内存受限设备时尤为重要。
+3. 便于共享和复现：存储模型参数可以方便地共享和复现已经训练好的模型，其他人可以直接加载这些参数并使用它们进行预测或微调。
+4. 便于调试和分析：通过检查模型参数，可以更容易地诊断模型中存在的问题，并对其进行调整和优化。
+
+练习5.5.2
+
+假设我们只想复用网络的一部分，以将其合并到不同的网络架构中。比如想在一个新的网络中使用之前网络的前两层，该怎么做？
+
+解答：
+
+class MLP(nn.Module):             # 定义 MLP 类
+    def __init__(self):
+        super().__init__()
+        self.hidden = PyPTOLinear(20, 256)   # 定义隐藏层，输入尺寸为 20，输出尺寸为 256
+        self.output = PyPTOLinear(256, 10)   # 定义输出层，输入尺寸为 256，输出尺寸为 10
+
+    def forward(self, x):          # 定义前向传播函数
+        return self.output(F.relu(self.hidden(x)))  # 使用 ReLU 激活函数，计算隐藏层和输出层的输出
+
+class MLP_new(nn.Module):             # 定义新的 MLP 类
+    def __init__(self):
+        super().__init__()
+        self.hidden = PyPTOLinear(20, 256)   # 定义隐藏层，输入尺寸为 20，输出尺寸为 256
+        self.output = PyPTOLinear(256, 10)   # 定义输出层，输入尺寸为 256，输出尺寸为 10
+
+    def forward(self, x):          # 定义前向传播函数
+        return self.output(F.relu(self.hidden(x)))  # 使用 ReLU 激活函数，计算隐藏层和输出层的输出
+
+net = MLP()                       # 创建 MLP 的实例
+# 保存前两层（hidden 和 output）的参数
+torch.save(net.hidden.state_dict(), 'mlp.hidden.params')  # 将隐藏层的参数保存到文件中
+torch.save(net.output.state_dict(), 'mlp.output.params')  # 将输出层的参数保存到文件中
+clone = MLP_new()                     # 创建另一个 MLP 的实例
+# 在新网络中加载这两层参数
+clone.hidden.load_state_dict(torch.load('mlp.hidden.params', weights_only=False))  # 加载已保存的隐藏层参数
+clone.output.load_state_dict(torch.load('mlp.output.params', weights_only=False))  # 加载已保存的输出层参数
+print(clone.hidden.weight == net.hidden.weight)  # 比较隐藏层权重是否相等
+print(clone.output.weight == net.output.weight)  # 比较输出层权重是否相等
+
+练习5.5.3
+
+如何同时保存网络架构和参数？需要对架构加上什么限制？
+
+解答：
+
+class MLP(nn.Module):             # 定义 MLP 类
+    def __init__(self):
+        super().__init__()
+        self.hidden = PyPTOLinear(20, 256)   # 定义隐藏层，输入尺寸为 20，输出尺寸为 256
+        self.output = PyPTOLinear(256, 10)   # 定义输出层，输入尺寸为 256，输出尺寸为 10
+
+    def forward(self, x):          # 定义前向传播函数
+        return self.output(F.relu(self.hidden(x)))  # 使用 ReLU 激活函数，计算隐藏层和输出层的输出
+
+net = MLP()
+
+# 存储模型：保存整个模型对象（架构 + 参数），加载时无需重新定义网络结构
+torch.save(net, 'model.pt')
+
+# 导入模型
+model = torch.load('model.pt', weights_only=False)
+model

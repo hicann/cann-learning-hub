@@ -1,0 +1,53 @@
+练习5.4.1
+
+设计一个接受输入并计算张量降维的层，它返回 yₖ = ∑ᵢⱼ Wᵢⱼₖ xᵢ xⱼ
+
+解答：
+
+class TensorReduction(nn.Module):
+    def __init__(self, dim1, dim2):
+        super(TensorReduction, self).__init__()
+        # 定义一个可训练的权重参数，维度为(dim2, dim1, dim1)
+        self.weight = nn.Parameter(torch.rand(dim2, dim1, dim1).npu())
+
+    def forward(self, X):
+        # 初始化一个全零张量，大小为(X.shape[0], self.weight.shape[0])
+        Y = torch.zeros(X.shape[0], self.weight.shape[0]).npu()
+        for k in range(self.weight.shape[0]):
+            # 计算temp = X @ weight[k] @ X^T
+            temp = torch.matmul(X, self.weight[k]) @ X.T
+            # 取temp的对角线元素，存入Y[:, k]
+            Y[:, k] = temp.diagonal()
+        return Y
+
+# 创建一个TensorReduction层，dim1=10, dim2=5
+layer = TensorReduction(10, 5)
+# 创建一个大小为(2, 10)的张量X
+X = torch.rand(2, 10).npu()
+# 对layer(X)进行前向传播，返回一个大小为(2, 5)的张量
+layer(X).shape
+
+练习5.4.2
+
+设计一个返回输入数据的傅立叶系数前半部分的层。
+
+解答：
+
+class FourierLayer(nn.Module):
+    def __init__(self):
+        super(FourierLayer, self).__init__()
+
+    def forward(self, x):
+        # 对输入的张量 x 进行快速傅里叶变换
+        x = fft.fftn(x)
+        # 取出第三个维度的前半部分，即去掉直流分量和镜像分量
+        x = x[:, :, :x.shape[2] // 2]
+        # 返回处理后的张量
+        return x
+
+# 创建一个随机数值为 [0, 1) 的形状为 (1, 2, 5) 的张量 X
+X = torch.rand(1, 2, 5).npu()
+# 实例化一个 FourierLayer 的网络对象 net
+net = FourierLayer()
+# 将 X 输入到网络 net 中进行前向计算，并输出结果
+net(X)
