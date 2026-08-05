@@ -1,0 +1,42 @@
+图像分类数据集
+
+练习3.5.1
+
+减少batch_size（如减少到1）是否会影响读取性能？
+
+  解答
+
+    减少batch_size可能会影响读取性能。具体来说，当batch_size减小时，每个小批量的处理时间将增加，从而导致读取性能下降。此外，较小的批量大小可能会导致内存使用率更高。
+
+
+练习3.5.2
+
+数据迭代器的性能非常重要。当前的实现足够快吗？探索各种选择来改进它。
+
+  解答
+
+    根据书中第3.5.2节
+    为了使我们在读取训练集和测试集时更容易，我们使用内置的数据迭代器，而不是从零开始创建。
+
+    batch_size = 256
+
+    def get_dataloader_workers():
+        """使用4个进程来读取数据"""
+        return 4
+
+    train_iter = data.DataLoader(mnist_train, batch_size, shuffle=True,
+                                 num_workers=get_dataloader_workers())
+
+    书中使用的是PyTorch的DataLoader数据迭代器，数据迭代器的性能对于训练深度学习模型非常重要。当前的实现可能足够快，但是我们可以探索各种选择来改进它。例如，我们可以使用多线程或异步读取来加速数据迭代器。此外，我们还可以使用GPU加速数据预处理和增强。
+
+
+练习3.5.3
+
+查阅框架的在线API文档。还有哪些其他数据集可用？
+
+  解答
+
+    通过查阅框架的在线API文档（参考链接：https://pytorch.org/vision/stable/datasets.html#built-in-datasets ），可以得到很多标准数据集，包括图像分类（Image classification）、图像检测或分割（Image detection or segmentation）、光流（Optical Flow）、立体声匹配（Stereo Matching）、图像对（Image pairs）、图片字幕（Image captioning）、视频分类（Video classification）、视频预测（Video prediction）。
+
+    例如MNIST、CIFAR-10和ImageNet等。此外，还有许多其他数据集可用于特定领域的任务。
+

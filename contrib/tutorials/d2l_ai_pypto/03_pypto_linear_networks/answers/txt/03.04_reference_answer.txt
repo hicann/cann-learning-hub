@@ -1,0 +1,151 @@
+softmax回归
+
+练习3.4.1
+
+我们可以更深入地探讨指数族与softmax之间的联系。
+
+1. 计算softmax交叉熵损失l(y,y^)的二阶导数。
+2. 计算softmax(o)给出的分布方差，并与上面计算的二阶导数匹配。
+
+  解答
+
+    第1问：
+
+    根据书中第3.4.6.2节
+    利用 softmax 的定义，我们得到：
+    l(y, y^) = -sum_{j=1}^q y_j log(exp(o_j) / sum_{k=1}^q exp(o_k))
+    = sum_{j=1}^q y_j log sum_{k=1}^q exp(o_k) - sum_{j=1}^q y_j o_j
+    = log sum_{k=1}^q exp(o_k) - sum_{j=1}^q y_j o_j
+    考虑相对于任何未规范化的预测 o_j 的导数，我们得到：
+    d_{o_j} l(y, y^) = exp(o_j) / sum_{k=1}^q exp(o_k) - y_j = softmax(o)_j - y_j
+
+    可计算二阶导数：
+
+    d_{o_j}^2 l(y, y^)
+    = (exp(o_j) * sum_{k=1}^q exp(o_k) - exp(o_j)^2) / (sum_{k=1}^q exp(o_k))^2
+    = softmax(o)_j - softmax(o)_j^2
+    = softmax(o)_j (1 - softmax(o)_j)
+
+    其中，softmax(o) 是由向量 o 的元素通过 softmax 函数计算得到的概率分布。
+
+    第2问：
+
+    对于 softmax 函数 softmax(o)，其分布方差为：
+    
+    Var_softmax(o) 
+    = (1)/(q) sum_{j=1}^q (softmax(o)_j - E[softmax(o)_j])^2
+    = (1)/(q) sum_{j=1}^q (softmax(o)_j - (1)/(q) sum_{k=1}^q softmax(o)_k)^2
+    = (1)/(q) sum_{j=1}^q (softmax(o)_j - (1)/(q))^2
+
+    展开为:
+    Var_softmax(o)
+    = (1)/(q) sum_{j=1}^q (softmax(o)_j - (1)/(q))^2
+    = (1)/(q) [(softmax(o)_1 - (1)/(q))^2 + (softmax(o)_2 - (1)/(q))^2 + ... + (softmax(o)_q - (1)/(q))^2]
+    = (1)/(q) (sum_{j=1}^q softmax(o)_j^2 - (2)/(q) sum_{j=1}^q softmax(o)_j + sum_{j=1}^q (1)/(q^2))
+    = (1)/(q) (sum_{j=1}^q softmax(o)_j^2 - (2)/(q) + (1)/(q))
+    = (1)/(q) sum_{j=1}^q softmax(o)_j^2 - (1)/(q^2)
+
+    与二阶导数匹配为：
+    Var(o) = (1)/(q) sum_{j=1}^q softmax(o)_j^2 - (1)/(q^2)
+    = -(1)/(q) (1 - sum_{j=1}^q softmax(o)_j^2) + (1)/(q) - (1)/(q^2)
+    = -(1)/(q) (sum_{j=1}^q softmax(o)_j - sum_{j=1}^q softmax(o)_j^2) + (1)/(q) - (1)/(q^2)
+    = -(1)/(q) sum_{j=1}^q (softmax(o)_j - softmax(o)_j^2) + (1)/(q) - (1)/(q^2)
+    = -(1)/(q) sum_{j=1}^q d_{o_j}^2 l(y, y^) + (q-1)/(q^2)
+
+
+练习3.4.2
+
+假设我们有三个类发生的概率相等，即概率向量是((1)/(3), (1)/(3), (1)/(3))。
+
+1. 如果我们尝试为它设计二进制代码，有什么问题？
+2. 请设计一个更好的编码。提示：如果我们尝试为两个独立的观察结果编码会发生什么？如果我们为n个观测值联合编码怎么办？
+
+  解答
+
+    第1问：
+
+    根据题意，三个类发生的概率都是 (1)/(3)。对于单个观测值，如果使用固定长度的二进制码进行编码，由于三个类别至少需要 2 个比特才能区分，所以平均码长为 2 比特，而不是最优长度 log_2(3) ~= 1.585 比特。若将多个独立观测值进行联合编码，则可以进一步逼近这个最优平均码长。
+
+    第2问：
+
+    可以使用联合编码来解决这个问题。具体来说，可以将 n 个观测值视为一个 n 元组，并将其映射到一个整数。例如，如果 n=2，则可以将 (0, 0) 映射到 0、(0, 1) 映射到 1、(1, 0) 映射到 2、(1, 1) 映射到 3。这样做的好处是可以使用 ceil(log_2(3)) = 2 比特来编码三个类别。
+
+    对于 n 个观测值，使用长度为 k = ceil(log_2(C(n+2, 2))) 的二进制代码来表示 n 个观测值的联合分布。
+
+
+练习3.4.3
+
+softmax是对上面介绍的映射的误称（虽然深度学习领域中很多人都使用这个名字）。真正的softmax被定义为 RealSoftMax(a, b) = log (exp(a) + exp(b))。
+
+1. 证明 RealSoftMax(a, b) > max(a, b)。
+2. 证明 lambda^-1 RealSoftMax(lambda a, lambda b) > max(a, b) 成立，前提是lambda > 0。
+3. 证明对于 lambda -> inf，有lambda^-1 RealSoftMax(lambda a, lambda b) -> max(a, b)。
+4. softmin会是什么样子？
+5. 将其扩展到两个以上的数字。
+
+  解答
+
+    第1问：
+
+    根据题意可知：
+    RealSoftMax(a, b) = log(exp(a) + exp(b))
+
+    根据log函数的性质：
+    log(exp(a) + exp(b)) > log(exp(a)) = a
+    log(exp(a) + exp(b)) > log(exp(b)) = b
+
+    结合上述两式，可得：
+    RealSoftMax(a, b) > max(a, b)
+
+    第2问：
+
+    lambda^(-1) RealSoftMax(lambda a, lambda b)
+    = lambda^(-1) log(exp(lambda a) + exp(lambda b))
+    = lambda^(-1) log(max(exp(lambda a), exp(lambda b)))
+    = log(max(e^(lambda a) * lambda^(-1), e^(lambda b) * lambda^(-1)))
+    = log(max(e^a, e^b))
+    = max(log(e^a), log(e^b))
+    = max(a, b)
+
+    因此 lambda^(-1) RealSoftMax(lambda a, lambda b) > max(a, b) 成立，前提是 lambda > 0。
+
+    第3问：
+
+    根据题意，令：
+    f(a, b, lambda) = lambda^(-1) RealSoftMax(lambda a, lambda b)
+    = lambda^(-1) log(exp(lambda a) + exp(lambda b))
+
+    可知：
+    f(a, b, lambda)
+    lambda^(-1) log(exp(lambda * max(a, b)))
+    = log(exp(lambda * max(a, b) * lambda^(-1)))
+    = log(exp(max(a, b)))
+    = max(a, b)
+
+    又可知：
+    f(a, b, lambda)
+    < lambda^(-1) log(exp(2 * lambda * max(a, b)))
+    = (log 2) / lambda + max(a, b)
+
+    当 lambda -> inf 时
+    lim_{lambda -> inf} (log 2) / lambda + max(a, b) = max(a, b)
+
+    根据夹逼定理，可得
+    lim_{lambda -> inf} f(a, b, lambda) = max(a, b)
+
+    因此对于 lambda -> inf，有 lambda^(-1) RealSoftMax(lambda a, lambda b) -> max(a, b)。
+
+    第4问：
+
+    softmin 函数是 softmax 函数的变体，将输入张量的每个元素 x_i 替换为 -x_i，然后对结果进行归一化。Softmin 函数的公式如下：
+    
+    softmin(x_i) = exp(-x_i) / sum_j exp(-x_j)
+
+    与 softmax 函数类似，softmin 函数也可以用于多分类问题。不同之处在于，当输入张量中的元素越大时，softmax 函数会使输出概率越大，而 softmin 函数则会使输出概率越小。
+
+    第5问：
+
+    根据题意，多个数字的 RealSoftMax 函数表示如下：
+    
+    RealSoftMax(a, b, c, ...) = log(exp(a) + exp(b) + exp(c) + ...)
+

@@ -1,0 +1,112 @@
+线性回归的简洁实现
+
+练习3.3.1
+
+如果我们将小批量的总损失替换为小批量损失的平均值，需要如何更改学习率？
+
+  解答
+
+    如果将小批量的总损失替换为小批量损失的平均值，则需要将学习率乘以批量大小。这是因为在计算梯度时，我们使用了小批量中所有样本的信息。因此，如果我们将小批量的总损失替换为小批量损失的平均值，则相当于将每个样本的梯度除以批量大小。因此，我们需要将学习率乘以批量大小，以保持相同的更新步长。
+
+
+练习3.3.2
+
+查看深度学习框架文档，它们提供了哪些损失函数和初始化方法？用Huber损失代替原损失，即：
+l(y,y') = |y-y'| - (sigma)/(2) (if |y-y'| > sigma) | (1)/(2 sigma) (y-y')^2 (其它情况)
+
+  解答
+
+    通过查看 PyTorch 框架文档，可以得到如下损失函数（参考链接：https://pytorch.org/docs/2.0/nn.html#loss-functions ）：
+    
+    - L1Loss：L1 范数损失函数
+    - MSELoss：均方误差损失函数
+    - CrossEntropyLoss：交叉熵损失函数
+    - CTCLoss：连接时序分类损失函数
+    - NLLLoss：负对数似然损失函数
+    - PoissonNLLLoss：目标值为泊松分布的负对数似然损失函数
+    - GaussianNLLLoss：目标值为高斯分布的负对数似然损失函数
+    - KLDivLoss：KL 散度损失函数
+    - BCELoss：二元交叉熵损失函数
+    - BCEWithLogitsLoss：基于 sigmoid 的二元交叉熵损失函数
+    - MarginRankingLoss
+    - HingeEmbeddingLoss
+    - MultiLabelMarginLoss
+    - HuberLoss：基于 Huber 的损失函数
+    - SmoothL1Loss：L1 平滑损失函数
+    - SoftMarginLoss
+    - MultiLabelSoftMarginLoss
+    - CosineEmbeddingLoss
+    - MultiMarginLoss
+    - TripletMarginLoss：三元组损失函数
+    - TripletMarginWithDistanceLoss
+    
+    初始化方法有（参考链接：https://pytorch.org/docs/2.0/nn.init.html ）：
+    
+    - calculate_gain(nonlinearity, param=None)：计算对非线性函数的增益值
+    - uniform_(tensor, a=0.0, b=1.0)：生成符合均匀分布的值
+    - normal_(tensor, mean=0.0, std=1.0)：生成符合正态分布的值
+    - constant_(tensor, val)：用 val 的值填充输入的张量或变量
+    - ones_(tensor)：用 1 填充张量或变量
+    - zeros_(tensor)：用 0 填充张量或变量
+    - eye_(tensor)：用单位矩阵填充张量或变量
+    - dirac_(tensor, groups=1)：用 Dirac delta 函数填充 {3, 4, 5} 维输入张量或变量
+    - xavier_uniform_(tensor, gain=1.0)
+    - xavier_normal_(tensor, gain=1.0)
+    - kaiming_uniform_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
+    - kaiming_normal_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
+    - trunc_normal_(tensor, mean=0.0, std=1.0, a=-2.0, b=2.0)
+    - orthogonal_(tensor, gain=1)
+    - sparse_(tensor, sparsity, std=0.01)：将 2 维输入张量或变量当作稀疏矩阵填充，结果张量中的值采样自 N(0, 0.01)
+    
+    接下来用 Huber 损失训练线性回归模型。PyTorch 提供了 nn.HuberLoss，可以直接使用。
+
+    import numpy as np
+    import torch
+    from torch.utils import data
+    from d2l import torch as d2l
+    
+    true_w = torch.tensor([2, -3.4])
+    true_b = 4.2
+    features, labels = d2l.synthetic_data(true_w, true_b, 1000)
+    
+    def load_array(data_arrays, batch_size, is_train=True):
+        dataset = data.TensorDataset(*data_arrays)
+        return data.DataLoader(dataset, batch_size, shuffle=is_train)
+    
+    batch_size = 10
+    data_iter = load_array((features, labels), batch_size)
+    
+    from torch import nn
+    net = nn.Sequential(nn.Linear(2, 1))
+    loss = nn.HuberLoss()
+    trainer = torch.optim.SGD(net.parameters(), lr=0.03)
+    
+    num_epochs = 3
+    for epoch in range(num_epochs):
+        for X, y in data_iter:
+            l = loss(net(X) ,y)
+            trainer.zero_grad()
+            l.backward()
+            trainer.step()
+        l = loss(net(features), labels)
+        print(f'epoch {epoch + 1}, loss {l:f}')
+    
+    w = net[0].weight.data
+    print('w的估计误差：', true_w - w.reshape(true_w.shape))
+    b = net[0].bias.data
+    print('b的估计误差：', true_b - b)
+
+
+练习3.3.3
+
+如何访问线性回归的梯度？
+
+  解答
+
+    要访问线性回归模型的梯度，可以使用自动微分技术。在PyTorch中，可以通过调用backward()方法来计算模型参数相对于损失函数的梯度。然后，可以通过访问模型参数的.grad属性来获取梯度值。
+
+    w_grad = net[0].weight.grad
+    print('w的梯度：', w_grad)
+    b_grad = net[0].bias.grad
+    print('b的梯度：', b_grad)
+

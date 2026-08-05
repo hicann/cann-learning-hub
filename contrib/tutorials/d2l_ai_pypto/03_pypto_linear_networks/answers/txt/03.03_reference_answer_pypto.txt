@@ -1,0 +1,358 @@
+线性回归的简洁实现
+
+练习3.3.1
+
+如果我们将小批量的总损失替换为小批量损失的平均值，需要如何更改学习率？
+
+  解答
+
+    如果将小批量的总损失替换为小批量损失的平均值，则需要将学习率乘以批量大小。这是因为在计算梯度时，我们使用了小批量中所有样本的信息。因此，如果我们将小批量的总损失替换为小批量损失的平均值，则相当于将每个样本的梯度除以批量大小。因此，我们需要将学习率乘以批量大小，以保持相同的更新步长。
+
+
+练习3.3.2
+
+查看深度学习框架文档，它们提供了哪些损失函数和初始化方法？用Huber损失代替原损失，即：
+l(y,y') = |y-y'| - (sigma)/(2) (if |y-y'| > sigma) | (1)/(2 sigma) (y-y')^2 (其它情况)
+
+  解答
+
+    通过查看 PyTorch 框架文档，可以得到如下损失函数（参考链接：https://pytorch.org/docs/2.0/nn.html#loss-functions ）：
+    
+    - L1Loss：L1 范数损失函数
+    - MSELoss：均方误差损失函数
+    - CrossEntropyLoss：交叉熵损失函数
+    - CTCLoss：连接时序分类损失函数
+    - NLLLoss：负对数似然损失函数
+    - PoissonNLLLoss：目标值为泊松分布的负对数似然损失函数
+    - GaussianNLLLoss：目标值为高斯分布的负对数似然损失函数
+    - KLDivLoss：KL 散度损失函数
+    - BCELoss：二元交叉熵损失函数
+    - BCEWithLogitsLoss：基于 sigmoid 的二元交叉熵损失函数
+    - MarginRankingLoss
+    - HingeEmbeddingLoss
+    - MultiLabelMarginLoss
+    - HuberLoss：基于 Huber 的损失函数
+    - SmoothL1Loss：L1 平滑损失函数
+    - SoftMarginLoss
+    - MultiLabelSoftMarginLoss
+    - CosineEmbeddingLoss
+    - MultiMarginLoss
+    - TripletMarginLoss：三元组损失函数
+    - TripletMarginWithDistanceLoss
+    
+    初始化方法有（参考链接：https://pytorch.org/docs/2.0/nn.init.html ）：
+    
+    - calculate_gain(nonlinearity, param=None)：计算对非线性函数的增益值
+    - uniform_(tensor, a=0.0, b=1.0)：生成符合均匀分布的值
+    - normal_(tensor, mean=0.0, std=1.0)：生成符合正态分布的值
+    - constant_(tensor, val)：用 val 的值填充输入的张量或变量
+    - ones_(tensor)：用 1 填充张量或变量
+    - zeros_(tensor)：用 0 填充张量或变量
+    - eye_(tensor)：用单位矩阵填充张量或变量
+    - dirac_(tensor, groups=1)：用 Dirac delta 函数填充 {3, 4, 5} 维输入张量或变量
+    - xavier_uniform_(tensor, gain=1.0)
+    - xavier_normal_(tensor, gain=1.0)
+    - kaiming_uniform_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
+    - kaiming_normal_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
+    - trunc_normal_(tensor, mean=0.0, std=1.0, a=-2.0, b=2.0)
+    - orthogonal_(tensor, gain=1)
+    - sparse_(tensor, sparsity, std=0.01)：将 2 维输入张量或变量当作稀疏矩阵填充，结果张量中的值采样自 N(0, 0.01)
+    
+    接下来用 Huber 损失训练线性回归模型。PyPTO 自身未提供 HuberLoss 算子，我们用 PyPTO kernel 实现其前向与反向，再借助 torch.autograd.Function 接入 PyTorch 的 autograd 框架，从而保持自动微分能力。
+
+    线性回归：前向 / 反向 PyPTO 算子。
+
+    @pypto.frontend.jit
+    def linreg_forward_kernel(
+        X: pypto.Tensor([], pypto.DT_FP32),
+        w: pypto.Tensor([], pypto.DT_FP32),
+        b: pypto.Tensor([], pypto.DT_FP32),
+        out: pypto.Tensor([], pypto.DT_FP32),
+    ):
+        pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
+        pypto.set_vec_tile_shapes(*([8] * len(out.shape)))
+        out[:] = pypto.matmul(X, w, pypto.DT_FP32) + b
+    
+    
+    @pypto.frontend.jit()
+    def linreg_backward_kernel(
+        grad_out: pypto.Tensor([], pypto.DT_FP32),
+        X: pypto.Tensor([], pypto.DT_FP32),
+        w: pypto.Tensor([], pypto.DT_FP32),
+        grad_X: pypto.Tensor([], pypto.DT_FP32),
+        grad_w: pypto.Tensor([], pypto.DT_FP32),
+        grad_b: pypto.Tensor([], pypto.DT_FP32),
+    ):
+        pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
+        grad_X[:] = pypto.matmul(grad_out, w, pypto.DT_FP32, b_trans=True)
+        grad_w[:] = pypto.matmul(X, grad_out, pypto.DT_FP32, a_trans=True)
+        pypto.set_vec_tile_shapes(*([8] * len(grad_out.shape)))
+        grad_b[:] = pypto.sum(grad_out, dim=0, keepdim=False)
+    
+    
+    class PyPTOLinRegFunction(torch.autograd.Function):
+        @staticmethod
+        def forward(ctx, X, w, b):
+            out = torch.empty((X.shape[0], 1), dtype=X.dtype, device=X.device)
+            linreg_forward_kernel(X, w, b, out)
+            ctx.save_for_backward(X, w)
+            return out
+    
+        @staticmethod
+        def backward(ctx, grad_out):
+            X, w = ctx.saved_tensors
+            grad_out_c = grad_out.contiguous() if not grad_out.is_contiguous() else grad_out
+            grad_X = torch.empty_like(X)
+            grad_w = torch.empty_like(w)
+            grad_b = torch.empty((1,), dtype=w.dtype, device=w.device)
+            linreg_backward_kernel(grad_out_c, X, w, grad_X, grad_w, grad_b)
+            return grad_X, grad_w, grad_b
+
+    Huber 损失：前向 / 反向 PyPTO 算子。
+
+    DELTA = 1.0  # 题目中 sigma 取 1
+    
+    @pypto.frontend.jit()
+    def huber_loss_forward_kernel(
+        y_hat: pypto.Tensor([], pypto.DT_FP32),
+        y: pypto.Tensor([], pypto.DT_FP32),
+        out: pypto.Tensor([], pypto.DT_FP32),
+        delta: float,
+    ):
+        pypto.set_vec_tile_shapes(*([8] * len(y_hat.shape)))
+        diff = y_hat - y
+        abs_diff = pypto.abs(diff)
+        quadratic = 0.5 / delta * diff ** 2
+        linear = abs_diff - 0.5 * delta
+        out[:] = pypto.where(abs_diff > delta, linear, quadratic)
+    
+    
+    @pypto.frontend.jit()
+    def huber_loss_backward_kernel(
+        grad_out: pypto.Tensor([], pypto.DT_FP32),
+        y_hat: pypto.Tensor([], pypto.DT_FP32),
+        y: pypto.Tensor([], pypto.DT_FP32),
+        grad_y_hat: pypto.Tensor([], pypto.DT_FP32),
+        grad_y: pypto.Tensor([], pypto.DT_FP32),
+        delta: float,
+    ):
+        pypto.set_vec_tile_shapes(*([8] * len(y_hat.shape)))
+        diff = y_hat - y
+        abs_diff = pypto.abs(diff)
+        quad_grad = diff / delta
+        lin_grad = pypto.sign(diff)
+        d = pypto.where(abs_diff > delta, lin_grad, quad_grad)
+        grad_y_hat[:] = grad_out * d
+        grad_y[:] = grad_out * (0.0 - d)
+    
+    
+    class PyPTOHuberLossFunction(torch.autograd.Function):
+        @staticmethod
+        def forward(ctx, y_hat, y, delta):
+            y_reshaped = y.reshape(y_hat.shape)
+            out = torch.empty_like(y_hat)
+            huber_loss_forward_kernel(y_hat, y_reshaped, out, delta)
+            ctx.save_for_backward(y_hat, y_reshaped)
+            ctx.delta = delta
+            return out
+    
+        @staticmethod
+        def backward(ctx, grad_out):
+            y_hat, y = ctx.saved_tensors
+            delta = ctx.delta
+            grad_out_c = grad_out.contiguous() if not grad_out.is_contiguous() else grad_out
+            grad_y_hat = torch.empty_like(y_hat)
+            grad_y = torch.empty_like(y)
+            huber_loss_backward_kernel(grad_out_c, y_hat, y, grad_y_hat, grad_y, delta)
+            return grad_y_hat, None, None
+    
+    
+    def huber_loss(y_hat, y, delta=DELTA):
+        return PyPTOHuberLossFunction.apply(y_hat, y, delta)
+
+    接下来定义数据、模型和训练方法。
+
+    true_w = torch.tensor([2, -3.4], device='npu:0')
+    true_b = 4.2
+    features = torch.normal(0, 1, (1000, 2), device='npu:0')
+    labels = (torch.matmul(features, true_w) + true_b).reshape((-1, 1))
+    labels += torch.normal(0, 0.01, labels.shape, device='npu:0')
+    
+    batch_size = 10
+    w = torch.normal(0, 0.01, size=(2, 1), requires_grad=True, device='npu:0')
+    b = torch.zeros(1, requires_grad=True, device='npu:0')
+    
+    net = lambda X, w, b: PyPTOLinRegFunction.apply(X, w, b)
+    loss = huber_loss
+
+    然后开始训练。
+
+    lr = 0.03
+    num_epochs = 10
+    for epoch in range(num_epochs):
+        indices = list(range(len(features)))
+        random.shuffle(indices)
+        for i in range(0, len(features), batch_size):
+            batch_idx = torch.tensor(indices[i: min(i + batch_size, len(features))], device='npu:0')
+            X = features[batch_idx]
+            y = labels[batch_idx]
+            l = loss(net(X, w, b), y)
+            l.sum().backward()
+            with torch.no_grad():
+                w -= lr * w.grad / batch_size
+                b -= lr * b.grad / batch_size
+                w.grad.zero_()
+                b.grad.zero_()
+        with torch.no_grad():
+            train_l = loss(net(features, w, b), labels)
+            print(f'epoch {epoch + 1}, loss {float(train_l.mean()):f}')
+
+    查看训练结果。
+
+    print('w的估计误差：', true_w - w.reshape(true_w.shape).detach())
+    print('b的估计误差：', true_b - b.detach())
+
+
+练习3.3.3
+
+如何访问线性回归的梯度？
+
+  解答
+
+    要访问线性回归模型的梯度，可以使用自动微分技术。沿用 3.3.2 的「自定义 kernel + torch.autograd.Function」范式：MSE 损失没有原生算子，我们用 PyPTO 实现其前向/反向 kernel，再借助 torch.autograd.Function 接入 PyTorch 的 autograd，让梯度能够通过反向传播机制自动计算，并最终通过 w.grad / b.grad 读取。
+
+    线性回归：前向 / 反向 PyPTO 算子。
+
+    @pypto.frontend.jit
+    def linreg_forward_kernel(
+        X: pypto.Tensor([], pypto.DT_FP32),
+        w: pypto.Tensor([], pypto.DT_FP32),
+        b: pypto.Tensor([], pypto.DT_FP32),
+        out: pypto.Tensor([], pypto.DT_FP32),
+    ):
+        pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
+        pypto.set_vec_tile_shapes(*([8] * len(out.shape)))
+        out[:] = pypto.matmul(X, w, pypto.DT_FP32) + b
+    
+    
+    @pypto.frontend.jit()
+    def linreg_backward_kernel(
+        grad_out: pypto.Tensor([], pypto.DT_FP32),
+        X: pypto.Tensor([], pypto.DT_FP32),
+        w: pypto.Tensor([], pypto.DT_FP32),
+        grad_X: pypto.Tensor([], pypto.DT_FP32),
+        grad_w: pypto.Tensor([], pypto.DT_FP32),
+        grad_b: pypto.Tensor([], pypto.DT_FP32),
+    ):
+        pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
+        grad_X[:] = pypto.matmul(grad_out, w, pypto.DT_FP32, b_trans=True)
+        grad_w[:] = pypto.matmul(X, grad_out, pypto.DT_FP32, a_trans=True)
+        pypto.set_vec_tile_shapes(*([8] * len(grad_out.shape)))
+        grad_b[:] = pypto.sum(grad_out, dim=0, keepdim=False)
+    
+    
+    class PyPTOLinRegFunction(torch.autograd.Function):
+        @staticmethod
+        def forward(ctx, X, w, b):
+            out = torch.empty((X.shape[0], 1), dtype=X.dtype, device=X.device)
+            linreg_forward_kernel(X, w, b, out)
+            ctx.save_for_backward(X, w)
+            return out
+    
+        @staticmethod
+        def backward(ctx, grad_out):
+            X, w = ctx.saved_tensors
+            grad_out_c = grad_out.contiguous() if not grad_out.is_contiguous() else grad_out
+            grad_X = torch.empty_like(X)
+            grad_w = torch.empty_like(w)
+            grad_b = torch.empty((1,), dtype=w.dtype, device=w.device)
+            linreg_backward_kernel(grad_out_c, X, w, grad_X, grad_w, grad_b)
+            return grad_X, grad_w, grad_b
+
+    MSE 损失：前向 / 反向 PyPTO 算子。
+
+    @pypto.frontend.jit()
+    def mse_loss_forward_kernel(
+        y_hat: pypto.Tensor([], pypto.DT_FP32),
+        y: pypto.Tensor([], pypto.DT_FP32),
+        out: pypto.Tensor([], pypto.DT_FP32),
+    ):
+        pypto.set_vec_tile_shapes(*([8] * len(y_hat.shape)))
+        diff = y_hat - y
+        out[:] = diff ** 2
+    
+    
+    @pypto.frontend.jit()
+    def mse_loss_backward_kernel(
+        grad_out: pypto.Tensor([], pypto.DT_FP32),
+        y_hat: pypto.Tensor([], pypto.DT_FP32),
+        y: pypto.Tensor([], pypto.DT_FP32),
+        grad_y_hat: pypto.Tensor([], pypto.DT_FP32),
+        grad_y: pypto.Tensor([], pypto.DT_FP32),
+    ):
+        pypto.set_vec_tile_shapes(*([8] * len(y_hat.shape)))
+        diff = y_hat - y
+        grad_y_hat[:] = grad_out * (diff * 2.0)
+        grad_y[:] = grad_out * ((0.0 - diff) * 2.0)
+    
+    
+    class PyPTOMSELossFunction(torch.autograd.Function):
+        @staticmethod
+        def forward(ctx, y_hat, y):
+            y_reshaped = y.reshape(y_hat.shape)
+            out = torch.empty_like(y_hat)
+            mse_loss_forward_kernel(y_hat, y_reshaped, out)
+            ctx.save_for_backward(y_hat, y_reshaped)
+            return out
+    
+        @staticmethod
+        def backward(ctx, grad_out):
+            y_hat, y = ctx.saved_tensors
+            grad_out_c = grad_out.contiguous() if not grad_out.is_contiguous() else grad_out
+            grad_y_hat = torch.empty_like(y_hat)
+            grad_y = torch.empty_like(y)
+            mse_loss_backward_kernel(grad_out_c, y_hat, y, grad_y_hat, grad_y)
+            return grad_y_hat, None
+    
+    
+    def mse_loss(y_hat, y):
+        return PyPTOMSELossFunction.apply(y_hat, y)
+
+    接下来定义数据、模型和训练方法。
+
+    true_w = torch.tensor([2, -3.4], device='npu:0')
+    true_b = 4.2
+    features = torch.normal(0, 1, (1000, 2), device='npu:0')
+    labels = (torch.matmul(features, true_w) + true_b).reshape((-1, 1))
+    labels += torch.normal(0, 0.01, labels.shape, device='npu:0')
+    
+    batch_size = 10
+    lr = 0.03
+    w = torch.normal(0, 0.01, size=(2, 1), requires_grad=True, device='npu:0')
+    b = torch.zeros(1, requires_grad=True, device='npu:0')
+    
+    net = lambda X, w, b: PyPTOLinRegFunction.apply(X, w, b)
+    loss = mse_loss
+
+    然后开始训练，我们在每一轮训练的途中输出 w 和 b 的梯度。
+
+    lr = 0.03
+    num_epochs = 3
+    for epoch in range(num_epochs):
+        indices = list(range(len(features)))
+        for i in range(0, len(features), batch_size):
+            batch_idx = torch.tensor(indices[i: min(i + batch_size, len(features))], device='npu:0')
+            X = features[batch_idx]
+            y = labels[batch_idx]
+            l = loss(net(X, w, b), y)
+            l.sum().backward()
+            if i == 0:
+                print('w的梯度：', w.grad)
+                print('b的梯度：', b.grad)
+            with torch.no_grad():
+                w -= lr * w.grad / batch_size
+                b -= lr * b.grad / batch_size
+                w.grad.zero_()
+                b.grad.zero_()
+        print(f'epoch {epoch + 1}, loss {float(l.mean()):f}')
+

@@ -1,0 +1,219 @@
+线性回归的从零开始实现
+
+练习3.2.1
+
+如果我们将权重初始化为零，会发生什么。算法仍然有效吗？
+
+  解答
+
+    对线性回归而言，权重初始化为零算法仍然有效，原因如下：
+    
+    如果将权重初始化为零，那么每个神经元的输出都是相同的，这意味着每个神经元学习到的参数也是相同的。因此，每个神经元都会更新相同的参数，最终导致所有神经元学习到相同的特征。因此，权重初始化为零会使算法失效。这样就失去了神经网络的优势，即可以学习到不同特征的能力。
+    
+    逻辑回归和神经网络有不同的权重初始化方法。对于逻辑回归，可以将权重初始化为零，因为这是一个线性模型，梯度下降算法仍然可以更新它们。然而，对于神经网络来说，将权重初始化为零可能会导致对称性问题，并阻止隐藏单元学习不同的特征。因此，最好使用随机或其他方法来初始化神经网络的权重。
+
+
+练习3.2.2
+
+假设试图为电压和电流的关系建立一个模型。自动微分可以用来学习模型的参数吗?
+
+  解答
+
+    根据电压（U）与电流（I）的关系，可建立线性模型：
+    
+    U = w I + b
+    
+    自动微分（Automatic Differentiation，简称AD）是一种对计算机程序进行高效准确求导的技术。它是介于符号微分和数值微分之间的一种方法，可以计算可导函数在某点处的导数值的计算，是反向传播算法的一般化。
+    
+    自动微分要解决的核心问题是计算复杂函数，通常是多层复合函数在某一点处的导数、梯度以及Hessian矩阵值
+    torch中的backward就是自动微分。backward()函数会自动计算所有需要求导的变量的梯度，并将结果存储在相应变量的grad属性中。
+    
+    根据书中对自动微分的描述：
+    
+    深度学习框架通过自动计算导数，即自动微分（automatic differentiation）来加快求导。 实际中，根据设计好的模型，系统会构建一个计算图（computational graph）， 来跟踪计算是哪些数据通过哪些操作组合起来产生输出。 自动微分使系统能够随后反向传播梯度。 这里，反向传播（backpropagate）意味着跟踪整个计算图，填充关于每个参数的偏导数。
+    
+    用代码验证电阻为30 Ohm的电流与电压的计算公式：
+
+    import torch
+    
+    x = torch.randn(100, 1)
+    y = 30 * x
+    
+    model = torch.nn.Linear(1, 1)
+    criterion = torch.nn.MSELoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+    
+    for epoch in range(500):
+        y_pred = model(x)
+        loss = criterion(y_pred, y)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    
+    print(model.weight)
+    print(model.bias)
+
+
+练习3.2.3
+
+能基于普朗克定律使用光谱能量密度来确定物体的温度吗？
+
+  解答
+
+    根据维基百科：
+    在物理学中，普朗克黑体辐射定律（也简称普朗克定律或黑体辐射定律）是指在任意温度T下，从一个黑体中发射出的电磁辐射的辐射率与频率之间的关系，在这里，辐射率是频率v的函数：
+    I_v(v, T) = (2hv^3)/(c^2) * (1)/(e^(hv/(kT)) - 1)
+    其中，I_v 是辐射率，v 是频率，T 是黑体的温度，h 是普朗克常数，c 是光速，k 是波兹曼常数。
+    
+    根据电磁波波长和频率的关系为：
+    lambda = c / v
+    普朗克定律有时写做能量密度频谱的形式：
+    u_v(v, T) = (4pi)/(c) * I_v(v, T) = (8pi h v^3)/(c^3) * (1)/(e^(hv/(kT)) - 1)
+    
+    根据上述公式，可以得到物体的温度计算公式：
+    T = (hv) / (k * ln(1 + (8pi h v^3)/(c^3 u_v)))
+    通过测量物体发出的辐射能量密度，并使用普朗克定律，可以确定物体的温度。
+
+
+练习3.2.4
+
+计算二阶导数时可能会遇到什么问题？这些问题可以如何解决？
+
+  解答
+
+    计算二阶导数时可能会遇到如下问题：
+    
+    1. 数值不稳定性问题：该问题可以通过使用更高精度的数据类型（例如双精度浮点数）或通过使用数值稳定性技巧（例如中心差分）来解决。 
+    中心差分是一种常用的数值稳定性技巧，它可以用于计算函数在某个点处的导数。具体来说，中心差分可以通过以下公式计算：
+    
+    f'(x) ~= (f(x+h)-f(x-h))/(2h)
+    
+    其中 h 是一个很小的正数，通常取 10^-6 或更小。
+    
+    2. 一阶导数的计算图保存问题：计算二阶导数，需要将一阶导数的计算图保存起来，使用create_graph和retain_graph参数。
+    
+    以下面函数举例：
+    
+    - 原函数：y = x^3
+    - 一阶导函数：y = 3 x^2
+    - 二阶导函数：y = 6 x
+    
+    在 PyTorch 中，计算二阶导数需要注意 create_graph 和 retain_graph 参数的使用。
+
+    import torch
+    
+    x = torch.randn((2), requires_grad=True)
+    y = x ** 3
+    
+    dy = torch.autograd.grad(y, x, grad_outputs=torch.ones(x.shape), 
+                             retain_graph=True, create_graph=True)
+    dy2 = torch.autograd.grad(dy, x, grad_outputs=torch.ones(x.shape))
+    print(dy[0] == 3 * x**2)
+    print(dy2[0] == 6 * x)
+
+
+练习3.2.5
+
+为什么在squared_loss函数中需要使用reshape函数？
+
+  解答
+
+    原书中 3.2.5 节的 squared_loss 代码为：
+    
+    def squared_loss(y_hat, y):
+     """均方损失"""
+     return (y_hat - y.reshape(y_hat.shape)) ** 2 / 2
+    
+    改写的 squared_loss_forward_kernel 内没有使用 reshape，但在调用 kernel 前存在：
+    
+    y_reshaped = y.reshape(y_hat.shape)
+    out = torch.empty_like(y_hat)
+    squared_loss_forward_kernel(y_hat, y_reshaped, out)
+    
+    这里使用reshape函数是为了保证y和y_hat形状相同，避免触发广播机制导致错误的结果。
+
+
+练习3.2.6
+
+尝试使用不同的学习率，观察损失函数值下降的快慢。
+
+  解答
+
+    尝试使用不同的学习率，观察损失函数值下降的快慢。根据实验结果：学习率过大前期损失值下降快，但后面不容易收敛；学习率太小，损失函数下降慢。
+
+    %matplotlib inline
+    import random
+    import torch
+    import numpy as np
+    from d2l import torch as d2l
+    
+    def synthetic_data(w, b, num_examples):
+        X = torch.normal(0, 1, (num_examples, len(w)))
+        y = torch.matmul(X, w) + b
+        y += torch.normal(0, 0.01, y.shape)
+        return X, y.reshape((-1, 1))
+    
+    true_w = torch.tensor([2, -3.4])
+    true_b = 4.2
+    features, labels = synthetic_data(true_w, true_b, 1000)
+    
+    def data_iter(batch_size, features, labels):
+        num_examples = len(features)
+        indices = list(range(num_examples))
+        random.shuffle(indices)
+        for i in range(0, num_examples, batch_size):
+            batch_indices = torch.tensor(indices[i: min(i + batch_size, num_examples)])
+            yield features[batch_indices], labels[batch_indices]
+    
+    w = torch.normal(0, 0.01, size=(2,1), requires_grad=True)
+    b = torch.zeros(1, requires_grad=True)
+    
+    def linreg(X, w, b):
+        return torch.matmul(X, w) + b
+    
+    def squared_loss(y_hat, y):
+        return (y_hat - y.reshape(y_hat.shape)) ** 2 / 2
+    
+    def sgd(params, lr, batch_size):
+        with torch.no_grad():
+            for param in params:
+                param -= lr * param.grad / batch_size
+                param.grad.zero_()
+    
+    lrs = [0.5, 0.3, 0.1, 0.01]
+    num_epochs = 10
+    net = linreg
+    loss = squared_loss
+    batch_size = 10
+    
+    all_lrs = []
+    for lr in lrs:
+        train_lrs = []
+        for epoch in range(num_epochs):
+            for X, y in data_iter(batch_size, features, labels):
+                l = loss(net(X, w, b), y)
+                l.sum().backward()
+                sgd([w, b], lr, batch_size)
+            with torch.no_grad():
+                train_l = loss(net(features, w, b), labels)
+                train_lrs.append(float(train_l.mean()))
+        all_lrs.append(train_lrs)
+    
+    epochs = np.arange(1, num_epochs+1)
+    d2l.plot(epochs, all_lrs, xlabel='epoch num', ylabel='loss', 
+             legend=[f'learn rate {lr}' for lr in lrs],
+             figsize=(6, 4))
+
+    %matplotlib inline
+    import random
+    import matplotlib.pyplot as plt
+
+
+练习3.2.7
+
+如果样本个数不能被批量大小整除，data_iter函数的行为会有什么变化？
+
+  解答
+
+    如果样本个数不能被批量大小整除，那么最后一个小批量的样本数会少于 batch_size。在当前 data_iter 实现中，这部分样本不会被舍弃，而是作为一个更小的 batch 正常返回。例如总样本数为 1000、batch_size=3 时，最后一个 batch 只包含 1 个样本。
+
