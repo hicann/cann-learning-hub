@@ -170,8 +170,8 @@
 
 | 序号 | 课程 | 课程内容 | 状态 |
 | :---: | :--- | :--- | :---: |
-| 11 | SFT 训练系列（中阶） | varlen 注意力与上下文并行（CP）融合适配，消除 padding 冗余，提升长序列训练效率 | 🚧 建设中 |
-| 12 | RL 训练系列（中阶） | 基于 torchtitan-npu 的 RL 后端开发，打通 vLLM rollout→Wordle reward→Actor 更新完整链路，完成多后端一致性对比 | 🚧 建设中 |
+| 11 | [SFT 训练系列（中阶）](./tutorials/sft_training_pipeline/05_attention_operators) | varlen 注意力与上下文并行（CP）融合适配，消除 padding 冗余，提升长序列训练效率 | 🚧 建设中 |
+| 12 | [RL 训练系列（中阶）](./tutorials/rl_training_pipeline/05_training_backend) | 基于 torchtitan-npu 的 RL 后端开发，打通 vLLM rollout→Wordle reward→Actor 更新完整链路，完成多后端一致性对比 | 🚧 建设中 |
 
 </details>
 
@@ -304,7 +304,7 @@
 <tr>
 <td><b>🏋️ 大模型训练</b></td>
 <td><a href="https://gitcode.com/cann/cann-learning-hub/tree/test/tutorials/training_pipeline/01-sft">SFT 训练（初阶）</a> · <a href="https://gitcode.com/cann/cann-learning-hub/tree/test/tutorials/training_pipeline/02-rl">RL 训练（初阶）</a> · <a href="#swanlab">SwanLab 微调案例</a><br/><sub>SFT/RL 基线跑通、医学/多模态/语音微调（可视化）</sub></td>
-<td>SFT/RL 训练（中阶）🚧<br/><sub>varlen+CP 融合、RL 后端开发、SwanLab 共建最佳实践</sub></td>
+<td><a href="./tutorials/sft_training_pipeline/05_attention_operators">SFT 训练（中阶）</a> · <a href="./tutorials/rl_training_pipeline/05_training_backend">RL 训练（中阶）</a> 🚧<br/><sub>varlen+CP 融合、RL 后端开发、SwanLab 共建最佳实践</sub></td>
 <td>SFT/RL 训练（高阶）🚧<br/><sub>计算图优化、显存调优、端到端吞吐</sub></td>
 </tr>
 <tr>

@@ -28,6 +28,8 @@
 | --- | --- | --- | --- |
 | CANNLab 云开发环境 | cann_9.0.0 py3.11-A3-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
 
+![在仓库页面进入 CANNLab 在线开发环境](images/cann-lab-env.png)
+
 > **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。
 
 
@@ -35,7 +37,7 @@
 
 | 序号 | 主题 | 主要内容 | 课件 |
 |---|---|---|---|
-| 01 | SFT 监督微调 | Wordle 任务、SFT 原理、TorchTitan/FSDP、基线训练、推理评测与融合算子性能优化 | [01_sft_training_pipeline.pptx](https://gitcode.com/cann/cann-learning-hub/blob/test/tutorials/sft_training_pipeline/slides/01_sft_training_pipeline.pptx) |
+| 01 | SFT 监督微调 | Wordle 任务、SFT 原理、TorchTitan/FSDP、基线训练、推理评测、Attention/VarLen/通信优化与融合算子性能优化 | [01_sft_training_pipeline.pptx](slides/01_sft_training_pipeline.pptx) |
 
 
 ## 教程结构
@@ -79,6 +81,50 @@
 | [04.03 Profiling 实操](04_fused_operators/04.03_running_and_profiling.ipynb) | 稳定 recipes、显式 trace 配对、重复 step-time 测量 |
 | [04.04 Profiling 结果分析](04_fused_operators/04.04_profiling_output_analysis.ipynb) | 当前结果文件的时间口径、单位与结论边界 |
 | [04.05 章节练习](04_fused_operators/04.05_chapter_practice.ipynb) | correctness、manifest、trace 与结论综合审阅 |
+
+### 第 5 章：注意力算子优化 (`05_attention_operators/`)
+
+| Notebook | 内容 |
+|---|---|
+| [05.01 章节介绍](05_attention_operators/05.01_chapter_intro.ipynb) | 注意力算子优化的目标与章节安排 |
+| [05.02 Attention 核心路径](05_attention_operators/05.02_attention_kernels.ipynb) | 从 SDPA 到 VarLen |
+| [05.03 Attention 算子基准测试](05_attention_operators/05.03_attention_kernel_benchmarking.ipynb) | 从算子层验证 Attention 理论 |
+| [05.04 TorchTitan 数据路径](05_attention_operators/05.04_torchtitan_dataloader.ipynb) | SFT 数据路径：模型怎么知道新样本从哪里开始 |
+| [05.05 TorchTitan Attention 接入](05_attention_operators/05.05_torchtitan_attention_ops.ipynb) | TorchTitan 如何把 Metadata 喂给 Kernel |
+| [05.06 章节练习](05_attention_operators/05.06_chapter_practice.ipynb) | 章节练习 |
+
+### 第 6 章：变长注意力优化：从 Sequence Packing 到 TND Attention (`06_varlen_attention/`)
+
+| Notebook | 内容 |
+|---|---|
+| [06.01 章节介绍](06_varlen_attention/06.01_chapter_intro.ipynb) | 变长注意力优化的整体目标 |
+| [06.02 问题定义](06_varlen_attention/06.02_problem_statement.ipynb) | Packed SFT 的 Attention 问题 |
+| [06.03 数据装箱](06_varlen_attention/06.03_dataloader_and_packing.ipynb) | SFT DataLoader：Non-greedy 与 Greedy Packing |
+| [06.04 数据加载分析](06_varlen_attention/06.04_dataloader_profiling.ipynb) | DataLoader 与短程训练对比 |
+| [06.05 VarLen Attention](06_varlen_attention/06.05_from_sdpa_to_varlen.ipynb) | 从 Causal SDPA 到 Block-Causal Varlen Attention |
+| [06.06 端到端 Profiling](06_varlen_attention/06.06_end_to_end_profiling.ipynb) | 端到端 Profiling |
+| [06.07 章节练习](06_varlen_attention/06.07_chapter_practice.ipynb) | 章节练习 |
+
+### 第 7 章：分布式通信演示 (`07_distributed_comms/`)
+
+| Notebook | 内容 |
+|---|---|
+| [07.01 章节介绍](07_distributed_comms/07.01_chapter_intro.ipynb) | 分布式通信演示的学习目标 |
+| [07.02 FSDP 通信](07_distributed_comms/07.02_fsdp_collectives.ipynb) | FSDP：参数 all-gather 与梯度 reduce-scatter |
+| [07.03 TP 通信](07_distributed_comms/07.03_tp_collectives.ipynb) | 经典 TP 基线与 TorchTitan TP+SP |
+| [07.04 CP 通信](07_distributed_comms/07.04_cp_collectives.ipynb) | CP：Ulysses all-to-all 与序列/head 布局交换 |
+| [07.05 通信体积与重叠](07_distributed_comms/07.05_communication_volume_and_overlap.ipynb) | FSDP / TP / CP：从通信耗时到并行选择 |
+| [07.06 章节练习](07_distributed_comms/07.06_chapter_practice.ipynb) | 章节练习 |
+
+### 第 8 章：通信优化与 VarLen 协同 (`08_comm_optimizations/`)
+
+| Notebook | 内容 |
+|---|---|
+| [08.01 章节介绍](08_comm_optimizations/08.01_chapter_intro.ipynb) | VarLen+FSDP、VarLen+CP 与 Profiling 的学习目标 |
+| [08.02 VarLen 与 CP 交互](08_comm_optimizations/08.02_varlen_cp_interaction.ipynb) | Varlen+FSDP 短序列 vs Varlen+CP 长序列 |
+| [08.03 TorchTitan Profiling](08_comm_optimizations/08.03_torchtitan_profiling.ipynb) | TorchTitan-NPU Profiling：Varlen+FSDP 4096 vs Varlen+CP 8192 |
+| [08.04 Profiling 分析](08_comm_optimizations/08.04_profiling_analysis.ipynb) | Profiling 分析：Varlen+FSDP 4096 vs Varlen+CP 8192 |
+| [08.05 章节练习](08_comm_optimizations/08.05_chapter_practice.ipynb) | 章节练习 |
 
 
 
