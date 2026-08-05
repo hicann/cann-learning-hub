@@ -1,0 +1,312 @@
+8.3 语言模型和数据集 练习参考答案
+
+练习8.3.1
+
+四元语法的存储需求。
+
+解答：
+
+对于100000个单词，四元组需要存储每个单词的词频 P(W_i)，总计100000个。
+
+计算相邻多词频率时，由于二元组、三元组以及四元组构成的词不同，因此需要将每个元组构成的词进行存储。例如"The War of Worlds"，若想知道 P(The War of Worlds) 的概率，需要知道 P(The), P(War|The), P(of|The War), P(Worlds|The War of) 的概率。
+
+因此对于100000个单词：
+- 二相邻频率：(1×10^5)^2 = 10^10
+- 三相邻频率：(1×10^5)^3 = 10^15
+- 四相邻频率：(1×10^5)^4 = 10^20
+- 共需要存储 10^10 + 10^15 + 10^20 个相邻多词频率
+
+---
+
+练习8.3.2
+
+如何对一系列对话建模？
+
+解答：
+
+N-Gram 将文本看作一系列词序列，假设当前词的出现概率与前 N-1 个词相关，根据出现的频率来估计下一个词出现的概率。对于对话建模问题，可以将对话中的每个句子看作独立的文本序列，计算对应的词频和 N-Gram 概率，预测时将前 N-1 个词视作上下文，选择出现概率最高的词作为下一个词。重复直到生成整个对话。
+
+但 N-Gram 对长距离依赖处理不佳，将对话语句处理为独立文本序列后，还可以采用 RNN 或 LSTM 进行建模。
+
+from collections import Counter
+
+# 读取对话数据
+dialogues = [
+    "Hi,how are you?",
+    "I'm fine, thank you. And you?",
+    "I'm good too.",
+    "That's great!",
+    "Thanks.",
+]
+
+# 使用 src.utils.tokenize 进行分词（无需 nltk 等额外依赖）
+tokens = []
+for dialogue in dialogues:
+    tokenized_line = tokenize([dialogue], 'word')
+    for line in tokenized_line:
+        tokens.extend(line)
+
+# 统计词频
+word_freq = Counter(tokens)
+
+# 计算 N-gram 频率（纯 Python 实现）
+def ngrams(sequence, n):
+    """生成 n-gram 元组"""
+    for i in range(len(sequence) - n + 1):
+        yield tuple(sequence[i:i + n])
+
+n = 3
+ngrams_freq = Counter(ngrams(tokens, n))
+ngrams_prob = {}
+for ngram in ngrams_freq:
+    context = ' '.join(ngram[:-1])
+    if context not in ngrams_prob:
+        ngrams_prob[context] = {}
+    ngrams_prob[context][ngram[-1]] = ngrams_freq[ngram] / word_freq.get(context, 1)
+
+# 使用 N-gram 模型生成对话
+start = 'Hi,'
+dialogue = [start]
+for i in range(10):
+    context = ' '.join(dialogue[-n+1:])
+    if context in ngrams_prob:
+        next_word = max(ngrams_prob[context], key=ngrams_prob[context].get)
+    else:
+        next_word = max(word_freq, key=word_freq.get)
+    dialogue.append(next_word)
+print(' '.join(dialogue))
+# 输出: Hi, you you you you you you you you you you
+
+---
+
+练习8.3.3
+
+齐普夫定律指数估计（两种方法）。
+
+解答：
+
+齐普夫定律 F×R=C，即 log(F) = -α×log(R) + c。以"The Time Machine"这篇文章为例：
+
+from src.utils import (
+    read_time_machine, tokenize, Vocab, plot
+)
+from collections import Counter, defaultdict
+import numpy as np
+import torch
+
+# 加载数据和词表
+tokens = tokenize(read_time_machine(), 'word')
+corpus = [token for line in tokens for token in line]
+vocab = Vocab(corpus)
+
+freqs = [freq for token, freq in vocab.token_freqs]
+
+bigram_tokens = [pair for pair in zip(corpus[:-1], corpus[1:])]
+bigram_vocab = Vocab(bigram_tokens)
+trigram_tokens = [triple for triple in zip(corpus[:-2], corpus[1:-1], corpus[2:])]
+trigram_vocab = Vocab(trigram_tokens)
+bigram_freqs = [freq for token, freq in bigram_vocab.token_freqs]
+trigram_freqs = [freq for token, freq in trigram_vocab.token_freqs]
+
+方法 A：F × R = C 法
+
+# 一元语法的齐普夫定律指数
+zipf_one = [freq * (i+1) for i, freq in enumerate(freqs[:6])]
+
+# 二元语法的齐普夫定律指数
+zipf_two = [freq * (i+1) for i, freq in enumerate(bigram_freqs[:6])]
+
+# 三元语法的齐普夫定律指数
+zip_three = [freq * (i+1) for i, freq in enumerate(trigram_freqs[:6])]
+
+# 绘制图像
+plot([zipf_one, zipf_two, zip_three],
+     xlabel='token: x', ylabel='zipf',
+     xscale='log', yscale='log',
+     legend=['zipf_one', 'zipf_two', 'zipf_three'])
+
+方法 B：最小二乘法拟合
+
+对于线性方程 log(n_i) = -α log(i) + c，用最小二乘法估计 α 和 c。
+
+import numpy as np
+
+def estimate_coefficients(x, y):
+    # 计算x和y的均值
+    mean_x = np.mean(x)
+    mean_y = np.mean(y)
+    # 计算分子和分母
+    numerator = np.sum((x - mean_x) * (y - mean_y))
+    denominator = np.sum((x - mean_x)**2)
+    # 计算斜率a
+    a = numerator / denominator
+    # 计算截距c
+    c = mean_y - a * mean_x
+    return a, c
+
+def compute_zipf(freqs):
+    freqs = np.array(freqs)
+    index = np.array(range(1, len(freqs) + 1))
+    a, c = estimate_coefficients(np.log(index), np.log(freqs))
+    return a, c
+
+# 一元语法
+# 注意这里的alpha相当于公式里的负alpha
+zipf_one_alpha, zipf_one_const = compute_zipf(freqs)
+print(f'一元语法: alpha={zipf_one_alpha:.4f}, const={zipf_one_const:.4f}')
+
+# 验证一元语法的齐普夫定律指数
+_freqs = np.exp(zipf_one_alpha * np.log(np.array(range(1, len(freqs) + 1))) + zipf_one_const)
+plot([freqs, _freqs], xlabel='token: x',
+     ylabel='frequency: n(x)', xscale='log', yscale='log', legend=['real', 'fit'])
+
+# 二元语法（全量）
+zipf_two_alpha, zipf_two_const = compute_zipf(bigram_freqs)
+print(f'二元语法(全量): alpha={zipf_two_alpha:.4f}, const={zipf_two_const:.4f}')
+
+# 验证二元语法（全量）
+_bigram_freqs = np.exp(zipf_two_alpha * np.log(np.array(range(1, len(bigram_freqs) + 1))) + zipf_two_const)
+plot([bigram_freqs, _bigram_freqs], xlabel='token: x',
+     ylabel='frequency: n(x)', xscale='log', yscale='log', legend=['real', 'fit'])
+
+# 三元语法（全量）
+zipf_three_alpha, zipf_three_const = compute_zipf(trigram_freqs)
+print(f'三元语法(全量): alpha={zipf_three_alpha:.4f}, const={zipf_three_const:.4f}')
+
+# 验证三元语法（全量）
+_trigram_freqs = np.exp(zipf_three_alpha * np.log(np.array(range(1, len(trigram_freqs) + 1))) + zipf_three_const)
+plot([trigram_freqs, _trigram_freqs], xlabel='token: x',
+     ylabel='frequency: n(x)', xscale='log', yscale='log', legend=['real', 'fit'])
+
+在二元语法和三元语法的情况下计算出的参数拟合效果不好，是因为低频词太多造成的影响。在二元语法的情况下仅保留前一半的高频词，在三元语法的情况下仅保留前四分之一的高频词，重新计算齐普夫定律指数，拟合效果较好。
+
+# 去掉后一半的低频词，重新计算二元语法的齐普夫定律指数
+fit_count = len(bigram_freqs) // 2
+zipf_two_alpha, zipf_two_const = compute_zipf(bigram_freqs[:fit_count])
+print(f'二元语法(前1/2): alpha={zipf_two_alpha:.4f}, const={zipf_two_const:.4f}')
+
+# 验证重新计算的二元语法的齐普夫定律指数
+_bigram_freqs = np.exp(zipf_two_alpha * np.log(np.array(range(1, len(bigram_freqs) + 1))) + zipf_two_const)
+plot([bigram_freqs, _bigram_freqs], xlabel='token: x',
+     ylabel='frequency: n(x)', xscale='log', yscale='log', legend=['real', 'fit'])
+
+# 去掉后四分之三的低频词，重新计算三元语法的齐普夫定律指数
+fit_count = len(trigram_freqs) // 4
+zipf_three_alpha, zipf_three_const = compute_zipf(trigram_freqs[:fit_count])
+print(f'三元语法(前1/4): alpha={zipf_three_alpha:.4f}, const={zipf_three_const:.4f}')
+
+# 验证重新计算的三元语法的齐普夫定律指数
+_trigram_freqs = np.exp(zipf_three_alpha * np.log(np.array(range(1, len(trigram_freqs) + 1))) + zipf_three_const)
+plot([trigram_freqs, _trigram_freqs], xlabel='token: x',
+     ylabel='frequency: n(x)', xscale='log', yscale='log', legend=['real', 'fit'])
+
+---
+
+练习8.3.4
+
+读取长序列数据的其他方法。
+
+解答：
+
+在读取长序列数据时，除了随机采样和顺序分区，还可以采用下列方法：
+- 滑动窗口：通过滑动窗口，可以将一个长序列拆分为若干等长的有重叠子序列，在BERT中，这些子序列会被当做单独的文本进行处理，然后将所有子序列的输出结果进行整合，获得最终的长文本序列处理结果。
+- 分层采样：将整个长序列先拆分为不同层次，使得每个层次包含不同的序列信息，既可以保留长序列中的上下文信息，也可对整个长序列进行多层次的抽象概括。
+
+---
+
+练习8.3.5
+
+随机偏移量分析。
+
+解答：
+
+1. 为什么随机偏移量是个好主意？
+
+如果固定偏移量，则会导致迭代后，每次迭代所获取到的子序列均只覆盖有限的序列范围，无法保证全部序列的覆盖性。加入随机偏移量后，每次迭代时从不同初始位置获取的子序列，既保证了覆盖性，也保证了随机性。
+
+以下是固定偏移量的演示 —— 每次迭代输出完全相同的序列：
+
+import torch
+
+my_seq = list(range(35))
+
+def seq_data_iter(corpus, batch_size, num_steps):
+    """使用固定偏移量生成一个小批量子序列"""
+    num_subseqs = (len(corpus) - 1) // num_steps
+    initial_indices = list(range(0, num_subseqs * num_steps, num_steps))
+
+    def data(pos):
+        return corpus[pos: pos + num_steps]
+
+    num_batches = num_subseqs // batch_size
+    for i in range(0, batch_size * num_batches, batch_size):
+        initial_indices_per_batch = initial_indices[i: i + batch_size]
+        X = [data(j) for j in initial_indices_per_batch]
+        Y = [data(j + 1) for j in initial_indices_per_batch]
+        yield torch.tensor(X), torch.tensor(Y)
+
+for i in range(3):  # 演示3次迭代，每次都输出完全相同的序列
+    print(f'i={i}')
+    for X, Y in seq_data_iter(my_seq, batch_size=2, num_steps=5):
+        print('X: ', X, '\nY:', Y)
+# 输出: 每次迭代输出的X和Y完全相同
+# i=0: X=[[0,1,2,3,4],[5,6,7,8,9]] Y=[[1,2,3,4,5],[6,7,8,9,10]]
+#      X=[[10,11,12,13,14],[15,16,17,18,19]] Y=[[11,12,13,14,15],[16,17,18,19,20]]
+#      X=[[20,21,22,23,24],[25,26,27,28,29]] Y=[[21,22,23,24,25],[26,27,28,29,30]]
+# i=1: (与i=0完全相同)
+# i=2: (与i=0完全相同)
+
+以下是随机偏移量的演示 —— 每次迭代输出的序列各不相同：
+
+import random
+
+def seq_data_iter_random(corpus, batch_size, num_steps):
+    """使用随机抽样生成一个小批量子序列"""
+    corpus = corpus[random.randint(0, num_steps - 1):]
+    num_subseqs = (len(corpus) - 1) // num_steps
+    initial_indices = list(range(0, num_subseqs * num_steps, num_steps))
+    random.shuffle(initial_indices)
+
+    def data(pos):
+        return corpus[pos: pos + num_steps]
+
+    num_batches = num_subseqs // batch_size
+    for i in range(0, batch_size * num_batches, batch_size):
+        initial_indices_per_batch = initial_indices[i: i + batch_size]
+        X = [data(j) for j in initial_indices_per_batch]
+        Y = [data(j + 1) for j in initial_indices_per_batch]
+        yield torch.tensor(X), torch.tensor(Y)
+
+for i in range(3):  # 演示3次迭代，每次输出的序列各不相同
+    print(f'i={i}')
+    for X, Y in seq_data_iter_random(my_seq, batch_size=2, num_steps=5):
+        print('X: ', X, '\nY:', Y)
+# 输出: 每次迭代的序列各不相同，体现了随机性
+# 例如 i=0: X=[[5,6,7,8,9],[19,20,21,22,23]], [[10,11,12,13,14],[24,25,26,27,28]]
+#      i=1: X=[[0,1,2,3,4],[17,18,19,20,21]], [[5,6,7,8,9],[22,23,24,25,26]],
+#              [[10,11,12,13,14],[27,28,29,30,31]]
+#      i=2: (与i=1不同的排列)
+
+2. 它真的会实现完美的均匀分布吗？
+
+不会。加入偏移量后无法保证每个采样点的采样概率完全相等，偏移量的存在可能会使得某些子序列被频繁采样，某些子序列被跳过。
+
+3. 如何使分布更均匀？
+
+- 多次采样后取均值来缓解随机偏移量带来的采样偏差问题
+- 降低随机偏移量的大小，使得采样点间的距离更加均匀
+
+---
+
+练习8.3.6
+
+完整句子在小批量抽样中的问题。
+
+解答：
+
+采用小批量采样时，通常会在序列中随机选取采样点位置，从而导致整个句子的完整性被破坏，并且这种切断方式还会破坏句子间的上下文关系，使得模型无法理解句子结构。
+
+解决这种问题，需要：
+- 手动控制采样位置，确定句子边界后，将边界处设置为采样点
+- 增加序列长度，确保长句不会被切断，保留更多的完整句子
+- 使用句子级的数据加载器

@@ -1,0 +1,159 @@
+8.1 序列模型 - PyPTO 参考答案
+
+练习8.1.1
+
+改进本节实验中的模型
+
+1. 是否包含了过去4个以上的观测结果？真实值需要是多少个？
+
+解答：
+tau=4 时考虑了过去4个观测结果。n_train=600 决定了训练样本600个。
+可通过改变 tau 参数来包含更多历史观测结果。
+
+import time as _time
+
+T = 1000
+time_vals = torch.arange(1, T + 1, dtype=torch.float32, device=device)
+x = torch.sin(0.01 * time_vals) + torch.normal(0, 0.2, (T,), device=device)
+
+tau = 4
+features = torch.zeros((T - tau, tau), device=device)
+for i in range(tau):
+    features[:, i] = x[i: T - tau + i]
+labels = x[tau:].reshape((-1, 1))
+
+batch_size, n_train = 16, 600
+train_iter = load_array((features[:n_train], labels[:n_train]),
+                         batch_size, is_train=True)
+
+# PyPTO 多层感知机
+net = nn.Sequential(
+    PyPTOLinear(tau, 10),
+    PyPTOReLUAct(),
+    PyPTOLinear(10, 1)
+).to(device)
+
+loss = nn.MSELoss(reduction='none')
+
+def train(net, train_iter, loss, epochs, lr):
+    trainer = torch.optim.Adam(net.parameters(), lr)
+    for epoch in range(epochs):
+        for X, y in train_iter:
+            trainer.zero_grad()
+            l = loss(net(X), y)
+            l.sum().backward()
+            trainer.step()
+        print(f'epoch {epoch + 1}, '
+              f'loss: {evaluate_loss(net, train_iter, loss):f}')
+
+# Warmup
+print('正在编译 PyPTO kernel...')
+t0 = _time.time()
+X, y = next(iter(train_iter))
+l = loss(net(X), y)
+l.sum().backward()
+net.zero_grad()
+print(f'编译完成，耗时 {_time.time() - t0:.0f} 秒')
+
+train(net, train_iter, loss, 5, 0.01)
+
+2. 如果没有噪音，需要多少个过去的观测结果？
+
+解答：
+d/dx sin(x) = cos(x), d/dx cos(x) = -sin(x)，sin 和 cos 的导数
+可相互表示，因此只需要 tau=1 即可通过微分方程恢复完整信息。
+
+x_noiseless = torch.sin(0.01 * time_vals)
+
+tau1 = 1
+features1 = torch.zeros((T - tau1, tau1), device=device)
+for i in range(tau1):
+    features1[:, i] = x_noiseless[i: T - tau1 + i]
+labels1 = x_noiseless[tau1:].reshape((-1, 1))
+
+train_iter1 = load_array((features1[:n_train], labels1[:n_train]),
+                          batch_size, is_train=True)
+
+net1 = nn.Sequential(
+    PyPTOLinear(1, 10),
+    PyPTOReLUAct(),
+    PyPTOLinear(10, 1)
+).to(device)
+
+train(net1, train_iter1, loss, 5, 0.01)
+
+3. 可以在保持特征总数不变的情况下合并旧的观察结果吗？
+
+解答：
+采用滑动窗口方式生成特征矩阵，不增加特征维度但提供更丰富的
+时序信息，可以有效捕捉序列数据中的时间相关性，提高预测准确度。
+
+features_sw = torch.zeros((T - tau, tau), device=device)
+for i in range(T - tau):
+    features_sw[i] = x[i:i+tau]  # 滑动窗口
+
+train_iter_sw = load_array((features_sw[:n_train], labels[:n_train]),
+                            batch_size, is_train=True)
+train(net, train_iter_sw, loss, 5, 0.01)
+
+4. 改变神经网络架构并评估性能
+
+解答：
+增加隐藏层大小和层数可降低 loss，但复杂结构可能产生振荡。
+
+def new_net():
+    return nn.Sequential(
+        PyPTOLinear(tau, 50),
+        PyPTOReLUAct(),
+        PyPTOLinear(50, 10),
+        PyPTOReLUAct(),
+        PyPTOLinear(10, 1)
+    ).to(device)
+
+net_bigger = new_net()
+train(net_bigger, train_iter, loss, 5, 0.01)
+
+onestep_preds1 = net(features)
+onestep_preds2 = net_bigger(features)
+
+time_cpu = time_vals.cpu()
+plot([time_cpu, time_cpu[tau:]],
+     [x.detach().cpu().numpy(), onestep_preds1.detach().cpu().numpy()], 'time',
+     'x', legend=['data', '1-step preds'], xlim=[1, 1000], figsize=(6, 3))
+
+---
+
+练习8.1.2
+
+投资者预测证券回报的策略问题
+
+解答：
+仅采用过去回报预测未来属于外推法。外推法的局限：
+- 必须满足"过去 → 未来"的假设，金融市场中这一假设往往不成立
+- 无法预测突发事件（政治事件、金融危机等）
+- 高度依赖数据质量
+推荐结合基本面分析、市场情绪等多元因素建模。
+
+---
+
+练习8.1.3
+
+时间因果模型在多大程度上适用于文本？
+
+解答：
+时间向前因果模型基于时间序列假设，但在文本中时序与内容产生
+的关联并不显著。文本生成受语义、语法、上下文等多维因素影响，单纯
+的时序因果关系不足以捕捉文本的复杂性。需要引入注意力机制等更复杂
+的结构。
+
+---
+
+练习8.1.4
+
+举例说明何时需要隐变量自回归模型
+
+解答：
+隐变量自回归模型通过引入隐变量捕捉未观测到的动态因素。例如：
+- 股票价格：受时间序列（历史价格）和市场情绪（隐变量）的共同影响
+- 语音信号：受前一帧信号（自回归）和说话人状态（隐变量）的影响
+- 视频帧预测：前一帧（自回归）+ 物体运动趋势（隐变量）

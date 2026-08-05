@@ -1,0 +1,105 @@
+8.2 文本预处理 练习参考答案
+
+练习8.2.1
+
+三种常用的词元化文本方法。
+
+解答：
+
+1. BPE (Byte-Pair Encoding) —— 字节对编码：
+
+BPE 是一种自底向上的子词构建方法，本质是贪心算法。具体流程为：
+
+(1) 确定词表大小（即子词总数量），作为算法终止条件。
+
+(2) 统计语料库中每个单词出现的频率，并在每个单词末尾添加结束符 </w>（用于标识单词边界，避免将不同单词的子词混淆）。
+
+(3) 将每个单词拆分为单个字符（初始子词），统计每个字符的出现频率，构建初始子词词表。
+
+(4) 统计文本中所有相邻子词对出现的频数，合并出现频数最高的子词对，生成新的子词并更新词表（例如 "e"+"s" → "es"）。
+
+(5) 重复步骤 (4)，直到达到步骤 (1) 确定的词表大小或合并次数上限。
+
+优点：通过高频子词的合并，实现对语料库的数据压缩，用最少的子词表示语料库；能够处理未登录词（OOV）问题，将罕见词分解为已知子词。
+
+2. WordPiece：
+
+WordPiece 与 BPE 的子词构建过程类似，但合并策略不同。具体流程为：
+
+(1) 与 BPE 类似，先构建初始词表（所有字符 + 特殊符号，如 [UNK]、[CLS]、[SEP] 等）。
+
+(2) 不同于 BPE 选择出现频数最高的子词对，WordPiece 选择能够最大化训练数据语言模型似然值的子词对进行合并。
+
+(3) 似然值提升量的计算方式为：该子词对出现的频数除以第一个子词的频率与第二个子词频率的乘积。公式为：score = count(pair) / (count(first) × count(second))。这实际上衡量了子词对中两个子词之间的"粘合度"——两个子词之间的关联性越强，score 越大。
+
+(4) 选择使似然值提升最大的子词对进行合并，重复直到达到预定词表大小。
+
+优点：更关注语义层面的关联性（而非单纯的频数），生成的子词表通常更具语言学意义。BERT 等预训练模型使用 WordPiece 作为分词器。
+
+3. SentencePiece：
+
+SentencePiece 是一种语言无关的子词词元化工具，不依赖于特定语言的分词规则。其核心特点为：
+
+- 将空格也视为普通字符进行编码，不区分单词边界。这样做的好处是不需要预先对文本进行分词（避免了对特定语言分词器的依赖）。
+- 将整个输入文本（整个句子或文档）视为一个连续的 Unicode 字符序列，然后通过 BPE 或 Unigram 语言模型的方式构造子词词表。
+- SentencePiece 特别适用于中文、日文、韩文（CJK）等不使用空格分隔单词的语言，也适用于需要处理多种语言的统一模型（多语言翻译、多语言预训练等）。Google 的 T5 和 XLNet 模型使用了 SentencePiece。
+
+优点：语言无关，无需预处理分词步骤，训练和推理完全一致。
+
+---
+
+练习8.2.2
+
+词元化为单词 vs 字符，以及 min_freq 的影响。
+
+解答：
+
+当词元设置为 Char 时，我们将文本序列中的每个字符视为一个词元。由于字符的种类数量有限（字母、数字、标点符号等），词表大小通常较小。但相应地，生成的语料库长度会增大（每个字符对应一个索引），这使得模型需要处理更长的序列。
+
+import collections
+import re
+import torch
+from torch import nn
+from torch.nn import functional as F
+from src.utils import (
+    read_time_machine, tokenize, Vocab,
+    load_corpus_time_machine
+)
+
+corpus, vocab = load_corpus_time_machine()
+print(f'char 模式: corpus={len(corpus)}, vocab={len(vocab)}')
+# 输出: corpus=170580, vocab=28
+
+可见：语料库长度约 17 万（非常长），但词表仅 28 个（a-z、空格等），序列长度带来了较大的计算和内存开销。
+
+当词元设置为 Word 时，文本按空格和标点符号进行分割，每个单词视为一个词元。由于语言的单词种类丰富，词表大小会显著增大，但语料库长度会大幅缩短，因为每个时间步表示一个完整单词而非单个字符。
+
+lines = read_time_machine()
+tokens = tokenize(lines, 'word')
+vocab_word = Vocab(tokens)
+corpus_word = [vocab_word[token] for line in tokens for token in line]
+print(f'word 模式: corpus={len(corpus_word)}, vocab={len(vocab_word)}')
+# 输出: corpus=32775, vocab=4580
+
+对比分析：
+- Char 模式：词表小(28)，序列长(170580) → 输出层参数少，但序列建模困难
+- Word 模式：词表大(4580)，序列短(32775) → 序列建模容易，但输出层参数多
+- 词表越大，计算资源需求越大；序列越长，梯度传播越困难
+
+min_freq 参数主要用来实现对低频词的过滤。将出现次数低于 min_freq 的词（即低频词）全部映射为 <unk> 标记（索引 0），从而缩减词表大小。这是词表构建中的一个重要超参数，需要在词表覆盖率和词表大小之间取得平衡。
+
+lines = read_time_machine()
+tokens = tokenize(lines, 'word')
+
+vocab0 = Vocab(tokens, min_freq=0)
+print(f'min_freq=0 时词表大小: {len(vocab0)}')
+
+vocab10 = Vocab(tokens, min_freq=10)
+print(f'min_freq=10 时词表大小: {len(vocab10)}')
+
+可以看到 min_freq 增大后，词表大小显著缩小。但低频词被映射为 <unk>（索引 0），这可能导致部分语义信息丢失，因为模型无法区分不同的低频词，将它们统一视为"未知词"。
+
+结论：
+- min_freq 增大 → 词表缩小 → 输出层参数减少 → 计算效率提升
+- 但同时低频词信息丢失 → 可能影响模型理解能力（尤其对专有名词等）
+- 在实际应用中需要根据语料库大小、任务需求和计算资源进行权衡选择
