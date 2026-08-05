@@ -11,7 +11,7 @@
 解析：PPO clip 机制限制新旧策略的概率比在 [1-ε, 1+ε] 范围内，防止策略突变。
 
 5. ×
-解析：Entropy bonus 设置过大会导致 entropy 失控飙升，模型过度探索不收敛。需要选择适中的值（如 0.001）。
+解析：Entropy bonus 设置过大会导致 entropy 失控飙升，模型过度探索不收敛。合适的系数需要保持其他参数不变，通过短程实验联合观察 entropy、KL 和验证 correct。
 
 6. √
 解析：KL 正则化在 loss 中加入 KL(π || π_ref) 惩罚项，限制当前策略与参考策略之间的距离，防止策略漂移过大。
@@ -20,7 +20,7 @@
 解析：correct_answer 只有猜中才有，是稀疏奖励；partial_answer 每轮都有部分匹配分数，是密集奖励。两者结合加速学习。
 
 8. B
-解析：GRPO 的核心优势是不需要 Critic 模型，用组内平均奖励作为 baseline 来计算优势，减少了显存和计算开销。
+解析：GRPO 的核心优势是不需要 Critic 模型，用组内平均奖励作为 baseline 来计算优势，减少了设备内存和计算开销。
 
 9. C
 解析：策略崩塌的典型表现：entropy 趋近 0、response_length 全部打满、correct 归零。模型输出退化为固定模式。
@@ -29,7 +29,7 @@
 解析：保留参考策略是为了通过 KL 正则化防止当前策略偏离初始模型太远，避免模型为了追求高奖励而忘记原有的语言能力。
 
 11. B
-解析：entropy_coeff=0.01 过大，会导致 entropy 失控飙升，模型过度探索不收敛。实测中 25 步内 entropy 从 0.56 飙到 4.5。
+解析：在本课程实验配置中，entropy_coeff=0.01 会让 entropy bonus 的相对影响过强，造成 entropy 膨胀、模型过度探索而不收敛。
 
 12. D
 解析：Wordle 奖励函数包含 correct_answer、partial_answer、length_bonus、format_reward。critic_value 不是奖励组件，是 PPO 中 Critic 模型的输出。

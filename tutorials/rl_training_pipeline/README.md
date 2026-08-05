@@ -16,9 +16,9 @@
 
 本教程支持以下在线体验环境：
 
-| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| 体验环境 | 环境要求 | Python 内核 | 说明 |
 | --- | --- | --- | --- |
-| CANNLab 云开发环境 | cann_9.0.0 py3.11-A3-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+| CANNLab 云开发环境 | 已安装 CANN 和 ATB | Python 3.11 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
 
 本课程从 `cann-learning-hub` 课程仓进入 CANNLab，课程 notebook 已随仓库提供，无须再次克隆课程仓。首次进入后，请打开 [01.01 章节介绍](01_environment_setup/01.01_chapter_intro.ipynb)，运行其中的仓库拉取单元格，将 `cann-recipes-train` 克隆到课程仓的同级目录。环境安装、数据准备和检查由 notebook 单元格完成，长时间训练在终端运行；TensorBoard 日志由训练脚本自动生成，并按 03.04 节说明复制到本地查看。
 

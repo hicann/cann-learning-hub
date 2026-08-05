@@ -17,7 +17,7 @@
 解析：词表来源于 TextArena Wordle-v0，TextArena 使用 NLTK 的 pos_tag 过滤出 5 字母名词作为有效词表。
 
 7. ×
-解析：val-aux/wordle/correct/mean@1 表示验证集（test set）的猜中率，不是训练集。
+解析：val-core/wordle/correct/mean@5 表示每个测试词采样 5 次后的验证集（test set）平均猜中率，不是训练集。
 
 8. B
 解析：response_mask 值为 1 表示模型生成的 token（如猜词内容），需要计算梯度；值为 0 表示环境追加的 token（如 G/Y/X 反馈），不计算梯度。
@@ -29,7 +29,7 @@
 解析：Wordle 奖励函数包含 correct_answer、partial_answer、length_bonus、format_reward。critic_value 是 PPO 中 Critic 模型的输出，不是 Wordle 奖励组件。
 
 11. C
-解析：健康训练中 entropy 缓慢下降但未崩塌。持续飙升（A）是 entropy bonus 过强的信号，突然跌到 0（B）是策略崩塌，保持不变（D）不太常见。
+解析：健康训练中的 entropy 可以平稳或逐步变化，但必须结合验证 correct 是否改善。持续快速上升（A）或突然跌到 0（B）都需要进一步诊断。
 
 12. A、B、C、D
 解析：WordleAgentLoop 的职责：发送游戏 prompt（A）、接收模型猜词（B）、计算 G/Y/X 反馈（C）、追加反馈到对话（D）。
@@ -41,4 +41,4 @@
 解析：训练日志包含 Actor 指标（entropy、loss、grad_norm）、Critic 指标（score、rewards、advantages）、序列长度指标（prompt_length、response_length）、性能指标（time_per_step、throughput）。
 
 15. A、B、C
-解析：ROLLOUT_N 影响 GRPO 组大小（A），MAX_TURNS 影响最大猜词轮次（B），ACTOR_LR 影响学习率（C）。NGPUS_PER_NODE（D）影响训练资源分配但不直接影响训练行为。
+解析：ROLLOUT_N 影响 GRPO 组大小（A），MAX_TURNS 影响最大猜词轮次（B），ACTOR_LR 影响学习率（C）。NGPUS_PER_NODE（D，变量名沿用上游配置，本课程中表示 Ascend NPU 卡数）影响训练资源分配但不直接影响训练行为。

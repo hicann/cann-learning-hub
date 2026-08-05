@@ -1,17 +1,17 @@
 1. √
-解析：entropy_coeff=0 时没有 entropy bonus，pg_loss 完全主导，entropy 持续下降，可能导致策略崩塌。
+解析：先运行 25～30 步，同时观察 entropy、KL、验证 correct 和输出长度，再根据曲线调节 entropy_coeff。
 
 2. ×
-解析：entropy_coeff 过大（如 0.01）会导致 entropy 失控飙升，模型过度探索不收敛。需要在探索和利用之间平衡，0.005 是更合理的选择。
+解析：entropy_coeff 过大会让 entropy bonus 的相对影响过强，模型可能过度探索而不收敛；更大的系数不等于更安全。
 
 3. √
 解析：RL 更新基于 noisy 的优势估计，需要更保守的步长。RL 学习率通常比 SFT 低 1-2 个数量级。
 
 4. B
-解析：entropy_coeff=0.01 导致 entropy bonus 过强，压过了策略梯度。25 步内 entropy 从 0.56 飙升到 4.51，模型过度探索。
+解析：entropy_coeff=0.005 实验中 entropy 上升到 3.638，而验证 correct 没有改善，说明 entropy bonus 的相对影响过强，模型探索过度。
 
 5. B
-解析：调参应先用默认参数跑 50 步观察 entropy 趋势，再根据趋势决定加 entropy_coeff 还是降。盲目设置大值会导致失控。
+解析：比较 entropy_coeff 时应固定模型、数据、seed、batch、学习率和评测协议做短程实验，并联合观察 entropy、KL、验证 correct 和输出长度。
 
-6. A、B、C
-解析：entropy_coeff（探索控制）、kl_loss_coef（漂移控制）、ACTOR_LR（更新步长）直接影响训练稳定性。ROLLOUT_N 影响组大小，通过优势估计质量间接影响稳定性，但不属于直接控制训练稳定机制的核心超参数。
+6. A、B、C、D
+解析：entropy、KL、验证 correct 和 response_length 分别反映探索变化、策略漂移、任务效果和输出退化风险，需要联合判断三种力的相对影响是否仍支持学习。

@@ -1,41 +1,41 @@
 1. √
-解析：entropy_coeff=0 时没有 entropy bonus 保护，pg_loss 完全主导，entropy 持续下降可能导致崩塌。
+解析：先运行 25～30 步，同时观察 entropy、KL、验证 correct 和输出长度，再根据曲线调节 entropy_coeff。
 
 2. ×
-解析：entropy_coeff 过大（如 0.01）会导致 entropy 失控飙升。需要在探索和利用之间平衡，0.005 更合理。
+解析：entropy_coeff 过大会让 entropy bonus 的相对影响过强，可能造成探索失控。系数需要通过固定其他参数的短程实验调试。
 
 3. √
 解析：RL 更新基于 noisy 的优势估计，需要更保守的步长。学习率通常比 SFT 低 1-2 个数量级。
 
 4. √
-解析：策略崩塌的根因是三种力失衡——pg_loss（降低 entropy）压过了 kl_loss（限制漂移）和 entropy_bonus（推高 entropy）。
+解析：entropy 反映探索变化，KL 反映策略漂移，验证 correct 反映任务效果，输出长度用于识别输出退化，需要联合观察。
 
 5. √
-解析：KL loss 限制策略漂移方向，entropy bonus 限制分布形状（防止过于集中）。两者协同维持训练稳定。
+解析：KL loss 限制当前策略相对参考策略的漂移，entropy bonus 降低分布过早集中的风险。两者互补但不能相互替代。
 
 6. ×
 解析：单一指标不能判断训练健康度。reward 可能因为 format 分而不归零，掩盖崩塌。需要同时看 entropy、correct、response_length 等多个指标。
 
 7. √
-解析：策略崩塌通常发生在训练早期（前 100 步），因为此时模型还未形成稳定策略，容易受到 noisy 梯度的影响。
+解析：前 25～30 步重点观察 entropy、KL 和输出长度，可以及时发现探索失控、策略漂移和输出退化。
 
 8. B
-解析：entropy_coeff=0.01 导致 entropy bonus 过强，压过了策略梯度。25 步内 entropy 从 0.56 飙升到 4.51。
+解析：entropy_coeff=0.005 实验中 entropy 上升到 3.638，而验证 correct 没有改善，说明 entropy bonus 的相对影响过强。
 
 9. C
 解析：崩溃后 correct=0、partial=0、length_bonus=0，只有 format_reward=1.0，加权后 0.2*1.0=0.20。模型格式仍然正确但无法猜词。
 
 10. B
-解析：加 entropy_coeff=0.005 可以在 pg_loss 和 entropy 之间建立平衡，防止崩塌。降低 entropy_coeff（A）会加重崩塌。
+解析：应先回退到验证指标较好的 checkpoint，保持其他参数不变，小幅调整 entropy_coeff 做短程对比。一次修改多项参数无法判断哪项有效。
 
 11. A、B、C
 解析：entropy_coeff（探索控制）、kl_loss_coef（漂移控制）、ACTOR_LR（更新步长）直接影响训练稳定性。ROLLOUT_N 影响组大小，通过优势估计质量间接影响稳定性，但不属于直接控制训练稳定机制的核心超参数。
 
 12. A、B、C、D
-解析：崩溃诊断需要检查 entropy、response_length、correct 率、grad_norm。四个指标缺一不可。
+解析：崩溃诊断需要检查 entropy、response_length、验证 correct、KL 和 grad_norm，并结合配置判断。
 
 13. A、B、C、D
 解析：策略崩塌的典型表现：entropy 跌到 0（A）、correct 归零（B）、response_length 全部打满（C）、reward 降到仅 format 分（D）。
 
 14. A、B、D
-解析：训练监控最佳实践：前 50 步密切监控（A）、设置 checkpoint 频率（B）、同时看多个指标（D）。只看 reward（C）是错误做法。
+解析：训练监控最佳实践：前 25～30 步密切监控（A）、设置 checkpoint 频率（B）、同时看多个指标（D）。只看 reward（C）是错误做法。

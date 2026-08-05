@@ -8,7 +8,7 @@
 解析：verl 基于 Ray 构建分布式训练系统，TaskRunner 是训练的总调度者，控制推理、奖励、训练的循环。
 
 4. √
-解析：Hybrid Engine 通过时分复用让训练和推理交替占用同一组卡。训练时参数在 GPU，推理时卸载到 CPU 释放显存给 vLLM，2 卡即可完成 RL 训练。
+解析：Hybrid Engine 通过时分复用让训练和推理交替占用同一组 NPU 卡。训练时参数加载到 NPU，rollout 时卸载到 CPU，释放 NPU 设备内存供 vLLM-Ascend 使用，因此 2 张 NPU 卡即可完成 RL 训练。
 
 5. √
 解析：git apply 补丁会做两件事：新增 wordle_agent_loop.py 文件，修改 __init__.py 注册 WordleAgentLoop 类。简单复制文件会漏掉注册步骤。
@@ -20,7 +20,7 @@
 解析：verl 会自动安装 ray、pandas、pyarrow 等依赖，但 nltk 和 textarena 是 Wordle 训练特有的依赖，需要单独安装。
 
 8. B
-解析：param_offload=True 将训练参数从 GPU 卸载到 CPU，释放显存给 vLLM 推理使用。这是 Hybrid Engine 时分复用的关键机制。
+解析：param_offload=True 将训练参数从 NPU 设备内存卸载到 CPU，释放 NPU 设备内存供 vLLM-Ascend rollout 使用。这是 Hybrid Engine 时分复用的关键机制。
 
 9. B
 解析：AgentLoopManager 管理多个 AgentLoop Worker，每个 Worker 并行处理一组 rollout。参数更新由 Ray Train (FSDP) 负责。
