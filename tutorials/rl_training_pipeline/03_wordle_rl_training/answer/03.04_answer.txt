@@ -11,7 +11,7 @@
 解析：val-core/wordle/correct/mean@5 表示验证集的平均猜中率，直接反映模型猜中秘密单词的能力。
 
 5. C
-解析：训练崩塌的典型信号是 entropy 突然跌到 0、response_length 全部打满 3232、correct 归零。entropy 逐步变化且验证 correct 没有持续恶化（D）不是崩塌信号。
+解析：训练崩塌的典型信号是 entropy 突然跌到 0、response_length 升高到 3232 并持续处于高位、correct 归零。entropy 逐步变化且验证 correct 没有持续恶化（D）不是崩塌信号。
 
 6. A、B、C、D
-解析：健康训练需要联合观察：验证 reward 和 correct 整体改善（A、B）、entropy 没有快速逼近 0 或持续加速上升（C）、response_length 未退化为全部打满（D）。
+解析：健康训练需要联合观察：验证 reward 和 correct 整体改善（A、B）、entropy 没有快速逼近 0 或持续加速上升（C）、response_length 在合理范围内波动（D）。

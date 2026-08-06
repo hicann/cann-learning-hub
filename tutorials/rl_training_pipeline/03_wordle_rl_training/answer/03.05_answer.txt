@@ -35,10 +35,10 @@
 解析：WordleAgentLoop 的职责：发送游戏 prompt（A）、接收模型猜词（B）、计算 G/Y/X 反馈（C）、追加反馈到对话（D）。
 
 13. A、B、C
-解析：训练崩塌的信号：entropy 突然跌到 0（A）、response_length 全部打满 3232（B）、correct 率归零（C）。reward 缓慢上升（D）是健康训练的表现。
+解析：训练崩塌的信号：entropy 突然跌到 0（A）、response_length 升高到 3232 并持续处于高位（B）、correct 率归零（C）。reward 缓慢上升（D）是健康训练的表现。
 
 14. A、B、C、D
-解析：训练日志包含 Actor 指标（entropy、loss、grad_norm）、Critic 指标（score、rewards、advantages）、序列长度指标（prompt_length、response_length）、性能指标（time_per_step、throughput）。
+解析：训练日志包含 Actor 指标（entropy、loss、grad_norm）、verl 在 `critic/` 命名空间记录的奖励与优势指标（score、rewards、advantages）、序列长度指标（prompt_length、response_length）和性能指标（time_per_step、throughput）。`critic/` 是指标命名空间，不表示本实验使用了 Critic 模型。
 
 15. A、B、C
 解析：ROLLOUT_N 影响 GRPO 组大小（A），MAX_TURNS 影响最大猜词轮次（B），ACTOR_LR 影响学习率（C）。NGPUS_PER_NODE（D，变量名沿用上游配置，本课程中表示 Ascend NPU 卡数）影响训练资源分配但不直接影响训练行为。

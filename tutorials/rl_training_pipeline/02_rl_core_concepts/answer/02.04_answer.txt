@@ -11,7 +11,7 @@
 解析：kl_loss_coef=0.001 提供轻微的 KL 约束，平衡探索和利用。太大会限制学习新策略，太小则无法防止漂移。
 
 5. C
-解析：策略崩塌的典型信号是 entropy 突然跌到 0、response_length 全部打满、correct 归零。entropy 缓慢下降（A）和 kl_loss 缓慢上升（D）是正常现象。
+解析：策略崩塌的典型信号是 entropy 突然跌到 0、response_length 异常升高并持续处于高位、correct 归零。entropy 缓慢下降（A）和 kl_loss 缓慢上升（D）是正常现象。
 
 6. A、B、C
 解析：RL 训练中的三种力：策略梯度（pg_loss，降低 entropy）、KL 正则（kl_loss，限制漂移）、熵奖励（entropy_bonus，推高 entropy）。Critic 价值估计是 PPO 的组件，不是稳定性机制。
