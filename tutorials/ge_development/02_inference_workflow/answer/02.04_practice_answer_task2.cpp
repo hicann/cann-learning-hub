@@ -1,15 +1,20 @@
 // 2.4 综合编程实践 参考答案 · 任务二：离线编译四步骤
 // Initialize -> BuildModel -> SaveModel -> Finalize，产出 add_sample.om。
-// 这是完整可用的源文件（与本章 02.02「动手实践」的 build_add_model.cpp 一致），
+// 这是完整可用的源文件（基于本章 02.02「动手实践」的 build_add_model.cpp，并增加产物校验），
 // 依赖 CANN 头文件与 GE 库，需在昇腾环境编译：把本文件放入 02.02 落盘的
-// Sources/01.04/ 工程替换 build_add_model.cpp 后 cmake 编译运行；无卡环境不编译。
+// Sources/02.02/ 工程替换 build_add_model.cpp 后 cmake 编译运行；无卡环境不编译。
 #include "common.h"
 #include "ge/ge_ir_build.h"
+#include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
 
 namespace {
+bool IsNonEmptyFile(const std::string &path) {
+  std::ifstream file(path, std::ios::binary | std::ios::ate);
+  return file.is_open() && file.tellg() > 0;
+}
 std::map<ge::AscendString, ge::AscendString> GlobalOptionsWithSoc(const std::string &soc_version) {
   std::map<ge::AscendString, ge::AscendString> opts;
   if (!soc_version.empty()) {  // 无卡编译时通过 ge.socVersion 指定目标芯片
@@ -41,10 +46,20 @@ int main(int argc, char **argv) {
     ge::aclgrphBuildFinalize();
     return -1;
   }
+  if (model.length == 0) {
+    std::cerr << "[Error] 模型构建结果为空\n";
+    ge::aclgrphBuildFinalize();
+    return -1;
+  }
   std::cout << "[Info] 模型构建成功，模型大小: " << model.length << " bytes\n";
 
   if (ge::aclgrphSaveModel("add_sample", model) != ge::GRAPH_SUCCESS) {  // 步骤 3：序列化保存为 add_sample.om
     std::cerr << "[Error] aclgrphSaveModel 失败\n";
+    ge::aclgrphBuildFinalize();
+    return -1;
+  }
+  if (!IsNonEmptyFile("add_sample.om")) {
+    std::cerr << "[Error] add_sample.om 未成功落盘或文件为空\n";
     ge::aclgrphBuildFinalize();
     return -1;
   }

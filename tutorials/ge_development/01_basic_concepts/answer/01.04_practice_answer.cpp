@@ -108,31 +108,82 @@ class Graph {
 };
 
 // 构造 Data x, Data y -> Add z -> NetOutput 的最小图。
+// NetOutput 故意在 Add 之前插入，验证拓扑排序确实遵循数据边而不是插入顺序。
 Graph BuildAddGraph() {
   Node x{"x", "Data", {}, true, Tensor{"x", {1, 3, 224, 224}}};
   Node y{"y", "Data", {}, true, Tensor{"y", {1, 3, 224, 224}}};
   Node z{"add", "Add", {"x", "y"}, true, Tensor{"z", {1, 3, 224, 224}}};
   Node out{"net_output", "NetOutput", {"z"}, false, Tensor{}};
   Graph g("add_graph");
-  g.Add(x).Add(y).Add(z).Add(out);
+  g.Add(x).Add(y).Add(out).Add(z);
   return g;
+}
+
+bool HasExpectedStructure(const std::vector<Node>& nodes) {
+  if (nodes.size() != 4) {
+    return false;
+  }
+  std::map<std::string, const Node*> by_name;
+  for (const auto& node : nodes) {
+    by_name[node.name] = &node;
+  }
+  if (by_name.size() != 4 || by_name.count("x") == 0 || by_name.count("y") == 0 ||
+      by_name.count("add") == 0 || by_name.count("net_output") == 0) {
+    return false;
+  }
+  const Node& x = *by_name["x"];
+  const Node& y = *by_name["y"];
+  const Node& add = *by_name["add"];
+  const Node& out = *by_name["net_output"];
+  return x.op_type == "Data" && x.inputs.empty() && x.has_output && x.output.name == "x" &&
+         y.op_type == "Data" && y.inputs.empty() && y.has_output && y.output.name == "y" &&
+         add.op_type == "Add" && add.inputs == std::vector<std::string>{"x", "y"} &&
+         add.has_output && add.output.name == "z" && out.op_type == "NetOutput" &&
+         out.inputs == std::vector<std::string>{"z"} && !out.has_output;
 }
 
 int main() {
   Graph g = BuildAddGraph();
+  const bool structure_ok = HasExpectedStructure(g.nodes());
+  const std::vector<std::string> expected_order{"x", "y", "add", "net_output"};
+  const auto topo_order = g.TopologicalOrder();
+  bool topology_ok = topo_order.size() == expected_order.size();
+  for (size_t index = 0; topology_ok && index < expected_order.size(); ++index) {
+    topology_ok = topo_order[index].name == expected_order[index];
+  }
   std::cout << "图: " << g.name() << ", 节点数: " << g.nodes().size() << "\n";
   std::cout << "拓扑序:\n";
   int i = 1;
-  for (const auto& n : g.TopologicalOrder()) {
+  for (const auto& n : topo_order) {
     std::cout << "  " << i++ << ". " << n.name << " (" << n.op_type << ")\n";
   }
   std::cout << "是否动态 Shape 图: " << std::boolalpha << g.IsDynamicGraph() << "\n";
 
-  // 把 x 的 batch 维改为动态(-1)，应判定为动态图
-  g.nodes()[0].output.shape[0] = -1;
-  const bool ok = g.nodes()[0].output.IsDynamic() && g.IsDynamicGraph();
-  std::cout << (ok ? "\n[OK] 综合实践通过：拓扑排序正确，静态/动态 Shape 判定正确。"
-                   : "\n[FAIL] 请检查 IsDynamic / 图判定实现。")
+  // 把 x 的 batch 维改为动态(-1)，应判定为动态图；按名称查找，避免依赖插入顺序。
+  const bool static_shape_ok = !g.IsDynamicGraph();
+  bool dynamic_shape_ok = false;
+  for (auto& node : g.nodes()) {
+    if (node.name == "x" && node.has_output) {
+      node.output.shape[0] = -1;
+      dynamic_shape_ok = node.output.IsDynamic() && g.IsDynamicGraph();
+      break;
+    }
+  }
+
+  Graph cyclic("cyclic_graph");
+  cyclic.Add(Node{"a", "Test", {"b"}, true, Tensor{"a", {1}}})
+        .Add(Node{"b", "Test", {"a"}, true, Tensor{"b", {1}}});
+  bool cycle_detection_ok = false;
+  try {
+    (void)cyclic.TopologicalOrder();
+  } catch (const std::runtime_error&) {
+    cycle_detection_ok = true;
+  }
+
+  const bool ok = structure_ok && topology_ok && cycle_detection_ok &&
+                  static_shape_ok && dynamic_shape_ok;
+  std::cout << (ok ? "\n[OK] 综合实践通过：图结构、拓扑排序、环检测及 Shape 判定正确。"
+                   : "\n[FAIL] 请检查图结构、拓扑排序、环检测和 Shape 判定实现。")
             << std::endl;
   return ok ? 0 : 1;
 }
