@@ -112,16 +112,17 @@ namespace ge {
 
 static ge::graphStatus InferShape(gert::InferShapeContext* context)
 {
-    const gert::Shape* x1_shape = context->GetInputShape(0);
-    gert::Shape* y_shape = context->GetOutputShape(0);
-    *y_shape = *x1_shape;
+    const gert::Shape* a_shape = context->GetInputShape(0);   // a: [M, K]
+    const gert::Shape* b_shape = context->GetInputShape(1);   // b: [K, N]
+    gert::Shape* y_shape = context->GetOutputShape(0);        // c: [M, N]
+    *y_shape = *a_shape;
+    y_shape->SetDim(1, b_shape->GetDim(1));                   // c 的 N 维取自 b
     return GRAPH_SUCCESS;
 }
 
 static ge::graphStatus InferDataType(gert::InferDataTypeContext *context)
 {
-    const auto inputDataType = context->GetInputDataType(0);
-    context->SetOutputDataType(0, inputDataType);            
+    context->SetOutputDataType(0, ge::DT_FLOAT);              // 输出固定 FP32
     return ge::GRAPH_SUCCESS;
 }
 
