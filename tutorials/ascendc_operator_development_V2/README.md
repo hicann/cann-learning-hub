@@ -115,6 +115,7 @@
 | Notebook | 状态 |
 | --- | --- |
 | [6.1 章节介绍](06_advanced_features/06.01_chapter_intro.ipynb) | 🚧 开发中 |
+| [6.2 Aclgraph 入图编译与运行](06_advanced_features/06.02_aclgraph_compile_launch.ipynb) | 🚧 开发中 |
 | [6.3 GE 入图编译与运行](06_advanced_features/06.03_ge_compile_launch.ipynb) | 🚧 开发中 |
 
 ## 第七章：高级算子实践
