@@ -26,12 +26,16 @@ cd ${BASE_DIR}/test
 python3 test_add_custom.py
 if [ $? -ne 0 ]; then
     echo "[ERROR]: Run add_custom test failed!"
+    exit 1
+else
+    echo "[INFO]: Run add_custom test success!"
 fi
-echo "[INFO]: Run add_custom test success!"
 
 # 运行测试用例
 python3 test_add_custom_graph.py
 if [ $? -ne 0 ]; then
     echo "[ERROR]: Run add_custom_graph test failed!"
+    exit 1
+else
+    echo "[INFO]: Run add_custom_graph test success!"
 fi
-echo "[INFO]: Run add_custom_graph test success!"
