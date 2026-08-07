@@ -148,7 +148,7 @@ class ModelConfig:
         if self.enable_static_kernel and self.exe_mode != "npugraph_ex":
             raise ValueError("enable_static_kernel only supports exe_mode='npugraph_ex'")
 
-        if self.exe_mode == "npugraph_ex" and os.getenv("TASK_QUEUE_ENABLE", "2") != "1":
+        if self.exe_mode == "npugraph_ex":
             os.environ["TASK_QUEUE_ENABLE"] = "1"  # npugraph_ex only supports TASK_QUEUE_ENABLE 0 or 1
         else:
             os.environ["TASK_QUEUE_ENABLE"] = "2"  # 2: default value, opt host perf in eager
