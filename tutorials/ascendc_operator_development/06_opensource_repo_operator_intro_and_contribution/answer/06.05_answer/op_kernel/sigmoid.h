@@ -80,7 +80,7 @@ __aicore__ inline void Sigmoid<T>::Compute(int32_t progress)
     AscendC::Muls(yLocal, xLocal, (T)-1, this->tileLength);
     AscendC::Exp(yLocal, yLocal, this->tileLength);
     AscendC::Adds(yLocal, yLocal, (T)1, this->tileLength);
-    AscendC::Div(xLocal, xLocal, xLocal, this->tileLength);
+    AscendC::Duplicate<T>(xLocal, (T)1, this->tileLength);
     AscendC::Div(yLocal, xLocal, yLocal, this->tileLength);
     YYY.EnQue(yLocal);
     XXX.FreeTensor(xLocal);
