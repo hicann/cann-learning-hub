@@ -1,0 +1,80 @@
+{
+  "target_label": 0,
+  "train_per_class": 5,
+  "test_per_class": 3,
+  "epochs": 10,
+  "batch_size": 8,
+  "seed": 42,
+  "device_target": "auto",
+  "ms_mode": "GRAPH",
+  "modes": {
+    "fast": {
+      "train_per_class": 2,
+      "test_per_class": 1,
+      "epochs": 1,
+      "batch_size": 8
+    },
+    "enhanced": {
+      "train_per_class": 5,
+      "test_per_class": 3,
+      "epochs": 1,
+      "batch_size": 16
+    },
+    "cloud_live": {
+      "train_per_class": 5,
+      "test_per_class": 3,
+      "epochs": 10,
+      "batch_size": 32,
+      "eval_each_epoch": true,
+      "save_epoch_metrics": true,
+      "save_training_curve": true,
+      "prefer_live_trained_checkpoint": true,
+      "strip_light_k": 8
+    }
+  },
+  "presentation_default_mode": "cloud_live",
+  "cloud_live": {
+    "train_per_class": 5,
+    "test_per_class": 3,
+    "epochs": 10,
+    "batch_size": 32,
+    "eval_each_epoch": true,
+    "save_epoch_metrics": true,
+    "save_training_curve": true,
+    "prefer_live_trained_checkpoint": true,
+    "strip_light_k": 8
+  },
+  "interactive": {
+    "max_gallery_images": 24,
+    "multi_sample_demo_count": 8,
+    "skip_target_label": true,
+    "enable_widgets_if_available": true
+  },
+  "square": {
+    "experiment_name": "square_main",
+    "trigger_type": "square",
+    "stage_name": "Square Trigger Baseline",
+    "trigger_size": 4,
+    "alpha": 0.8,
+    "position": "bottom_right"
+  },
+  "checkerboard": {
+    "experiment_name": "checkerboard_main",
+    "trigger_type": "checkerboard",
+    "stage_name": "Checkerboard Trigger Improved",
+    "trigger_size": 4,
+    "alpha": 0.8,
+    "position": "bottom_right"
+  },
+  "detection": {
+    "strip_light_default_k": 8,
+    "strip_light_allowed_k": [4, 6, 8, 10, 16],
+    "strip_light_batch_size": 1,
+    "strip_light_reference_count": 8,
+    "strip_light_calibration_count": 12,
+    "strip_light_target_fpr": 0.1,
+    "strip_light_image_source": "demo_subset_test",
+    "prefer_live_trained_checkpoint": true,
+    "formal_result_source": "src/assets/results/detection"
+  }
+}

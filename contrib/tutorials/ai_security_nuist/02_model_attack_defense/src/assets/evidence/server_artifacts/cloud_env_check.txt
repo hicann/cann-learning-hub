@@ -1,0 +1,1 @@
+cloud environment check passed

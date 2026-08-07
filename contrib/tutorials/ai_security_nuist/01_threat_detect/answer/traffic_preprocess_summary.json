@@ -1,0 +1,178 @@
+{
+  "project_root": "/mnt/workspace/gitCode/cann-learning-hub/contrib/tutorials/ai_security_nuist/01_threat_detect",
+  "raw_dir": "/mnt/workspace/gitCode/cann-learning-hub/contrib/tutorials/ai_security_nuist/01_threat_detect/src",
+  "processed_dir": "/mnt/workspace/gitCode/cann-learning-hub/contrib/tutorials/ai_security_nuist/01_threat_detect/answer",
+  "csv_files": [
+    "Monday-WorkingHours.pcap_ISCX.csv",
+    "Tuesday-WorkingHours.pcap_ISCX.csv"
+  ],
+  "keep_labels": [
+    "BENIGN",
+    "FTP-Patator",
+    "SSH-Patator"
+  ],
+  "label_map": {
+    "BENIGN": 0,
+    "FTP-Patator": 1
+  },
+  "dropped_non_numeric_cols": [],
+  "dropped_low_variance_cols": [
+    "Bwd PSH Flags",
+    "Fwd URG Flags",
+    "Bwd URG Flags",
+    "CWE Flag Count",
+    "Fwd Avg Bytes/Bulk",
+    "Fwd Avg Packets/Bulk",
+    "Fwd Avg Bulk Rate",
+    "Bwd Avg Bytes/Bulk",
+    "Bwd Avg Packets/Bulk",
+    "Bwd Avg Bulk Rate"
+  ],
+  "skew_log1p_cols": [
+    "Total Fwd Packets",
+    "Total Backward Packets",
+    "Total Length of Fwd Packets",
+    "Total Length of Bwd Packets",
+    "Fwd Packet Length Max",
+    "Fwd Packet Length Min",
+    "Fwd Packet Length Mean",
+    "Fwd Packet Length Std",
+    "Fwd IAT Mean",
+    "Fwd IAT Std",
+    "Fwd IAT Min",
+    "Bwd IAT Mean",
+    "Bwd IAT Std",
+    "Bwd IAT Min",
+    "Bwd Packets/s",
+    "Packet Length Variance",
+    "FIN Flag Count",
+    "RST Flag Count",
+    "ECE Flag Count",
+    "Avg Fwd Segment Size",
+    "Subflow Fwd Packets",
+    "Subflow Fwd Bytes",
+    "Subflow Bwd Packets",
+    "Subflow Bwd Bytes",
+    "act_data_pkt_fwd",
+    "Active Mean",
+    "Active Std",
+    "Active Max",
+    "Active Min",
+    "Idle Std"
+  ],
+  "selected_groups": {
+    "packet_length": [
+      "Bwd Header Length",
+      "Total Length of Fwd Packets",
+      "Total Length of Bwd Packets",
+      "Fwd Packet Length Max",
+      "Fwd Packet Length Min",
+      "Fwd Packet Length Mean",
+      "Fwd Packet Length Std",
+      "Bwd Packet Length Max",
+      "Bwd Packet Length Min",
+      "Bwd Packet Length Mean",
+      "Bwd Packet Length Std",
+      "Flow Bytes/s",
+      "Fwd Header Length",
+      "Min Packet Length",
+      "Max Packet Length",
+      "Packet Length Mean"
+    ],
+    "flow_timing": [
+      "Flow Duration",
+      "Flow IAT Mean",
+      "Flow IAT Std",
+      "Flow IAT Max",
+      "Flow IAT Min",
+      "Fwd IAT Total",
+      "Fwd IAT Mean",
+      "Fwd IAT Std",
+      "Fwd IAT Max",
+      "Fwd IAT Min",
+      "Bwd IAT Total",
+      "Bwd IAT Mean",
+      "Bwd IAT Std",
+      "Bwd IAT Max",
+      "Bwd IAT Min"
+    ],
+    "interaction": [
+      "Destination Port",
+      "Total Fwd Packets",
+      "Total Backward Packets",
+      "Flow Packets/s",
+      "Fwd Packets/s",
+      "Bwd Packets/s",
+      "Down/Up Ratio",
+      "Subflow Fwd Packets",
+      "Subflow Bwd Packets"
+    ],
+    "tcp_flags": [
+      "PSH Flag Count",
+      "FIN Flag Count",
+      "RST Flag Count",
+      "ACK Flag Count",
+      "ECE Flag Count",
+      "Fwd PSH Flags",
+      "SYN Flag Count",
+      "URG Flag Count"
+    ],
+    "active_idle": [
+      "Active Mean",
+      "Active Std",
+      "Active Max",
+      "Active Min",
+      "Idle Mean",
+      "Idle Std",
+      "Idle Max",
+      "Idle Min"
+    ],
+    "supplemental": [
+      "Packet Length Std",
+      "Packet Length Variance",
+      "Average Packet Size",
+      "Avg Fwd Segment Size",
+      "Avg Bwd Segment Size",
+      "Fwd Header Length.1",
+      "Subflow Fwd Bytes",
+      "Subflow Bwd Bytes",
+      "Init_Win_bytes_forward",
+      "Init_Win_bytes_backward",
+      "act_data_pkt_fwd",
+      "min_seg_size_forward"
+    ]
+  },
+  "target_hw": [
+    4,
+    4
+  ],
+  "shapes": {
+    "X_train": [
+      144162,
+      6,
+      4,
+      4
+    ],
+    "X_val": [
+      30892,
+      6,
+      4,
+      4
+    ],
+    "X_test": [
+      30892,
+      6,
+      4,
+      4
+    ],
+    "y_train": [
+      144162
+    ],
+    "y_val": [
+      30892
+    ],
+    "y_test": [
+      30892
+    ]
+  }
+}

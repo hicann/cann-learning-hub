@@ -1,0 +1,142 @@
+{
+  "profile": "cloud_live",
+  "device": "Ascend",
+  "data_source": "npy_dir:answer",
+  "label_map": {
+    "0": "BENIGN",
+    "1": "FTP-Patator"
+  },
+  "test_metrics": {
+    "loss": 0.010520476615056396,
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+  },
+  "confusion_matrix": [
+    [
+      450,
+      0
+    ],
+    [
+      0,
+      450
+    ]
+  ],
+  "classification_report": {
+    "BENIGN": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 450.0
+    },
+    "FTP-Patator": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 450.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 900.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 900.0
+    }
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.11501358733512461,
+      "train_acc": 0.9774,
+      "train_macro_f1": 0.9773888563239507,
+      "val_loss": 0.1466742567718029,
+      "val_acc": 0.9677777777777777,
+      "val_macro_f1": 0.967756720129566,
+      "epoch_sec": 38.54
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.014785094710532576,
+      "train_acc": 0.9976,
+      "train_macro_f1": 0.9975999903999616,
+      "val_loss": 0.024069755454547703,
+      "val_acc": 0.9955555555555555,
+      "val_macro_f1": 0.9955555336075734,
+      "epoch_sec": 0.58
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.009519060474121942,
+      "train_acc": 0.9992,
+      "train_macro_f1": 0.9992,
+      "val_loss": 0.029655519407242537,
+      "val_acc": 0.9966666666666667,
+      "val_macro_f1": 0.9966666296292181,
+      "epoch_sec": 0.58
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.01362842824892141,
+      "train_acc": 0.9966,
+      "train_macro_f1": 0.9965999770158447,
+      "val_loss": 0.04286965262144804,
+      "val_acc": 0.9933333333333333,
+      "val_macro_f1": 0.9933330370238678,
+      "epoch_sec": 0.59
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.006815084046684206,
+      "train_acc": 0.9994,
+      "train_macro_f1": 0.9993999999759999,
+      "val_loss": 0.04365011173649691,
+      "val_acc": 0.9966666666666667,
+      "val_macro_f1": 0.9966666296292181,
+      "epoch_sec": 0.58
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.005311330038239248,
+      "train_acc": 0.9994,
+      "train_macro_f1": 0.9993999999759999,
+      "val_loss": 0.03285615972708911,
+      "val_acc": 0.9966666666666667,
+      "val_macro_f1": 0.9966666296292181,
+      "epoch_sec": 0.57
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.0039943529991433024,
+      "train_acc": 0.9994,
+      "train_macro_f1": 0.9993999999759999,
+      "val_loss": 0.025522362426272593,
+      "val_acc": 0.9966666666666667,
+      "val_macro_f1": 0.9966666296292181,
+      "epoch_sec": 0.57
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.002844884360092692,
+      "train_acc": 0.9996,
+      "train_macro_f1": 0.9996,
+      "val_loss": 0.024279912875499576,
+      "val_acc": 0.9966666666666667,
+      "val_macro_f1": 0.9966666296292181,
+      "epoch_sec": 0.57
+    }
+  ],
+  "checkpoint_saved": true,
+  "checkpoint_path": "/mnt/workspace/gitCode/cann-learning-hub/contrib/tutorials/ai_security_nuist/01_threat_detect/answer/experiment03_traffic_resnet_best.ckpt",
+  "checkpoint_error": "",
+  "inference_performance": {
+    "warmup_batches": 2,
+    "timed_samples": 388,
+    "elapsed_sec": 0.013394832611083984,
+    "samples_per_second": 28966.394076394576
+  }
+}

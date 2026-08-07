@@ -1,0 +1,120 @@
+{
+  "report_name": "detection_complete_summary",
+  "generated_on": "2026-06-11",
+  "server_results_unpack_path": "D:\\MindSpore\\mindspore_badnets_gtsrb\\outputs\\server_detection_results_complete",
+  "output_directory": "outputs/defense/detection_final_complete",
+  "source_files": {
+    "strip_protocol_v3_metrics": "outputs/server_detection_results_complete/outputs/defense/detection_protocol_v3/detection_metrics_summary.json",
+    "neural_cleanse_square_main": "outputs/server_detection_results_complete/outputs/defense/neural_cleanse_server/square_main/neural_cleanse_summary.json",
+    "neural_cleanse_checkerboard_main": "outputs/server_detection_results_complete/outputs/defense/neural_cleanse_server/checkerboard_main/neural_cleanse_summary.json",
+    "audit_framework_compatibility": "outputs/server_detection_results_complete/outputs/defense/detection_audit/framework_compatibility_summary.json",
+    "audit_methodology": "outputs/server_detection_results_complete/outputs/defense/detection_audit/methodology_audit_summary.json"
+  },
+  "scope": {
+    "final_report_integration_only": true,
+    "server_detection_results_used": true,
+    "reran_experiments": false,
+    "modified_attack_pipeline": false,
+    "modified_defense_algorithm": false,
+    "rebuilt_server_zip": false
+  },
+  "formal_detection_notes": {
+    "strip_protocol_v3_statement": "STRIP++ protocol v3 是 sample-level detection。",
+    "neural_cleanse_statement": "Neural Cleanse full 43-class 是 model-level detection。",
+    "server_completion_statement": "两个检测链路都已在服务器完成。",
+    "legacy_v2_statement": "旧 STRIP++ v2 screening 只作为 preliminary，不作为正式结论。",
+    "defense_scope_statement": "本结果不包含防御成功结论。"
+  },
+  "legacy_strip_v2_screening": {
+    "role": "preliminary_only",
+    "formal_conclusion": false,
+    "preliminary_reason": "fixed-threshold holdout instability"
+  },
+  "strip_protocol_v3": {
+    "detection_level": "sample-level",
+    "server_completed": true,
+    "official_result": true,
+    "acceptance_pass": true,
+    "square_main": {
+      "detection_rate": 0.8933,
+      "FPR": 0.0067,
+      "ROC_AUC": 0.9550,
+      "PR_AUC": 0.9643,
+      "F1": 0.9404,
+      "balanced_accuracy": 0.9433
+    },
+    "checkerboard_main": {
+      "detection_rate": 1.0000,
+      "FPR": 0.0000,
+      "ROC_AUC": 0.9983,
+      "PR_AUC": 0.9993,
+      "F1": 1.0000,
+      "balanced_accuracy": 1.0000
+    },
+    "overall": {
+      "mean_detection_rate": 0.9467,
+      "mean_FPR": 0.0033,
+      "mean_ROC_AUC": 0.9766,
+      "mean_PR_AUC": 0.9818
+    }
+  },
+  "neural_cleanse_full_43_class": {
+    "detection_level": "model-level",
+    "server_completed": true,
+    "official_result": true,
+    "acceptance_pass": true,
+    "square_main": {
+      "completed_class_count": 43,
+      "suspected_target_class": 0,
+      "target_label_0_detected": true,
+      "mask_norm_class_0": 242.2166,
+      "second_smallest_mask_norm": 499.6801,
+      "median_mask_norm": 669.8555,
+      "mad_anomaly_index": 4.5259,
+      "anomaly_threshold": 2.0,
+      "reversed_success_rate": 1.0
+    },
+    "checkerboard_main": {
+      "completed_class_count": 43,
+      "suspected_target_class": 0,
+      "target_label_0_detected": true,
+      "mask_norm_class_0": 116.1734,
+      "second_smallest_mask_norm": 379.8344,
+      "median_mask_norm": 593.5593,
+      "mad_anomaly_index": 6.3364,
+      "anomaly_threshold": 2.0,
+      "reversed_success_rate": 1.0
+    }
+  },
+  "audit": {
+    "framework_compatibility": {
+      "framework_audit_pass": true,
+      "mindspore_native_pass": true,
+      "cpu_mode_pass": true,
+      "ascend_ready": true,
+      "pynative_supported": true,
+      "graph_supported": false,
+      "no_torch_dependency": true,
+      "backend_abstraction_needed": true,
+      "migration_risk_level": "medium"
+    },
+    "methodology": {
+      "methodology_audit_pass": true,
+      "current_formal_detection_methodology_pass": true,
+      "protocol_v3_methodology_pass": true,
+      "legacy_v2_methodology_pass": true,
+      "protocol_v3_exists": true,
+      "protocol_v3_metrics_pass": true,
+      "threshold_leakage_detected": false,
+      "sample_leakage_detected": false,
+      "seed_cherry_picking_detected": false,
+      "metric_leakage_detected": false,
+      "v2_preliminary_reason": "fixed-threshold holdout instability"
+    }
+  },
+  "final_conclusion": {
+    "statement": "服务器复现实验表明，STRIP++ protocol v3 在 sample-level trigger detection 上通过验收；full 43-class Neural Cleanse 在 model-level 后门目标定位上也通过验收。两个模型均成功定位 target_label=0。检测模块可以作为项目正式结果使用。",
+    "limitation": "本结论只说明检测模块有效，不代表防御模块成功。",
+    "report_ready": true
+  }
+}
