@@ -14,7 +14,7 @@
 解析：A2场景下，直传模式根据服务器组网拓扑结构自动选择最优传输协议：机内默认使用HCCS传输，跨机默认使用RoCE传输。可通过设置环境变量HCCL_INTRA_ROCE_ENABLE=1强制使用RoCE协议。
 
 6. D
-解析：使用HCCS传输时，底层驱动要求注册内存的首地址需要2MB对齐。可通过申请大页内存（ALC_MEM_MALLOC_HUGE_ONLY）或手动计算对齐地址来满足此要求。
+解析：使用HCCS传输时，底层驱动要求注册内存的首地址需要2MB对齐。可通过申请大页内存（ACL_MEM_MALLOC_HUGE_ONLY）或手动计算对齐地址来满足此要求。
 
 7. C
 解析：BufferPool参数格式为"$BUFFER_NUM:$BUFFER_SIZE"，其中BUFFER_SIZE单位为MB。默认值为"4:8"，表示4个Buffer，每个8MB，总池大小32MB。
