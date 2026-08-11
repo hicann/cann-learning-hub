@@ -325,7 +325,7 @@ SuperKernel编译时会在GlobalTensor的GetValue/SetValue/operator()中增加Ca
 
 ```
 auto xGlobal = GlobalTensor<int32_t>(...);
-xGlobal.SetVale(0, 1);
+xGlobal.SetValue(0, 1);
 auto scaleGlobal = GlobalTensor<float>(...);
 auto scale = scaleGlobal.GetValue(0); // 或 scaleGlobal(0)
 ```
