@@ -1,0 +1,61 @@
+[
+  {
+    "op": "MoeTopKLite",
+    "language": "cpp",
+    "input_desc": [
+      {"name": "logits", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ],
+    "output_desc": [
+      {"name": "topkIndicesOut", "param_type": "required", "format": ["ND"], "type": ["int32"]},
+      {"name": "topkProbsOut", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ]
+  },
+  {
+    "op": "MoeSortQuickSortLite",
+    "language": "cpp",
+    "input_desc": [
+      {"name": "logits", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ],
+    "output_desc": [
+      {"name": "topkIndicesOut", "param_type": "required", "format": ["ND"], "type": ["int32"]},
+      {"name": "topkProbsOut", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ]
+  },
+  {
+    "op": "MoeSortHeapSortLite",
+    "language": "cpp",
+    "input_desc": [
+      {"name": "logits", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ],
+    "output_desc": [
+      {"name": "topkIndicesOut", "param_type": "required", "format": ["ND"], "type": ["int32"]},
+      {"name": "topkProbsOut", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ]
+  },
+  {
+    "op": "MoeTokenPermuteLite",
+    "language": "cpp",
+    "input_desc": [
+      {"name": "tokens", "param_type": "required", "format": ["ND"], "type": ["fp16"]},
+      {"name": "sortedOrder", "param_type": "required", "format": ["ND"], "type": ["int32"]},
+      {"name": "probs", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ],
+    "output_desc": [
+      {"name": "permutedTokens", "param_type": "required", "format": ["ND"], "type": ["fp16"]},
+      {"name": "sortedIndices", "param_type": "required", "format": ["ND"], "type": ["int32"]},
+      {"name": "permutedProbs", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ]
+  },
+  {
+    "op": "MoeTokenUnpermuteLite",
+    "language": "cpp",
+    "input_desc": [
+      {"name": "expertOut", "param_type": "required", "format": ["ND"], "type": ["fp16"]},
+      {"name": "sortedIndices", "param_type": "required", "format": ["ND"], "type": ["int32"]},
+      {"name": "permutedProbs", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ],
+    "output_desc": [
+      {"name": "out", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ]
+  }
+]

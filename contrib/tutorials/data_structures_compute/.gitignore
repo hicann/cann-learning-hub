@@ -1,0 +1,13 @@
+.claude/
+.opencode/
+
+# 编译产物
+**/custom_ops/generated/
+**/aclnn_runner/build/
+
+# 运行时数据
+**/data/input/
+**/data/output/
+
+# 修改总结（仅本地参考）
+910b_changes_summary.md

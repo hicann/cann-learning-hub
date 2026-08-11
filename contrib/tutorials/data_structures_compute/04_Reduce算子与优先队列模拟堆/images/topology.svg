@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2560" height="1440" viewBox="0 0 1800 1200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<style type="text/css">
+  .node-box { rx:24; ry:24; stroke:#333; stroke-width:3; }
+  .node-text { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 32px; fill: #fff; text-anchor: middle; dominant-baseline: middle; font-weight: bold; }
+  .node-sub { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 22px; fill: #eee; text-anchor: middle; dominant-baseline: middle; }
+  .arrow { stroke: #555; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+  .arrow-dash { stroke: #555; stroke-width: 2; fill: none; stroke-dasharray: 8,4; marker-end: url(#arrowhead); }
+  .arrow-red { stroke: #D32F2F; stroke-width: 2; fill: none; stroke-dasharray: 8,4; marker-end: url(#arrowhead-red); }
+  .label { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 20px; fill: #666; text-anchor: middle; }
+  .title { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 44px; fill: #333; text-anchor: middle; font-weight: bold; }
+  .group-box { rx:32; ry:32; stroke:#aaa; stroke-width:2; stroke-dasharray: 12,6; fill:none; }
+  .group-label { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 28px; fill: #888; text-anchor: middle; font-weight: bold; }
+</style>
+<defs>
+  <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+  </marker>
+  <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#D32F2F"/>
+  </marker>
+</defs>
+<rect width="1800" height="1200" fill="#f8f9fa" rx="16"/>
+<text x="900" y="70" class="title">Reduce 算子实验 — 拓扑图</text>
+
+<rect x="60" y="120" width="1680" height="500" class="group-box"/>
+<text x="900" y="170" class="group-label">实验桌面（Host 侧）</text>
+
+<rect x="60" y="680" width="1680" height="480" class="group-box"/>
+<text x="900" y="730" class="group-label">昇腾 AI 处理器（Device 侧）</text>
+
+<rect x="120" y="280" width="360" height="140" class="node-box" fill="#2196F3"/>
+<text x="300" y="340" class="node-text">输入张量</text>
+<text x="300" y="390" class="node-sub">x[N] float16</text>
+
+<rect x="120" y="480" width="360" height="100" class="node-box" fill="#607D8B"/>
+<text x="300" y="540" class="node-text" style="font-size:26px;">C++ Benchmark Runner</text>
+
+<rect x="620" y="260" width="260" height="100" class="node-box" fill="#4CAF50"/>
+<text x="750" y="310" class="node-text" style="font-size:26px;">ReduceSumLite</text>
+
+<rect x="620" y="390" width="260" height="100" class="node-box" fill="#FF9800"/>
+<text x="750" y="440" class="node-text" style="font-size:26px;">ReduceMaxLite</text>
+
+<rect x="620" y="520" width="260" height="100" class="node-box" fill="#9C27B0"/>
+<text x="750" y="570" class="node-text" style="font-size:26px;">TopKReduceLite</text>
+
+<rect x="1320" y="330" width="360" height="140" class="node-box" fill="#F44336"/>
+<text x="1500" y="390" class="node-text">输出张量</text>
+<text x="1500" y="436" class="node-sub">汇总结果（多核局部值）</text>
+
+<rect x="500" y="800" width="400" height="160" class="node-box" fill="#00897B"/>
+<text x="700" y="864" class="node-text">CANN 框架</text>
+<text x="700" y="910" class="node-sub">msopgen + aclnn</text>
+
+<rect x="1100" y="780" width="440" height="200" class="node-box" fill="#D32F2F"/>
+<text x="1320" y="850" class="node-text">昇腾 AI 处理器</text>
+<text x="1320" y="900" class="node-sub">310B / 910B / A2 / A3</text>
+<text x="1320" y="940" class="node-sub">多核 Vector Core</text>
+
+<line x1="480" y1="350" x2="616" y2="310" class="arrow"/>
+<line x1="480" y1="350" x2="616" y2="440" class="arrow"/>
+<line x1="480" y1="350" x2="616" y2="570" class="arrow"/>
+<line x1="884" y1="310" x2="1316" y2="380" class="arrow"/>
+<line x1="884" y1="440" x2="1316" y2="390" class="arrow"/>
+<line x1="884" y1="570" x2="1316" y2="400" class="arrow"/>
+<line x1="700" y1="630" x2="700" y2="796" class="arrow"/>
+<line x1="900" y1="880" x2="1096" y2="880" class="arrow"/>
+<line x1="300" y1="476" x2="300" y2="424" class="arrow-dash"/>
+<line x1="1320" y1="880" x2="1080" y2="440" class="arrow-red"/>
+<text x="1000" y="840" class="label">编译算子</text>
+<text x="1160" y="760" class="label" style="fill:#D32F2F;">执行 Kernel</text>
+<text x="970" y="250" class="label" style="font-size:20px;">多核并行规约</text>
+</svg>

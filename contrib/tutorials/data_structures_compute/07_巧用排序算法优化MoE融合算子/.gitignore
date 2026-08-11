@@ -1,0 +1,14 @@
+# msopgen and CMake generated projects
+**/custom_ops/generated/
+**/custom_ops/generated/**
+**/aclnn_runner/build/
+**/aclnn_runner/build/**
+**/build/
+**/build_out/
+
+# Runtime data and benchmark outputs
+**/data/input/
+**/data/output/
+
+# Local-only notes
+910b_changes_summary.md

@@ -1,0 +1,14 @@
+=== Reduce Operator Lab Benchmark ===
+N=1024 K=4 BLOCK_DIM=20
+Timing: aclrtEvent, 3 warmup + 10 timed iterations
+
+[ReduceSum]  time=0.0XX ms  result=43.3495  ref=43.3750  error=0.0255  PASS
+[ReduceMax]  time=0.0XX ms  result=4.0820   ref=4.0820   error=0.0000  PASS
+[TopK]       time=0.0XX ms
+  result values: 4.0820 3.6641 2.9141 2.9043
+  result indices: 857 908 5 521
+  ref values:    4.0820 3.6641 2.9141 2.9043
+  ref indices:   857 908 5 521
+  PASS
+
+=== Done ===
