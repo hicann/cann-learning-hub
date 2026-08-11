@@ -34,6 +34,17 @@
 | Python | 3.9-3.12 |
 | CPU架构 | aarch64 / x86_64 |
 
+## 在线体验环境
+
+本教程支持以下在线体验环境：
+
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 | 参考 [CANNLab 环境体验指南](../../docs/CANNLab_env_experience_guide.md) 创建 CANNLab 环境运行 notebook |
+
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件和 pyasc，具体请参考 [环境准备](./01_pyasc_overview/01.03_environment_setup.ipynb) 章节。
+
 ## 课程大纲
 
 ### pyasc算子开发系列（初级）
@@ -103,14 +114,3 @@
 | 6.2 功能调试 | 在线体验建设中 | 🚧 开发中 |
 | 6.3 性能调优 | 在线体验建设中 | 🚧 开发中 |
 | 6.4 章节实践 | 在线体验建设中 | 🚧 开发中 |
-
-## 在线体验环境
-
-本教程支持以下在线体验环境：
-
-| 体验环境 | 适用硬件 | 说明 |
-| --- | --- | --- |
-| learning-hub notebook在线体验环境 | A2 / A3 | 点击各notebook的"在线体验"链接可直接打开运行 |
-| CANNLab云开发环境 | 910B / 910C | 提供完整的NPU开发环境，支持上板运行 |
-
-> **注意：** 如在本地环境离线体验，需自行安装配套的CANN软件和pyasc，具体请参考[环境准备](./01_pyasc_overview/01.03_environment_setup.ipynb)章节。
