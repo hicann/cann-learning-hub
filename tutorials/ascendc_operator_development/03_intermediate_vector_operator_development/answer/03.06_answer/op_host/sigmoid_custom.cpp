@@ -16,11 +16,11 @@ static ge::graphStatus TilingFunc(gert::TilingContext* context)
     uint32_t inputLength = inputNum * typeLength;
     const uint32_t BLOCK_SIZE = 32;
 
-    uint32_t inputLengthAlgin32 = (((inputLength + BLOCK_SIZE - 1) / BLOCK_SIZE) * BLOCK_SIZE);
-    coreNum = std::min(coreNum, inputLengthAlgin32 / BLOCK_SIZE);
+    uint32_t inputLengthAlign32 = (((inputLength + BLOCK_SIZE - 1) / BLOCK_SIZE) * BLOCK_SIZE);
+    coreNum = std::min(coreNum, inputLengthAlign32 / BLOCK_SIZE);
     coreNum = std::max(coreNum, static_cast<uint32_t>(1));
-    uint32_t everyCoreInputBlockNum = inputLengthAlgin32 / BLOCK_SIZE / coreNum;
-    uint32_t tailBlockNum = (inputLengthAlgin32 / BLOCK_SIZE) % coreNum;
+    uint32_t everyCoreInputBlockNum = inputLengthAlign32 / BLOCK_SIZE / coreNum;
+    uint32_t tailBlockNum = (inputLengthAlign32 / BLOCK_SIZE) % coreNum;
     context->SetBlockDim(coreNum);
 
 
