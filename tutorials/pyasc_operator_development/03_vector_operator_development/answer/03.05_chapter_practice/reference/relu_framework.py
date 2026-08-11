@@ -65,7 +65,17 @@ def copy_out(i: int, z_gm: asc.GlobalTensor, out_queue_z: asc.TQue, tile_length:
 def vrelu_launch(x: torch.Tensor) -> torch.Tensor:
     z = torch.zeros_like(x)
     total_length = z.numel()
-    block_length = (total_length + USE_CORE_NUM - 1) // USE_CORE_NUM
+    # 本样例采用固定等分切分（每核 block_length、每核内 TILE_NUM * BUFFER_NUM 个等长 tile），
+    # 不含尾块边界处理，因此要求 total_length 能被 USE_CORE_NUM * TILE_NUM * BUFFER_NUM 整除，
+    # 否则会出现最后一核越界访问或余数数据漏算。处理任意长度需额外实现尾块的有效长度与边界处理。
+    align = USE_CORE_NUM * TILE_NUM * BUFFER_NUM
+    if total_length % align != 0:
+        raise ValueError(
+            f"total_length({total_length}) 必须能被 USE_CORE_NUM * TILE_NUM * BUFFER_NUM"
+            f"({USE_CORE_NUM} * {TILE_NUM} * {BUFFER_NUM} = {align}) 整除，"
+            f"本样例暂不支持非整除长度的尾块处理。"
+        )
+    block_length = total_length // USE_CORE_NUM
     tile_length = block_length // TILE_NUM // BUFFER_NUM
     vrelu_kernel[USE_CORE_NUM, rt.current_stream()](x, z, block_length, tile_length)
     return z
