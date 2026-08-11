@@ -275,13 +275,13 @@ Sparse Flash Attention (SFA) 是 DeepSeek v3.2 版本中引入的核心注意力
 | sparse_flash_attn_pa.py | √ | 64 | √ | √ | √ | √ | √ | √ | 127us |
 | sparse_flash_attn_pa_no_cv_pipeline.py | √ | 256 | √ | √ | √ | × | √ | √ | 109us |
 
-- sparse_flash_attn_pa_baseline.py:https://blog.csdn.net/m0_71340392/article/details/sparse_flash_attn_pa_baseline.py
+- sparse_flash_attn_pa_baseline.py:https://github.com/tile-ai/tilelang-ascend/blob/ascendc_pto/examples/sparse_flash_attention/bench_sfa/sparse_flash_attn_pa_baseline.py
 
-- sparse_flash_attn_pa_developer.py:https://blog.csdn.net/m0_71340392/article/details/sparse_flash_attn_pa_developer.py
+- sparse_flash_attn_pa_developer.py:https://github.com/tile-ai/tilelang-ascend/blob/ascendc_pto/examples/sparse_flash_attention/bench_sfa/sparse_flash_attn_pa_developer.py
 
-- sparse_flash_attn_pa.py:https://blog.csdn.net/m0_71340392/article/details/sparse_flash_attn_pa.py
+- sparse_flash_attn_pa.py:https://github.com/tile-ai/tilelang-ascend/blob/ascendc_pto/examples/sparse_flash_attention/bench_sfa/sparse_flash_attn_pa.py
 
-- sparse_flash_attn_pa_no_cv_pipeline.py:https://blog.csdn.net/m0_71340392/article/details/sparse_flash_attn_pa_no_cv_pipeline.py
+- sparse_flash_attn_pa_no_cv_pipeline.py:https://github.com/tile-ai/tilelang-ascend/blob/ascendc_pto/examples/sparse_flash_attention/bench_sfa/sparse_flash_attn_pa_no_cv_pipeline.py
 
 - 算子实现：https://github.com/tile-ai/tilelang-ascend/tree/ascendc_pto/examples/sparse_flash_attention/bench_sfa
 
