@@ -1,0 +1,9 @@
+1. 对。激活重计算减少前向阶段需要长期保存的激活，代价是反向增加计算。
+
+2. 错。Ref 只执行前向，不创建优化器；它可以卸载参数，但没有 Ref 优化器状态可卸载。
+
+3. A。converter 注册 NPU RMSNorm 与 RoPE；TND 变长注意力由独立的 Qwen3 model spec 路径启用。
+
+4. A。课程保持初阶 1024 token prompt 和 4096 token response，总预算为 5120。
+
+5. A、B、C。all-gather 与 reduce-scatter 都是多个 rank 参与的集合通信，不是两个 rank 之间固定方向的点对点复制。

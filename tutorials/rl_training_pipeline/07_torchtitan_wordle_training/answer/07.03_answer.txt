@@ -1,0 +1,9 @@
+1. 对。DRY_RUN 完成环境预检并打印 shell 展开后的启动命令，不启动 Hydra 或 Verl 训练主循环。
+
+2. 错。DRY_RUN 还要同时核对 GRPO、vLLM、AgentLoop 和奖励函数，确认原有 RL 配置继续沿用。
+
+3. A。`attn_type=varlen` 直接选择变长注意力接口；CP degree、最大序列长度和 rollout 引擎分别描述并行拓扑、长度上限和生成路径。
+
+4. A、B、C、D。四项分别确认算法、生成、交互和评分语义继续沿用初阶课程。
+
+5. A、B、C、D。输出中应同时包含两卡 FSDP2 拓扑、参数卸载和 TND varlen 注意力配置。

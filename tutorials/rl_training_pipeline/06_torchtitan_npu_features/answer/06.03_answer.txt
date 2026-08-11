@@ -1,0 +1,9 @@
+1. 对。T 是移除样本 padding 后，一个 packed micro-batch 中连续排列的总 token 数。
+
+2. 错。TND 只表示张量布局；每条样本的起止位置仍由 VarlenMetadata 中的累计序列长度描述。
+
+3. A。CANN FA v3 根据累计序列长度和逐样本因果模式隔离 packed 样本，避免跨样本注意力。
+
+4. A、B、C、D。TND 变长路径先拼接有效 token，再使用累计长度隔离样本，完成因果注意力后按原 offsets 恢复 jagged tensor。
+
+5. A、B、D。状态接口暴露并适配分片权重，支持同步给 vLLM；奖励语义不属于训练状态接口。
