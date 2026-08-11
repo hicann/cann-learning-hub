@@ -4,7 +4,12 @@ def grade(user_globals):
     notebook_dir = os.getcwd()
     answer_file = os.path.join(notebook_dir, 'answer', '03_answer.txt')
     if not os.path.exists(answer_file):
-        answer_file = './answer/03_answer.txt'
+        answer_file = os.path.join(notebook_dir, 
+                                   'cann-learning-hub', 
+                                   'quick_start', 
+                                   'cann_basics', 
+                                   'answer', 
+                                   '03_answer.txt')
     if not os.path.exists(answer_file):
         answer_file = os.path.join(notebook_dir, 'quick_start', 'cann_basics', 'answer', '03_answer.txt')
 
