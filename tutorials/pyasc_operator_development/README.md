@@ -87,12 +87,11 @@
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 4.1 章节介绍 | [在线体验](./04_matmul_high_level_api/04.01_chapter_intro.ipynb) | 🚧 开发中 |
-| 4.2 底层mmad实现 | [在线体验](./04_matmul_high_level_api/04.02_matmul_basics_and_low_level_api.ipynb) | 🚧 开发中 |
-| 4.3 高阶Matmul API | [在线体验](./04_matmul_high_level_api/04.03_high_level_matmul_api.ipynb) | 🚧 开发中 |
-| 4.4 Cube Only模式Matmul开发 | [在线体验](./04_matmul_high_level_api/04.04_cube_only_mode_matmul.ipynb) | 🚧 开发中 |
-| 4.5 MIX模式Matmul开发 | [在线体验](./04_matmul_high_level_api/04.05_mix_mode_matmul.ipynb) | 🚧 开发中 |
-| 4.6 章节实践 | [在线体验](./04_matmul_high_level_api/04.06_chapter_practice.ipynb) | 🚧 开发中 |
+| 4.1 章节介绍 | [在线体验](./04_matmul_operator_development/04.01_chapter_intro.ipynb) | 🚧 开发中 |
+| 4.2 基础Matmul实现 | [在线体验](./04_matmul_operator_development/04.02_matmul_basics_and_basic_api.ipynb) | 🚧 开发中 |
+| 4.3 高阶Matmul API | [在线体验](./04_matmul_operator_development/04.03_advanced_matmul_api.ipynb) | 🚧 开发中 |
+| 4.4 Cube Only与MIX模式Matmul开发 | [在线体验](./04_matmul_operator_development/04.04_cube_only_and_mix_mode_matmul.ipynb) | 🚧 开发中 |
+| 4.5 章节实践 | [在线体验](./04_matmul_operator_development/04.05_chapter_practice.ipynb) | 🚧 开发中 |
 
 
 ### pyasc算子开发系列（高级）
