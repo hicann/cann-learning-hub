@@ -43,7 +43,7 @@
 | cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
 | CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 | 参考 [CANNLab 环境体验指南](../../docs/CANNLab_env_experience_guide.md) 创建 CANNLab 环境运行 notebook |
 
-> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件和 pyasc，具体请参考 [环境准备](./01_pyasc_overview/01.03_environment_setup.ipynb) 章节。
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件和 pyasc，具体请参考 [开发环境与样例运行](./01_pyasc_overview/01.04_environment_and_installation.ipynb) 章节。
 
 ## 课程大纲
 
@@ -55,8 +55,8 @@
 |--|--|--|
 | 1.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
 | 1.2 pyasc简介 | 在线体验建设中 | 🚧 开发中 |
-| 1.3 环境准备 | 在线体验建设中 | 🚧 开发中 |
-| 1.4 首个样例执行 | 在线体验建设中 | 🚧 开发中 |
+| 1.3 工程目录与首次运行 | 在线体验建设中 | 🚧 开发中 |
+| 1.4 开发环境与样例运行 | 在线体验建设中 | 🚧 开发中 |
 | 1.5 章节实践 | 在线体验建设中 | 🚧 开发中 |
 
 #### 第二章：pyasc核函数开发基础

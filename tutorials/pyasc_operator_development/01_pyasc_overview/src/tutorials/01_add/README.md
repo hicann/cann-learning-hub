@@ -41,7 +41,7 @@
     本示例算子使用了2个tiling参数：total_length、TILE_NUM。total_length是指需要计算的数据量大小，TILE_NUM是指每个核上总计算数据分块个数。比如，total_length这个参数传递到kernel侧后，可以通过除以参与计算的核数，得到每个核上的计算量，这样就完成了多核数据的切分。
 
 ## 编译执行
-环境配置请参考[quick_start.md](../../../docs/quick_start.md#envready)。完成环境配置后，执行如下命令可进行功能验证。
+环境配置请参考[开发环境与样例运行](../../../01.04_environment_and_installation.ipynb)章节。完成环境配置后，执行如下命令可进行功能验证。
 ```
 cd pyasc/python/tutorials/01_add
 python3 add.py -r [RUN_MODE] -v [SOC_VERSION]
