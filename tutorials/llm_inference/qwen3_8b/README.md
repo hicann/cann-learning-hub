@@ -1,5 +1,5 @@
 # Qwen3-8B 推理优化实践
-本教程以 `Qwen3-8B` 为例，展示如何在昇腾 NPU 上使用 cann-recipes-infer 离线推理框架完成 Baseline 推理、Profiling 分析，并验证 Dense RMSNorm NPU 融合路径的性能收益。课程主流程采用 recipes 的典型用法：查看并修改 `models/qwen/config/` 下的 YAML 配置，通过 `executor/scripts/infer.sh` 拉起离线推理，再从 `res/` 与 `prof/` 目录读取日志和性能产物。
+本教程以 `Qwen3-8B` 为例，展示如何在昇腾 NPU 上使用 cann-recipes-infer 离线推理框架完成 Baseline 推理、Profiling 分析，验证 Dense RMSNorm NPU 融合路径的性能收益，并通过 AMCT 工具完成 W8A8 量化导出与推理，以及自定义量化 matmul 算子的开发与接入。课程主流程采用 recipes 的典型用法：查看并修改 `models/qwen/config/` 下的 YAML 配置，通过 `executor/scripts/infer.sh` 拉起离线推理，再从 `res/` 与 `prof/` 目录读取日志和性能产物。
 
 教程包含以下内容：
 - Notebooks：包含环境准备、YAML 修改、`infer.sh` 启动、Profiling 分析和 Dense RMSNorm NPU 融合路径 A/B 验证步骤，可在 GitCode 提供的轻量级 Notebook 上运行，也可在本地 Jupyter 环境中执行。
@@ -35,6 +35,7 @@ Notebook 环境中按顺序打开并 Run All：
 2. `02_baseline_inference.ipynb`
 3. `03_profiling_analysis.ipynb`
 4. `04_npu_optimization.ipynb`
+5. `05_quantization_qwen3_8b.ipynb`
 
 首次执行 `02_baseline_inference.ipynb` 的 Baseline 推理 cell 会开始下载并缓存 `Qwen/Qwen3-8B` 权重；如果已设置 `QWEN3_8B_MODEL_PATH`，则直接使用本地权重目录。
 
@@ -48,6 +49,8 @@ bash executor/scripts/infer.sh --model qwen --mode offline --yaml <yaml>
 recipes 日志保存在 `src/inference_scripts/recipe_qwen3_8b/models/qwen/res/<日期>/<case_name>/`，课程指标会同步写入 `Sources/model_inference_optimization/qwen3_8b/run_outputs/`。
 
 第 3 章会在 YAML 中打开 `model_config.enable_profiler=true`。运行后进入 recipes 结果目录下的 `prof/`，查看 `kernel_details`、trace、`op_statistic` 或 `op_summary` 等性能产物，再基于真实算子耗时选择第 4 章的优化点。
+
+第 5 章使用 AMCT 工具将 BF16 权重导出为 W8A8 INT8 量化权重，并通过量化 YAML 配置（`qwen3_8b_a8w8_1tp.yaml`）执行量化模型推理与 Profiling 分析，定位耗时最高的量化 matmul 算子。第 6 章基于第 5 章 Profiling 归纳的算子规格，需要使用 Ascend C 开发自定义量化 matmul 算子 `QmmCustom`，编译后接入 Qwen3-8B 量化模型验证功能与性能。
 
 本地终端运行前先准备 CANN 和可见 NPU。
 
