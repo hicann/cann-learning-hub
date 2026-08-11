@@ -205,7 +205,7 @@ template<int D_T_X, int D_T_Y, int D_T_Z, int TILE_NUM, int IS_SPLIT>
          op.Process2();        }    }}
 ```
 
-当前已开源的ops-nn仓和ops-transfomer仓中的部分核心算子已经基于该模板化编程方式完成优化，感兴趣的同学可以访问ops-nn仓 BatMatMulV3算子和ops-transformer仓 FA算子。
+当前已开源的ops-nn仓和ops-transformer仓中的部分核心算子已经基于该模板化编程方式完成优化，感兴趣的同学可以访问ops-nn仓 BatMatMulV3算子和ops-transformer仓 FA算子。
 
 **ops-nn仓 BatMatMulV3算子：**
 
