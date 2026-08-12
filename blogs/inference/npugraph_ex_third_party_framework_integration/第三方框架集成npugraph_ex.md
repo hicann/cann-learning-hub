@@ -395,14 +395,4 @@ npugraph_ex提供了出色的模型推理加速功能，在torch_npu和TorchAir�
 TorchAir仓链接：https://gitcode.com/Ascend/torchair
 推理的编译优化，也可以通过缓存功能加速冷启动时间。
 
-**参考链接：**
 
-XPU_GRAPH仓链接：https://github.com/XPU-Forces/xpu_graph/
-
-npugraph_ex接入PR链接：https://github.com/XPU-Forces/xpu_graph/pull/442
-
-### 5.总结
-
-npugraph_ex提供了出色的模型推理加速功能，在torch_npu和TorchAir开源的帮助下更进一步，支持了第三方生态的接入，XPU_GRAPH的成功集成便是其中的优秀典范。npugraph_ex也会持续地完善功能、优化性能并降低使用以及接入的难度，开发者们可以关注TorchAir开源仓查看相关的最新技术动态。
-
-TorchAir仓链接：https://gitcode.com/Ascend/torchair
