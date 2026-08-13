@@ -21,9 +21,21 @@ curr_dir = os.path.dirname(os.path.realpath(__file__))
 def compare_data(golden_file_lists, output_file_lists, d_type):
     np_dtype = d_type
     data_same = True
+    if not golden_file_lists:
+        print("FAILED: no golden files found")
+        return False
+    if not output_file_lists:
+        print("FAILED: no output files found")
+        return False
+    if len(golden_file_lists) != len(output_file_lists):
+        print(f"FAILED: file count mismatch, golden={len(golden_file_lists)}, output={len(output_file_lists)}")
+        return False
     for gold, out in zip(golden_file_lists, output_file_lists):
         tmp_out = np.fromfile(out, np_dtype)
         tmp_gold = np.fromfile(gold, np_dtype)
+        if tmp_out.shape != tmp_gold.shape:
+            print(f"FAILED: shape mismatch, output={tmp_out.shape}, golden={tmp_gold.shape}")
+            return False
         diff_res = np.isclose(tmp_out, tmp_gold, 0, 0, True)
         diff_idx = np.where(diff_res != True)[0]
         if len(diff_idx) == 0:
