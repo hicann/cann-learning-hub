@@ -2,6 +2,5 @@
 2. `gate`
 3. 非线性权重；被调制的内容。
 4. A
-5. A
-6. 按 batch tile 分块执行 Softmax。
-7. A
+5. 按 batch tile 分块执行 Softmax。
+6. A

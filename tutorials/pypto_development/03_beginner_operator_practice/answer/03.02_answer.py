@@ -11,19 +11,3 @@ def fused_square_practice_kernel(
     squared = pypto.mul(relu, relu)
     out.move(squared)
 
-
-def main_fused_square_practice(device_id: int = None):
-    device_local = get_device()
-    x = torch.randn(8, 8, dtype=torch.float16, device=device_local)
-    scale = torch.full((8, 8), 1.5, dtype=torch.float16, device=device_local)
-    bias = torch.full((8, 8), -0.1, dtype=torch.float16, device=device_local)
-    out = torch.empty_like(x)
-
-    fused_square_practice_kernel(x, scale, bias, out)
-
-    ref = torch.maximum(x * scale + bias, torch.zeros_like(x))
-    ref = ref * ref
-    
-    torch.testing.assert_close(out, ref, rtol=3e-3, atol=3e-3)
-    max_diff = (out - ref).abs().max().item()
-    print(f"最大误差: {max_diff:.6f}")

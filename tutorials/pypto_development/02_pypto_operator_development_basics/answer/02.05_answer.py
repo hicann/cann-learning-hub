@@ -10,13 +10,3 @@
 def half_add_kernel(x: pypto.Tensor[...], y: pypto.Tensor[...], out: pypto.Tensor[...]):
     pypto.set_vec_tile_shapes(32, 32)
     out[:] = pypto.mul(pypto.add(x, y), 0.5)
-
-def test_half_add_kernel():
-    shape = (64, 64)
-    device = get_device()
-    x = torch.randn(shape, dtype=torch.float, device=device)
-    y = torch.randn(shape, dtype=torch.float, device=device)
-    out = torch.empty(shape, dtype=torch.float, device=device)
-    half_add_kernel(x, y, out)
-    torch.testing.assert_close((x + y) * 0.5, out, atol=1e-3, rtol=1e-3)
-    print("✓ Test completed successfully")

@@ -1,13 +1,3 @@
-# 03.06 章节实践参考答案：实现稳定版行 Softmax
-
-# 章节自测答案：
-# 1. 逐元素、规约等向量
-# 2. 矩阵乘法等 Cube
-# 3. B
-# 4. A
-# 5. A
-# 6. 把计算表达式的最终结果写回调用者传入的输出 Tensor
-
 @pypto.frontend.jit(runtime_options={"run_mode": RUN_MODE})
 def row_softmax_practice_kernel(
     x: pypto.Tensor([], pypto.DT_FP32),
@@ -21,20 +11,4 @@ def row_softmax_practice_kernel(
     out.move(exp / esum)
 
 
-def main_row_softmax_practice():
-    x = torch.randn((8, 8), dtype=torch.float32, device=device)
-    out = torch.empty_like(x)
 
-    row_softmax_practice_kernel(x, out)
-
-    ref = torch.softmax(x, dim=-1)
-    max_diff = (out - ref).abs().max().item()
-    torch.testing.assert_close(out, ref, rtol=1e-3, atol=1e-3)
-
-    print("row_softmax_practice_kernel 验证通过")
-    print("输入 shape:", tuple(x.shape), "输出 shape:", tuple(out.shape))
-    print("输出每行求和:", out.sum(dim=-1).detach().cpu())
-    print("最大误差:", max_diff)
-
-
-main_row_softmax_practice()
