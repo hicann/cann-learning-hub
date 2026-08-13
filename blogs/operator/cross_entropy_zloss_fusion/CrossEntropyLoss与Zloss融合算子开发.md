@@ -38,9 +38,7 @@ ignore_index: 一个整数，表示要忽略的标签值。
 
 1. 控制模型复杂度：防止模型通过产生极大（正或负）的logits 来“强行”拟合训练数据，从而减轻过拟合。
 
-2. 数值稳定性：过大的 logits 在输入到 Softmax 函数时，会导致
-
-变得非常大，容易引发数值计算上的问题（如溢出）。ZLoss可以抑制这种情况，使训练过程更稳定。
+2. 数值稳定性：过大的 logits 在输入到 Softmax 函数时，会导致![zloss_equation](images/zloss_equation.png)变得非常大，容易引发数值计算上的问题（如溢出）。ZLoss可以抑制这种情况，使训练过程更稳定。
 
 3. 平滑输出分布：通过限制 logits 的幅度，模型输出的概率分布不会变得过于“尖锐”（即一个类别概率接近1，其他接近0），这有时可以提高模型的校准度和泛化能力。
 
@@ -76,9 +74,7 @@ AI Core内部数据处理的基本过程可以分为三个阶段，该过程可�
 
 **4.解决方案：融合算子设计与实现**
 
-**核心思想：**为了优化计算损失函数的耗时，客户决定开发CrossEntropyLossWithZLoss算子，将所有损失函数计算过程使用的Vector操作融合为单个Vector算子，在一个kernel内完成从输入logits到最终输出CELoss和
-
-的所有计算步骤，避免产生任何中间全局显存变量，从而减少尾部计算耗时。
+**核心思想：**为了优化计算损失函数的耗时，客户决定开发CrossEntropyLossWithZLoss算子，将所有损失函数计算过程使用的Vector操作融合为单个Vector算子，在一个kernel内完成从输入logits到最终输出CELoss和![zloss_equation2](images/zloss_equation2.png)的所有计算步骤，避免产生任何中间全局显存变量，从而减少尾部计算耗时。
 
 **参考与借鉴：**面对这一挑战，客户参考了昇腾CANN开源算子源码仓ops-nn中高性能CrossEntropyLoss算子的实现，该算子已经具备高性能的CE Loss交叉熵损失函数计算能力，客户在此基础上，融入了ZLoss和lseForZLoss计算，分别用于计算辅助损失ZLoss和ZLoss场景下输出给反向传播的值。参考前文CE Loss计算公式和ZLoss计算公式说明可知，可在计算log_prob的同时完成ZLoss和lseForZLoss计算，这种基于已有算子的开发方式，利用经过测试和验证的现有代码，减少重复劳动，大大提高了开发效率。
 
