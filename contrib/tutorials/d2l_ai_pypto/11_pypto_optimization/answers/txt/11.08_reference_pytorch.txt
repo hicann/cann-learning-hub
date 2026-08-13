@@ -1,0 +1,163 @@
+### 练习11.8.1
+如果我们设置γ = 1，实验会发生什么？为什么？
+
+**解答：**
+
+如果我们设置 γ 为1，则状态矢量 sₜ 的更新函数变为：
+
+sₜ arrow sₜ₋₁=s₀=0
+
+也就是状态矢量将保持不变为0，则自变量更新函数变为：
+
+xₜ arrow xₜ₋₁-(η)/(√(ε))⊙ g(t)
+
+因此，步长将不会发生改变，将变成确定步长优化。
+
+### 练习11.8.2
+旋转优化问题以最小化f(x) = 0.1 (x₁ + x₂)² + 2 (x₁ - x₂)²。收敛会发生什么？
+
+**解答：**
+
+我们首先观察原优化问题：
+
+def rmsprop_2d(x1, x2, s1, s2):
+    g1, g2, eps = 0.2 * x1, 4 * x2, 1e-6
+    s1 = gamma * s1 + (1 - gamma) * g1 ** 2
+    s2 = gamma * s2 + (1 - gamma) * g2 ** 2
+    x1 -= eta / math.sqrt(s1 + eps) * g1
+    x2 -= eta / math.sqrt(s2 + eps) * g2
+    return x1, x2, s1, s2
+
+def f_2d(x1, x2):
+    return 0.1 * x1 ** 2 + 2 * x2 ** 2
+
+eta, gamma = 0.4, 0.9
+show_trace_2d(f_2d, train_2d(rmsprop_2d))
+
+再关注旋转后的优化问题
+
+def rmsprop_2d(x1, x2, s1, s2):
+    g1, g2, eps = 4.2 * x1 - 3.8 * x2, 4.2 * x2 - 3.8 * x1, 1e-6
+    s1 = gamma * s1 + (1 - gamma) * g1 ** 2
+    s2 = gamma * s2 + (1 - gamma) * g2 ** 2
+    x1 -= eta / math.sqrt(s1 + eps) * g1
+    x2 -= eta / math.sqrt(s2 + eps) * g2
+    return x1, x2, s1, s2
+
+def f_2d(x1, x2):
+    return 0.1 * (x1 + x2) ** 2 + 2 * (x1 - x2) ** 2
+
+eta, gamma = 0.4, 0.9
+show_trace_2d(f_2d, train_2d(rmsprop_2d))
+
+可见，旋转之后的优化问题收敛效果显著变差。
+
+def accuracy(y_hat, y):
+    if len(y_hat.shape) > 1 and y_hat.shape[1] > 1:
+        y_hat = y_hat.argmax(axis=1)
+    cmp = y_hat.type(y.dtype) == y
+    return float(cmp.type(y.dtype).sum())
+
+def try_gpu(i=0):
+    if torch.npu.is_available():
+        return torch.device(f"npu:{i}")
+    return torch.device("cpu")
+
+def load_data_fashion_mnist(batch_size, resize=None):
+    trans = [transforms.ToTensor()]
+    if resize:
+        trans.insert(0, transforms.Resize(resize))
+    trans = transforms.Compose(trans)
+    mnist_train = torchvision.datasets.FashionMNIST(
+        root="../data", train=True, transform=trans, download=True)
+    mnist_test = torchvision.datasets.FashionMNIST(
+        root="../data", train=False, transform=trans, download=True)
+    return (torch.utils.data.DataLoader(mnist_train, batch_size, shuffle=True),
+            torch.utils.data.DataLoader(mnist_test, batch_size, shuffle=False))
+
+### 练习11.8.3
+试试在真正的机器学习问题上应用RMSProp算法会发生什么，例如在Fashion-MNIST上的训练。试验不同的取值来调整学习率。
+
+**解答：**
+
+net = nn.Sequential(
+    nn.Conv2d(1, 6, kernel_size=5, padding=2), nn.Sigmoid(),
+    nn.AvgPool2d(kernel_size=2, stride=2),
+    nn.Conv2d(6, 16, kernel_size=5), nn.Sigmoid(),
+    nn.AvgPool2d(kernel_size=2, stride=2),
+    nn.Flatten(),
+    nn.Linear(16 * 5 * 5, 120), nn.Sigmoid(),
+    nn.Linear(120, 84), nn.Sigmoid(),
+    nn.Linear(84, 10))
+
+batch_size = 256
+train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+
+def evaluate_accuracy_gpu(net, data_iter, device=None):
+    """使用GPU计算模型在数据集上的精度"""
+    if isinstance(net, nn.Module):
+        net.eval()  # 设置为评估模式
+        if not device:
+            device = next(iter(net.parameters())).device
+    # 正确预测的数量，总预测的数量
+    metric = Accumulator(2)
+    with torch.no_grad():
+        for X, y in data_iter:
+            if isinstance(X, list):
+                # BERT微调所需的（之后将介绍）
+                X = [x.to(device) for x in X]
+            else:
+                X = X.to(device)
+            y = y.to(device)
+            metric.add(accuracy(net(X), y), y.numel())
+    return metric[0] / metric[1]
+
+def train_ch6(net, train_iter, test_iter, num_epochs, lr, device):
+    """用GPU训练模型(在第六章定义)"""
+    def init_weights(m):
+        if type(m) == nn.Linear or type(m) == nn.Conv2d:
+            nn.init.xavier_uniform_(m.weight)
+    net.apply(init_weights)
+    print('training on', device)
+    net.to(device)
+    optimizer = torch.optim.RMSprop(net.parameters(), lr=lr, alpha=0.9)
+    loss = nn.CrossEntropyLoss()
+    animator = Animator(xlabel='epoch', xlim=[1, num_epochs],
+                            legend=['train loss', 'train acc', 'test acc'])
+    timer, num_batches = Timer(), len(train_iter)
+    for epoch in range(num_epochs):
+        # 训练损失之和，训练准确率之和，样本数
+        metric = Accumulator(3)
+        net.train()
+        for i, (X, y) in enumerate(train_iter):
+            timer.start()
+            optimizer.zero_grad()
+            X, y = X.to(device), y.to(device)
+            y_hat = net(X)
+            l = loss(y_hat, y)
+            l.backward()
+            optimizer.step()
+            with torch.no_grad():
+                metric.add(l * X.shape[0], accuracy(y_hat, y), X.shape[0])
+            timer.stop()
+            train_l = metric[0] / metric[2]
+            train_acc = metric[1] / metric[2]
+            if (i + 1) % (num_batches // 5) == 0 or i == num_batches - 1:
+                animator.add(epoch + (i + 1) / num_batches,
+                             (train_l, train_acc, None))
+        test_acc = evaluate_accuracy_gpu(net, test_iter)
+        animator.add(epoch + 1, (None, None, test_acc))
+    print(f'loss {train_l:.3f}, train acc {train_acc:.3f}, '
+          f'test acc {test_acc:.3f}')
+    print(f'{metric[2] * num_epochs / timer.sum():.1f} examples/sec '
+          f'on {str(device)}')
+
+num_epochs = 10
+train_ch6(net, train_iter, test_iter, num_epochs, 0.01, try_gpu())
+
+### 练习11.8.4
+随着优化的进展，需要调整γ吗？RMSProp算法对此有多敏感？
+
+**解答：**
+
+γ（PyTorch 中记为 `alpha`）控制二阶矩的指数滑动平均窗长：γ 越大，sₜ 对瞬时 gₜ² 的响应越慢，有效步长 η/√(sₜ+ε) 衰减越缓。γ 对收敛有影响，但不存在“γ=0.99 一定很差”的结论——它与学习率耦合：γ 大时 sₜ 偏小、有效步长偏大，通常需配更小的 η。实践中 γ 一般固定（常用 0.9 或 0.99），通过调 η 而非随训练动态改 γ。原解答“初期大 γ、后期小 γ”的建议缺乏依据。
