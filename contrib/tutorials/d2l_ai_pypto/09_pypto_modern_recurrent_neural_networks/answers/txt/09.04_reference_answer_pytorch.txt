@@ -1,0 +1,68 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.4 双向循环神经网络 练习参考答案
+
+练习9.4.1
+
+如果不同方向使用不同数量的隐藏单位，H_t的形状会发生怎样的变化？
+
+解答：
+在双向RNN中，最终隐藏状态H_t的维度由前向和反向循环神经网络中的隐藏层拼接得来。通常前向和反向选用相同的隐藏层数量，即H_t = 2 * 前向隐藏单元数。当不同方向使用不同数量的隐藏单位时，H_t的维度 = 前向隐藏单元数 + 反向隐藏单元数。
+
+代码验证：
+
+import torch
+import torch.nn as nn
+
+class BiLSTM(nn.Module):
+    def __init__(self, input_size, hidden_size_forward, hidden_size_backward):
+        super().__init__()
+        self.lstm_forward = nn.LSTM(input_size, hidden_size_forward, batch_first=True)
+        self.lstm_backward = nn.LSTM(input_size, hidden_size_backward, batch_first=True)
+    def forward(self, x, x_lengths):
+        packed_x_forward = nn.utils.rnn.pack_padded_sequence(
+            x, x_lengths, batch_first=True, enforce_sorted=False)
+        packed_h_forward, _ = self.lstm_forward(packed_x_forward)
+        h_forward, _ = nn.utils.rnn.pad_packed_sequence(packed_h_forward, batch_first=True)
+        packed_x_backward = nn.utils.rnn.pack_padded_sequence(
+            torch.flip(x, [1]), x_lengths, batch_first=True, enforce_sorted=False)
+        packed_h_backward, _ = self.lstm_backward(packed_x_backward)
+        h_backward, _ = nn.utils.rnn.pad_packed_sequence(packed_h_backward, batch_first=True)
+        h_backward = torch.flip(h_backward, [1])
+        h = torch.cat((h_forward, h_backward), dim=2)
+        return h
+
+batch_size, seq_length, input_size = 3, 5, 2
+hidden_size_forward, hidden_size_backward = 10, 8
+x_lengths = [3, 5, 2]
+x = [torch.randn(x_lengths[i], input_size) for i in range(batch_size)]
+x = nn.utils.rnn.pad_sequence(x, batch_first=True)
+model = BiLSTM(input_size, hidden_size_forward, hidden_size_backward)
+h = model(x, x_lengths)
+print(f'Output shape: {h.shape}')  # torch.Size([3, 5, 18])
+
+---
+
+练习9.4.2
+
+设计一个具有多个隐藏层的双向循环神经网络。
+
+解答：
+直接使用 nn.LSTM(..., num_layers=4, bidirectional=True) 即可构建多层双向LSTM：
+
+from src.utils import load_data_time_machine, try_gpu, RNNModel
+from torch import nn
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+vocab_size, num_hiddens, num_layers = len(vocab), 256, 4
+lstm_layer = nn.LSTM(vocab_size, num_hiddens, num_layers, bidirectional=True)
+model = RNNModel(lstm_layer, len(vocab)).to(try_gpu())
+
+---
+
+练习9.4.3
+
+如何设计一个神经网络模型处理一词多义？哪种神经网络架构更合适？
+
+解答：
+处理一词多义需要结合上下文信息来对该位置的单词意思进行确认。可采用双向循环神经网络模型或者Transformer，将上下文中的单词序列映射到单词的向量表示。这些上下文感知的双向模型能够更好地捕捉单词在不同上下文中的含义。例如在双向LSTM中，每个单词的向量表示取决于整个上下文序列，因此可以更好地捕捉单词在上下文中的含义。

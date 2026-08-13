@@ -1,0 +1,114 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.3 深度循环神经网络 练习参考答案
+
+练习9.3.1
+
+基于我们在8.5节中讨论的单层实现，尝试从零开始实现两层循环神经网络。
+
+解答：
+定义两层RNN的参数和状态，每层独立计算隐状态递推：
+
+import math
+import torch
+from torch import nn
+from torch.nn import functional as F
+from src.utils import load_data_time_machine, train_ch8, try_gpu, RNNModelScratch
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+def get_params(vocab_size, num_hiddens, device):
+    num_inputs = num_outputs = vocab_size
+    def normal(shape):
+        return torch.randn(size=shape, device=device) * 0.01
+    W_xh1 = normal((num_inputs, num_hiddens))
+    W_hh1 = normal((num_hiddens, num_hiddens))
+    b_h1 = torch.zeros(num_hiddens, device=device)
+    W_xh2 = normal((num_hiddens, num_hiddens))
+    W_hh2 = normal((num_hiddens, num_hiddens))
+    b_h2 = torch.zeros(num_hiddens, device=device)
+    W_hq = normal((num_hiddens, num_outputs))
+    b_q = torch.zeros(num_outputs, device=device)
+    params = [W_xh1, W_hh1, b_h1, W_xh2, W_hh2, b_h2, W_hq, b_q]
+    for param in params:
+        param.requires_grad_(True)
+    return params
+
+def init_rnn_state(batch_size, num_hiddens, device):
+    return (torch.zeros((batch_size, num_hiddens), device=device),
+            torch.zeros((batch_size, num_hiddens), device=device))
+
+def rnn(inputs, state, params):
+    W_xh1, W_hh1, b_h1, W_xh2, W_hh2, b_h2, W_hq, b_q = params
+    H1, H2 = state
+    outputs = []
+    for X in inputs:
+        H1 = torch.relu(torch.mm(X, W_xh1) + torch.mm(H1, W_hh1) + b_h1)
+        H2 = torch.relu(torch.mm(H1, W_xh2) + torch.mm(H2, W_hh2) + b_h2)
+        Y = torch.mm(H2, W_hq) + b_q
+        outputs.append(Y)
+    return torch.cat(outputs, dim=0), (H1, H2)
+
+num_hiddens = 512
+net = RNNModelScratch(len(vocab), num_hiddens, try_gpu(),
+                      get_params, init_rnn_state, rnn)
+num_epochs, lr = 500, 1
+train_ch8(net, train_iter, vocab, lr, num_epochs, try_gpu(), use_plot=False)
+
+---
+
+练习9.3.2
+
+在本节训练模型中，比较使用门控循环单元替换长短期记忆网络后模型的精确度和训练速度。
+
+解答：
+对比双层GRU与双层LSTM的结果可以发现，将LSTM替换为GRU后训练速度有所提高，因为GRU只有两个门，参数量更少。精确度方面，由于文本量限制，二者都在该文本上达到了1.0的困惑度。
+
+from src.utils import load_data_time_machine, train_ch8, try_gpu, RNNModel
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+vocab_size, num_hiddens, num_layers = len(vocab), 256, 2
+device_d2l = try_gpu()
+
+# LSTM (2层)
+lstm_layer = nn.LSTM(vocab_size, num_hiddens, num_layers)
+model_lstm = RNNModel(lstm_layer, len(vocab)).to(device_d2l)
+num_epochs, lr = 500, 2
+train_ch8(model_lstm, train_iter, vocab, lr, num_epochs, device_d2l,
+          use_plot=False)
+
+# GRU (2层)
+gru_layer = nn.GRU(vocab_size, num_hiddens, num_layers)
+model_gru = RNNModel(gru_layer, len(vocab)).to(device_d2l)
+train_ch8(model_gru, train_iter, vocab, lr, num_epochs, device_d2l,
+          use_plot=False)
+
+---
+
+练习9.3.3
+
+如果增加训练数据，能够将困惑度降到多低？
+
+解答：
+将该作者的另一篇文章《The War of the Worlds》与《The Time Machine》进行混合，将增加后的文本作为训练数据。增加数据后，困惑度仍可以降低到1.0。
+
+---
+
+练习9.3.4
+
+在为文本建模时，是否可以将不同作者的源数据合并？有何优劣呢？
+
+解答：
+可以，但需考虑以下因素：
+
+优点：
+- 增加训练数据量，更好地训练模型
+- 提高模型泛化能力，不同作者的风格、语言可能不同，让模型学到不同特征
+
+缺点：
+- 可能引入更多噪声，影响训练效果
+- 如果某作者数据量远大于其他作者，训练出的模型可能产生偏见
+
+综上，合并前需要确保数据的平衡性和质量，进行适当预处理。

@@ -1,0 +1,110 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.4 双向循环神经网络 - PyPTO 参考答案
+
+练习9.4.1
+
+如果不同方向使用不同数量的隐藏单位，H_t的形状会发生怎样的变化？
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（两个 PyPTOLSTM 拼接实现双向，前向/反向隐藏单元数不同）：
+
+from src.pypto_ops import PyPTOLSTM
+
+
+class BiLSTMPyPTO(nn.Module):
+    """双向 LSTM（PyPTO 版）：前向/反向使用不同数量的隐藏单元。
+
+    PyPTOLSTM 为单向（默认单层、支持多层），双向通过两个 PyPTOLSTM 拼接实现：
+    前向隐层处理正序序列，反向隐层处理逆序序列，最后沿隐藏维拼接，
+    输出维度为 h_f + h_b。
+    """
+
+    def __init__(self, input_size, hidden_size_forward, hidden_size_backward):
+        super().__init__()
+        self.lstm_forward = PyPTOLSTM(input_size, hidden_size_forward)
+        self.lstm_backward = PyPTOLSTM(input_size, hidden_size_backward)
+
+    def forward(self, x):
+        # x: (batch, seq, input_size)
+        h_forward, _ = self.lstm_forward(x.permute(1, 0, 2).contiguous())
+        h_backward, _ = self.lstm_backward(
+            torch.flip(x, [1]).permute(1, 0, 2).contiguous())
+        h_backward = torch.flip(h_backward.permute(1, 0, 2), [1])  # 对齐时间步
+        h = torch.cat((h_forward.permute(1, 0, 2), h_backward), dim=2)
+        return h
+
+
+batch_size, seq_length, input_size = 3, 5, 2
+hidden_size_forward, hidden_size_backward = 10, 8
+model = BiLSTMPyPTO(input_size, hidden_size_forward, hidden_size_backward).to(device)
+x = torch.randn(batch_size, seq_length, input_size, device=device)
+h = model(x)
+print(f'Output shape: {h.shape}')  # (3, 5, 18) = h_f(10) + h_b(8)
+
+NPU 注意事项：
+- PyPTOLSTM 为单向（默认单层、支持多层），双向通过正序/逆序两个 PyPTOLSTM + 拼接实现
+- 反向分支需对输入做 torch.flip 后再处理，输出再 flip 对齐时间步
+- 输出隐藏维 = 前向隐藏单元数 + 反向隐藏单元数（h_f + h_b）
+
+---
+
+练习9.4.2
+
+设计一个具有多个隐藏层的双向循环神经网络。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（多层双向 host nn.LSTM 在 NPU 上执行 + PyPTOLinear 输出层）：
+
+from src.utils import load_data_time_machine, train_ch8
+from src.pypto_ops import PyPTOLinear, loss_fn
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+class PyPTOBiLSTMModel(nn.Module):
+    """多层双向 LSTM 语言模型：host 算子 nn.LSTM 在 NPU 上执行，
+    输出层使用 PyPTOLinear（输入维度 hidden_size * 2，双向）。"""
+
+    def __init__(self, lstm_layer, vocab_size):
+        super().__init__()
+        self.lstm = lstm_layer
+        self.linear = PyPTOLinear(lstm_layer.hidden_size * 2, vocab_size)
+        self.vocab_size = vocab_size
+    def forward(self, inputs, state):
+        X = F.one_hot(inputs.T.long(), self.vocab_size).float()
+        Y, state = self.lstm(X, state)
+        Y_npu = Y.reshape((-1, Y.shape[-1])).to(self.linear.weight.device)
+        return self.linear(Y_npu), state
+    def begin_state(self, batch_size, device):
+        num_d = self.lstm.num_layers * 2  # bidirectional
+        return (torch.zeros((num_d, batch_size, self.lstm.hidden_size), device=device),
+                torch.zeros((num_d, batch_size, self.lstm.hidden_size), device=device))
+
+lstm_layer = nn.LSTM(len(vocab), 256, 4, bidirectional=True).to(device)
+net = PyPTOBiLSTMModel(lstm_layer, len(vocab))
+net.linear = net.linear.to(device)
+# JIT预热
+X_w, y_w = next(iter(train_iter))
+s_w = net.begin_state(batch_size, device)
+l_w = loss_fn(net(X_w.to(device), s_w)[0], y_w.T.reshape(-1).to(device), len(vocab))
+l_w.backward(); net.zero_grad()
+train_ch8(net, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False,
+          loss_fn=lambda y_h, y: loss_fn(y_h, y, len(vocab)))
+
+NPU 注意事项：
+- 双向 LSTM 输出层输入维度需 ×2（self.lstm.hidden_size * 2）
+- begin_state 中 num_directions = num_layers * 2（双向）
+- 多层双向 nn.LSTM 作为 host 算子保留（在 NPU 上执行），PyPTOLinear 用于输出层加速
+
+---
+
+练习9.4.3
+
+处理一词多义的神经网络设计。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）

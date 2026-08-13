@@ -1,0 +1,157 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.3 深度循环神经网络 - PyPTO 参考答案
+
+练习9.3.1
+
+从零开始实现两层循环神经网络。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（使用 PyPTOMatmul / PyPTOBiasAdd / PyPTOAdd / PyPTOReLUOp / loss_fn）：
+
+from src.utils import load_data_time_machine, train_ch8
+from src.pypto_ops import (PyPTOMatmul, PyPTOBiasAdd, PyPTOAdd,
+                           PyPTOReLUOp, loss_fn)
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+def get_params_pypto(vocab_size, num_hiddens, device):
+    def normal(shape):
+        return torch.randn(size=shape, device=device) * 0.01
+    num_inputs = num_outputs = vocab_size
+    w = [normal((num_inputs, num_hiddens)),
+         normal((num_hiddens, num_hiddens)),
+         torch.zeros(num_hiddens, device=device),
+         normal((num_hiddens, num_hiddens)),
+         normal((num_hiddens, num_hiddens)),
+         torch.zeros(num_hiddens, device=device),
+         normal((num_hiddens, num_outputs)),
+         torch.zeros(num_outputs, device=device)]
+    for p in w:
+        p.requires_grad_(True)
+    return w
+
+def rnn_pypto(inputs, state, params):
+    W_xh1, W_hh1, b_h1, W_xh2, W_hh2, b_h2, W_hq, b_q = params
+    H1, H2 = state
+    outputs = []
+    for X in inputs:
+        XW1 = PyPTOMatmul.apply(X, W_xh1)
+        HW1 = PyPTOMatmul.apply(H1, W_hh1)
+        H1 = PyPTOReLUOp.apply(PyPTOBiasAdd.apply(PyPTOAdd.apply(XW1, HW1), b_h1))
+        XW2 = PyPTOMatmul.apply(H1, W_xh2)
+        HW2 = PyPTOMatmul.apply(H2, W_hh2)
+        H2 = PyPTOReLUOp.apply(PyPTOBiasAdd.apply(PyPTOAdd.apply(XW2, HW2), b_h2))
+        Y = PyPTOBiasAdd.apply(PyPTOMatmul.apply(H2, W_hq), b_q)
+        outputs.append(Y)
+    return torch.cat(outputs, dim=0), (H1, H2)
+
+class PyPTORNNModelScratch:
+    def __init__(self, vocab_size, num_hiddens, device,
+                 get_params_fn, init_state_fn, forward_fn):
+        self.vocab_size, self.num_hiddens = vocab_size, num_hiddens
+        self.device = device
+        self.params = get_params_fn(vocab_size, num_hiddens, device)
+        self.init_state, self.forward_fn = init_state_fn, forward_fn
+    def __call__(self, X, state):
+        X_oh = F.one_hot(X.T, self.vocab_size).float()
+        return self.forward_fn(X_oh, state, self.params)
+    def begin_state(self, batch_size, device=None):
+        d = device or self.device
+        return self.init_state(batch_size, self.num_hiddens, d)
+
+X, y = next(iter(train_iter))
+# JIT预热
+net_w = PyPTORNNModelScratch(len(vocab), 512, device, get_params_pypto,
+    lambda b, h, d: (torch.zeros((b, h), device=d), torch.zeros((b, h), device=d)),
+    rnn_pypto)
+s_w = net_w.begin_state(batch_size, device)
+l = loss_fn(net_w(X.to(device), s_w)[0], y.T.reshape(-1).to(device), len(vocab))
+l.backward()
+
+net = PyPTORNNModelScratch(len(vocab), 512, device, get_params_pypto,
+    lambda b, h, d: (torch.zeros((b, h), device=d), torch.zeros((b, h), device=d)),
+    rnn_pypto)
+train_ch8(net, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False,
+          loss_fn=lambda y_h, y: loss_fn(y_h, y, len(vocab)))
+
+NPU 注意事项：
+- 两层 RNN 从零实现时，每步都需要 PyPTO 算子调用（Matmul + Add + BiasAdd + ReLUOp）
+- 第一层输出 H1 作为第二层输入，需逐时间步传递
+- 建议在正式训练前进行 JIT 预热
+
+---
+
+练习9.3.2
+
+比较使用GRU替换LSTM后的精确度和训练速度。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码：
+
+from src.utils import load_data_time_machine, train_ch8
+from src.pypto_ops import PyPTOLinear, PyPTOLSTM, PyPTOGRU, loss_fn
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+# 统一模型封装（支持 RNN / GRU / LSTM）
+class PyPTORNNModelMulti(nn.Module):
+    def __init__(self, rnn_layer, vocab_size):
+        super().__init__()
+        self.rnn = rnn_layer
+        self.linear = PyPTOLinear(rnn_layer.hidden_size, vocab_size)
+        self.vocab_size = vocab_size
+    def forward(self, inputs, state):
+        X = F.one_hot(inputs.T.long(), self.vocab_size).float()
+        Y, state = self.rnn(X, state)
+        return self.linear(Y.reshape((-1, Y.shape[-1]))), state
+    def begin_state(self, batch_size, device):
+        if not isinstance(self.rnn, PyPTOLSTM):
+            return torch.zeros((self.rnn.num_layers, batch_size,
+                               self.rnn.hidden_size), device=device)
+        return (torch.zeros((self.rnn.num_layers, batch_size, self.rnn.hidden_size), device=device),
+                torch.zeros((self.rnn.num_layers, batch_size, self.rnn.hidden_size), device=device))
+
+X_w, y_w = next(iter(train_iter))
+loss_fn_w = lambda y_h, y: loss_fn(y_h, y, len(vocab))
+
+# LSTM（两层：PyPTOLSTM 支持多层，num_layers=2 与 torch 对齐）
+net_lstm = PyPTORNNModelMulti(PyPTOLSTM(len(vocab), 256, num_layers=2), len(vocab)).to(device)
+s = net_lstm.begin_state(batch_size, device)
+l = loss_fn_w(net_lstm(X_w.to(device), s)[0], y_w.T.reshape(-1).to(device))
+l.backward(); net_lstm.zero_grad()
+train_ch8(net_lstm, train_iter, vocab, 2, 500, device, use_plot=False, verbose=False, loss_fn=loss_fn_w)
+
+# GRU（两层：PyPTOGRU 支持多层）
+net_gru = PyPTORNNModelMulti(PyPTOGRU(len(vocab), 256, num_layers=2), len(vocab)).to(device)
+s2 = net_gru.begin_state(batch_size, device)
+l2 = loss_fn_w(net_gru(X_w.to(device), s2)[0], y_w.T.reshape(-1).to(device))
+l2.backward(); net_gru.zero_grad()
+train_ch8(net_gru, train_iter, vocab, 2, 500, device, use_plot=False, verbose=False, loss_fn=loss_fn_w)
+
+NPU 注意事项：
+- PyPTOLSTM 与 PyPTOGRU 均支持多层（默认单层），此处均用 2 层（num_layers=2），与 torch 版层数对齐
+- xavier 初始化对 PyPTOLSTM/PyPTOGRU 的 W_ 前缀参数生效
+
+---
+
+练习9.3.3
+
+增加训练数据降低困惑度。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+---
+
+练习9.3.4
+
+将不同作者的源数据合并的优劣。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
