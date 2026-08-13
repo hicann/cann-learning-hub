@@ -5,6 +5,7 @@
 #include <string>
 #include <cstdint>
 #include <cstdlib>  
+#include <sys/wait.h>
 #include "gtest/gtest.h"
 #include "tikicpulib.h"
 #include "data_utils.h"
@@ -41,7 +42,11 @@ TEST_F(SigmoidTest, test_case_0)
     size_t tiling_data_size = sizeof(SigmoidTilingData);
     uint32_t numBlocks = 8;
 
-    system("cd ./sigmoid_data/ && python3 gen_data.py");
+    int ret = system("cd ./sigmoid_data/ && python3 gen_data.py");
+    ASSERT_NE(ret, -1);
+    ASSERT_TRUE(WIFEXITED(ret));
+    ASSERT_EQ(WEXITSTATUS(ret), 0);
+
     std::string fileName = "./sigmoid_data/input.bin";
     uint8_t* x = (uint8_t*)AscendC::GmAlloc(xByteSize);
     ReadFile(fileName, xByteSize, x, xByteSize);
@@ -75,6 +80,10 @@ TEST_F(SigmoidTest, test_case_0)
     AscendC::GmFree(workspace);
     AscendC::GmFree(tiling);
 
-    system("cd ./sigmoid_data/ && python3 compare_data.py");
+    ret = system("cd ./sigmoid_data/ && python3 compare_data.py");
+    ASSERT_NE(ret, -1);
+    ASSERT_TRUE(WIFEXITED(ret));
+    ASSERT_EQ(WEXITSTATUS(ret), 0);
+
     free(path_);
 }

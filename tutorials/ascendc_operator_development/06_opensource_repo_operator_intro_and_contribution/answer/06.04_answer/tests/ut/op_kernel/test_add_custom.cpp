@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <sys/wait.h>
 #include "tikicpulib.h"
 #include "data_utils.h"
 #include "../../../op_kernel/add_custom.cpp"
@@ -33,7 +34,11 @@ TEST_F(AddCustomKernelTest, test_case_0)
     size_t tiling_data_size = sizeof(AddCustomTilingData);
     uint32_t numBlocks = 64;
 
-    system("cd ./add_custom_data/ && python3 gen_data.py");
+    int ret = system("cd ./add_custom_data/ && python3 gen_data.py");
+    ASSERT_NE(ret, -1);
+    ASSERT_TRUE(WIFEXITED(ret));
+    ASSERT_EQ(WEXITSTATUS(ret), 0);
+
     std::string input1 = "./add_custom_data/input1.bin";
     std::string input2 = "./add_custom_data/input2.bin";
 
@@ -76,6 +81,10 @@ TEST_F(AddCustomKernelTest, test_case_0)
     AscendC::GmFree(workspace);
     AscendC::GmFree(tiling);
 
-    system("cd ./add_custom_data/ && python3 compare_data.py");
+    ret = system("cd ./add_custom_data/ && python3 compare_data.py");
+    ASSERT_NE(ret, -1);
+    ASSERT_TRUE(WIFEXITED(ret));
+    ASSERT_EQ(WEXITSTATUS(ret), 0);
+
     free(path_);
 }
