@@ -1,0 +1,187 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.7 序列到序列学习（seq2seq） 练习参考答案
+
+练习9.7.1
+
+试着通过调整超参数来改善翻译效果。
+
+解答：
+将隐藏层和Embedding层维度修改为256，同时将batch_size修改为256，学习率降低至0.001：
+
+import collections, math
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+class Seq2SeqDecoder(d2l.Decoder):
+    def __init__(self, vocab_size, embed_size, num_hiddens, num_layers, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = nn.GRU(embed_size + num_hiddens, num_hiddens, num_layers, dropout=dropout)
+        self.dense = nn.Linear(num_hiddens, vocab_size)
+    def init_state(self, enc_outputs, *args):
+        return enc_outputs[1]
+    def forward(self, X, state):
+        X = self.embedding(X).permute(1, 0, 2)
+        context = state[-1].repeat(X.shape[0], 1, 1)
+        X_and_context = torch.cat((X, context), 2)
+        output, state = self.rnn(X_and_context, state)
+        output = self.dense(output).permute(1, 0, 2)
+        return output, state
+
+class EncoderDecoder(nn.Module):
+    def __init__(self, encoder, decoder):
+        super().__init__()
+        self.encoder = encoder
+        self.decoder = decoder
+    def forward(self, enc_X, dec_X, *args):
+        enc_outputs = self.encoder(enc_X, *args)
+        dec_state = self.decoder.init_state(enc_outputs, *args)
+        return self.decoder(dec_X, dec_state)
+
+embed_size, num_hiddens, num_layers, dropout = 256, 256, 2, 0.1
+batch_size, num_steps = 256, 10
+lr, num_epochs = 0.001, 300
+train_iter, src_vocab, tgt_vocab = d2l.load_data_nmt(batch_size, num_steps)
+encoder = d2l.Seq2SeqEncoder(len(src_vocab), embed_size, num_hiddens, num_layers, dropout)
+decoder = Seq2SeqDecoder(len(tgt_vocab), embed_size, num_hiddens, num_layers, dropout)
+net = EncoderDecoder(encoder, decoder)
+d2l.train_seq2seq(net, train_iter, lr, num_epochs, tgt_vocab, d2l.try_gpu())
+
+---
+
+练习9.7.2
+
+重新运行实验并在计算损失时不使用遮蔽，可以观察到什么结果？为什么会有这个结果？
+
+解答：
+注释掉sequence_mask()后，不再根据有效长度valid_len对权重weights进行遮蔽操作，使得所有位置的权重都将参与计算，而非仅限于有效长度内的位置。这会导致计算损失时对序列中无效的部分产生误差，影响模型训练效果。
+
+class NoMaskSoftmaxCELoss(nn.CrossEntropyLoss):
+    def forward(self, pred, label, valid_len):
+        weights = torch.ones_like(label)  # 不使用 sequence_mask
+        self.reduction = 'none'
+        unweighted_loss = super().forward(pred.permute(0, 2, 1), label)
+        weighted_loss = (unweighted_loss * weights).mean(dim=1)
+        return weighted_loss
+loss = NoMaskSoftmaxCELoss()
+print(loss(torch.ones(3, 4, 10), torch.ones((3, 4), dtype=torch.long), torch.tensor([4, 2, 0])))
+
+---
+
+练习9.7.3
+
+如果编码器和解码器的层数或者隐藏单元数不同，那么如何初始化解码器的隐状态？
+
+解答：
+可通过以下方法：
+1. 使用线性变换将编码器隐藏状态的维度调整为解码器隐藏状态所需的维度。
+2. 使用零向量进行初始化。
+
+全连接层变换示例：
+
+class Seq2SeqDecoder(d2l.Decoder):
+    def __init__(self, vocab_size, embed_size, num_hiddens_enc, num_hiddens_dec,
+                 num_layers, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = nn.GRU(embed_size + num_hiddens_dec, num_hiddens_dec, num_layers,
+                          dropout=dropout)
+        self.fc = nn.Linear(num_hiddens_enc, num_hiddens_dec)
+        self.dense = nn.Linear(num_hiddens_dec, vocab_size)
+    def init_state(self, enc_outputs, *args):
+        return self.fc(enc_outputs[1])
+    def forward(self, X, state):
+        X = self.embedding(X).permute(1, 0, 2)
+        context = state[-1].repeat(X.shape[0], 1, 1)
+        X_and_context = torch.cat((X, context), 2)
+        output, state = self.rnn(X_and_context, state)
+        output = self.dense(output).permute(1, 0, 2)
+        return output, state
+
+encoder = d2l.Seq2SeqEncoder(vocab_size=10, embed_size=8, num_hiddens=16, num_layers=2)
+encoder.eval()
+X = torch.zeros((4, 7), dtype=torch.long)
+decoder = Seq2SeqDecoder(10, 8, 16, 10, 2)
+decoder.eval()
+state = decoder.init_state(encoder(X))
+output, state = decoder(X, state)
+print('Output shape:', output.shape)
+
+---
+
+练习9.7.4
+
+在训练中，如果用前一时间步的预测输入到解码器来代替强制教学，对性能有何影响？
+
+解答：
+这种采用前一时间步的预测作为解码器输入的方法属于自回归（autoregressive）方法，影响包括：
+- 训练速度变慢：解码器逐步生成输出序列，增加训练时间
+- 累积误差：错误逐步累积扩大，导致生成序列与真实目标差异较大
+- 降低训练稳定性：长序列或复杂任务时不稳定
+- 降低性能：解码器在训练期间没有接触真实目标序列，难以适应真实数据分布
+尽管如此，通过引入注意力机制等方法可有效改善自回归模型的性能。
+
+---
+
+练习9.7.5
+
+用长短期记忆网络替换门控循环单元重新运行实验。
+
+解答：
+将编码器和解码器中的nn.GRU替换为nn.LSTM即可。LSTM有三门结构，包含记忆元，可能更好捕捉长期依赖。
+
+class Seq2SeqEncoderLSTM(d2l.Encoder):
+    def __init__(self, vocab_size, embed_size, num_hiddens, num_layers, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = nn.LSTM(embed_size, num_hiddens, num_layers, dropout=dropout)
+    def forward(self, X, *args):
+        X = self.embedding(X).permute(1, 0, 2)
+        output, state = self.rnn(X)
+        return output, state
+
+# LSTM 版解码器（state 为 (h, c) 二元组）
+class Seq2SeqDecoderLSTM(d2l.Decoder):
+    def __init__(self, vocab_size, embed_size, num_hiddens, num_layers, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = nn.LSTM(embed_size + num_hiddens, num_hiddens, num_layers, dropout=dropout)
+        self.dense = nn.Linear(num_hiddens, vocab_size)
+    def init_state(self, enc_outputs, *args):
+        return enc_outputs[1]  # LSTM state 为 (h, c) 二元组
+    def forward(self, X, state):
+        X = self.embedding(X).permute(1, 0, 2)
+        context = state[0][-1].repeat(X.shape[0], 1, 1)  # 取顶层隐状态 h
+        X_and_context = torch.cat((X, context), 2)
+        output, state = self.rnn(X_and_context, state)
+        output = self.dense(output).permute(1, 0, 2)
+        return output, state
+
+class EncoderDecoder(nn.Module):
+    def __init__(self, encoder, decoder):
+        super().__init__()
+        self.encoder = encoder
+        self.decoder = decoder
+    def forward(self, enc_X, dec_X, *args):
+        enc_outputs = self.encoder(enc_X, *args)
+        dec_state = self.decoder.init_state(enc_outputs, *args)
+        return self.decoder(dec_X, dec_state)
+
+embed_size, num_hiddens, num_layers, dropout = 32, 32, 2, 0.1
+batch_size, num_steps = 64, 10
+lr, num_epochs = 0.005, 500
+train_iter, src_vocab, tgt_vocab = d2l.load_data_nmt(batch_size, num_steps)
+encoder = Seq2SeqEncoderLSTM(len(src_vocab), embed_size, num_hiddens, num_layers, dropout)
+decoder = Seq2SeqDecoderLSTM(len(tgt_vocab), embed_size, num_hiddens, num_layers, dropout)
+net = EncoderDecoder(encoder, decoder)
+d2l.train_seq2seq(net, train_iter, lr, num_epochs, tgt_vocab, d2l.try_gpu())
+
+---
+
+练习9.7.6
+
+有没有其他方法来设计解码器的输出层？
+
+解答：
+可以在解码器的输出层应用注意力机制，通过计算注意力权重来对编码器的隐藏状态进行加权求和，从而生成输出。这种方法可以将解码器的注意力集中在输入序列的相关部分，有效捕捉重要信息，提高生成的准确性。

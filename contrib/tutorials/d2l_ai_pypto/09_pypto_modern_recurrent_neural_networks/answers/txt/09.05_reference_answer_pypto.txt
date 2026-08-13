@@ -1,0 +1,36 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.5 机器翻译与数据集 - PyPTO 参考答案
+
+练习9.5.1
+
+在load_data_nmt函数中尝试不同的num_examples参数值。这对源语言和目标语言的词表大小有何影响？
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（使用 src.utils 中的 load_data_nmt）：
+
+from src.utils import load_data_nmt
+
+num_examples = [100, 200, 300, 400, 500, 600]
+src_lens, tgt_lens = [], []
+for n in num_examples:
+    train_iter, src_vocab, tgt_vocab = load_data_nmt(
+        batch_size=2, num_steps=8, num_examples=n)
+    src_lens.append(len(src_vocab))
+    tgt_lens.append(len(tgt_vocab))
+print('Source vocab sizes:', src_lens)
+print('Target vocab sizes:', tgt_lens)
+
+NPU 注意事项：
+- load_data_nmt 是纯数据处理函数（不涉及 NPU），src.utils 中的实现与 d2l 等价
+- 数据集下载需要网络连接，首次运行会从 d2l-data 源下载 fra-eng.zip
+
+---
+
+练习9.5.2
+
+没有单词边界的中文和日语是否适合单词级词元化？
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）

@@ -1,0 +1,45 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.5 机器翻译与数据集 练习参考答案
+
+练习9.5.1
+
+在load_data_nmt函数中尝试不同的num_examples参数值。这对源语言和目标语言的词表大小有何影响？
+
+解答：
+在tokenize_nmt函数中，num_examples用于限制参与词元化的句对数量（i > num_examples 时截断），因此num_examples越大，参与词元化的序列越多，所获得的词表越大。
+
+代码验证（src.utils 提供与 d2l 等价的纯 PyTorch 实现）：
+
+from src.utils import (read_data_nmt, preprocess_nmt, tokenize_nmt, Vocab,
+                       build_array_nmt, load_array)
+
+def load_data_nmt(batch_size, num_steps, num_examples):
+    text = preprocess_nmt(read_data_nmt())
+    source, target = tokenize_nmt(text, num_examples)
+    src_vocab = Vocab(source, min_freq=2,
+                      reserved_tokens=['<pad>', '<bos>', '<eos>'])
+    tgt_vocab = Vocab(target, min_freq=2,
+                      reserved_tokens=['<pad>', '<bos>', '<eos>'])
+    src_array, src_valid_len = build_array_nmt(source, src_vocab, num_steps)
+    tgt_array, tgt_valid_len = build_array_nmt(target, tgt_vocab, num_steps)
+    data_iter = load_array((src_array, src_valid_len, tgt_array, tgt_valid_len), batch_size)
+    return data_iter, src_vocab, tgt_vocab
+
+num_examples = [100, 200, 300, 400, 500, 600]
+src_lens, tgt_lens = [], []
+for n in num_examples:
+    train_iter, src_vocab, tgt_vocab = load_data_nmt(
+        batch_size=2, num_steps=8, num_examples=n)
+    src_lens.append(len(src_vocab))
+    tgt_lens.append(len(tgt_vocab))
+print('Source vocab sizes:', src_lens)
+print('Target vocab sizes:', tgt_lens)
+
+---
+
+练习9.5.2
+
+某些语言（例如中文和日语）的文本没有单词边界指示符（例如空格）。对于这种情况，单词级词元化仍然是个好主意吗？为什么？
+
+解答：
+以中文为例，中文中不存在类似空格的单词边界指示符，但是中文可采用基于词典、基于规则或者基于统计的分词方法进行分词。这种方法可以精确处理中文文本，例如在词义消歧时，单词级分词可以帮助更准确地确定词语上下文来确定歧义词的准确意义。在信息检索任务中，很多检索基于关键词展开，对中文进行单词级词元化便于在索引中进行文本匹配。因此，即便中文和日语中没有单词边界指示符，单词级的词元化仍是非常关键的一步。

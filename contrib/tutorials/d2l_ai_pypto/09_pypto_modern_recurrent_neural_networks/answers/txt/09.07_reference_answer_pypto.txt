@@ -1,0 +1,402 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.7 序列到序列学习（seq2seq） - PyPTO 参考答案
+
+练习9.7.1
+
+试着通过调整超参数来改善翻译效果。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt。注：PyPTO 版采用章内默认超参（embed/hidden=32、batch=64、lr=0.005、500 epochs）作对照演示，与 torch 版的调参配置（256/256/256/0.001/300）对应同一道题；如需复现调参效果，可将下方超参替换为 torch 版配置后重跑。）
+
+PyPTO 代码（使用 src.utils 中的 Encoder/Decoder/EncoderDecoder 基类和 PyPTOLinear）：
+
+from src.utils import load_data_nmt, Encoder, Decoder, EncoderDecoder
+from src.utils import Timer, Accumulator, sequence_mask, grad_clipping
+from src.pypto_ops import PyPTOLinear, PyPTOGRU
+
+class Seq2SeqEncoderPyPTO(Encoder):
+    def __init__(self, vocab_size, embed_size, num_hiddens, num_layers, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = PyPTOGRU(embed_size, num_hiddens, num_layers, dropout)  # 多层 GRU
+    def forward(self, X, *args):
+        X = self.embedding(X).permute(1, 0, 2).contiguous()
+        output, state = self.rnn(X)
+        return output, state
+
+class Seq2SeqDecoderPyPTO(Decoder):
+    def __init__(self, vocab_size, embed_size, num_hiddens, num_layers, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = PyPTOGRU(embed_size + num_hiddens, num_hiddens, num_layers, dropout)  # 多层 GRU
+        self.dense = PyPTOLinear(num_hiddens, vocab_size)
+    def init_state(self, enc_outputs, *args):
+        return enc_outputs[1]
+    def forward(self, X, state):
+        X = self.embedding(X).permute(1, 0, 2).contiguous()
+        context = state[-1].repeat(X.shape[0], 1, 1)
+        X_and_context = torch.cat((X, context), 2)
+        output, state = self.rnn(X_and_context, state)
+        output = self.dense(output).permute(1, 0, 2)
+        return output, state
+
+class MaskedSoftmaxCELoss(nn.CrossEntropyLoss):
+    """带遮蔽的 softmax 交叉熵损失函数"""
+    def forward(self, pred, label, valid_len):
+        weights = torch.ones_like(label)
+        weights = sequence_mask(weights, valid_len)
+        self.reduction = 'none'
+        unweighted_loss = super().forward(pred.permute(0, 2, 1), label)
+        weighted_loss = (unweighted_loss * weights).mean(dim=1)
+        return weighted_loss
+
+def train_seq2seq(net, data_iter, lr, num_epochs, tgt_vocab, device):
+    """训练序列到序列模型"""
+    def xavier_init_weights(m):
+        if type(m) in (nn.Linear, PyPTOLinear):
+            nn.init.xavier_uniform_(m.weight)
+        if type(m) == PyPTOGRU:
+            for name, param in m.named_parameters():
+                if "W_" in name:
+                    nn.init.xavier_uniform_(param)
+    net.apply(xavier_init_weights)
+    net.to(device)
+    optimizer = torch.optim.Adam(net.parameters(), lr=lr)
+    loss = MaskedSoftmaxCELoss()
+    net.train()
+    for epoch in range(num_epochs):
+        timer = Timer()
+        metric = Accumulator(2)
+        for batch in data_iter:
+            optimizer.zero_grad()
+            X, X_valid_len, Y, Y_valid_len = [x.to(device) for x in batch]
+            bos = torch.tensor([tgt_vocab['<bos>']] * Y.shape[0],
+                          device=device).reshape(-1, 1)
+            dec_input = torch.cat([bos, Y[:, :-1]], 1)
+            Y_hat, _ = net(X, dec_input, X_valid_len)
+            l = loss(Y_hat, Y, Y_valid_len)
+            l.sum().backward()
+            grad_clipping(net, 1)
+            num_tokens = Y_valid_len.sum()
+            optimizer.step()
+            with torch.no_grad():
+                metric.add(l.sum(), num_tokens)
+        if (epoch + 1) % 10 == 0:
+            print(f'epoch {epoch+1}, loss {metric[0]/metric[1]:.3f}')
+    print(f'loss {metric[0]/metric[1]:.3f}, {metric[1]/timer.stop():.1f} '
+        f'tokens/sec on {str(device)}')
+
+batch_size, num_steps = 64, 10
+train_iter, src_vocab, tgt_vocab = load_data_nmt(batch_size, num_steps)
+encoder = Seq2SeqEncoderPyPTO(len(src_vocab), 32, 32, 2, 0.1)
+decoder = Seq2SeqDecoderPyPTO(len(tgt_vocab), 32, 32, 2, 0.1)
+net = EncoderDecoder(encoder, decoder).to(device)
+
+# JIT 编译预热
+print('正在编译 PyPTO kernel...')
+import time as t
+t0 = t.time()
+X_batch, X_len, Y_batch, Y_len = next(iter(train_iter))
+X_batch = X_batch.to(device); Y_batch = Y_batch.to(device)
+X_len = X_len.to(device); Y_len = Y_len.to(device)
+bos = torch.tensor([tgt_vocab['<bos>']] * Y_batch.shape[0], device=device).reshape(-1, 1)
+dec_input = torch.cat([bos, Y_batch[:, :-1]], 1)
+loss = MaskedSoftmaxCELoss()
+Y_hat, _ = net(X_batch, dec_input, X_len)
+l = loss(Y_hat, Y_batch, Y_len)
+l.sum().backward(); net.zero_grad()
+print(f'编译完成，耗时 {t.time() - t0:.0f} 秒')
+
+print('开始训练...')
+train_seq2seq(net, train_iter, 0.005, 500, tgt_vocab, device)
+
+NPU 注意事项：
+- 编码器-解码器架构中使用 PyPTOGRU（支持多层 num_layers / dropout，层间 dropout 仅训练时生效），输出层使用 PyPTOLinear
+- PyPTOGRU 重置门遵循教材公式（R ⊙ H 先于 matmul），与 nn.GRU 的（R 作用于 matmul 之后）实现略有差异
+- src.utils 提供 Encoder/Decoder/EncoderDecoder 基类，替代 d2l 基类
+- PyPTOGRU 需要 .contiguous() 调用在 .permute() 之后
+- 训练前需要 JIT 编译预热
+
+---
+
+练习9.7.2
+
+不使用遮蔽计算损失的影响。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（PyPTOSoftmaxCrossEntropyLoss 不使用 sequence_mask）：
+
+from src.utils import sequence_mask
+from src.pypto_ops import PyPTOSoftmaxCrossEntropyLoss
+
+
+class PyPTOSoftmaxCELossNoMask:
+    """不使用遮蔽的 softmax 交叉熵损失（PyPTO 版）。
+
+    与正文 PyPTOMaskedSoftmaxCELoss 的区别：不调用 sequence_mask，
+    填充位置也参与损失计算。
+    """
+
+    def __call__(self, pred, label, valid_len):
+        return self.forward(pred, label, valid_len)
+
+    def forward(self, pred, label, valid_len):
+        B, T, V = pred.shape
+        per_token_loss = PyPTOSoftmaxCrossEntropyLoss.apply(
+            pred.reshape(-1, V), label.reshape(-1), V
+        ).reshape(B, T)
+        return per_token_loss.mean(dim=1)
+
+
+class PyPTOMaskedSoftmaxCELoss:
+    """带遮蔽的 softmax 交叉熵损失（PyPTO 版，用于对照）。"""
+
+    def __call__(self, pred, label, valid_len):
+        return self.forward(pred, label, valid_len)
+
+    def forward(self, pred, label, valid_len):
+        B, T, V = pred.shape
+        per_token_loss = PyPTOSoftmaxCrossEntropyLoss.apply(
+            pred.reshape(-1, V), label.reshape(-1), V
+        ).reshape(B, T)
+        weights = torch.ones_like(per_token_loss)
+        weights = sequence_mask(weights, valid_len)
+        return (per_token_loss * weights).mean(dim=1)
+
+
+# 与正文一致：三个相同序列，有效长度分别为 4、2、0
+pred = torch.ones(3, 4, 10, device=device)
+label = torch.ones((3, 4), dtype=torch.long, device=device)
+valid_len = torch.tensor([4, 2, 0], device=device)
+
+l_no_mask = PyPTOSoftmaxCELossNoMask()(pred, label, valid_len)
+l_masked = PyPTOMaskedSoftmaxCELoss()(pred, label, valid_len)
+print('不使用遮蔽:', l_no_mask.cpu().numpy())   # 所有序列均为 2.3026（填充位置也计入）
+print('使用遮蔽:  ', l_masked.cpu().numpy())    # [2.3026, 1.1513, 0.0000]
+
+NPU 注意事项：
+- 不使用遮蔽时，填充位置（padding）也参与损失计算，损失值整体偏大
+- PyPTOSoftmaxCrossEntropyLoss 逐 token 计算 CE，遮蔽/不遮蔽差别只在 sequence_mask
+
+---
+
+练习9.7.3
+
+编码器和解码器隐藏单元数不同时初始化解码器隐状态。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（PyPTOLinear 全连接投影初始化解码器状态）：
+
+from src.utils import Encoder, Decoder
+from src.pypto_ops import PyPTOLinear, PyPTOGRU
+
+
+class Seq2SeqEncoderPyPTO(Encoder):
+    def __init__(self, vocab_size, embed_size, num_hiddens, num_layers, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = PyPTOGRU(embed_size, num_hiddens, num_layers, dropout)
+
+    def forward(self, X, *args):
+        X = self.embedding(X).permute(1, 0, 2).contiguous()
+        output, state = self.rnn(X)
+        return output, state
+
+
+class Seq2SeqDecoderPyPTOProj(Decoder):
+    """编码器/解码器隐藏单元数不同时的解码器（PyPTO 版）。
+
+    通过 PyPTOLinear 全连接层将编码器隐状态投影为解码器所需维度。
+    """
+
+    def __init__(self, vocab_size, embed_size, num_hiddens_enc,
+                 num_hiddens_dec, num_layers, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = PyPTOGRU(embed_size + num_hiddens_dec,
+                            num_hiddens_dec, num_layers, dropout)
+        self.fc = PyPTOLinear(num_hiddens_enc, num_hiddens_dec)
+        self.dense = PyPTOLinear(num_hiddens_dec, vocab_size)
+
+    def init_state(self, enc_outputs, *args):
+        return self.fc(enc_outputs[1])  # 线性变换到解码器维度
+
+    def forward(self, X, state):
+        X = self.embedding(X).permute(1, 0, 2).contiguous()
+        context = state[-1].repeat(X.shape[0], 1, 1)
+        X_and_context = torch.cat((X, context), 2)
+        output, state = self.rnn(X_and_context, state)
+        output = self.dense(output).permute(1, 0, 2)
+        return output, state
+
+
+# 验证：编码器隐藏单元数 16，解码器 10，通过 fc 投影初始化解码器状态
+encoder = Seq2SeqEncoderPyPTO(vocab_size=10, embed_size=8,
+                              num_hiddens=16, num_layers=2).to(device)
+encoder.eval()
+X = torch.zeros((4, 7), dtype=torch.long, device=device)
+enc_outputs = encoder(X)
+decoder = Seq2SeqDecoderPyPTOProj(10, 8, 16, 10, 2).to(device)
+decoder.eval()
+state = decoder.init_state(enc_outputs)
+print('投影后状态形状:', state.shape)  # (2, 4, 10)
+output, state = decoder(X, state)
+print('Output shape:', output.shape)
+
+NPU 注意事项：
+- 与 torch 版一致，仅需将 nn.Linear 替换为 PyPTOLinear（fc 与 dense）
+- PyPTOLinear 支持多维输入，自动展平计算后再还原形状
+
+---
+
+练习9.7.4
+
+前一时间步预测代替强制教学的影响。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+---
+
+练习9.7.5
+
+用LSTM替换GRU重新运行实验。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（PyPTOLSTM 替换 PyPTOGRU，state 为 (h, c) 二元组）：
+
+from src.utils import Encoder, Decoder, EncoderDecoder
+from src.utils import Timer, Accumulator, grad_clipping, sequence_mask
+from src.pypto_ops import PyPTOLinear, PyPTOLSTM
+
+
+class MaskedSoftmaxCELoss(nn.CrossEntropyLoss):
+    """带遮蔽的 softmax 交叉熵损失（PyPTO 版，self-contained）。"""
+    def forward(self, pred, label, valid_len):
+        weights = torch.ones_like(label)
+        weights = sequence_mask(weights, valid_len)
+        self.reduction = 'none'
+        unweighted_loss = super().forward(pred.permute(0, 2, 1), label)
+        weighted_loss = (unweighted_loss * weights).mean(dim=1)
+        return weighted_loss
+
+
+class Seq2SeqEncoderPyPTOLSTM(Encoder):
+    """LSTM 编码器（PyPTO 版）：PyPTOLSTM 单向、此处用单层（默认）。"""
+
+    def __init__(self, vocab_size, embed_size, num_hiddens, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = PyPTOLSTM(embed_size, num_hiddens)
+
+    def forward(self, X, *args):
+        X = self.embedding(X).permute(1, 0, 2).contiguous()
+        output, state = self.rnn(X)
+        return output, state
+
+
+class Seq2SeqDecoderPyPTOLSTM(Decoder):
+    """LSTM 解码器（PyPTO 版）：state 为 (h, c) 二元组。"""
+
+    def __init__(self, vocab_size, embed_size, num_hiddens, dropout=0):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = PyPTOLSTM(embed_size + num_hiddens, num_hiddens)
+        self.dense = PyPTOLinear(num_hiddens, vocab_size)
+
+    def init_state(self, enc_outputs, *args):
+        return enc_outputs[1]
+
+    def forward(self, X, state):
+        X = self.embedding(X).permute(1, 0, 2).contiguous()
+        context = state[0][-1].repeat(X.shape[0], 1, 1)  # 取顶层隐状态 h
+        X_and_context = torch.cat((X, context), 2)
+        output, state = self.rnn(X_and_context, state)
+        output = self.dense(output).permute(1, 0, 2)
+        return output, state
+
+
+def train_seq2seq_lstm(net, data_iter, lr, num_epochs, tgt_vocab, device):
+    """训练序列到序列模型（PyPTO LSTM 版）"""
+
+    def xavier_init_weights(m):
+        if type(m) == PyPTOLinear:
+            nn.init.xavier_uniform_(m.weight)
+        if type(m) == PyPTOLSTM:
+            for name, param in m.named_parameters():
+                if "W_" in name:
+                    nn.init.xavier_uniform_(param)
+
+    net.apply(xavier_init_weights)
+    net.to(device)
+    optimizer = torch.optim.Adam(net.parameters(), lr=lr)
+    loss = MaskedSoftmaxCELoss()
+    net.train()
+    for epoch in range(num_epochs):
+        timer = Timer()
+        metric = Accumulator(2)
+        for batch in data_iter:
+            optimizer.zero_grad()
+            X, X_valid_len, Y, Y_valid_len = [x.to(device) for x in batch]
+            bos = torch.tensor([tgt_vocab['<bos>']] * Y.shape[0],
+                               device=device).reshape(-1, 1)
+            dec_input = torch.cat([bos, Y[:, :-1]], 1)
+            Y_hat, _ = net(X, dec_input, X_valid_len)
+            l = loss(Y_hat, Y, Y_valid_len)
+            l.sum().backward()
+            grad_clipping(net, 1)
+            num_tokens = Y_valid_len.sum()
+            optimizer.step()
+            with torch.no_grad():
+                metric.add(l.sum(), num_tokens)
+        if (epoch + 1) % 5 == 0:
+            print(f'epoch {epoch + 1}, loss {metric[0] / metric[1]:.3f}')
+    print(f'loss {metric[0] / metric[1]:.3f}, {metric[1] / timer.stop():.1f} '
+          f'tokens/sec on {str(device)}')
+
+
+batch_size, num_steps = 64, 10
+train_iter, src_vocab, tgt_vocab = load_data_nmt(batch_size, num_steps)
+encoder = Seq2SeqEncoderPyPTOLSTM(len(src_vocab), 32, 32)
+decoder = Seq2SeqDecoderPyPTOLSTM(len(tgt_vocab), 32, 32)
+net = EncoderDecoder(encoder, decoder).to(device)
+
+# JIT 编译预热
+print('正在编译 PyPTO kernel...')
+import time as t
+t0 = t.time()
+X_batch, X_len, Y_batch, Y_len = next(iter(train_iter))
+X_batch = X_batch.to(device); Y_batch = Y_batch.to(device)
+X_len = X_len.to(device); Y_len = Y_len.to(device)
+bos = torch.tensor([tgt_vocab['<bos>']] * Y_batch.shape[0], device=device).reshape(-1, 1)
+dec_input = torch.cat([bos, Y_batch[:, :-1]], 1)
+loss = MaskedSoftmaxCELoss()
+Y_hat, _ = net(X_batch, dec_input, X_len)
+l = loss(Y_hat, Y_batch, Y_len)
+l.sum().backward(); net.zero_grad()
+print(f'编译完成，耗时 {t.time() - t0:.0f} 秒')
+
+print('开始训练...')
+train_seq2seq_lstm(net, train_iter, 0.005, 10, tgt_vocab, device)
+
+NPU 注意事项：
+- PyPTOLSTM 单向、此处用单层（默认，支持多层），故编码器/解码器均为单层（torch 版为 2 层 nn.LSTM）
+- LSTM 的 state 是 (h, c) 二元组：init_state 直接返回 enc_outputs[1]，
+  forward 中 context 取 state[0][-1]（顶层隐状态 h），与 torch 版一致
+- xavier 初始化对 PyPTOLSTM 的 W_ 前缀参数生效
+- 为控制 NPU 训练时长，此处仅训练 10 epochs（torch 版为 500），仅作正确性演示
+
+---
+
+练习9.7.6
+
+设计解码器输出层的其他方法。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
