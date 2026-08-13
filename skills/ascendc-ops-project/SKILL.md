@@ -847,9 +847,9 @@ __aicore__ inline void Compute() {
 | DT_FLOAT16 | 1 | half |
 | DT_INT8 | 2 | int8_t |
 | DT_INT32 | 3 | int32_t |
-| DT_INT64 | 4 | int64_t |
-| DT_UINT8 | 5 | uint8_t |
-| DT_BOOL | 6 | bool |
+| DT_INT64 | 9 | int64_t |
+| DT_UINT8 | 4 | uint8_t |
+| DT_BOOL | 12 | bool |
 
 ---
 
