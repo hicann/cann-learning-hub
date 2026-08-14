@@ -1,0 +1,225 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.2 长短期记忆网络（LSTM） 练习参考答案
+
+练习9.2.1
+
+调整和分析超参数对运行时间、困惑度和输出顺序的影响。
+
+解答：
+结果与GRU结果类似：
+
+[迭代周期，隐藏单元数，批量大小，小批量数据时间步数，学习率]
+hyper_0 = [500, 512, 35, 32, 1]
+hyper_1 = [250, 512, 35, 32, 1]
+hyper_2 = [500, 256, 35, 32, 1]
+hyper_3 = [500, 512, 10, 32, 1]
+hyper_4 = [500, 512, 35, 10, 1]
+hyper_5 = [500, 512, 35, 32, 0.01]
+hyper_params = [hyper_0, hyper_1, hyper_2, hyper_3, hyper_4, hyper_5]
+
+- hyper[1]中缩小迭代周期虽然减少了训练时间，但是导致模型无法完全收敛，困惑度增大；
+- hyper[2]中减半了隐藏层单元数，使得模型在很短时间内完成收敛，困惑度也降低为1.1;
+- hyper[3]中减小了批量大小，虽然困惑度为1，但训练时间开销显著增加;
+- hyper[4]中将小批量时间步的跨度缩小，虽然也造成了时间开销的增加，但少于批量减少带来的时间增长;
+- hyper[5]中则对学习率进行了修改，过低的学习率会使得模型无法在有限周期内完成训练，造成困惑度暴涨。
+
+综上：迭代周期和学习率的缩小会导致模型无法在对应周期内完成收敛，导致模型训练不完全。批量大小即时间步跨度的降低则会导致模型每次加载少量数据，变相造成时间开销的增大。而对于简单的数据，采用一个简单的模型既可以降低时间开销，也可以使得模型很好收敛，确保性能。
+
+代码验证（src.utils 提供与 d2l 等价的纯 PyTorch 实现）：
+
+import torch
+from torch import nn
+from src.utils import (load_data_time_machine, train_epoch_ch8, predict_ch8,
+                       sgd, Timer, try_gpu, RNNModel)
+
+def train_ch9(net, train_iter, vocab, lr, num_epochs, device,
+              use_random_iter=False):
+    loss = nn.CrossEntropyLoss()
+    if isinstance(net, nn.Module):
+        updater = torch.optim.SGD(net.parameters(), lr)
+    else:
+        updater = lambda batch_size: sgd(net.params, lr, batch_size)
+    predict = lambda prefix: predict_ch8(prefix, 50, net, vocab, device)
+    for epoch in range(num_epochs):
+        ppl, speed = train_epoch_ch8(
+            net, train_iter, loss, updater, device, use_random_iter)
+    print(predict('time traveller'))
+    return ppl
+
+perplexity, times = [], []
+for i in range(len(hyper_params)):
+    num_epochs, num_hiddens, batch_size, num_steps, lr = hyper_params[i]
+    train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+    lstm_layer = nn.LSTM(len(vocab), num_hiddens)
+    model = RNNModel(lstm_layer, len(vocab))
+    model = model.to(try_gpu())
+    timer = Timer(); timer.start()
+    value = round(train_ch9(model, train_iter, vocab, lr, num_epochs,
+                           try_gpu()), 1)
+    t = timer.stop()
+    times.append(t); perplexity.append(value)
+    print(f'hyper[{i}]: Timer:{t:.2f}, perplexity:{value:.1f}')
+
+---
+
+练习9.2.2
+
+如何更改模型以生成适当的单词，而不是字符序列？
+
+解答：
+(1) 词元化处理时采用单词级别的词元化处理，使得模型学会单词间的关系而非字符间的关系。
+(2) 使用双向语言模型，将前后文的单词序列纳入考虑范围。
+(3) 使用 nn.Embedding 取代 One-hot 编码，将单词映射到向量空间，保留近义词之间的相关性。
+
+代码验证（src.utils 提供与 d2l 等价的纯 PyTorch 实现）：
+
+# 1) 单词级词元化
+from src.utils import (read_time_machine, tokenize, Vocab,
+                       seq_data_iter_sequential, train_ch8, try_gpu)
+
+def load_corpus_time_machine_word(max_tokens=-1):
+    lines = read_time_machine()
+    tokens = tokenize(lines, 'word')
+    vocab = Vocab(tokens)
+    corpus = [vocab[token] for line in tokens for token in line]
+    if max_tokens > 0:
+        corpus = corpus[:max_tokens]
+    return corpus, vocab
+
+class SeqDataLoaderWord:
+    """词级数据加载器（字符级对应实现见 src.utils.SeqDataLoader）。"""
+    def __init__(self, batch_size, num_steps, max_tokens=10000):
+        self.corpus, self.vocab = load_corpus_time_machine_word(max_tokens)
+        self.batch_size, self.num_steps = batch_size, num_steps
+    def __iter__(self):
+        return seq_data_iter_sequential(
+            self.corpus, self.batch_size, self.num_steps)
+
+# 2) RNNModel_Embedding 使用 nn.Embedding
+class RNNModel_Embedding(nn.Module):
+    def __init__(self, rnn_layer, vocab_size, embedding_dim):
+        super().__init__()
+        self.rnn = rnn_layer
+        self.vocab_size = vocab_size
+        self.embedding = nn.Embedding(vocab_size, embedding_dim)
+        self.num_hiddens = rnn_layer.hidden_size
+        if not rnn_layer.bidirectional:
+            self.num_directions = 1
+            self.linear = nn.Linear(self.num_hiddens, vocab_size)
+        else:
+            self.num_directions = 2
+            self.linear = nn.Linear(self.num_hiddens * 2, vocab_size)
+    def forward(self, inputs, state):
+        X = self.embedding(inputs.T.long()).float()
+        Y, state = self.rnn(X, state)
+        return self.linear(Y.reshape((-1, Y.shape[-1]))), state
+    def begin_state(self, device, batch_size=1):
+        if not isinstance(self.rnn, nn.LSTM):
+            return torch.zeros((self.num_directions * self.rnn.num_layers,
+                               batch_size, self.num_hiddens), device=device)
+        else:
+            return (torch.zeros((self.num_directions * self.rnn.num_layers,
+                                batch_size, self.num_hiddens), device=device),
+                    torch.zeros((self.num_directions * self.rnn.num_layers,
+                                batch_size, self.num_hiddens), device=device))
+
+# 3) 训练：使用单词级数据（词表不再是字符级，而是单词级）
+batch_size, num_steps = 32, 35
+train_iter = SeqDataLoaderWord(batch_size, num_steps)
+vocab = train_iter.vocab
+lstm_layer = nn.LSTM(len(vocab), 512, num_layers=2, bidirectional=True)
+model = RNNModel_Embedding(lstm_layer, len(vocab), len(vocab))
+train_ch8(model, train_iter, vocab, 1, 500, try_gpu(), use_plot=False)
+
+---
+
+练习9.2.3
+
+在给定隐藏层维度的情况下，比较门控循环单元、长短期记忆网络和常规循环神经网络的计算成本。要特别注意训练和推断成本。
+
+解答：
+
+将隐藏层维度统一设置为256（train_iter / vocab 见上）：
+
+from src.utils import load_data_time_machine, train_ch8, try_gpu, RNNModel
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+num_hiddens, num_epochs, lr = 256, 500, 1
+dev = try_gpu()
+
+# RNN
+rnn_layer = nn.RNN(len(vocab), num_hiddens)
+rnn = RNNModel(rnn_layer, len(vocab)).to(dev)
+train_ch8(rnn, train_iter, vocab, lr, num_epochs, dev, use_plot=False)
+
+# GRU
+gru_layer = nn.GRU(len(vocab), num_hiddens)
+gru = RNNModel(gru_layer, len(vocab)).to(dev)
+train_ch8(gru, train_iter, vocab, lr, num_epochs, dev, use_plot=False)
+
+# LSTM
+lstm_layer = nn.LSTM(len(vocab), num_hiddens)
+lstm = RNNModel(lstm_layer, len(vocab)).to(dev)
+train_ch8(lstm, train_iter, vocab, lr, num_epochs, dev, use_plot=False)
+
+可以看到结构最简单的RNN所需计算成本最低，运行时间最短。GRU在RNN基础上增加了更新门和重置门两个门控单元，参数量增加，计算成本大于RNN，运行时间更长，但困惑度降低。而LSTM内含输入门、输出门以及遗忘门3个门，结构进一步复杂化，计算成本也是三个模型中最高的。
+
+---
+
+练习9.2.4
+
+既然候选记忆元通过使用tanh函数来确保值范围在(-1,1)之间，那么为什么隐状态需要再次使用tanh函数来确保输出值范围在(-1,1)之间呢？
+
+解答：
+记忆元 C_t 的递推为 C_t = F_t * C_{t-1} + I_t * C_tilde_t，其中 F_t、I_t 值域为 (0,1)。当 F_t、I_t 均为 1，且 C_{t-1}、C_tilde_t 的值也接近 1 时，C_t 可达 2 左右——即记忆元的值域并无界。若隐状态直接取 O_t * C_t，而输出门 O_t 的值域也为 (0,1)，则隐状态值可能超过 1。因此需要通过 tanh 将 C_t 压缩回 (-1,1) 后，再经输出门输出。
+
+---
+
+练习9.2.5
+
+实现一个能够基于时间序列进行预测而不是基于字符序列进行预测的长短期记忆网络模型。
+
+解答：
+使用8.1节的sin序列数据，构建LSTM回归模型：
+
+from src.utils import load_array, plot
+
+T = 1000
+time = torch.arange(1, T + 1, dtype=torch.float32)
+x = torch.sin(0.01 * time) + torch.normal(0, 0.2, (T,))
+
+tau = 4
+features = torch.zeros((T - tau, tau))
+for i in range(tau):
+    features[:, i] = x[i: T - tau + i]
+labels = x[tau:].reshape((-1, 1))
+
+batch_size, n_train = 16, 600
+train_iter = load_array(
+    (features[:n_train], labels[:n_train]), batch_size, is_train=True)
+
+class LSTM(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super().__init__()
+        self.hidden_size = hidden_size
+        self.lstm = nn.LSTM(input_size, hidden_size)
+        self.linear = nn.Linear(hidden_size, output_size)
+    def forward(self, input):
+        lstm_out, _ = self.lstm(input.t().unsqueeze(-1))
+        output = self.linear(lstm_out[-1])
+        return output
+
+model = LSTM(1, 200, 1)
+criterion = nn.MSELoss()
+trainer = torch.optim.Adam(model.parameters(), lr=0.01)
+for epoch in range(500):
+    for X, y in train_iter:
+        trainer.zero_grad()
+        l = criterion(model(X), y)
+        l.backward(); trainer.step()
+print(f'Loss: {l.item():.4f}')
+
+onestep_preds = model(features)
+plot([time, time[tau:]], [x.detach().numpy(), onestep_preds.detach().numpy()],
+     'time', 'x', legend=['data', '1-step preds'], xlim=[1, 1000], figsize=(6, 3))

@@ -1,0 +1,167 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.1 门控循环单元（GRU） 练习参考答案
+
+练习9.1.1
+
+假设我们只想使用时间步t'的输入来预测时间步t > t'的输出。对于每个时间步，重置门和更新门的最佳值是什么？
+
+解答：
+如果只想采用时间步t'的输出来预测时间步t>t'的输出，则模型需要保留过去时间步t'的信息，同时忽略当前时间步t的输入。根据GRU最终隐状态更新公式：
+
+  H_t = Z_t * H_{t-1} + (1-Z_t) * H_tilde_t
+
+要让H_t = H_{t-1}（即完全保留过去状态信息），需要设置更新门Z_t=1，使得新隐状态完全复制旧隐状态，当前输入被忽略。
+
+对于重置门R_t，由于候选隐状态被乘以(1-Z_t)=0而不再影响最终输出，R_t的值不影响结果。但从安全角度，设置重置门R_t=0可以显式阻止候选隐状态中混入当前输入信息。
+
+因此，最佳值为：更新门Z=1，重置门R=0。
+
+---
+
+练习9.1.2
+
+调整和分析超参数对运行时间、困惑度和输出顺序的影响。
+
+解答：
+减小迭代周期和学习率会导致模型无法在规定周期内完全收敛，造成困惑度增大；减小批量大小和时间步长会增加训练时间；对于简单数据集，减小隐藏单元数即可在更短时间内收敛。
+
+代码验证（src.utils 提供与 d2l 等价的纯 PyTorch 实现）：
+
+import torch
+from torch import nn
+from src.utils import (load_data_time_machine, train_epoch_ch8, predict_ch8,
+                       sgd, Timer, try_gpu, RNNModel)
+
+# [迭代周期，隐藏单元数，批量大小，小批量数据时间步数，学习率]
+hyper_0 = [500, 512, 35, 32, 1]
+hyper_1 = [250, 512, 35, 32, 1]
+hyper_2 = [500, 256, 35, 32, 1]
+hyper_3 = [500, 512, 10, 32, 1]
+hyper_4 = [500, 512, 35, 10, 1]
+hyper_5 = [500, 512, 35, 32, 0.01]
+hyper_params = [hyper_0, hyper_1, hyper_2, hyper_3, hyper_4, hyper_5]
+
+def train_ch9(net, train_iter, vocab, lr, num_epochs, device,
+              use_random_iter=False):
+    """训练模型"""
+    loss = nn.CrossEntropyLoss()
+    if isinstance(net, nn.Module):
+        updater = torch.optim.SGD(net.parameters(), lr)
+    else:
+        updater = lambda batch_size: sgd(net.params, lr, batch_size)
+    predict = lambda prefix: predict_ch8(prefix, 50, net, vocab, device)
+    for epoch in range(num_epochs):
+        ppl, speed = train_epoch_ch8(
+            net, train_iter, loss, updater, device, use_random_iter)
+    print(predict('time traveller'))
+    return ppl
+
+perplexity, times = [], []
+for i in range(len(hyper_params)):
+    num_epochs, num_hiddens, batch_size, num_steps, lr = hyper_params[i]
+    train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+    gru_layer = nn.GRU(len(vocab), num_hiddens)
+    model = RNNModel(gru_layer, len(vocab)).to(try_gpu())
+    timer = Timer(); timer.start()
+    value = round(train_ch9(model, train_iter, vocab, lr, num_epochs,
+                           try_gpu()), 1)
+    t = timer.stop()
+    times.append(t); perplexity.append(value)
+    print(f'hyper[{i}]: Timer:{t:.2f}, perplexity:{value:.1f}')
+
+对比分析：
+- hyper[1]中缩小迭代周期，导致模型无法完全收敛，困惑度增大；
+- hyper[2]中减少隐藏层单元数，训练时间缩短，困惑度也降低到1.1；
+- hyper[3]中减小批量大小，训练时间开销显著增加；
+- hyper[4]中将时间步跨度缩小，时间开销增加但少于批量减少的影响；
+- hyper[5]中学习率过低，模型无法在有限周期内完成训练，困惑度暴涨。
+
+---
+
+练习9.1.3
+
+比较rnn.RNN和rnn.GRU的不同实现对运行时间、困惑度和输出字符串的影响。
+
+解答：
+GRU在重置门和更新门的计算中增加了较多矩阵运算，单步计算量更大，训练时间增加。但GRU的门控结构能更好的捕捉长期依赖，困惑度通常低于RNN，输出字符串也更连贯。
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+# RNN
+num_hiddens = 256
+rnn_layer = nn.RNN(len(vocab), num_hiddens)
+net_rnn = RNNModel(rnn_layer, vocab_size=len(vocab)).to(try_gpu())
+train_ch8(net_rnn, train_iter, vocab, 1, 500, try_gpu(), use_plot=False)
+
+# GRU
+gru_layer = nn.GRU(len(vocab), num_hiddens)
+net_gru = RNNModel(gru_layer, len(vocab)).to(try_gpu())
+train_ch8(net_gru, train_iter, vocab, 1, 500, try_gpu(), use_plot=False)
+
+---
+
+练习9.1.4
+
+如果仅仅实现门控循环单元的一部分，例如，只有一个重置门或一个更新门会怎样？
+
+解答：
+如果只实现了一个重置门，模型将只能重置隐藏状态而无法更新其状态，导致无法学习长期依赖性。
+如果只实现了一个更新门，模型可以更新隐藏状态但无法选择要丢弃的旧信息，同样可能导致无法正确处理长期依赖性。
+完整的GRU需要同时具备两者。
+
+仅重置门（R-only）代码：
+
+def get_params_R(vocab_size, num_hiddens, device):
+    num_inputs = num_outputs = vocab_size
+    def normal(shape): return torch.randn(size=shape, device=device) * 0.01
+    def three():
+        return (normal((num_inputs, num_hiddens)),
+                normal((num_hiddens, num_hiddens)),
+                torch.zeros(num_hiddens, device=device))
+    W_xr, W_hr, b_r = three()
+    W_xh, W_hh, b_h = three()
+    W_hq = normal((num_hiddens, num_outputs))
+    b_q = torch.zeros(num_outputs, device=device)
+    params = [W_xr, W_hr, b_r, W_xh, W_hh, b_h, W_hq, b_q]
+    for param in params: param.requires_grad_(True)
+    return params
+
+def gru_reset_only(inputs, state, params):
+    W_xr, W_hr, b_r, W_xh, W_hh, b_h, W_hq, b_q = params
+    H, = state; outputs = []
+    for X in inputs:
+        R = torch.sigmoid((X @ W_xr) + (H @ W_hr) + b_r)
+        H_tilda = torch.tanh((X @ W_xh) + ((R * H) @ W_hh) + b_h)
+        H = H_tilda
+        Y = H @ W_hq + b_q
+        outputs.append(Y)
+    return torch.cat(outputs, dim=0), (H,)
+
+仅更新门（Z-only）代码：
+
+def get_params_Z(vocab_size, num_hiddens, device):
+    num_inputs = num_outputs = vocab_size
+    def normal(shape): return torch.randn(size=shape, device=device) * 0.01
+    def three():
+        return (normal((num_inputs, num_hiddens)),
+                normal((num_hiddens, num_hiddens)),
+                torch.zeros(num_hiddens, device=device))
+    W_xz, W_hz, b_z = three()
+    W_xh, W_hh, b_h = three()
+    W_hq = normal((num_hiddens, num_outputs))
+    b_q = torch.zeros(num_outputs, device=device)
+    params = [W_xz, W_hz, b_z, W_xh, W_hh, b_h, W_hq, b_q]
+    for param in params: param.requires_grad_(True)
+    return params
+
+def gru_update_only(inputs, state, params):
+    W_xz, W_hz, b_z, W_xh, W_hh, b_h, W_hq, b_q = params
+    H, = state; outputs = []
+    for X in inputs:
+        Z = torch.sigmoid((X @ W_xz) + (H @ W_hz) + b_z)
+        H_tilda = torch.tanh((X @ W_xh) + (H @ W_hh) + b_h)
+        H = Z * H + (1 - Z) * H_tilda
+        Y = H @ W_hq + b_q
+        outputs.append(Y)
+    return torch.cat(outputs, dim=0), (H,)

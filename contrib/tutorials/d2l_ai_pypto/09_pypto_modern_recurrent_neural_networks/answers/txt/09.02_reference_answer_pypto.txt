@@ -1,0 +1,241 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.2 长短期记忆网络（LSTM） - PyPTO 参考答案
+
+练习9.2.1
+
+调整和分析超参数对运行时间、困惑度和输出顺序的影响。
+
+解答：
+（同PyTorch版分析，详见09.02_reference_answer_pytorch.txt）
+
+PyPTO 代码验证（使用 src.utils 和 src.pypto_ops 中的 PyPTOLSTM / PyPTOLinear）：
+
+from src.utils import load_data_time_machine, train_ch8
+from src.pypto_ops import PyPTOLinear, PyPTOLSTM, loss_fn
+
+class PyPTOLSTMModel(nn.Module):
+    def __init__(self, lstm_layer, vocab_size):
+        super().__init__()
+        self.lstm = lstm_layer
+        self.linear = PyPTOLinear(lstm_layer.hidden_size, vocab_size)
+        self.vocab_size = vocab_size
+    def forward(self, inputs, state):
+        X = F.one_hot(inputs.T.long(), self.vocab_size).float()
+        Y, state = self.lstm(X, state)
+        return self.linear(Y.reshape((-1, Y.shape[-1]))), state
+    def begin_state(self, batch_size, device):
+        return (torch.zeros((self.lstm.num_layers, batch_size,
+                           self.lstm.hidden_size), device=device),
+                torch.zeros((self.lstm.num_layers, batch_size,
+                           self.lstm.hidden_size), device=device))
+
+hyper_0 = [500, 512, 35, 32, 1]
+hyper_1 = [250, 512, 35, 32, 1]
+hyper_2 = [500, 256, 35, 32, 1]
+hyper_3 = [500, 512, 10, 32, 1]
+hyper_4 = [500, 512, 35, 10, 1]
+hyper_5 = [500, 512, 35, 32, 0.01]
+hyper_params = [hyper_0, hyper_1, hyper_2, hyper_3, hyper_4, hyper_5]
+
+for i, (num_epochs, num_hiddens, bs, nsteps, lr) in enumerate(hyper_params):
+    train_iter, vocab = load_data_time_machine(bs, nsteps)
+    lstm_layer = PyPTOLSTM(len(vocab), num_hiddens)  # PyPTOLSTM 默认单层（支持多层）
+    net = PyPTOLSTMModel(lstm_layer, len(vocab)).to(device)
+    # JIT预热
+    X_w, y_w = next(iter(train_iter))
+    s_w = net.begin_state(bs, device)
+    l_w = loss_fn(net(X_w.to(device), s_w)[0],
+                  y_w.T.reshape(-1).to(device), len(vocab))
+    l_w.backward(); net.zero_grad()
+    print(f'hyper[{i}]: num_hiddens={num_hiddens}, num_epochs={num_epochs}')
+    train_ch8(net, train_iter, vocab, lr, num_epochs, device, use_plot=False, verbose=False,
+              loss_fn=lambda y_h, y: loss_fn(y_h, y, len(vocab)))
+
+NPU 注意事项：
+- PyPTO 算子需要 JIT 编译，首次运行较慢，建议在训练前执行 warmup
+- 梯度裁剪对 NPU 训练同样重要（train_ch8 已内置 grad_clipping）
+- LSTM 隐层使用 PyPTOLSTM（NPU kernel，默认单层、支持多层），输出层使用 PyPTOLinear 加速
+
+---
+
+练习9.2.2
+
+如何更改模型以生成适当的单词，而不是字符序列？
+
+解答：
+（同PyTorch版解答）
+
+PyPTO 代码（nn.Embedding + 多层双向 host nn.LSTM（NPU 上执行）+ PyPTOLinear 输出层）：
+
+from src.utils import load_data_time_machine, train_ch8
+from src.pypto_ops import PyPTOLinear, loss_fn
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+class RNNModel_Embedding_PyPTO(nn.Module):
+    def __init__(self, rnn_layer, vocab_size, embedding_dim, device):
+        super().__init__()
+        self.rnn = rnn_layer.to(device)
+        self.vocab_size = vocab_size
+        self.embedding = nn.Embedding(vocab_size, embedding_dim)
+        self.num_hiddens = rnn_layer.hidden_size
+        self.device = device
+        self.num_directions = 2 if rnn_layer.bidirectional else 1
+        self.linear = PyPTOLinear(self.num_hiddens * self.num_directions, vocab_size)
+    def forward(self, inputs, state):
+        X = self.embedding(inputs.T.long().cpu()).float().to(self.device)
+        Y, state = self.rnn(X, state)
+        Y_npu = Y.reshape((-1, Y.shape[-1])).to(self.linear.weight.device)
+        return self.linear(Y_npu), state
+    def begin_state(self, batch_size, device=None):
+        d = device or self.device
+        if not isinstance(self.rnn, nn.LSTM):
+            return torch.zeros((self.num_directions * self.rnn.num_layers,
+                               batch_size, self.num_hiddens), device=d)
+        else:
+            return (torch.zeros((self.num_directions * self.rnn.num_layers,
+                                batch_size, self.num_hiddens), device=d),
+                    torch.zeros((self.num_directions * self.rnn.num_layers,
+                                batch_size, self.num_hiddens), device=d))
+
+lstm_layer = nn.LSTM(len(vocab), 512, 2, bidirectional=True).to(device)
+net = RNNModel_Embedding_PyPTO(lstm_layer, len(vocab), len(vocab), device)
+net.linear = net.linear.to(device)
+X_w, y_w = next(iter(train_iter))
+s_w = net.begin_state(batch_size)
+l_w = loss_fn(net(X_w, s_w)[0], y_w.T.reshape(-1).to(device), len(vocab))
+l_w.backward(); net.zero_grad()
+train_ch8(net, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False,
+          loss_fn=lambda y_h, y: loss_fn(y_h, y, len(vocab)))
+
+NPU 注意事项：
+- PyPTOLSTM 支持多层（默认单层），但仅支持单向（不支持 bidirectional），多层双向 LSTM 使用 host 算子 nn.LSTM（在 NPU 上执行）
+- Embedding 层留在 CPU 上做词向量映射，输出层使用 PyPTOLinear
+
+---
+
+练习9.2.3
+
+在给定隐藏层维度的情况下，比较门控循环单元、长短期记忆网络和常规循环神经网络的计算成本。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（RNN/GRU/LSTM 三对比）：
+
+from src.utils import load_data_time_machine, train_ch8
+from src.pypto_ops import PyPTOLinear, PyPTORNN, PyPTOGRU, PyPTOLSTM, loss_fn
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+class PyPTORNNModel(nn.Module):  # 通用封装：RNN/GRU/LSTM 复用
+    def __init__(self, rnn_layer, vocab_size):
+        super().__init__()
+        self.rnn = rnn_layer
+        self.linear = PyPTOLinear(rnn_layer.hidden_size, vocab_size)
+        self.vocab_size = vocab_size
+    def forward(self, inputs, state):
+        X = F.one_hot(inputs.T.long(), self.vocab_size).float()
+        Y, state = self.rnn(X, state)
+        return self.linear(Y.reshape((-1, Y.shape[-1]))), state
+    def begin_state(self, batch_size, device):
+        if not isinstance(self.rnn, PyPTOLSTM):
+            return torch.zeros((self.rnn.num_layers, batch_size,
+                               self.rnn.hidden_size), device=device)
+        return (torch.zeros((self.rnn.num_layers, batch_size, self.rnn.hidden_size), device=device),
+                torch.zeros((self.rnn.num_layers, batch_size, self.rnn.hidden_size), device=device))
+
+X_w, y_w = next(iter(train_iter))
+loss_fn_w = lambda y_h, y: loss_fn(y_h, y, len(vocab))
+
+# RNN
+net_rnn = PyPTORNNModel(PyPTORNN(len(vocab), 256), len(vocab)).to(device)
+s = net_rnn.begin_state(batch_size, device)
+l = loss_fn_w(net_rnn(X_w.to(device), s)[0], y_w.T.reshape(-1).to(device))
+l.backward(); net_rnn.zero_grad()
+train_ch8(net_rnn, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False, loss_fn=loss_fn_w)
+
+# GRU
+net_gru = PyPTORNNModel(PyPTOGRU(len(vocab), 256), len(vocab)).to(device)
+s2 = net_gru.begin_state(batch_size, device)
+l2 = loss_fn_w(net_gru(X_w.to(device), s2)[0], y_w.T.reshape(-1).to(device))
+l2.backward(); net_gru.zero_grad()
+train_ch8(net_gru, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False, loss_fn=loss_fn_w)
+
+# LSTM
+net_lstm = PyPTORNNModel(PyPTOLSTM(len(vocab), 256), len(vocab)).to(device)
+s3 = net_lstm.begin_state(batch_size, device)
+l3 = loss_fn_w(net_lstm(X_w.to(device), s3)[0], y_w.T.reshape(-1).to(device))
+l3.backward(); net_lstm.zero_grad()
+train_ch8(net_lstm, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False, loss_fn=loss_fn_w)
+
+---
+
+练习9.2.4
+
+（纯理论题，同PyTorch版解答，详见pytorch版txt）
+
+---
+
+练习9.2.5
+
+实现一个基于时间序列进行预测的长短期记忆网络模型。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（使用 src.utils.load_array + PyPTOLSTM / PyPTOLinear）：
+
+import time
+from src.utils import load_array, plot
+from src.pypto_ops import PyPTOLinear, PyPTOLSTM
+
+T = 1000
+time_vals = torch.arange(1, T + 1, dtype=torch.float32, device=device)
+x = torch.sin(0.01 * time_vals) + torch.normal(0, 0.2, (T,), device=device)
+
+tau = 4
+features = torch.zeros((T - tau, tau), device=device)
+for i in range(tau):
+    features[:, i] = x[i: T - tau + i]
+labels = x[tau:].reshape((-1, 1))
+
+batch_size, n_train = 16, 600
+train_iter = load_array(
+    (features[:n_train], labels[:n_train]), batch_size, is_train=True)
+
+class LSTMPyPTO(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super().__init__()
+        self.lstm = PyPTOLSTM(input_size, hidden_size)  # PyPTOLSTM 默认单层（支持多层）
+        self.linear = PyPTOLinear(hidden_size, output_size)
+    def forward(self, input):
+        lstm_out, _ = self.lstm(input.t().unsqueeze(-1))
+        return self.linear(lstm_out[-1])
+
+model = LSTMPyPTO(1, 200, 1).to(device)
+criterion = nn.MSELoss()
+trainer = torch.optim.Adam(model.parameters(), lr=0.01)
+
+# JIT warmup
+print('正在编译 PyPTO kernel...')
+t0 = time.time()
+X_w, y_w = next(iter(train_iter))
+l = criterion(model(X_w.to(device)), y_w.to(device))
+l.backward(); model.zero_grad()
+print(f'编译完成，耗时 {time.time() - t0:.0f} 秒')
+
+for epoch in range(500):
+    for X, y in train_iter:
+        X, y = X.to(device), y.to(device)
+        trainer.zero_grad()
+        l = criterion(model(X), y)
+        l.backward(); trainer.step()
+print(f'Loss: {l.item():.4f}')
+
+onestep_preds = model(features)
+plot([time_vals.cpu(), time_vals[tau:].cpu()],
+     [x.detach().cpu().numpy(), onestep_preds.detach().cpu().numpy()],
+     'time', 'x', legend=['data', '1-step preds'], xlim=[1, 1000], figsize=(6, 3))

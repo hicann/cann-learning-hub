@@ -1,0 +1,257 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+9.1 门控循环单元（GRU） - PyPTO 参考答案
+
+练习9.1.1
+
+假设我们只想使用时间步t'的输入来预测时间步t > t'的输出。对于每个时间步，重置门和更新门的最佳值是什么？
+
+解答：
+如果只想采用时间步t'的输出来预测时间步t>t'的输出，则模型需要保留过去时间步t'的信息，同时忽略当前时间步t的输入。根据GRU最终隐状态更新公式：
+
+  H_t = Z_t * H_{t-1} + (1-Z_t) * H_tilde_t
+
+要让H_t = H_{t-1}（即完全保留过去状态信息），需要设置更新门Z_t=1，使得新隐状态完全复制旧隐状态，当前输入被忽略。
+
+对于重置门R_t，由于候选隐状态被乘以(1-Z_t)=0而不再影响最终输出，R_t的值不影响结果。但从安全角度，设置重置门R_t=0可以显式阻止候选隐状态中混入当前输入信息。
+
+因此，最佳值为：更新门Z=1，重置门R=0。
+
+---
+
+练习9.1.2
+
+调整和分析超参数对运行时间、困惑度和输出顺序的影响。
+
+解答：
+（同PyTorch版分析，详见09.01_reference_answer_pytorch.txt）
+
+PyPTO 代码验证（使用 src.utils 和 src.pypto_ops）：
+
+from src.utils import load_data_time_machine, train_ch8
+from src.pypto_ops import PyPTOLinear, PyPTOGRU, loss_fn
+
+class PyPTORNNModel(nn.Module):
+    def __init__(self, rnn_layer, vocab_size):
+        super().__init__()
+        self.rnn = rnn_layer
+        self.vocab_size = vocab_size
+        self.linear = PyPTOLinear(rnn_layer.hidden_size, vocab_size)
+    def forward(self, inputs, state):
+        X = F.one_hot(inputs.T.long(), self.vocab_size).float()
+        Y, state = self.rnn(X, state)
+        return self.linear(Y.reshape((-1, Y.shape[-1]))), state
+    def begin_state(self, batch_size, device):
+        return torch.zeros((self.rnn.num_layers, batch_size,
+                           self.rnn.hidden_size), device=device)
+
+hyper_0 = [500, 512, 35, 32, 1]
+hyper_1 = [250, 512, 35, 32, 1]
+hyper_2 = [500, 256, 35, 32, 1]
+hyper_3 = [500, 512, 10, 32, 1]
+hyper_4 = [500, 512, 35, 10, 1]
+hyper_5 = [500, 512, 35, 32, 0.01]
+hyper_params = [hyper_0, hyper_1, hyper_2, hyper_3, hyper_4, hyper_5]
+
+for i, (num_epochs, num_hiddens, bs, nsteps, lr) in enumerate(hyper_params):
+    train_iter, vocab = load_data_time_machine(bs, nsteps)
+    gru_layer = PyPTOGRU(len(vocab), num_hiddens)  # 默认单层（PyPTOGRU 支持多层）
+    net = PyPTORNNModel(gru_layer, len(vocab)).to(device)
+    # JIT预热
+    X_w, y_w = next(iter(train_iter))
+    s_w = net.begin_state(bs, device)
+    l_w = loss_fn(net(X_w.to(device), s_w)[0],
+                  y_w.T.reshape(-1).to(device), len(vocab))
+    l_w.backward(); net.zero_grad()
+    print(f'hyper[{i}]: num_hiddens={num_hiddens}, num_epochs={num_epochs}')
+    train_ch8(net, train_iter, vocab, lr, num_epochs, device, use_plot=False, verbose=False,
+              loss_fn=lambda y_h, y: loss_fn(y_h, y, len(vocab)))
+
+NPU 注意事项：
+- 首次运行需要 JIT 编译（warmup 已处理）
+- GRU 隐层使用 PyPTOGRU（NPU kernel），输出层使用 PyPTOLinear 加速
+- 梯度裁剪已内置在 train_ch8 中
+
+---
+
+练习9.1.3
+
+比较rnn.RNN和rnn.GRU的不同实现对运行时间、困惑度和输出字符串的影响。
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码：
+
+from src.utils import load_data_time_machine, train_ch8
+from src.pypto_ops import PyPTOLinear, PyPTORNN, PyPTOGRU, loss_fn
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+class PyPTORNNModel(nn.Module):
+    def __init__(self, rnn_layer, vocab_size):
+        super().__init__()
+        self.rnn = rnn_layer
+        self.linear = PyPTOLinear(rnn_layer.hidden_size, vocab_size)
+        self.vocab_size = vocab_size
+    def forward(self, inputs, state):
+        X = F.one_hot(inputs.T.long(), self.vocab_size).float()
+        Y, state = self.rnn(X, state)
+        return self.linear(Y.reshape((-1, Y.shape[-1]))), state
+    def begin_state(self, batch_size, device):
+        return torch.zeros((self.rnn.num_layers, batch_size,
+                           self.rnn.hidden_size), device=device)
+
+# RNN
+rnn_layer_pypto = PyPTORNN(len(vocab), 256)  # PyPTORNN 仅支持单层
+net_rnn = PyPTORNNModel(rnn_layer_pypto, len(vocab)).to(device)
+X_w, y_w = next(iter(train_iter))
+s_w = net_rnn.begin_state(batch_size, device)
+l_w = loss_fn(net_rnn(X_w.to(device), s_w)[0],
+              y_w.T.reshape(-1).to(device), len(vocab))
+l_w.backward(); net_rnn.zero_grad()
+train_ch8(net_rnn, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False,
+          loss_fn=lambda y_h, y: loss_fn(y_h, y, len(vocab)))
+
+# GRU
+gru_layer_pypto = PyPTOGRU(len(vocab), 256)  # 默认单层（PyPTOGRU 支持多层）
+net_gru = PyPTORNNModel(gru_layer_pypto, len(vocab)).to(device)
+s_w2 = net_gru.begin_state(batch_size, device)
+l_w2 = loss_fn(net_gru(X_w.to(device), s_w2)[0],
+               y_w.T.reshape(-1).to(device), len(vocab))
+l_w2.backward(); net_gru.zero_grad()
+train_ch8(net_gru, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False,
+          loss_fn=lambda y_h, y: loss_fn(y_h, y, len(vocab)))
+
+---
+
+练习9.1.4
+
+如果仅仅实现门控循环单元的一部分会怎样？
+
+解答：
+（同PyTorch版分析，详见pytorch版txt）
+
+PyPTO 代码（仅重置门 + 仅更新门，使用 PyPTOMatmul / PyPTOSigmoid / PyPTOTanh / PyPTOMul 等算子）：
+
+from src.utils import load_data_time_machine, train_ch8
+from src.pypto_ops import (PyPTOMatmul, PyPTOBiasAdd, PyPTOAdd,
+                           PyPTOTanh, PyPTOSigmoid, PyPTOMul, PyPTOSub,
+                           loss_fn)
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
+
+def get_params_R_pypto(vocab_size, num_hiddens, device):
+    """仅重置门（R-only）：W_xr, W_hr, b_r, W_xh, W_hh, b_h, W_hq, b_q"""
+    def normal(shape):
+        return torch.randn(size=shape, device=device) * 0.01
+    num_inputs = num_outputs = vocab_size
+    w = [normal((num_inputs, num_hiddens)),  # W_xr
+         normal((num_hiddens, num_hiddens)),  # W_hr
+         torch.zeros(num_hiddens, device=device),  # b_r
+         normal((num_inputs, num_hiddens)),  # W_xh
+         normal((num_hiddens, num_hiddens)),  # W_hh
+         torch.zeros(num_hiddens, device=device),  # b_h
+         normal((num_hiddens, num_outputs)),  # W_hq
+         torch.zeros(num_outputs, device=device)]  # b_q
+    for p in w: p.requires_grad_(True)
+    return w
+
+def gru_reset_only_pypto(inputs, state, params):
+    W_xr, W_hr, b_r, W_xh, W_hh, b_h, W_hq, b_q = params
+    H, = state
+    outputs = []
+    for X in inputs:
+        XW_r = PyPTOMatmul.apply(X, W_xr)
+        HW_r = PyPTOMatmul.apply(H, W_hr)
+        R = PyPTOSigmoid.apply(PyPTOBiasAdd.apply(
+            PyPTOAdd.apply(XW_r, HW_r), b_r))
+        XW_h = PyPTOMatmul.apply(X, W_xh)
+        RH = PyPTOMul.apply(R, H)
+        RHW = PyPTOMatmul.apply(RH, W_hh)
+        H = PyPTOTanh.apply(PyPTOBiasAdd.apply(
+            PyPTOAdd.apply(XW_h, RHW), b_h))  # H_t = H_tilde_t
+        Y = PyPTOBiasAdd.apply(PyPTOMatmul.apply(H, W_hq), b_q)
+        outputs.append(Y)
+    return torch.cat(outputs, dim=0), (H,)
+
+def get_params_Z_pypto(vocab_size, num_hiddens, device):
+    """仅更新门（Z-only）：W_xz, W_hz, b_z, W_xh, W_hh, b_h, W_hq, b_q"""
+    def normal(shape):
+        return torch.randn(size=shape, device=device) * 0.01
+    num_inputs = num_outputs = vocab_size
+    w = [normal((num_inputs, num_hiddens)),  # W_xz
+         normal((num_hiddens, num_hiddens)),  # W_hz
+         torch.zeros(num_hiddens, device=device),  # b_z
+         normal((num_inputs, num_hiddens)),  # W_xh
+         normal((num_hiddens, num_hiddens)),  # W_hh
+         torch.zeros(num_hiddens, device=device),  # b_h
+         normal((num_hiddens, num_outputs)),  # W_hq
+         torch.zeros(num_outputs, device=device)]  # b_q
+    for p in w: p.requires_grad_(True)
+    return w
+
+def gru_update_only_pypto(inputs, state, params):
+    W_xz, W_hz, b_z, W_xh, W_hh, b_h, W_hq, b_q = params
+    H, = state
+    outputs = []
+    for X in inputs:
+        XW_z = PyPTOMatmul.apply(X, W_xz)
+        HW_z = PyPTOMatmul.apply(H, W_hz)
+        Z = PyPTOSigmoid.apply(PyPTOBiasAdd.apply(
+            PyPTOAdd.apply(XW_z, HW_z), b_z))
+        XW_h = PyPTOMatmul.apply(X, W_xh)
+        HW_h = PyPTOMatmul.apply(H, W_hh)
+        H_tilde = PyPTOTanh.apply(PyPTOBiasAdd.apply(
+            PyPTOAdd.apply(XW_h, HW_h), b_h))
+        ones = torch.ones_like(Z)
+        H = PyPTOAdd.apply(PyPTOMul.apply(Z, H),
+                           PyPTOMul.apply(PyPTOSub.apply(ones, Z), H_tilde))
+        Y = PyPTOBiasAdd.apply(PyPTOMatmul.apply(H, W_hq), b_q)
+        outputs.append(Y)
+    return torch.cat(outputs, dim=0), (H,)
+
+# 训练
+class PyPTORNNModelScratch:
+    def __init__(self, vocab_size, num_hiddens, device,
+                 get_params_fn, init_state_fn, forward_fn):
+        self.vocab_size, self.num_hiddens = vocab_size, num_hiddens
+        self.device = device
+        self.params = get_params_fn(vocab_size, num_hiddens, device)
+        self.init_state, self.forward_fn = init_state_fn, forward_fn
+    def __call__(self, X, state):
+        X_oh = F.one_hot(X.T.long(), self.vocab_size).float()
+        return self.forward_fn(X_oh, state, self.params)
+    def begin_state(self, batch_size, device=None):
+        d = device or self.device
+        return self.init_state(batch_size, self.num_hiddens, d)
+
+init_state_fn = lambda b, h, d: (torch.zeros((b, h), device=d),)
+
+# R-only：warmup + 训练
+X, y = next(iter(train_iter))
+net_w = PyPTORNNModelScratch(len(vocab), 256, device,
+    get_params_R_pypto, init_state_fn, gru_reset_only_pypto)
+s_w = net_w.begin_state(batch_size, device)
+l = loss_fn(net_w(X.to(device), s_w)[0], y.T.reshape(-1).to(device), len(vocab))
+l.backward()
+
+net = PyPTORNNModelScratch(len(vocab), 256, device, get_params_R_pypto,
+    init_state_fn, gru_reset_only_pypto)
+print('仅重置门（R-only）训练：')
+train_ch8(net, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False,
+          loss_fn=lambda y_h, y: loss_fn(y_h, y, len(vocab)))
+
+# Z-only：warmup + 训练
+net_w2 = PyPTORNNModelScratch(len(vocab), 256, device,
+    get_params_Z_pypto, init_state_fn, gru_update_only_pypto)
+s_w2 = net_w2.begin_state(batch_size, device)
+l2 = loss_fn(net_w2(X.to(device), s_w2)[0], y.T.reshape(-1).to(device), len(vocab))
+l2.backward()
+
+net_z = PyPTORNNModelScratch(len(vocab), 256, device, get_params_Z_pypto,
+    init_state_fn, gru_update_only_pypto)
+print('仅更新门（Z-only）训练：')
+train_ch8(net_z, train_iter, vocab, 1, 500, device, use_plot=False, verbose=False,
+          loss_fn=lambda y_h, y: loss_fn(y_h, y, len(vocab)))
