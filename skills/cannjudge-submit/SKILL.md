@@ -380,6 +380,7 @@ python cannjudge_cli.py login --email "your@email.com" --password "明文密码"
 
 ```python
 # 方式1: 如果知道题目ID
+cookies = client.session.cookies  #获取cookies后续使用
 problem_id = "题目ID"
 resp = requests.get(
     f"https://cannjudge.cn/api/problems/{problem_id}",

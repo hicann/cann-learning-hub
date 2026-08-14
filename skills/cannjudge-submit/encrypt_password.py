@@ -20,6 +20,7 @@ from Crypto.Cipher import PKCS1_v1_5
 import base64
 import argparse
 import sys
+import getpass
 
 DEFAULT_PUBLIC_KEY_PATH = "public.pem"
 
@@ -51,7 +52,7 @@ def main():
         print("请先将服务器上的 public.pem 拷贝到当前目录或指定路径。")
         sys.exit(1)
 
-    pwd = input("请输入你的 CANNJudge 密码：").strip()
+    pwd = getpass.getpass("请输入你的 CANNJudge 密码：").strip()
     if not pwd:
         print("错误: 密码不能为空")
         sys.exit(1)
