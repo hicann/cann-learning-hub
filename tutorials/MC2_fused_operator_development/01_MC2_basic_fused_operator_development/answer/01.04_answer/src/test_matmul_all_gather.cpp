@@ -97,7 +97,7 @@ int CreateTilingDataAndContext(const char* hcomName, aclrtStream stream,
     if (gHcclBufferSize <= 0) {
         int64_t winDataSizeBytes = gM * gN * BF16_SIZE;
         int64_t winDataSizeKB = (winDataSizeBytes + 1023) / 1024;
-        gHcclBufferSize = winDataSizeKB + 512;  // Win 数据区 + 额外空间(状态区等)
+        gHcclBufferSize = winDataSizeKB + 1024;  // Win 数据区 + 状态区(STATE_WIN_SIZE=1MB)
         LOG_PRINT("[INFO] Calculated hcclBufferSize = %ld KB (winData=%ld KB)\n", 
                   gHcclBufferSize, winDataSizeKB);
     }
@@ -111,27 +111,27 @@ int CreateTilingDataAndContext(const char* hcomName, aclrtStream stream,
     tilingData->tilingInfo.baseK = 128;
     tilingData->tilingInfo.baseN = 128;
 
-    AscendC::Mc2CcTilingConfig mc2CcTilingConfig(hcomName, 6, "AlltoAll=level0:fullmesh;level1:pairwise");
+    AscendC::Mc2CcTilingConfig mc2CcTilingConfig(hcomName, gRankSize, "AlltoAll=level0:fullmesh;level1:pairwise");
     mc2CcTilingConfig.SetCommEngine(3);
 
-    int aclRet = mc2CcTilingConfig.GetTiling(tilingData->mc2InitTiling);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather GetTiling mc2InitTiling failed. aclRet = %d\n", aclRet); return aclRet);
-    aclRet = mc2CcTilingConfig.GetTiling(tilingData->mc2CcTiling);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather GetTiling mc2CcTiling failed. aclRet = %d\n", aclRet); return aclRet);
+    int ret = mc2CcTilingConfig.GetTiling(tilingData->mc2InitTiling);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] GetTiling mc2InitTiling failed. ret = %d\n", ret); return ret);
+    ret = mc2CcTilingConfig.GetTiling(tilingData->mc2CcTiling);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] GetTiling mc2CcTiling failed. ret = %d\n", ret); return ret);
 
     int tilingSize = sizeof(MatmulAllGatherTilingData);
-    aclRet = aclrtMalloc(deviceTilingAddr, tilingSize, ACL_MEM_MALLOC_HUGE_FIRST);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMalloc TilingData failed. aclRet: %d\n", aclRet); return aclRet);
-    aclRet = aclrtMemcpy(*deviceTilingAddr, tilingSize, tilingData, tilingSize, ACL_MEMCPY_HOST_TO_DEVICE);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMemcpy TilingData failed. aclRet: %d\n", aclRet); return aclRet);
+    ret = aclrtMalloc(deviceTilingAddr, tilingSize, ACL_MEM_MALLOC_HUGE_FIRST);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMalloc TilingData failed. ret: %d\n", ret); return ret);
+    ret = aclrtMemcpy(*deviceTilingAddr, tilingSize, tilingData, tilingSize, ACL_MEMCPY_HOST_TO_DEVICE);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMemcpy TilingData failed. ret: %d\n", ret); return ret);
 
     HcclComm commHandle;
-    aclRet = HcomGetCommHandleByGroup(hcomName, &commHandle);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather HcomGetCommHandleByGroup failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = HcomGetCommHandleByGroup(hcomName, &commHandle);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] HcomGetCommHandleByGroup failed. ret = %d\n", ret); return ret);
 
     void *mc2Context = nullptr;
-    aclRet = HcclAllocComResourceByTiling(commHandle, stream, tilingData, &mc2Context);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather HcclAllocComResourceByTiling failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = HcclAllocComResourceByTiling(commHandle, stream, tilingData, &mc2Context);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] HcclAllocComResourceByTiling failed. ret = %d\n", ret); return ret);
 
     if (mc2Context == nullptr) {
         LOG_PRINT("[ERROR] mc2Context is nullptr\n");
@@ -139,10 +139,10 @@ int CreateTilingDataAndContext(const char* hcomName, aclrtStream stream,
     }
 
     constexpr size_t mc2ContextSize = sizeof(MatmulAllGatherImpl::HcclA5OpResParam);
-    aclRet = aclrtMalloc(deviceContextAddr, mc2ContextSize, ACL_MEM_MALLOC_HUGE_FIRST);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMalloc Mc2Context failed. aclRet: %d\n", aclRet); return aclRet);
-    aclRet = aclrtMemcpy(*deviceContextAddr, mc2ContextSize, mc2Context, mc2ContextSize, ACL_MEMCPY_HOST_TO_DEVICE);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMemcpy Mc2Context failed. aclRet: %d\n", aclRet); return aclRet);
+    ret = aclrtMalloc(deviceContextAddr, mc2ContextSize, ACL_MEM_MALLOC_HUGE_FIRST);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMalloc Mc2Context failed. ret: %d\n", ret); return ret);
+    ret = aclrtMemcpy(*deviceContextAddr, mc2ContextSize, mc2Context, mc2ContextSize, ACL_MEMCPY_HOST_TO_DEVICE);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMemcpy Mc2Context failed. ret: %d\n", ret); return ret);
 
     delete tilingData;
     return ACL_SUCCESS;
@@ -157,12 +157,12 @@ struct Args {
 
 int LaunchOneThread(Args &args)
 {
-    int aclRet = aclrtSetCurrentContext(args.context);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtSetCurrentContext failed. aclRet = %d\n", aclRet); return aclRet);
+    int ret = aclrtSetCurrentContext(args.context);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtSetCurrentContext failed. ret = %d\n", ret); return ret);
 
     char hcomName[128] = {0};
-    aclRet = HcclGetCommName(args.hcclComm, hcomName);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather HcclGetCommName failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = HcclGetCommName(args.hcclComm, hcomName);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] HcclGetCommName failed. ret = %d\n", ret); return ret);
     LOG_PRINT("[INFO] rank = %d, hcomName = %s\n", args.rankId, hcomName);
 
     void *aDeviceAddr = nullptr;
@@ -172,37 +172,37 @@ int LaunchOneThread(Args &args)
     void *tilingAddr = nullptr;
     void *mc2ContextAddr = nullptr;
 
-    aclRet = CreateTilingDataAndContext(hcomName, args.stream, &tilingAddr, &mc2ContextAddr);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather CreateTilingDataAndContext failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = CreateTilingDataAndContext(hcomName, args.stream, &tilingAddr, &mc2ContextAddr);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] CreateTilingDataAndContext failed. ret = %d\n", ret); return ret);
 
     int64_t aSize = gM * gK * BF16_SIZE;
     int64_t bSize = gK * gN * BF16_SIZE;
     int64_t ySize = gM * gN * gRankSize * BF16_SIZE;  // AllGather 输出大小：M × N × rankSize
 
-    aclRet = aclrtMalloc(&aDeviceAddr, aSize, ACL_MEM_MALLOC_HUGE_FIRST);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMalloc a failed. aclRet: %d\n", aclRet); return aclRet);
+    ret = aclrtMalloc(&aDeviceAddr, aSize, ACL_MEM_MALLOC_HUGE_FIRST);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMalloc a failed. ret: %d\n", ret); return ret);
 
 uint16_t *aHost;
     aclrtMallocHost(reinterpret_cast<void**>(&aHost), aSize);
     GenerateRandomBF16Data(aHost, gM * gK, 42, true);
-    aclRet = aclrtMemcpy(aDeviceAddr, aSize, aHost, aSize, ACL_MEMCPY_HOST_TO_DEVICE);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMemcpy a failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = aclrtMemcpy(aDeviceAddr, aSize, aHost, aSize, ACL_MEMCPY_HOST_TO_DEVICE);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMemcpy a failed. ret = %d\n", ret); return ret);
 
-    aclRet = aclrtMalloc(&bDeviceAddr, bSize, ACL_MEM_MALLOC_HUGE_FIRST);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMalloc b failed. aclRet: %d\n", aclRet); return aclRet);
+    ret = aclrtMalloc(&bDeviceAddr, bSize, ACL_MEM_MALLOC_HUGE_FIRST);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMalloc b failed. ret: %d\n", ret); return ret);
 
     uint16_t *bHost;
     aclrtMallocHost(reinterpret_cast<void**>(&bHost), bSize);
     GenerateRandomBF16Data(bHost, gK * gN, 43, true);
-    aclRet = aclrtMemcpy(bDeviceAddr, bSize, bHost, bSize, ACL_MEMCPY_HOST_TO_DEVICE);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMemcpy b failed. aclRet: %d\n", aclRet); return aclRet);
+    ret = aclrtMemcpy(bDeviceAddr, bSize, bHost, bSize, ACL_MEMCPY_HOST_TO_DEVICE);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMemcpy b failed. ret: %d\n", ret); return ret);
 
-    aclRet = aclrtMalloc(&yDeviceAddr, ySize, ACL_MEM_MALLOC_HUGE_FIRST);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMalloc y failed. aclRet: %d\n", aclRet); return aclRet);
+    ret = aclrtMalloc(&yDeviceAddr, ySize, ACL_MEM_MALLOC_HUGE_FIRST);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMalloc y failed. ret: %d\n", ret); return ret);
 
     if (gWorkSpaceSize > 0) {
-        aclRet = aclrtMalloc(&workspaceAddr, gWorkSpaceSize, ACL_MEM_MALLOC_HUGE_FIRST);
-        CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMalloc workspace failed. aclRet: %d\n", aclRet); return aclRet);
+        ret = aclrtMalloc(&workspaceAddr, gWorkSpaceSize, ACL_MEM_MALLOC_HUGE_FIRST);
+        CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMalloc workspace failed. ret: %d\n", ret); return ret);
     }
 
     LOG_PRINT("[INFO] rank=%d Launching kernel: M=%ld, K=%ld, N=%ld, rankDim=%d, blockDim=%ld\n",
@@ -212,14 +212,14 @@ uint16_t *aHost;
         (uint8_t*)aDeviceAddr, (uint8_t*)bDeviceAddr, (uint8_t*)yDeviceAddr,
         (uint8_t*)workspaceAddr, (uint8_t*)mc2ContextAddr, (uint8_t*)tilingAddr);
 
-    aclRet = aclrtSynchronizeStreamWithTimeout(args.stream, streamWithTimeout);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtSynchronizeStreamWithTimeout failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = aclrtSynchronizeStreamWithTimeout(args.stream, streamWithTimeout);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtSynchronizeStreamWithTimeout failed. ret = %d\n", ret); return ret);
     LOG_PRINT("[INFO] rank=%d kernel executed successfully\n", args.rankId);
 
     uint16_t *yHost;
     aclrtMallocHost(reinterpret_cast<void**>(&yHost), ySize);
-    aclRet = aclrtMemcpy(yHost, ySize, yDeviceAddr, ySize, ACL_MEMCPY_DEVICE_TO_HOST);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtMemcpy y failed. aclRet: %d\n", aclRet); return aclRet);
+    ret = aclrtMemcpy(yHost, ySize, yDeviceAddr, ySize, ACL_MEMCPY_DEVICE_TO_HOST);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtMemcpy y failed. ret: %d\n", ret); return ret);
 
     std::string outFile = gOutputDir + "/output_rank" + std::to_string(args.rankId) + ".bin";
     WriteFile(outFile, yHost, ySize);
@@ -259,7 +259,7 @@ int main(int argc, char *argv[])
     if (gHcclBufferSize <= 0) {
         int64_t winDataSizeBytes = gM * gN * BF16_SIZE;
         int64_t winDataSizeKB = (winDataSizeBytes + 1023) / 1024;
-        gHcclBufferSize = winDataSizeKB + 512;  // Win 数据区 + 额外空间(状态区等)
+        gHcclBufferSize = winDataSizeKB + 1024;  // Win 数据区 + 状态区(STATE_WIN_SIZE=1MB)
         LOG_PRINT("[INFO] Calculated hcclBufferSize = %ld KB (winData=%ld KB)\n", 
                   gHcclBufferSize, winDataSizeKB);
     }
@@ -278,34 +278,34 @@ int main(int argc, char *argv[])
 
     LOG_PRINT("[INFO] Config: rankId=%d, rankSize=%d, M=%ld, K=%ld, N=%ld\n", gRankId, gRankSize, gM, gK, gN);
 
-    int aclRet = aclInit(nullptr);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclInit failed. aclRet = %d\n", aclRet); return aclRet);
+    int ret = aclInit(nullptr);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclInit failed. ret = %d\n", ret); return ret);
 
     aclrtStream stream;
     aclrtContext context;
     HcclComm comms;
 
-    aclRet = aclrtSetDevice(gRankId);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtSetDevice failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = aclrtSetDevice(gRankId);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtSetDevice failed. ret = %d\n", ret); return ret);
 
-    aclRet = aclrtCreateContext(&context, gRankId);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtCreateContext failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = aclrtCreateContext(&context, gRankId);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtCreateContext failed. ret = %d\n", ret); return ret);
 
-    aclRet = aclrtCreateStream(&stream);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather aclrtCreateStream failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = aclrtCreateStream(&stream);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] aclrtCreateStream failed. ret = %d\n", ret); return ret);
 
     HcclCommConfig config;
     HcclCommConfigInit(&config);
     config.hcclDeterministic = 1;
     config.hcclBufferSize = gHcclBufferSize;
-    aclRet = strcpy_s(config.hcclCommName, COMM_NAME_MAX_LENGTH - 1, "hccl_comm_matmul_all_gather");
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather hcclCommName strcpy failed.\n"); return aclRet);
+    ret = strcpy_s(config.hcclCommName, COMM_NAME_MAX_LENGTH - 1, "hccl_comm_matmul_all_gather");
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] hcclCommName strcpy failed.\n"); return ret);
 
     const char* rankTableFile = getenv("RANK_TABLE_FILE");
-    CHECK_RET(rankTableFile != nullptr, LOG_PRINT("[ERROR] MatmulAllGather RANK_TABLE_FILE not set.\n"); return -1);
+    CHECK_RET(rankTableFile != nullptr, LOG_PRINT("[ERROR] RANK_TABLE_FILE not set.\n"); return -1);
 
-    aclRet = HcclCommInitClusterInfoConfig(rankTableFile, gRankId, &config, &comms);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather HcclCommInitClusterInfoConfig failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = HcclCommInitClusterInfoConfig(rankTableFile, gRankId, &config, &comms);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] HcclCommInitClusterInfoConfig failed. ret = %d\n", ret); return ret);
 
     Args args;
     args.rankId = gRankId;
@@ -313,8 +313,8 @@ int main(int argc, char *argv[])
     args.stream = stream;
     args.context = context;
 
-    aclRet = LaunchOneThread(args);
-    CHECK_RET(aclRet == ACL_SUCCESS, LOG_PRINT("[ERROR] MatmulAllGather LaunchOneThread failed. aclRet = %d\n", aclRet); return aclRet);
+    ret = LaunchOneThread(args);
+    CHECK_RET(ret == ACL_SUCCESS, LOG_PRINT("[ERROR] LaunchOneThread failed. ret = %d\n", ret); return ret);
 
     HcclCommDestroy(comms);
     aclrtDestroyStream(stream);
