@@ -13,9 +13,9 @@ contrib/tutorials/
 ├── your_course_name/
 │   ├── README.md          # 课程介绍
 │   ├── chapter_1/          # 章节内容
-│   │   └── notebook.ipynb
+│   │   └── notebook.ipynb  # 章节notebook
 │   └── chapter_2/
-│       └── notebook.ipynb
+│       └── notebook.ipynb  # 章节notebook
 └── README.md              # 本文件
 ```
 
