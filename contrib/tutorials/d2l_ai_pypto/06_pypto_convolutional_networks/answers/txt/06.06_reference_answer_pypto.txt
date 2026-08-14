@@ -1,0 +1,323 @@
+卷积神经网络（LeNet）
+
+练习 6.6.1
+
+将平均汇聚层替换为最大汇聚层，会发生什么？
+
+  解答
+
+    使用 PyPTO 编程进行验证:
+
+    from src.PyPTOConv2DModule import PyPTOConv2d
+    from src.PyPTOPoolModule import PyPTOMaxPool2d
+    from src.PyPTOLinearFuseModule import PyPTOLinear
+
+    # 将 AvgPool2d 替换为 MaxPool2d
+    net_maxpool = nn.Sequential(
+        PyPTOConv2d(1, 6, kernel_size=5, padding=2, bias=True, device=device), nn.Sigmoid(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(6, 16, kernel_size=5, bias=True, device=device), nn.Sigmoid(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        nn.Flatten(),
+        PyPTOLinear(16 * 5 * 5, 120), nn.Sigmoid(),
+        PyPTOLinear(120, 84), nn.Sigmoid(),
+        PyPTOLinear(84, 10)).to(device)
+
+    batch_size = 32
+    train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+    lr, num_epochs = 0.9, 10
+    train_ch6(net_maxpool, train_iter, test_iter, num_epochs, lr, 'npu:0')
+
+练习 6.6.2
+
+尝试构建一个基于LeNet的更复杂的网络，以提高其准确性。
+1. 调整卷积窗口大小。
+2. 调整输出通道的数量。
+3. 调整激活函数（如ReLU）。
+4. 调整卷积层的数量。
+5. 调整全连接层的数量。
+6. 调整学习率和其他训练细节（例如，初始化和轮数）。
+
+  解答
+
+    第1问：
+
+    修改为nn.Conv2d(1, 6, kernel_size = 7)
+
+    使用 PyPTO 编程进行验证:
+
+    以下用 PyPTO 模块构建与上方 torch 一致的网络（卷积窗口大小为 7×7），验证前向输出形状。
+
+    from torch import nn
+    from src.PyPTOConv2DModule import PyPTOConv2d
+    from src.PyPTOPoolModule import PyPTOMaxPool2d
+    from src.PyPTOLinearFuseModule import PyPTOLinear
+
+    # 调整卷积窗口大小: 5→7
+    net = nn.Sequential(
+        PyPTOConv2d(1, 6, kernel_size=7, padding=2, bias=True, device=device),
+        nn.Sigmoid(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(6, 16, kernel_size=7, bias=True, device=device),
+        nn.Sigmoid(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        nn.Flatten(),
+        PyPTOLinear(16 * 3 * 3, 120),
+        nn.Sigmoid(),
+        PyPTOLinear(120, 84),
+        nn.Sigmoid(),
+        PyPTOLinear(84, 10)).to(device)
+
+    batch_size = 32
+    train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+    lr, num_epochs = 0.9, 10
+    train_ch6(net, train_iter, test_iter, num_epochs, lr, 'npu:0')
+
+    第2问：
+
+     修改为nn.Conv2d(1, 10, kernel_size = 5)
+
+    使用 PyPTO 编程进行验证:
+
+    以下用 PyPTO 模块构建与上方 torch 一致的网络（第一个卷积层输出通道数为 10），验证前向输出形状。
+
+    from torch import nn
+    from src.PyPTOConv2DModule import PyPTOConv2d
+    from src.PyPTOPoolModule import PyPTOMaxPool2d
+    from src.PyPTOLinearFuseModule import PyPTOLinear
+
+    # 调整输出通道数量: conv1 out 6→10
+    net = nn.Sequential(
+        PyPTOConv2d(1, 10, kernel_size=5, padding=2, bias=True, device=device),
+        nn.Sigmoid(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(10, 16, kernel_size=5, bias=True, device=device),
+        nn.Sigmoid(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        nn.Flatten(),
+        PyPTOLinear(16 * 5 * 5, 120),
+        nn.Sigmoid(),
+        PyPTOLinear(120, 84),
+        nn.Sigmoid(),
+        PyPTOLinear(84, 10)).to(device)
+
+    batch_size = 32
+    train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+    lr, num_epochs = 0.9, 10
+    train_ch6(net, train_iter, test_iter, num_epochs, lr, 'npu:0')
+
+    第3问：
+
+     将卷积层nn.Sigmoid()修改为nn.ReLU()
+
+    使用 PyPTO 编程进行验证:
+
+    以下用 PyPTO 模块构建与上方 torch 一致的网络（激活函数替换为 ReLU），验证前向输出形状。
+
+    from torch import nn
+    from src.PyPTOConv2DModule import PyPTOConv2d
+    from src.PyPTOPoolModule import PyPTOMaxPool2d
+    from src.PyPTOLinearFuseModule import PyPTOLinear
+
+    # 调整激活函数: Sigmoid→ReLU
+    net = nn.Sequential(
+        PyPTOConv2d(1, 10, kernel_size=5, padding=2, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(10, 16, kernel_size=5, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        nn.Flatten(),
+        PyPTOLinear(16 * 5 * 5, 120),
+        nn.Sigmoid(),
+        PyPTOLinear(120, 84),
+        nn.Sigmoid(),
+        PyPTOLinear(84, 10)).to(device)
+
+    batch_size = 32
+    train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+    lr, num_epochs = 0.9, 10
+    train_ch6(net, train_iter, test_iter, num_epochs, lr, 'npu:0')
+
+    第4问：
+
+     添加conv3为nn.Cov2d(16, 120, kernel_size = 5), ReLU()
+
+    使用 PyPTO 编程进行验证:
+
+    以下用 PyPTO 模块构建与上方 torch 一致的网络（新增第三个卷积层），验证前向输出形状。
+
+    from torch import nn
+    from src.PyPTOConv2DModule import PyPTOConv2d
+    from src.PyPTOPoolModule import PyPTOMaxPool2d
+    from src.PyPTOLinearFuseModule import PyPTOLinear
+
+    # 添加第三个卷积层 conv3
+    net = nn.Sequential(
+        PyPTOConv2d(1, 10, kernel_size=5, padding=2, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(10, 16, kernel_size=5, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(16, 120, kernel_size=5, bias=True, device=device),
+        nn.ReLU(),
+        nn.Flatten(),
+        PyPTOLinear(120 * 3 * 3, 120),
+        nn.Sigmoid(),
+        PyPTOLinear(120, 84),
+        nn.Sigmoid(),
+        PyPTOLinear(84, 10)).to(device)
+
+    batch_size = 32
+    train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+    lr, num_epochs = 0.9, 10
+    train_ch6(net, train_iter, test_iter, num_epochs, lr, 'npu:0')
+
+    第5问：
+
+     添加nn.Linear(84, 20),nn.Sigmoid()并将nn.Linear(84, 10)替换
+
+    使用 PyPTO 编程进行验证:
+
+    以下用 PyPTO 模块构建与上方 torch 一致的网络（新增全连接层 Linear(84,20)），验证前向输出形状。
+
+    from torch import nn
+    from src.PyPTOConv2DModule import PyPTOConv2d
+    from src.PyPTOPoolModule import PyPTOMaxPool2d
+    from src.PyPTOLinearFuseModule import PyPTOLinear
+
+    # 添加全连接层 Linear(84,20)
+    net = nn.Sequential(
+        PyPTOConv2d(1, 10, kernel_size=5, padding=2, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(10, 16, kernel_size=5, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(16, 120, kernel_size=5, bias=True, device=device),
+        nn.ReLU(),
+        nn.Flatten(),
+        PyPTOLinear(120 * 3 * 3, 120),
+        nn.Sigmoid(),
+        PyPTOLinear(120, 84),
+        nn.Sigmoid(),
+        PyPTOLinear(84, 20),
+        nn.Sigmoid(),
+        PyPTOLinear(20, 10)).to(device)
+
+    batch_size = 32
+    train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+    lr, num_epochs = 0.9, 10
+    train_ch6(net, train_iter, test_iter, num_epochs, lr, 'npu:0')
+
+    第6问：
+
+     修改为lr, num_epochs = 0.1, 50
+
+    使用 PyPTO 编程进行验证:
+
+    以下用 PyPTO 模块构建与上方 torch 一致的网络（学习率调整为 0.1、训练轮数为 50），进行训练。
+
+    from torch import nn
+    from src.PyPTOConv2DModule import PyPTOConv2d
+    from src.PyPTOPoolModule import PyPTOMaxPool2d
+    from src.PyPTOLinearFuseModule import PyPTOLinear
+
+    # 调整学习率和训练轮数: lr 0.9→0.1, epochs 10→50
+    net = nn.Sequential(
+        PyPTOConv2d(1, 10, kernel_size=5, padding=2, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(10, 16, kernel_size=5, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(16, 120, kernel_size=5, bias=True, device=device),
+        nn.ReLU(),
+        nn.Flatten(),
+        PyPTOLinear(120 * 3 * 3, 120),
+        nn.Sigmoid(),
+        PyPTOLinear(120, 84),
+        nn.Sigmoid(),
+        PyPTOLinear(84, 20),
+        nn.Sigmoid(),
+        PyPTOLinear(20, 10)).to(device)
+
+    batch_size = 32
+    train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+    lr, num_epochs = 0.1, 50
+    train_ch6(net, train_iter, test_iter, num_epochs, lr, 'npu:0')
+
+
+练习 6.6.3
+
+在MNIST数据集上尝试以上改进的网络。
+
+  解答
+
+    使用 PyPTO 编程进行验证:
+
+    from torch import nn
+    from src.PyPTOConv2DModule import PyPTOConv2d
+    from src.PyPTOPoolModule import PyPTOMaxPool2d
+    from src.PyPTOLinearFuseModule import PyPTOLinear
+
+    # 使用 6.6.2 改进后的网络结构 (与 torch 版本一致)
+    net = nn.Sequential(
+        PyPTOConv2d(1, 10, kernel_size=5, padding=2, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(10, 16, kernel_size=5, bias=True, device=device),
+        nn.ReLU(),
+        PyPTOMaxPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(16, 120, kernel_size=5, bias=True, device=device),
+        nn.ReLU(),
+        nn.Flatten(),
+        PyPTOLinear(120 * 3 * 3, 120),
+        nn.Sigmoid(),
+        PyPTOLinear(120, 84),
+        nn.Sigmoid(),
+        PyPTOLinear(84, 20),
+        nn.Sigmoid(),
+        PyPTOLinear(20, 10)).to(device)
+
+    batch_size = 32
+    train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+    lr, num_epochs = 0.1, 50
+    train_ch6(net, train_iter, test_iter, num_epochs, lr, 'npu:0')
+
+练习 6.6.4
+
+显示不同输入（例如毛衣和外套）时，LeNet第一层和第二层的激活值。
+
+  解答
+
+    使用 PyPTO 编程进行验证:
+
+    以下使用 PyPTO 模块构建与上方 torch 一致的 LeNet 前半部分（卷积 + 汇聚），计算第一层和第二层的激活值。
+
+    from torch import nn
+    from src.PyPTOConv2DModule import PyPTOConv2d
+    from src.PyPTOPoolModule import PyPTOAvgPool2d
+
+    # 展示 LeNet 第一层和第二层的激活值 (与 torch 网络结构一致)
+    net = nn.Sequential(
+        PyPTOConv2d(1, 6, kernel_size=5, padding=2),
+        nn.Sigmoid(),
+        PyPTOAvgPool2d(kernel_size=2, stride=2),
+        PyPTOConv2d(6, 16, kernel_size=5),
+        nn.Sigmoid())
+
+    batch_size = 32
+    train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+    X, y = next(iter(train_iter))
+    X = X.to('npu:0')
+
+    activations = []
+    for layer in net:
+        X = layer(X)
+        activations.append(X)
+        print(f'{layer.__class__.__name__} output shape: {X.shape}')
+
+    show_images(activations[0][0, :6].squeeze().detach().cpu(), 2, 3, titles=get_fashion_mnist_labels(y[:6]))
+

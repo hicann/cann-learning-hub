@@ -1,0 +1,124 @@
+汇聚层
+
+练习 6.5.1
+
+尝试将平均汇聚层作为卷积层的特殊情况实现。
+
+  解答
+
+    以下使用 torch 编程进行验证：
+
+    import torch.nn as nn
+    import torch.nn.functional as F
+
+    class Net(nn.Module):
+        def __init__(self):
+            super(Net, self).__init__()
+            self.conv1 = nn.Conv2d(1, 6, 5)
+            self.pool = nn.Conv2d(6, 6, 5)
+            self.conv2 = nn.Conv2d(6, 16, 5)
+            self.fc1 = nn.Linear(16 * 5 * 5, 120)
+            self.fc2 = nn.Linear(120, 84)
+            self.fc3 = nn.Linear(84, 10)
+
+        def forward(self, x):
+            x = F.relu(self.conv1(x))
+            x = F.avg_pool2d(x, (2, 2))
+            x = F.relu(self.conv2(x))
+            x = F.avg_pool2d(x, (2, 2))
+            x = x.view(-1, self.num_flat_features(x))
+            x = F.relu(self.fc1(x))
+            x = F.relu(self.fc2(x))
+            x = self.fc3(x)
+            return x
+
+        def num_flat_features(self, x):
+            size = x.size()[1:]
+            num_features = 1
+            for s in size:
+                num_features *= s
+            return num_features
+
+练习 6.5.2
+
+尝试将最大汇聚层作为卷积层的特殊情况实现。
+
+  解答
+
+    以下使用 torch 编程进行验证：
+
+    import torch.nn as nn
+    import torch.nn.functional as F
+
+    class Net(nn.Module):
+        def __init__(self):
+            super(Net, self).__init__()
+            self.conv1 = nn.Conv2d(1, 6, 5)
+            self.pool = nn.Conv2d(6, 6, 5)
+            self.conv2 = nn.Conv2d(6, 16, 5)
+            self.fc1 = nn.Linear(16 * 5 * 5, 120)
+            self.fc2 = nn.Linear(120, 84)
+            self.fc3 = nn.Linear(84, 10)
+
+        def forward(self, x):
+            x = F.relu(self.conv1(x))
+            x = F.max_pool2d(x, (2, 2))
+            x = F.relu(self.conv2(x))
+            x = F.max_pool2d(x, (2, 2))
+            x = x.view(-1, self.num_flat_features(x))
+            x = F.relu(self.fc1(x))
+            x = F.relu(self.fc2(x))
+            x = self.fc3(x)
+            return x
+
+        def num_flat_features(self, x):
+            size = x.size()[1:]
+            num_features = 1
+            for s in size:
+                num_features *= s
+            return num_features
+
+练习 6.5.3
+
+假设汇聚层的输入大小为 c×h×w ，则汇聚窗口的形状为 ph×pw ，填充为 (ph, pw) ，步幅为 (sh, sw)。这个汇聚层的计算成本是多少？
+
+  解答
+
+    flops=(c × h × w × ph × pw)/(sh × sw)
+
+练习 6.5.4
+
+为什么最大汇聚层和平均汇聚层的工作方式不同？
+
+  解答
+
+    最大池化层和平均池化层的工作方式不同，因为它们使用不同的池化方法。最大池化层将输入张量分成不重叠的区域，并在每个区域中选择最大值。平均池化层将输入张量分成不重叠的区域，并计算每个区域的平均值。这些方法的主要区别在于它们如何处理输入张量中的信息。最大池化层通常用于提取输入张量中的显著特征，而平均池化层通常用于减少输入张量的大小并提高模型的计算效率。
+
+练习 6.5.5
+
+我们是否需要最小汇聚层？可以用已知函数替换它吗？
+
+  解答
+
+    在神经网络中，汇聚层（Pooling Layer）通常用于减少特征图的空间维度，从而减少参数数量并且使网络对于平移变换更加鲁棒。常见的汇聚操作包括最大汇聚和平均汇聚。最小汇聚层并不常见，因为它没有最大汇聚和平均汇聚那样的优点，也不常用于实际的神经网络架构中。因此我们可以不需要最小汇聚层，可以对负值做最大池化操作来进行代替。
+
+    以下使用 torch 编程进行验证：
+
+    import torch.nn.functional as F
+
+    def min_pool2d(x, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False):
+        neg_x = -x
+        neg_min_pool = F.max_pool2d(neg_x, kernel_size, stride=stride, padding=padding, dilation=dilation, ceil_mode=ceil_mode)
+        min_pool = -neg_min_pool
+        return min_pool
+    X = torch.arange(16, dtype=torch.float32).reshape((1, 1 ,4, 4))
+    print(X)
+    print(min_pool2d(X,2))
+
+练习 6.5.6
+
+除了平均汇聚层和最大汇聚层，是否有其它函数可以考虑（提示：回想一下softmax）？为什么它不流行？
+
+  解答
+
+    除了平均汇聚层和最大汇聚层，还有一些其他的池化函数，例如Lp池化和随机池化。Softmax函数通常用于多分类问题，它将每个输出分类的结果赋予一个概率值，表示属于每个类别的可能性。但是，Softmax函数不适用于池化层，因为它会将所有输入数据转换为概率分布，这会导致信息丢失。因此，Softmax函数不流行用于池化层。
