@@ -12,10 +12,10 @@ public:
                                 uint32_t smallTailDataNum, uint32_t bigTailDataNum, 
                                 uint32_t tailBlockNum) 
     {
-        uint32_t coreNum = AscendC::GetBlockIdx();
+        uint32_t blockIdx = AscendC::GetBlockIdx();
         uint32_t globalBufferIndex = bigCoreDataNum * AscendC::GetBlockIdx();
         this->tileDataNum = tileDataNum;
-        if (coreNum < tailBlockNum) { 
+        if (blockIdx < tailBlockNum) { 
           this->coreDataNum = bigCoreDataNum;
           this->tileNum = finalBigTileNum;
           this->tailDataNum = bigTailDataNum;
