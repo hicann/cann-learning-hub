@@ -31,7 +31,7 @@ def generate_keys():
     private_key = key.export_key()
     with open(PRIVATE_KEY_PATH, "wb") as f:
         f.write(private_key)
-
+    os.chmod(PRIVATE_KEY_PATH, 0o600)
     public_key = key.publickey().export_key()
     with open(PUBLIC_KEY_PATH, "wb") as f:
         f.write(public_key)
