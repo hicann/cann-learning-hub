@@ -1,0 +1,83 @@
+填充和步幅
+
+练习 6.3.1
+
+对于本节中的最后一个示例，计算其输出形状，以查看它是否与实验结果一致。
+
+  解答
+
+    out_shape=floor((n_h-k_h+p_h*2+s_h)/s_h) × floor((n_w-k_w+p_w*2+s_w)/s_w).
+
+    示例中 X.shape = [8, 8] ，计算得出 out_shape = [(8-3+0+3)/3, (8-5+2+4)/4] = [2.67, 2.25] ，向下取整，所以为 [2, 2]。
+
+    以下使用 torch 编程进行验证：
+
+    import torch
+    from torch import nn
+
+    def comp_conv2d(conv2d, X):
+        X = X.reshape((1, 1) + X.shape)
+        Y = conv2d(X)
+        return Y.reshape(Y.shape[2:])
+
+    X = torch.rand(size=(8, 8))
+
+    conv2d = nn.Conv2d(1, 1, kernel_size=(3, 5), padding=(0, 1), stride=(3, 4))
+
+    comp_conv2d(conv2d, X).shape
+
+练习 6.3.2
+
+在本节中的实验中，试一试其他填充和步幅组合。
+
+  解答
+
+    下面将举两个其他的填充和步幅组合。
+
+    在padding大小为 [1,2] ，stride大小为 [2,3] 时，输出形状为 [4,3]。
+
+    示例中 X.shape = [8, 8]，计算得出 out_shape = [(8-3+2+2)/2, (8-5+4+3)/3] = [4.5, 3.33] ，向下取整，所以为 [4, 3]。
+
+    以下使用 torch 编程进行验证：
+
+    import torch
+    from torch import nn
+
+    def comp_conv2d(conv2d, X):
+        X = X.reshape((1, 1) + X.shape)
+        Y = conv2d(X)
+        return Y.reshape(Y.shape[2:])
+
+    X = torch.rand(size=(8, 8))
+
+    在padding大小为 [2,3] ，stride大小为 [1,2] 时，输出形状为 [10,5] 。
+
+    示例中 X.shape = [8, 8] ，计算得出 out_shape = [(8-3+4+1)/1, (8-5+6+2)/2] = [10, 5.5] ，向下取整，所以为 [10, 5] 。
+
+    conv2d = nn.Conv2d(1, 1, kernel_size=(3, 5), padding=(1, 2), stride=(2, 3))
+
+    comp_conv2d(conv2d, X).shape
+
+    conv2d = nn.Conv2d(1, 1, kernel_size=(3, 5), padding=(2, 3), stride=(1, 2))
+
+    comp_conv2d(conv2d, X).shape
+
+练习 6.3.3
+
+对于音频信号，步幅2说明什么？
+
+  解答
+
+    对于音频信号而言，步幅为 2 就是以 2 为周期对信号进行采样计算。
+
+练习 6.3.4
+
+步幅大于1的计算优势是什么？
+
+  解答
+
+    1.减少计算量：步幅大于1意味着卷积核在输入特征图（feature map）上的滑动距离更大，因此每次卷积操作涵盖的输入数据更少。这减少了进行卷积操作所需的计算量。
+    2.降低空间维度：使用大步幅会减小输出特征图的空间尺寸。例如，在进行下采样（subsampling）或降维时，较大的步幅可以有效减小输出数据的高度和宽度，这有助于减少后续层的计算负担。
+    3.控制过拟合：通过减少网络中的参数数量和计算量，大步幅有助于控制过拟合。这是因为减少了学习参数，从而降低了模型复杂度。
+    4.增加感受野：较大的步幅可以增加网络层的感受野（即网络层可以观察到的输入数据的区域大小）。这意味着网络可以在较低的空间分辨率下捕捉到更广泛的上下文信息。
+    5.加快网络训练速度：由于计算量的减少和参数数量的降低，使用较大步幅可以加快网络的训练速度，使得模型更快地收敛。

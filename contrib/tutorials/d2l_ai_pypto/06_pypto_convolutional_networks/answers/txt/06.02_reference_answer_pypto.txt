@@ -1,0 +1,197 @@
+图像卷积
+
+练习 6.2.1
+
+构建一个具有对角线边缘的图像X。
+1. 如果将本节中举例的卷积核K应用于X，会发生什么情况？
+2. 如果转置X会发生什么？
+3. 如果转置K会发生什么？
+
+  解答
+
+    第1问：
+
+    在对角线处有分别为 1 和 -1 的数据，其他区域都为 0。
+
+    使用 PyPTO 编程进行验证:
+
+    from src.PyPTOConvPrimitive import PyPTOConv2d
+
+    X = torch.eye(8, dtype=torch.float32, device=device)
+    K = torch.tensor([[1.0, -1.0]], dtype=torch.float32, device=device)
+    conv2d = PyPTOConv2d(in_channels=1, out_channels=1, kernel_size=(1, 2),
+                         bias=False, device=device)
+    conv2d.weight.data = K.reshape(1, 1, 1, 2)
+    X_4d = X.reshape(1, 1, 8, 8)
+    Y = conv2d(X_4d)
+    out = Y.reshape(8, 7)
+    print(out)
+
+    第2问：
+
+    X转置后，结果不变。
+
+    使用 PyPTO 编程进行验证:
+
+    from src.PyPTOConvPrimitive import PyPTOConv2d
+
+    X = torch.eye(8, dtype=torch.float32, device=device)
+    K = torch.tensor([[1.0, -1.0]], dtype=torch.float32, device=device)
+    conv2d = PyPTOConv2d(in_channels=1, out_channels=1, kernel_size=(1, 2),
+                         bias=False, device=device)
+    conv2d.weight.data = K.reshape(1, 1, 1, 2)
+    X_4d = X.T.reshape(1, 1, 8, 8)
+    Y = conv2d(X_4d)
+    out = Y.reshape(8, 7)
+    print(out)
+
+    第3问：
+
+    K转置后，结果也会发生转置。
+
+    使用 PyPTO 编程进行验证:
+
+    from src.PyPTOConvPrimitive import PyPTOConv2d
+
+    X = torch.eye(8, dtype=torch.float32, device=device)
+    K = torch.tensor([[1.0, -1.0]], dtype=torch.float32, device=device)
+    conv2d = PyPTOConv2d(in_channels=1, out_channels=1, kernel_size=(2, 1),
+                         bias=False, device=device)
+    conv2d.weight.data = K.T.reshape(1, 1, 2, 1)
+    X_4d = X.reshape(1, 1, 8, 8)
+    Y = conv2d(X_4d)
+    out = Y.reshape(7, 8)
+    print(out)
+
+练习 6.2.2
+
+在我们创建的Conv2D自动求导时，有什么错误消息？
+
+  解答
+
+    使用 PyPTO 编程进行验证:
+
+    以下使用 notebook 中实现的 PyPTOConv2d（基于 corr2d_kernel + torch.autograd.Function）进行二维卷积验证。该实现不依赖 pypto.conv 算子，通过 pypto.loop + pypto.view + pypto.assemble 完成互相关运算。
+
+    from src.PyPTOConvPrimitive import corr2d, PyPTOConv2d
+
+    X = torch.ones((6, 8), dtype=torch.float32, device=device)
+    X[:, 2:6] = 0
+    K = torch.tensor([[1.0, -1.0]], dtype=torch.float32, device=device)
+    Y = corr2d(X, K)
+
+    # 原始 corr2d 只接受 2D 张量, 传入 4D 会触发错误
+    X_4d = X.reshape((1, 1, 6, 8))
+    try:
+        corr2d(X_4d, K)
+    except Exception as e:
+        print(f'corr2d 4D error: {e}')
+
+    # PyPTOConv2d 原生支持 4D, 不会报错
+    conv2d = PyPTOConv2d(in_channels=1, out_channels=1, kernel_size=(1, 2),
+                         bias=False, device=device)
+    out = conv2d(X_4d)
+    print(f'PyPTOConv2d 4D output: {out.shape}')
+
+    # 用 2D 数据做训练 (与 PyTorch 参考答案一致)
+    conv2d_2d = PyPTOConv2d(in_channels=1, out_channels=1, kernel_size=(1, 2),
+                            bias=False, device=device)
+    lr = 3e-2
+    Y_hat = conv2d_2d(X_4d)
+    Y_4d = Y.reshape(1, 1, 6, 7)
+    for i in range(10):
+        Y_hat = conv2d_2d(X_4d)
+        l = (Y_hat - Y_4d) ** 2
+        conv2d_2d.zero_grad()
+        l.sum().backward()
+        conv2d_2d.weight.data[:] -= lr * conv2d_2d.weight.grad
+        if (i + 1) % 2 == 0:
+            print(f'epoch {i+1}, loss {l.sum():.3f}')
+
+练习 6.2.3
+
+如何通过改变输入张量和卷积核张量，将互相关运算表示为矩阵乘法？
+
+  解答
+
+    题目的意思应该是如何通过矩阵乘法得到互相关（卷积）运算。
+
+    使用 PyPTO 编程进行验证:
+
+    from src.PyPTOConvPrimitive import corr2d
+
+    # PyPTO: 用 pypto.matmul 实现矩阵乘法版互相关
+    # 思路与 PyTorch 的 conv2d_by_mul 一致:
+    # 1. 将输入图像按卷积核大小切分为 patch，展平为行向量，堆叠为矩阵 (im2col)
+    # 2. 将卷积核展平为列向量
+    # 3. matmul(patch_matrix, kernel_vector) = 互相关结果
+
+    @pypto.frontend.jit(runtime_options={"run_mode": mode})
+    def practice_6_2_3_kernel(
+        col_mat: pypto.Tensor([], pypto.DT_FP32),
+        k_vec:   pypto.Tensor([], pypto.DT_FP32),
+        out:     pypto.Tensor([], pypto.DT_FP32),
+    ):
+        pypto.set_cube_tile_shapes([16, 16], [16, 16], [16, 16])
+        res = pypto.matmul(col_mat, k_vec, pypto.DT_FP32)
+        out.move(pypto.reshape(res, [res.shape[0]]))
+
+    X = torch.ones((2, 3), dtype=torch.float32, device=device)
+    X[:, 1] = 0
+    K = torch.ones((2, 3), dtype=torch.float32, device=device)
+
+    h, w = K.shape
+    outh = X.shape[0] - h + 1
+    outw = X.shape[1] - w + 1
+
+    # im2col: 提取所有 patch 并展平为行向量
+    cols = []
+    for i in range(outh):
+        for j in range(outw):
+            cols.append(X[i:i+h, j:j+w].reshape(-1))
+    col_mat = torch.stack(cols, 0)
+
+    # 卷积核展平为列向量
+    k_vec = K.reshape(-1, 1)
+
+    # 用 pypto.matmul 做矩阵乘法
+    out = torch.zeros(outh * outw, dtype=torch.float32, device=device)
+    practice_6_2_3_kernel(col_mat, k_vec, out)
+    print(out.reshape(outh, outw))
+
+    # 验证: 与原始 corr2d 结果一致
+    Y_ref = corr2d(X, K)
+    print(f'corr2d reference: {Y_ref}')
+
+练习 6.2.4
+
+手工设计一些卷积核。
+1. 二阶导数的核的形式是什么？
+2. 积分的核的形式是什么？
+3. 得到d次导数的最小核的大小是多少？
+
+  解答
+
+    第1问：
+
+    一维的二阶导数的核的形式是：
+
+    -1, 2, -1,
+
+    这个一维卷积核可以用于计算信号或函数在每个点的二阶导数。它通过对信号进行两次微分来强调信号的曲率和变化率，通常用于边缘检测和特征检测等任务。
+
+    在二维情况下，可以使用以下卷积核来计算图像的二阶导数：
+
+    0, 1, 0
+    1, -4, 1
+    0, 1, 0
+
+    第2问：
+
+    积分的核的形式是：
+
+    1 1 1 ... 1
+
+    第3问：
+
+    得到 d 次导数的最小核的大小是 d+1。例如，一阶导数的最小核大小为 2，二阶导数的最小核大小为 3，三阶导数的最小核大小为 4，以此类推。
