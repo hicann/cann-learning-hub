@@ -78,48 +78,47 @@ __aicore__ inline void MatmulAllGatherOp<DataType>::Process()
     int64_t n = static_cast<int64_t>(nDim_);
     int64_t k = static_cast<int64_t>(kDim_);
     
-    auto layoutA = AscendC::Te::MakeNDLayout<AType>(m, k);
-    auto layoutB = AscendC::Te::MakeNDLayout<BType>(k, n);
-    auto layoutC = AscendC::Te::MakeNDLayout<CType>(m, n);
-    
-    auto gmA = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ AType*)aGm_), layoutA);
-    auto gmB = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ BType*)bGm_), layoutB);
-    auto gmC = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ CType*)cGm_), layoutC);
-    // auto gmC = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ CType*)mteComm_.localWinDataAddr_), layoutC);
-    
-    SimpleBlockScheduler bs(baseM_, baseN_);
-    bs.UpdateNextProblem(m, n);
-    
-    BlockCoord tileCoord;
-    while (bs.GetTileIdx(tileCoord)) {
-        SimpleBlockScheduler::BlockShape singleShape = bs.GetBlockShape(tileCoord);
-        
-        int64_t tileM = Get<MNK_M>(singleShape);
-        int64_t tileN = Get<MNK_N>(singleShape);
-        
-        if (tileM <= 0 || tileN <= 0) {
-            continue;
-        }
-        
-        int64_t mOffset = Get<MNK_M>(tileCoord) * baseM_;
-        int64_t nOffset = Get<MNK_N>(tileCoord) * baseN_;
-        
-        auto gmBlockA = gmA(AscendC::Te::MakeCoord(mOffset, 0), AscendC::Te::MakeShape(tileM, k));
-        auto gmBlockB = gmB(AscendC::Te::MakeCoord(0, nOffset), AscendC::Te::MakeShape(k, tileN));
-        auto gmBlockC = gmC(AscendC::Te::MakeCoord(mOffset, nOffset), AscendC::Te::MakeShape(tileM, tileN));
-        
-        typename BlockMmadType::BlockShape mmadShape{tileM, tileN, k};
-        mmadOp_(gmBlockA, gmBlockB, gmBlockC, mmadShape);
-    }
-
     if ASCEND_IS_AIC {
+        auto layoutA = AscendC::Te::MakeNDLayout<AType>(m, k);
+        auto layoutB = AscendC::Te::MakeNDLayout<BType>(k, n);
+        auto layoutC = AscendC::Te::MakeNDLayout<CType>(m, n);
+        
+        auto gmA = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ AType*)aGm_), layoutA);
+        auto gmB = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ BType*)bGm_), layoutB);
+        auto gmC = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ CType*)mteComm_.localWinDataAddr_), layoutC);
+        
+        SimpleBlockScheduler bs(baseM_, baseN_);
+        bs.UpdateNextProblem(m, n);
+        
+        BlockCoord tileCoord;
+        while (bs.GetTileIdx(tileCoord)) {
+            SimpleBlockScheduler::BlockShape singleShape = bs.GetBlockShape(tileCoord);
+            
+            int64_t tileM = Get<MNK_M>(singleShape);
+            int64_t tileN = Get<MNK_N>(singleShape);
+            
+            if (tileM <= 0 || tileN <= 0) {
+                continue;
+            }
+            
+            int64_t mOffset = Get<MNK_M>(tileCoord) * baseM_;
+            int64_t nOffset = Get<MNK_N>(tileCoord) * baseN_;
+            
+            auto gmBlockA = gmA(AscendC::Te::MakeCoord(mOffset, 0), AscendC::Te::MakeShape(tileM, k));
+            auto gmBlockB = gmB(AscendC::Te::MakeCoord(0, nOffset), AscendC::Te::MakeShape(k, tileN));
+            auto gmBlockC = gmC(AscendC::Te::MakeCoord(mOffset, nOffset), AscendC::Te::MakeShape(tileM, tileN));
+            
+            typename BlockMmadType::BlockShape mmadShape{tileM, tileN, k};
+            mmadOp_(gmBlockA, gmBlockB, gmBlockC, mmadShape);
+        }
         return;
     }
-    
-    // // AllGather 通信
-    // mteComm_.WriteStatusToWin();
-    // mteComm_.ReadStatus();
-    // mteComm_.CopyDataFromWin(mDim_, nDim_);
+
+    PipeBarrier<PIPE_ALL>();
+
+    mteComm_.WriteStatusToWin();
+    mteComm_.ReadStatus();
+    mteComm_.CopyDataFromWin(mDim_, nDim_);
 }
 
 }
