@@ -7,16 +7,34 @@
 
 | Notebook | Link | 状态 |
 |--|--|--|
-| 2.1 章节介绍 | [在线体验](./02.01_chapter_intro.ipynb) | ✅ 已发布 |
-| 2.2 MoE 架构概述 | [在线体验](./02.02_moe_architexture_overview.ipynb) | ✅ 已发布 |
-| 2.3 并行策略 | [在线体验](./02.03_parallel_strategy.ipynb) | ✅ 已发布 |
-| 2.4 Dispatch/Combine 算子 | [在线体验](./02.04_dispatch_combine_operator.ipynb) | ✅ 已发布 |
-| 2.5 算子逻辑概述 | [在线体验](./02.05_operator_logic_overview.ipynb) | ✅ 已发布 |
-| 2.6 核心流程拆解 | [在线体验](./02.06_dispatch_combine_core_flow.ipynb) | ✅ 已发布 |
-| 2.7 Win 区内存布局 | [在线体验](./02.07_win_memory_layout.ipynb) | ✅ 已发布 |
-| 2.8 Tiling 指南 | [在线体验](./02.08_tiling_guide.ipynb) | ✅ 已发布 |
-| 2.9 Kernel 阶段指南 | [在线体验](./02.09_kernel_stage_guide.ipynb) | ✅ 已发布 |
-| 2.10 量化 Dispatch 实践 | [在线体验](./02.10_quant_dispatch_practice.ipynb) | ✅ 已发布 |
+| 2.1 章节介绍 | - | ✅ 已发布 |
+| 2.2 MoE 架构概述 | - | ✅ 已发布 |
+| 2.3 并行策略 | - | ✅ 已发布 |
+| 2.4 Dispatch/Combine 算子 | - | ✅ 已发布 |
+| 2.5 算子逻辑概述 | - | ✅ 已发布 |
+| 2.6 核心流程拆解 | - | ✅ 已发布 |
+| 2.7 Win 区内存布局 | - | ✅ 已发布 |
+| 2.8 Tiling 指南 | - | ✅ 已发布 |
+| 2.9 Kernel 阶段指南 | - | ✅ 已发布 |
+| 2.10 章节测试 | - | ✅ 已发布 |
+
+## 软硬件配套说明
+
+| 项目 | 要求 |
+| --- | --- |
+| 支持硬件 | Atlas A5 训练/推理系列产品|
+| CANN 版本 | 9.0.0 及以上 |
+| Python | 3.11 |
+
+## 在线体验环境
+
+本教程支持以下在线体验环境：
+
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| CANNLab 950尝鲜体验 | cann_9.0.0_py3.11-A5-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)，并选择对应CANN版本的文档。
 
 
 ## 运行环境与约束
