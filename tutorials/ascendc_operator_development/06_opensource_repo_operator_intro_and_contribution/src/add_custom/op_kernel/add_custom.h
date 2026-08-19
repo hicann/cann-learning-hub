@@ -31,7 +31,7 @@ public:
             Compute(i);
             CopyOut(i);
         }
-        AscendC::printf("Core %d executed %d times in total\n",  AscendC::GetBlockIdx(), loopCount);
+        AscendC::printf("Core %ld executed %d times in total\n",  AscendC::GetBlockIdx(), loopCount);
     }
 
 private:

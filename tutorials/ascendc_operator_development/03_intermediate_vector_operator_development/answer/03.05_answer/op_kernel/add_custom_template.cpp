@@ -33,7 +33,7 @@ public:
             Compute(i);
             CopyOut(i);
         }
-        AscendC::printf("Dtype float32, Core %d executed %d times in total\n",  AscendC::GetBlockIdx(), loopCount);
+        AscendC::printf("Dtype float32, Core %ld executed %d times in total\n",  AscendC::GetBlockIdx(), loopCount);
     }
 
     __aicore__ inline void Process2()
@@ -44,7 +44,7 @@ public:
             Compute2(i);
             CopyOut(i);
         }
-        AscendC::printf("Dtype int8, Core %d executed %d times in total\n",  AscendC::GetBlockIdx(), loopCount);
+        AscendC::printf("Dtype int8, Core %ld executed %d times in total\n",  AscendC::GetBlockIdx(), loopCount);
     }
 
 private:
