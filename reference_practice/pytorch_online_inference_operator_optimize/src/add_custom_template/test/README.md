@@ -1,8 +1,8 @@
 ## 概述
-本样例相比于AclNNInvocation样例工程，简化了工程配置。
+AddCustom算子的aclnn调用代码。
 ## 目录结构介绍
 ```
-├── AclNNInvocationNaive
+├── test
 │   ├── CMakeLists.txt      // 编译规则文件
 │   ├── main.cpp            // 单算子调用应用的入口
 │   └── run.sh              // 编译运行算子的脚本
@@ -26,7 +26,7 @@
   - 进入到样例目录   
     以命令行方式下载样例代码，master分支为例。
     ```bash
-    cd ${git_clone_path}/samples/operator/ascendc/tutorials/AddCustomSample/FrameworkLaunch/AclNNInvocationNaive
+    cd ${git_clone_path}/reference_practice/pytorch_online_inference_operator_optimize/src/add_custom_template/test
     ```
   - 样例编译文件修改
 
