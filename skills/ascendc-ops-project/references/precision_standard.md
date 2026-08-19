@@ -72,7 +72,9 @@ bool compare_result(const std::vector<T>& output, const std::vector<T>& expected
                    float rtol = 1e-3, float atol = 1e-3) {
     float mere_sum = 0.0f;
     float mare_max = 0.0f;
-    
+    if (output.size() != expected.size()) {
+        return false;
+    }
     for (size_t i = 0; i < output.size(); i++) {
         float diff = std::abs((float)output[i] - (float)expected[i]);
         float rel_error = diff / (std::abs((float)expected[i]) + 1e-7f);
