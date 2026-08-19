@@ -3,7 +3,7 @@
 
 __global__ __vector__ void hi_ascend()
 {
-    AscendC::printf("[Block (%lu/%lu)]: Hi Ascend\n", AscendC::GetBlockIdx(), AscendC::GetBlockNum());
+    AscendC::printf("[Block (%ld/%ld)]: Hi Ascend\n", AscendC::GetBlockIdx(), AscendC::GetBlockNum());
 }
 
 int32_t main(int argc, char const *argv[])
