@@ -90,7 +90,7 @@ class CANNJudgeClient:
         # 保存 zip 文件
         if output_dir is None:
             output_dir = tempfile.mkdtemp()
-        
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
         zip_path = os.path.join(output_dir, "project.zip")
         with open(zip_path, "wb") as f:
             f.write(resp.content)
