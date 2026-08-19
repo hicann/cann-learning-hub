@@ -3,19 +3,18 @@
 
 ## 目录结构介绍
 ```
-├── build_and_run.sh                // 自定义算子wheel包编译安装并执行用例的脚本
-├── csrc                            // 算子适配层c++代码目录
-│   ├── add_custom.cpp              // 自定义算子正反向适配代码以及绑定
-│   ├── function.h                  // 正反向接口头文件
-│   ├── pytorch_npu_helper.hpp      // 自定义算子调用和下发框架
-│   └── registration.cpp            // 自定义算子aten ir注册文件
-├── custom_ops                      // 自定义算子包python侧代码
-│   ├── add_custom.py               // 提供自定义算子python调用接口
-│   └── __init__.py                 // python初始化文件
-├── setup.py                        // wheel包编译文件
-└── test                            // 测试用例目录
-    ├── test_add_custom_graph.py    // 执行torch.compile模式下用例脚本
-    └── test_add_custom.py          // 执行eager模式下算子用例脚本
+add_custom_template_pytorch/
+├── README.md
+├── build_and_run.sh
+├── setup.py
+├── csrc
+│   ├── add_custom.cpp
+│   ├── function.h
+│   ├── pytorch_npu_helper.hpp
+│   └── registration.cpp
+└── custom_ops
+    ├── __init__.py
+    └── add_custom.py
 ```
 
 ## 样例脚本build_and_run.sh关键步骤解析
@@ -68,7 +67,7 @@
 
     以命令行方式下载样例代码，master分支为例。
     ```bash
-    cd ${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch/CppExtensionInvocation
+    cd ${git_clone_path}/reference_practice/pytorch_online_inference_operator_optimize/src/add_custom_template_pytorch_extension
     ```
 
   - 样例执行
