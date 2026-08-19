@@ -49,7 +49,7 @@ cann-learning-hub 是[CANN](https://hiascend.com/software/cann) （Compute Archi
 <tr><td>大模型推理系列（高级）</td><td></td><td></td><td>🚧 建设中</td></tr>
   <tr><td><a href="./reference_practice/model_inference_optimization/sana_video">多模态大模型推理</a></td><td>Sana-Video 推理优化实践</td><td>在<a href="./docs/CANNLab_env_experience_guide.md">CANNLab</a>中运行</td><td>✅ 已上线</td></tr>
 <tr><th colspan="4" align="left">🏋️ 大模型训练场景（从入门到精通）</th></tr>
-<tr><td><a href="https://gitcode.com/cann/cann-learning-hub/tree/test/tutorials/training_pipeline">大模型训练系列（初级）</a></td><td>训练基础原理、昇腾 NPU 特性、入门训练实战</td><td>在<a href="./docs/CANNLab_env_experience_guide.md">CANNLab</a>中运行</td><td>✅ 已发布</td></tr>
+<tr><td>大模型训练系列（初级）</td><td>训练基础原理、昇腾 NPU 特性、入门训练实战</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>大模型训练系列（中级）</td><td>性能分析、CANN 图优化、显存优化、基础调优</td><td></td><td>🚧 建设中</td></tr>
 <tr><td>大模型训练系列（高级）</td><td>核心算子优化、分布式训练、通信优化、端到端优化落地</td><td></td><td>🚧 建设中</td></tr>
 <tr><th colspan="4" align="left">⚙️ 算子开发场景（从入门到精通）</th></tr>
