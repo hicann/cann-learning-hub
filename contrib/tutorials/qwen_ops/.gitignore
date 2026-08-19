@@ -1,0 +1,10 @@
+**/build/
+**/out/
+**/__pycache__/
+**/*.py[cod]
+**/*.o
+**/*.so
+**/*.a
+**/*.log
+**/output/profile*/
+**/results/latest.json
