@@ -47,28 +47,28 @@
 
 ### 3.1 进入 CANNLab 入口
 
-打开 [cann-learning-hub](https://gitcode.com/cann/cann-learning-hub) 仓库页面，将鼠标移至 **CANNLab** 图标，在弹出选项中选择 **云开发**，使用华为云账号登录并进入开发者空间。
+进入 CANN 开源组织 https://gitcode.com/cann
+点击导航栏中的 **CANNLab**页签后，正式进入 CANNLab 主页。
 
-<img src="./images/CANNLab_course_development_guide/CANNLab.png">
+<img src="./images/CANNLab_course_development_guide/cannlab_entry.png">
 
-<img src="./images/CANNLab_course_development_guide/CANNLab2.png" alt="CANNLab2" width="250px">
 
 > CANNLab 提供两类环境：**云开发环境**（可申请 A2/A3）与 **950 尝鲜体验环境**（可申请 A5）。请根据课程支持的目标硬件选择对应环境。本指南以云开发环境为例。
 
 ### 3.2 创建 NPU 环境
 
-进入页面后点击 **创建** 按钮：
+左侧导航栏切换到**我的环境**，点击**新建环境**可创建 NPU环境
 
-<img src="./images/CANNLab_course_development_guide/create.png">
+<img src="./images/CANNLab_course_development_guide/create_env.png">
 
 按课程目标硬件选择规格配置（以 A2 为例）：
 
-<img src="./images/CANNLab_course_development_guide/select_npu_env.png" alt="select_npu_env" width="500px">
+<img src="./images/CANNLab_course_development_guide/select_env.png" >
 
 
-点击 **创建** 后，点击 **开机** 启动环境：
+环境创建完成后，NPU 环境会自动启动，可以在我的环境页面进行开机/关机/连接/CANN包升级/删除操作。
 
-<img src="./images/CANNLab_course_development_guide/start.png">
+<img src="./images/CANNLab_course_development_guide/env_running.png">
 
 > 注意：如果开机时提示资源不足，说明当前时间段使用人数较多，可稍后再尝试。
 
@@ -76,7 +76,7 @@
 
 环境开机后，点击 **WebIDE** 进入环境（也支持 VS Code 连接）：
 
-<img src="./images/CANNLab_course_development_guide/webIDE.png">
+<img src="./images/CANNLab_course_development_guide/webide_entry.png">
 
 进入后界面类似 VS Code，支持源代码管理、扩展安装、终端等操作：
 
@@ -334,9 +334,18 @@ EOF
 
 ---
 
-## 8. 发起 PR
+## 8. PR 提交与准入自检
 
-### 8.1 发起 PR
+### 8.1 提交前自检
+
+提 PR 前，请完成以下自检工作，确保课程达到可对外展示的发布级水准：
+
+1. **AI 低错检查**：使用 AI 工具检查拼写、格式、语法、链接等低级错误。
+2. **Checklist 自检**：逐项对照 [PR 准入 Checklist](./course_submission_criteria.md#5-pr准入checklist) 完成自检，全部通过后方可发起 PR。
+3. **在线体验环境验证**：在课程支持的在线体验环境中完整执行所有 Notebook，确保运行正确、无报错。
+4. **同步主 README**：更新仓库根目录 README 中的课程简介、学习人群、硬件产品、环境配置、章节目录等信息。
+
+### 8.2 发起 PR
 
 1. 在 GitCode 上进入个人 fork 仓库页面，切换到 `test` 分支。
 2. 点击 **发起 Pull Request**。
@@ -348,26 +357,34 @@ EOF
    - **类型标签**：勾选 **新特性** 或对应类型。
 5. 提交 PR。
 
-### 8.2 PR 准入自检
+---
 
-提交 PR 前请对照 [PR 准入 Checklist](./course_submission_criteria.md#6-pr-准入-checklist) 完成自检，重点关注：
+## 9. 课程上线流程
 
-- 课程目录位置、命名规范是否合规。
-- 主 README 是否包含硬件型号与在线体验环境说明。
-- 每个章节是否包含章节概述、章节实践、answer/images/src 目录。
-- 所有练习/实践是否提供答案。
-- 所有 Notebook 是否完成运行验证。
-- 是否不含二进制文件（README 配图除外）。
+课程从开发到正式发布，按照"设计开发 → 合入 test 分支 → 优化打磨 → 合入 master 分支"四个阶段推进。完整流程共 8 个步骤，各步骤的核心任务、责任方和验收关注点详见 [新课程上库与上线验收标准](./course_submission_criteria.md#1-新教程的上线流程)。
+
+简要流程如下：
+
+| 阶段 | 步骤 | 核心任务 | 责任方 |
+| --- | --- | --- | --- |
+| 设计开发 | 1. 课程大纲设计与评审 | 设计课程大纲并完成内部分层评审 | 课程组 |
+| | 2. 课程内容开发与验证 | 开发教程内容并本地验证通过 | 课程组 |
+| 合入 test | 3. 提 PR 到 test 分支 | 完成质量自检后提 PR | 课程组 |
+| | 4. 合入 test 分支 | 审核内容质量与低错，通过后合入 | 课程组长、Committer |
+| 优化打磨 | 5. 内测（持续打磨） | 在 test 分支上持续完善课程内容 | 课程组 |
+| 合入 master | 6. 提 PR 到 master 分支 | 选择性合并 test 分支内容到 master | 课程组 |
+| | 7. 公测（体验 & 评审） | 评审团队在线体验并评论，课程组逐条闭环 | 评审团队、Committer、课程组 |
+| | 8. 上线 master 分支 | Committer 审核通过，合入 master 并发布 | Committer |
+
+> **test → master 合并操作指引**：步骤 6 中如何选择性合并 test 分支内容到 master 分支，详见 [附录二：test → master 选择性合并操作指引](./course_submission_criteria.md#附录二test--master-选择性合并操作指引)。
 
 ---
 
-## 9. 响应评审与迭代修改
+## 10. 响应评审与迭代修改
 
-### 9.1 查看评审意见
+### 10.1 test 分支评审（步骤 3-4）
 
-PR 提交后，课程组组长与 committer 会依据准合入 Checklist 进行评审。评审意见会在 PR 评论中给出。
-
-### 9.2 在开发环境中修改
+PR 提交后，课程组组长与 Committer 会依据准入 Checklist 进行评审。评审意见会在 PR 评论中给出。
 
 如需修改，在原开发环境（CANNLab 云开发环境）中继续开发。若使用 CANNLab 环境，环境关机后重新开机并进入即可，代码已保存在 fork 仓库。拉取最新代码：
 
@@ -387,19 +404,17 @@ git push origin test
 
 推送后 PR 会自动更新，在 PR 评论中回复评审意见并说明修改情况。
 
-### 9.3 合入流程
+### 10.2 master 分支公测（步骤 7-8）
 
-- PR 评审通过后合入 `test` 分支。
-- 在 `test` 分支组织内测，评审团队体验课程并提 Issue 闭环问题。
-- 内测问题闭环后，由 Maintainer 合入 `master` 分支对外发布。
+课程合入 master 分支后，评审团队在线体验并评论，Committer 执行验证。如需修改，流程与 10.1 相同，在开发环境中修改后推送到 master 分支即可。
 
 ---
 
-## 10. 常见问题
+## 11. 常见问题
 
 **Q1：课程应该提交到 `test` 分支还是 `master` 分支？**
 
-所有课程 PR 统一提交到 `test` 分支，经内测闭环后再由 Maintainer 合入 `master`。
+所有课程 PR 统一提交到 `test` 分支，经内测闭环后再由课程组提 PR 合入 `master`。具体流程见 [课程上线流程](./course_submission_criteria.md#1-新教程的上线流程)。
 
 **Q2：如何选择 CANNLab 环境规格？**
 
@@ -407,7 +422,7 @@ git push origin test
 
 **Q3：环境关机后代码会丢失吗？**
 
-已 commit 并 push 到 fork 仓库的代码不会丢失。CANNLab环境关机仅释放计算资源，重新开机后可继续开发；但未提交的本地修改需重新创建，建议频繁提交并 push。
+已 commit 并 push 到 fork 仓库的代码不会丢失。CANNLab 环境关机仅释放计算资源，重新开机后可继续开发；但未提交的本地修改需重新创建，建议频繁提交并 push。
 
 **Q4：课程中需要使用第三方数据集怎么办？**
 
@@ -415,10 +430,10 @@ git push origin test
 
 ---
 
-## 11. 相关文档
+## 12. 相关文档
 
 | 文档 | 说明 |
 | --- | --- |
 | [贡献指南](../CONTRIBUTION.md) | 项目整体贡献流程与要求。 |
-| [新课程上库与上线验收标准](./course_submission_criteria.md) | 课程目录结构、Notebook 内容、运行验证等准入要求与 PR Checklist。 |
+| [新课程上库与上线验收标准](./course_submission_criteria.md) | 课程上线流程、目录结构规范、PR 准入 Checklist、test → master 合并操作指引等。 |
 | [CANNLab 环境体验指南](./CANNLab_env_experience_guide.md) | CANNLab 云开发环境的体验流程（面向学习者）。 |
