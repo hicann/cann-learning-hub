@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="340" viewBox="0 0 1000 340">
+  <defs>
+    <linearGradient id="gm" x1="0" x2="1"><stop stop-color="#eaf2ff"/><stop offset="1" stop-color="#d7e6ff"/></linearGradient>
+    <linearGradient id="ub" x1="0" x2="1"><stop stop-color="#ecfff4"/><stop offset="1" stop-color="#d4f5e3"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#344054"/></marker>
+    <style>
+      text{font-family:Arial,"Microsoft YaHei",sans-serif;fill:#172b4d} .title{font-size:22px;font-weight:700}
+      .label{font-size:17px;font-weight:600}.small{font-size:14px}.box{stroke:#4c6fff;stroke-width:2;rx:14}
+      .arrow{stroke:#344054;stroke-width:2.5;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1000" height="340" fill="#ffffff"/>
+  <text x="500" y="34" text-anchor="middle" class="title">VectorAdd 单个 Tile 的数据通路</text>
+
+  <rect x="35" y="70" width="190" height="220" fill="url(#gm)" class="box"/>
+  <text x="130" y="100" text-anchor="middle" class="label">Global Memory（GM）</text>
+  <rect x="65" y="125" width="130" height="48" rx="10" fill="#fff" stroke="#4c6fff"/>
+  <text x="130" y="155" text-anchor="middle" class="label">xGm</text>
+  <rect x="65" y="198" width="130" height="48" rx="10" fill="#fff" stroke="#4c6fff"/>
+  <text x="130" y="228" text-anchor="middle" class="label">yGm</text>
+
+  <rect x="325" y="70" width="350" height="220" fill="url(#ub)" class="box" style="stroke:#24a148"/>
+  <text x="500" y="100" text-anchor="middle" class="label">Local Memory（UB，由 TQue 管理）</text>
+  <rect x="355" y="125" width="115" height="48" rx="10" fill="#fff" stroke="#24a148"/>
+  <text x="412" y="155" text-anchor="middle" class="small">xLocal</text>
+  <rect x="355" y="198" width="115" height="48" rx="10" fill="#fff" stroke="#24a148"/>
+  <text x="412" y="228" text-anchor="middle" class="small">yLocal</text>
+  <circle cx="555" cy="185" r="54" fill="#fff7e6" stroke="#f59e0b" stroke-width="2"/>
+  <text x="555" y="178" text-anchor="middle" class="label">Vector</text>
+  <text x="555" y="201" text-anchor="middle" class="label">向量加法</text>
+  <rect x="600" y="160" width="65" height="50" rx="9" fill="#fff" stroke="#24a148"/>
+  <text x="632" y="190" text-anchor="middle" class="small">zLocal</text>
+
+  <rect x="775" y="70" width="190" height="220" fill="url(#gm)" class="box"/>
+  <text x="870" y="100" text-anchor="middle" class="label">Global Memory（GM）</text>
+  <rect x="805" y="160" width="130" height="50" rx="10" fill="#fff" stroke="#4c6fff"/>
+  <text x="870" y="191" text-anchor="middle" class="label">zGm</text>
+
+  <path d="M195 149 C260 149 280 149 355 149" class="arrow"/>
+  <path d="M195 222 C260 222 280 222 355 222" class="arrow"/>
+  <text x="275" y="137" text-anchor="middle" class="small">CopyIn：GM → UB</text>
+  <path d="M470 149 C500 149 505 160 515 170" class="arrow"/>
+  <path d="M470 222 C500 222 505 210 515 200" class="arrow"/>
+  <path d="M665 185 L805 185" class="arrow"/>
+  <text x="725" y="173" text-anchor="middle" class="small">CopyOut：UB → GM</text>
+  <text x="500" y="320" text-anchor="middle" class="small">每个逻辑 Block 处理互不重叠的数据段；Process 每轮处理一个真实 GM Tile</text>
+</svg>

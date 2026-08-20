@@ -1,0 +1,42 @@
+{
+  "valid": [
+    {"length": 8192, "block_dim": 8, "tile_count": 1, "seed": 3},
+    {"length": 16384, "block_dim": 8, "tile_count": 2, "seed": 5},
+    {"length": 28672, "block_dim": 4, "tile_count": 7, "seed": 7},
+    {"length": 1048576, "block_dim": 8, "tile_count": 64, "seed": 19}
+  ],
+  "invalid": [
+    {
+      "length": 16385,
+      "block_dim": 8,
+      "tile_count": 8,
+      "expected_exit_code": 2,
+      "expected_error": "length must be divisible by blockDim",
+      "reason": "length is not divisible by block_dim"
+    },
+    {
+      "length": 16384,
+      "block_dim": 8,
+      "tile_count": 7,
+      "expected_exit_code": 2,
+      "expected_error": "block length must be divisible by tileCount",
+      "reason": "per-block length is not divisible by tile_count"
+    },
+    {
+      "length": 8200,
+      "block_dim": 8,
+      "tile_count": 1,
+      "expected_exit_code": 2,
+      "expected_error": "each DataCopy length must be 32-byte aligned",
+      "reason": "tile transfer size is not 32-byte aligned"
+    },
+    {
+      "length": 1048576,
+      "block_dim": 8,
+      "tile_count": 1,
+      "expected_exit_code": 2,
+      "expected_error": "queue allocation exceeds 192 KiB UB budget",
+      "reason": "three double-buffered queues exceed the per-block UB budget"
+    }
+  ]
+}

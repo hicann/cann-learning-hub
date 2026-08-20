@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="360" viewBox="0 0 1120 360">
+  <style>
+    .title { font: 700 24px sans-serif; fill: #1f2937; }
+    .label { font: 600 18px sans-serif; fill: #111827; }
+    .small { font: 15px sans-serif; fill: #374151; }
+    .box { stroke: #2563eb; stroke-width: 2; rx: 12; }
+    .arrow { stroke: #4b5563; stroke-width: 2.5; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#4b5563"/>
+    </marker>
+  </defs>
+  <text x="40" y="42" class="title">TQue 管理的 Tile 生命周期</text>
+  <rect x="40" y="105" width="150" height="80" class="box" fill="#dbeafe"/>
+  <text x="115" y="138" text-anchor="middle" class="label">AllocTensor</text>
+  <text x="115" y="164" text-anchor="middle" class="small">取得空闲槽位</text>
+  <rect x="245" y="105" width="150" height="80" class="box" fill="#e0f2fe"/>
+  <text x="320" y="138" text-anchor="middle" class="label">DataCopy</text>
+  <text x="320" y="164" text-anchor="middle" class="small">GM → UB</text>
+  <rect x="450" y="105" width="150" height="80" class="box" fill="#dcfce7"/>
+  <text x="525" y="138" text-anchor="middle" class="label">EnQue</text>
+  <text x="525" y="164" text-anchor="middle" class="small">发布就绪 Tensor</text>
+  <rect x="655" y="105" width="150" height="80" class="box" fill="#fef3c7"/>
+  <text x="730" y="138" text-anchor="middle" class="label">DeQue</text>
+  <text x="730" y="164" text-anchor="middle" class="small">等待并取得 Tensor</text>
+  <rect x="860" y="105" width="150" height="80" class="box" fill="#fee2e2"/>
+  <text x="935" y="138" text-anchor="middle" class="label">FreeTensor</text>
+  <text x="935" y="164" text-anchor="middle" class="small">消费后释放槽位</text>
+  <line x1="190" y1="145" x2="240" y2="145" class="arrow"/>
+  <line x1="395" y1="145" x2="445" y2="145" class="arrow"/>
+  <line x1="600" y1="145" x2="650" y2="145" class="arrow"/>
+  <line x1="805" y1="145" x2="855" y2="145" class="arrow"/>
+  <rect x="40" y="245" width="970" height="70" rx="12" fill="#f3f4f6" stroke="#9ca3af"/>
+  <text x="65" y="275" class="label">关键区别：</text>
+  <text x="190" y="275" class="small">TQue 模板 depth 描述队列抽象；InitBuffer 的 num 描述物理 Buffer 数量。</text>
+  <text x="190" y="299" class="small">实验 3 固定 depth=1，通过 num=1/2 比较单缓冲与双缓冲。</text>
+</svg>
