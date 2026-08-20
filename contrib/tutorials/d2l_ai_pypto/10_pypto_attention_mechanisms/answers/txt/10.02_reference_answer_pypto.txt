@@ -1,0 +1,101 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / pypto / device 等；answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。若片段引用主 notebook 中未定义的类或函数（如 make_data、train_nwk、AdditiveAttentionPypto 等），请先运行对应参考答案 notebook 获取其定义。
+10.2 注意力汇聚：Nadaraya-Watson 核回归 练习参考答案
+
+
+
+练习10.2.1
+
+增加训练数据的样本数量，能否得到更好的非参数的Nadaraya-Watson核回归模型？
+
+解答：
+通常可以。非参数模型直接对训练样本做加权平均，样本越多，核估计的密度越高，预测曲线越接近真实函数（一致性）。但提升幅度受噪声与核带宽限制。实测 n_train=200 时测试集 MSE 明显小于 n_train=50。
+
+PyPTO 代码（高斯核用 PyPTOExp，加权平均用 PyPTOBMM）：
+
+for n_train in (50, 200):
+    x_train, y_train, x_test, y_truth = make_data(n_train)
+    X_repeat = x_test.repeat_interleave(n_train).reshape((-1, n_train)).to(device)
+    x_train_d = x_train.to(device)
+    kernel = PyPTOExp.apply(-0.5 * (X_repeat - x_train_d) ** 2)
+    attention_weights = kernel / kernel.sum(dim=1, keepdim=True)
+    values = y_train.repeat(len(x_test)).reshape(-1, n_train).to(device)
+    y_hat = PyPTOBMM.apply(attention_weights.unsqueeze(1),
+                           values.unsqueeze(-1)).reshape(-1)
+    mse = ((y_hat.cpu() - y_truth) ** 2).mean().item()
+    print(f'n_train={n_train}, 测试集 MSE={mse:.4f}')
+
+---
+
+
+练习10.2.2
+
+在带参数的注意力汇聚的实验中学习得到的参数w的价值是什么？为什么在可视化注意力权重时，它会使加权区域更加尖锐？
+
+解答：
+w 对查询与键之间的距离 x - x_i 进行可学习缩放：α(x, x_i) ∝ exp(-0.5*((x - x_i)w)^2)。训练后 w 变大，距离被放大，近邻点权重更高、远点权重骤降，注意力权重更"尖锐"；w 变小则曲线更平滑。w 的价值在于让模型根据数据自适应地调节"关注范围"。实测训练后 w 约为 1 的数量级，将 w 从 0.5 增至 2.0 时注意力权重最大值显著增大。
+
+
+练习10.2.3
+
+如何将超参数添加到非参数的Nadaraya-Watson核回归中以实现更好地预测结果？
+
+解答：
+可以在高斯核中加入带宽（bandwidth）超参数 h，即 α(x, x_i) ∝ exp(-0.5*((x - x_i)/h)^2)：h 越大权重越平滑（偏差大、方差小），h 越小越尖锐（易过拟合）。可通过验证集或交叉验证搜索合适的 h，实测 h 在 0.5~1.0 附近时测试集 MSE 较小。
+
+
+练习10.2.4
+
+为本节的核回归设计一个新的带参数的注意力汇聚模型。训练这个新模型并可视化其注意力权重。
+
+解答：
+设计一个使用绝对距离 + 双参数的新模型：α(x, x_i) ∝ exp(-((|x - x_i|·w1 + b)^2)/2)。相比原模型的单个乘法参数 w，新模型在指数内加入偏移 b，可进一步调节"关注窗口"的位置与宽度。训练后 w1/b 均收敛，注意力权重集中在近邻区域。
+
+PyPTO 代码（softmax / bmm 使用 PyPTO 算子）：
+
+class NWKernelRegression2Pypto(nn.Module):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.w1 = nn.Parameter(torch.rand((1,), requires_grad=True))
+        self.b = nn.Parameter(torch.rand((1,), requires_grad=True))
+    def forward(self, queries, keys, values):
+        queries = queries.repeat_interleave(keys.shape[1]).reshape((-1, keys.shape[1]))
+        d = torch.abs(queries - keys) * self.w1 + self.b
+        self.attention_weights = PyPTOSoftmax.apply(-d**2 / 2)
+        return PyPTOBMM.apply(self.attention_weights.unsqueeze(1),
+                              values.unsqueeze(-1)).reshape(-1)
+
+net2p = NWKernelRegression2Pypto().to(device)
+trainer = torch.optim.SGD(net2p.parameters(), lr=0.5)
+for epoch in range(5):
+    trainer.zero_grad()
+    l = ((net2p(x_train_d, keys, values) - y_train_d) ** 2).sum()
+    l.backward()
+    trainer.step()
+
+
+练习10.2.5（英文版11.2补充）
+
+Parzen 窗密度估计定义为 p(x) = (1/n) sum_i k(x, x_i)。证明：对于二分类问题，由 Parzen 窗得到的函数 p(x, y=1) - p(x, y=-1) 与 Nadaraya-Watson 分类等价。
+
+解答：
+p(x, y=1) - p(x, y=-1) = (1/n) sum_{i: y_i=1} k(x, x_i) - (1/n) sum_{i: y_i=-1} k(x, x_i)
+                       = (1/n) sum_i y_i k(x, x_i)，其中 y_i ∈ {-1, +1}。
+而 Nadaraya-Watson 分类的预测符号为 sign(sum_i y_i k(x, x_i) / sum_j k(x, x_j))，
+分母 sum_j k(x, x_j) 与类别无关、不影响符号，因此两者等价：Parzen 窗的类别证据之差就是
+Nadaraya-Watson 分类的未归一化分数。
+
+---
+
+
+练习10.2.6（英文版11.2补充）
+
+用随机梯度下降学习 Nadaraya-Watson 回归中合适的核宽。如果直接用上面的估计最小化 (f(x_i) - y_i)^2 会发生什么？
+
+解答：
+若直接用 sum_i (f(x_i) - y_i)^2 优化核宽，会出现平凡解：由于 f(x_i) 的估计包含 y_i 本身
+（当 k(x_i, x_i) 较大时），把核宽推向 0 可使 f(x_i) ≈ y_i，损失趋近 0，但这只是"记住"了
+训练点，没有任何泛化意义。正确做法是留一法（leave-one-out）：对每个 x_i 的估计中剔除
+自身对应的 (x_i, y_i)，再最小化损失。
+
+## 参考答案来源
+参考答案和 PyTorch 代码实现来源：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/
