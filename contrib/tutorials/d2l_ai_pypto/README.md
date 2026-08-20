@@ -45,19 +45,19 @@ d2l_ai_pypto/
 
 ## 课程目录
 
-| 章节 | 标题 | Link | 状态 |
-|--|--|--|--|
-| 第1章 | pypto 快速开始 | [在线阅读](./01_pypto_quick_start/README.md) | ✅ 已发布 |
-| 第2章 | 预备知识（数据操作、线性代数、自动微分、概率） | [在线阅读](./02_pypto_preliminaries/README.md) | ✅ 已发布 |
-| 第3章 | 线性神经网络（线性回归、softmax 回归） | [在线阅读](./03_pypto_linear_networks/README.md) | ✅ 已发布 |
-| 第4章 | 多层感知机（MLP、激活函数、正则化） | [在线阅读](./04_pypto_multilayer_perceptrons/README.md) | ✅ 已发布 |
-| 第5章 | 深度学习计算（层与块、参数管理、自定义层） | [在线阅读](./05_pypto_deep_learning_computation/README.md) | ✅ 已发布 |
-| 第6章 | 卷积神经网络（卷积、填充、步幅、池化、LeNet） | [在线阅读](./06_pypto_convolutional_networks/README.md) | ✅ 已发布 |
-| 第7章 | 现代卷积神经网络（AlexNet、VGG、ResNet、DenseNet） | - | 🚧 编写中 |
-| 第8章 | 循环神经网络（RNN、语言模型） | [在线阅读](./08_pypto_recurrent_neural_networks/README.md) | ✅ 已发布 |
-| 第9章 | 现代循环神经网络（GRU、LSTM、Seq2Seq） | [在线阅读](./09_pypto_modern_recurrent_neural_networks/README.md) | ✅ 已发布 |
-| 第10章 | 注意力机制（多头注意力、Transformer） | - | 🚧 编写中 |
-| 第11章 | 优化算法（SGD、动量法、Adam） | [在线阅读](./11_pypto_optimization/README.md) | ✅ 已发布 |
-| 第12章 | 计算机视觉（图像增广、目标检测、语义分割） | - | 🚧 规划中 |
-| 第13章 | 自然语言处理（词嵌入、BERT、情感分析） | - | 🚧 规划中 |
-
+| 章节   | 标题                                    | Link | 状态 |
+|------|---------------------------------------|--|--|
+| 第1章  | pypto 快速开始                            | [在线阅读](./01_pypto_quick_start/README.md) | ✅ 已发布 |
+| 第2章  | 预备知识（数据操作、线性代数、自动微分、概率）               | [在线阅读](./02_pypto_preliminaries/README.md) | ✅ 已发布 |
+| 第3章  | 线性神经网络（线性回归、softmax 回归）               | [在线阅读](./03_pypto_linear_networks/README.md) | ✅ 已发布 |
+| 第4章  | 多层感知机（MLP、激活函数、正则化）                   | [在线阅读](./04_pypto_multilayer_perceptrons/README.md) | ✅ 已发布 |
+| 第5章  | 深度学习计算（层与块、参数管理、自定义层）                 | [在线阅读](./05_pypto_deep_learning_computation/README.md) | ✅ 已发布 |
+| 第6章  | 卷积神经网络（卷积、填充、步幅、池化、LeNet）             | [在线阅读](./06_pypto_convolutional_networks/README.md) | ✅ 已发布 |
+| 第7章  | 现代卷积神经网络（AlexNet、VGG、ResNet、DenseNet） | - | 🚧 编写中 |
+| 第8章  | 循环神经网络（RNN、语言模型）                      | [在线阅读](./08_pypto_recurrent_neural_networks/README.md) | ✅ 已发布 |
+| 第9章  | 现代循环神经网络（GRU、LSTM、Seq2Seq）            | [在线阅读](./09_pypto_modern_recurrent_neural_networks/README.md) | ✅ 已发布 |
+| 第10章 | 注意力机制（多头注意力、Transformer）              | [在线阅读](./10_pypto_attention_mechanisms/README.md) | ✅ 已发布 |
+| 第11章 | 优化算法（SGD、动量法、Adam）                    | [在线阅读](./11_pypto_optimization/README.md) | ✅ 已发布 |
+| 第12章 | 计算机视觉（图像增广、目标检测、语义分割）                 | - | 🚧 编写中 |
+| 第13章 | 自然语言处理：预训练（词嵌入、BERT）                  | - | 🚧 编写中 |
+| 第14章 | 自然语言处理：应用（情感分析、自然语言推断）                | - | 🚧 编写中 |
