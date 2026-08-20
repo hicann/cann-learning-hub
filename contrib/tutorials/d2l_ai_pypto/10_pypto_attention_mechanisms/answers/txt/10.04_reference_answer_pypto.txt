@@ -1,0 +1,60 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / pypto / device 等；answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。若片段引用主 notebook 中未定义的类或函数（如 make_data、train_nwk、AdditiveAttentionPypto 等），请先运行对应参考答案 notebook 获取其定义。
+10.4 Bahdanau 注意力 练习参考答案
+
+
+
+练习10.4.1
+
+在实验中用LSTM替换GRU。
+
+解答：
+LSTM 与 GRU 的替换点有两个：
+1. 编码器：nn.GRU → nn.LSTM（状态变为 (H, C) 二元组）；
+2. 解码器：nn.GRU → nn.LSTM，同时解码器状态从 hidden_state（单张量）变为 (H_stack, C_stack) 二元组，查询需要取 H_stack[-1]，RNN 调用与状态更新都要相应解包/打包。
+
+LSTM 相比 GRU 多一个记忆元 C_t 和输入/遗忘/输出三个门，参数量更大、单步计算更多，因此训练略慢；但更强的门控通常带来更好的长距离依赖建模。训练（缩减为 50 个迭代周期演示）后 BLEU 与 GRU 版接近。
+
+PyPTO 代码（PyPTOLSTM 替换 PyPTOGRU，其余结构相同）：
+
+class Seq2SeqEncoderLSTMPypto(Encoder):
+    def __init__(self, vocab_size, embed_size, num_hiddens, num_layers, dropout=0, **kwargs):
+        super().__init__(**kwargs)
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.rnn = PyPTOLSTM(embed_size, num_hiddens, num_layers, dropout=dropout)
+    def forward(self, X, *args):
+        X = self.embedding(X).permute(1, 0, 2).contiguous()
+        output, state = self.rnn(X)   # state: (H, C) 二元组
+        return output, state
+
+# 解码器：rnn = PyPTOLSTM(embed_size + num_hiddens, num_hiddens, num_layers, dropout=dropout)
+# 其余与 torch 版 LSTM 解码器相同，dense 用 PyPTOLinear
+
+---
+
+
+练习10.4.2
+
+修改实验以将加性注意力打分函数替换为缩放点积注意力，它如何影响训练效率？
+
+解答：
+在 Bahdanau 解码器中，查询是解码器隐状态（长度 num_hiddens），键是编码器隐状态（长度 num_hiddens），两者同维，可以直接使用 10.3 节的缩放点积注意力。影响：
+- 参数更少：加性注意力含 W_q, W_k, w_v 三组可学习参数，缩放点积注意力无参数；
+- 计算更少：点积评分只需一次批量矩阵乘法（queries @ keys^T），加性注意力需两次线性投影 + 广播求和 + tanh + 一次线性投影；
+- 因此训练效率更高（每步前向/反向更快），但打分函数表达力更弱，最终精度可能略低。
+
+PyPTO 代码（DotProductAttentionPypto 用 PyPTOBMM 实现，解码器用 PyPTOGRU + PyPTOLinear）：
+
+class DotProductAttentionPypto(nn.Module):
+    def __init__(self, dropout, **kwargs):
+        super().__init__(**kwargs)
+        self.dropout = nn.Dropout(dropout)
+    def forward(self, queries, keys, values, valid_lens=None):
+        d = queries.shape[-1]
+        scores = PyPTOBMM.apply(queries, keys.transpose(1, 2)) / math.sqrt(d)
+        self.attention_weights = masked_softmax_pypto(scores, valid_lens)
+        return PyPTOBMM.apply(self.dropout(self.attention_weights), values)
+
+---
+
+## 参考答案来源
+参考答案和 PyTorch 代码实现来源：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/

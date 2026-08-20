@@ -1,0 +1,46 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / pypto / device 等；answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。若片段引用主 notebook 中未定义的类或函数（如 make_data、train_nwk、AdditiveAttentionPypto 等），请先运行对应参考答案 notebook 获取其定义。
+10.3 注意力评分函数 练习参考答案
+
+
+
+练习10.3.1
+
+修改小例子中的键，并且可视化注意力权重。可加性注意力和缩放的"点－积"注意力是否仍然产生相同的结果？为什么？
+
+解答：
+不产生相同的结果。原因：
+- 加性注意力的评分函数 a(q, k) = w_v^T tanh(W_q q + W_k k) 含有可学习参数（W_q, W_k, w_v），能够把不同长度的查询和键投影到同一隐藏空间；
+- 缩放点积注意力的评分函数 a(q, k) = q^T k / sqrt(d) 是固定函数（无参数），且要求查询与键长度相同。
+
+当所有键完全相同（原例子）时，任意查询与各键的评分一致，两种注意力都得到均匀权重，输出相同；一旦修改键（例如让键彼此不同），两种评分函数给出的注意力权重不再一致，输出也不再相同。
+
+PyPTO 代码（PyPTOLinear / PyPTOTanh / PyPTOSoftmax / PyPTOBMM）：
+
+add_p = AdditiveAttentionPypto(2, 2, 8, 0.1).to(device).eval()
+dot_p = DotProductAttentionPypto(0.5).to(device).eval()
+out_add_p = add_p(queries_d, keys_d, values_d, valid_lens_d)
+out_dot_p = dot_p(queries_d, keys_d, values_d, valid_lens_d)
+print('输出是否相同：', torch.allclose(out_add_p, out_dot_p))
+
+---
+
+
+练习10.3.2
+
+只使用矩阵乘法，能否为具有不同矢量长度的查询和键设计新的评分函数？
+
+解答：
+可以。矩阵乘法要求两个向量的内维一致，因此先分别用投影矩阵把查询与键映射到相同的长度 h：
+a(q, k) = (W_q q)^T (W_k k) = q^T W_q^T W_k k，
+其中 W_q ∈ R^{h×q}、W_k ∈ R^{h×k}。当 q ≠ k 时 W_q q 与 W_k k 长度均为 h，点积合法。这也解释了加性注意力中先做线性投影的必要性。
+
+
+练习10.3.3
+
+当查询和键具有相同的矢量长度时，矢量求和作为评分函数是否比"点－积"更好？为什么？
+
+解答：
+求和评分（如先对 q + k 做线性投影得到标量）通常不如点积。原因：点积 q^T k 度量了两个向量在方向上的一致性（夹角余弦，含符号信息），能区分"相似"与"相反"的键；而求和 q + k 只保留分量之和，把方向信息混叠在一起，丢失了查询与键之间的交互结构，表达能力更弱。极端例子：两个键互为相反数时，点积能区分，而求和评分无法区分。
+
+## 参考答案来源
+参考答案和 PyTorch 代码实现来源：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/

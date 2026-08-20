@@ -1,0 +1,37 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / pypto / device 等；answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。若片段引用主 notebook 中未定义的类或函数（如 make_data、train_nwk、AdditiveAttentionPypto 等），请先运行对应参考答案 notebook 获取其定义。
+10.5 多头注意力 练习参考答案
+
+
+
+练习10.5.1
+
+分别可视化这个实验中的多个头的注意力权重。
+
+解答：
+多头注意力的权重形状为 (batch_size*num_heads, 查询个数, 键的个数)，其中同一 batch 的 num_heads 个头按顺序排列。把它 reshape 成 (num_heads, 查询个数, 键的个数) 即可逐头可视化。注意本例键与查询都为全 1 张量，且有效长度为 [3, 2]，因此每个头内权重分布相同（被掩蔽的位置为 0），但不同头的线性投影参数不同，仍可通过修改键来观察差异。
+
+PyTorch 代码：
+
+attention(X, Y, Y, valid_lens)
+w = attention.head_weights[0].unsqueeze(0)  # (1, num_heads, num_queries, num_keys)
+show_heatmaps(w, xlabel='Keys', ylabel='Queries',
+              titles=['Head %d' % i for i in range(1, num_heads + 1)], figsize=(5, 5))
+
+
+练习10.5.2
+
+假设有一个完成训练的基于多头注意力的模型，现在希望修剪最不重要的注意力头以提高预测速度。如何设计实验来衡量注意力头的重要性呢？
+
+解答：
+常见的"头重要性"度量方法：
+- 遮挡/消融实验（最直接）：逐个（或组合）将某个头的输出置零（如把该头的注意力权重置为均匀分布、或直接截断该头分支），在验证集上测量指标（损失/BLEU/准确率）下降幅度，下降越多的头越重要；
+- 梯度重要性：计算损失对每个头参数的梯度范数（或 Fisher 信息），梯度越大说明该头对损失影响越大；
+- 注意力熵：头在训练集上的平均注意力熵越低（权重越集中、越"专注"），说明该头学到更有区分度的模式，通常更关键；
+- 启发式：与"随机初始化"对照——把一个头的权重重置为随机初始值，若模型性能几乎不变，则该头可安全剪除。
+
+实验流程：按重要性排序 → 从最不重要的头开始逐个剪除 → 在验证集上跟踪性能曲线 → 在满足性能约束（如 BLEU 下降 < 0.5）的前提下最大化剪除数量，从而获得推理速度提升。
+
+---
+
+## 参考答案来源
+参考答案和 PyTorch 代码实现来源：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/
