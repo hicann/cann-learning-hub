@@ -1,0 +1,95 @@
+线性代数
+
+练习 1
+证明一个矩阵 A 的转置的转置是 A，即 (A^T)^T = A。
+
+  解答
+    假设存在 A^T = B, B^T = C，根据矩阵转置的定义，可得：
+    b_ij = a_ji, c_ij = b_ji = a_ij
+    所以 c_ij = a_ij，根据矩阵定义可得 C = A = B^T = (A^T)^T。
+
+    PyTorch 验证：
+    import torch
+    A = torch.arange(20).reshape(5, 4)
+    print("A.T.T == A:", (A.T.T == A).all().item())
+
+
+练习 2
+给出两个矩阵 A 和 B，证明 A^T + B^T = (A + B)^T。
+
+  解答
+    假设 C = A + B，根据矩阵加法定义：c_ij = a_ij + b_ij。
+    对 C 进行转置，将下标互换：c_ji = a_ji + b_ji。
+    因此 C^T = A^T + B^T = (A + B)^T。
+
+    PyTorch 验证：
+    A = torch.rand(4, 4)
+    B = torch.rand(4, 4)
+    print("A.T + B.T == (A + B).T:", (A.T + B.T == (A + B).T).all().item())
+
+
+练习 3
+给定任意方阵 A，A + A^T 总是对称的吗？为什么？
+
+  解答
+    设 B = A + A^T。
+    对其转置：B^T = (A + A^T)^T = A^T + (A^T)^T = A^T + A = A + A^T = B。
+    因此 B^T = B，根据对称矩阵定义，A + A^T 总是对称矩阵。
+
+
+练习 4
+本节中定义了形状 (2, 3, 4) 的张量 X。len(X) 的输出结果是什么？
+
+  解答
+    len(X) 的输出结果为 2（即沿轴 0 的维度长度）。
+
+    PyTorch 验证：
+    X = torch.arange(24).reshape(2, 3, 4)
+    print("len(X):", len(X))
+
+
+练习 5
+对于任意形状的张量 X，len(X) 是否总是对应于 X 特定轴的长度？这个轴是什么？
+
+  解答
+    是的，len(X) 总是对应于张量 X 的轴 0（第 0 个维度）的长度，即 X.shape[0]。
+
+
+练习 6
+运行 A / A.sum(axis=1)，看看会发生什么。请分析一下原因？
+
+  解答
+    直接运行 A / A.sum(axis=1) 会报错，因为 sum(axis=1) 沿轴 1 缩减后维度被降维，形状与 A 不满足广播条件。
+    正确做法是保留维度：A / A.sum(axis=1, keepdims=True)。
+
+    PyTorch 验证：
+    A = torch.arange(20, dtype=torch.float32).reshape(5, 4)
+    print(A / A.sum(axis=1, keepdims=True))
+
+
+练习 7
+考虑一个具有形状 (2, 3, 4) 的张量，在轴 0、1、2 上的求和输出是什么形状？
+
+  解答
+    在轴 0 上的求和形状：(3, 4)
+    在轴 1 上的求和形状：(2, 4)
+    在轴 2 上的求和形状：(2, 3)
+
+    PyTorch 验证：
+    A = torch.arange(24).reshape(2, 3, 4)
+    print("sum(axis=0).shape:", A.sum(axis=0).shape)
+    print("sum(axis=1).shape:", A.sum(axis=1).shape)
+    print("sum(axis=2).shape:", A.sum(axis=2).shape)
+
+
+练习 8
+为 linalg.norm 函数提供 3 个或更多轴的张量，并观察其输出。对于任意形状的张量这个函数计算得到什么？
+
+  解答
+    指定 dim 参数时，在哪个轴上求范数，哪个轴就会被缩减（计算该轴上的 L2 范数 sqrt(sum(x^2))）。
+
+    PyTorch 验证：
+    x = torch.randn(2, 3, 4)
+    print("norm dim=0 shape:", torch.linalg.norm(x, dim=0).shape)
+    print("norm dim=1 shape:", torch.linalg.norm(x, dim=1).shape)
+    print("norm dim=2 shape:", torch.linalg.norm(x, dim=2).shape)

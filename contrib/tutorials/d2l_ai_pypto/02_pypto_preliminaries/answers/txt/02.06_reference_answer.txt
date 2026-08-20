@@ -1,0 +1,70 @@
+概率
+
+练习2.6.1
+
+进行 m = 500 组实验，每组抽取 n = 10 个样本。改变 m 和 n，观察和分析实验结果。
+
+  解答
+
+    当每组抽取的样本数较少时，单组实验结果的波动会更大，因此通常需要进行更多组实验，估计概率才会逐渐稳定。
+    相反，当每组抽取的样本数增大时，估计结果通常会更快收敛到真实概率。
+
+    模拟代码：
+    import matplotlib.pyplot as plt
+    import torch
+    from torch.distributions import multinomial
+
+    fair_probs = torch.ones([6]) / 6
+    def experiment(ax, n=10, m=500, legend=1):
+        counts = multinomial.Multinomial(n, fair_probs).sample((m,))
+        cum_counts = counts.cumsum(dim=0)
+        estimates = cum_counts / cum_counts.sum(dim=1, keepdims=True)
+        for i in range(6):
+            ax.plot(estimates[:, i].numpy(), label=("P(die=" + str(i + 1) + ")"))
+        ax.set_title(f'n={n},m={m}')
+        ax.axhline(y=0.167, color='black', linestyle='dashed')
+        if legend == 1:
+            ax.legend()
+
+
+练习2.6.2
+
+给定两个概率为 P(A) 和 P(B) 的事件，计算 P(A union B) 和 P(A intersect B) 的上限和下限。
+
+  解答
+
+    1. 交集概率 P(A intersect B)：
+       上限：min(P(A), P(B))
+       下限：max(0, P(A) + P(B) - 1)
+       因此：0 <= P(A intersect B) <= min(P(A), P(B))
+
+    2. 并集概率 P(A union B)：
+       由容斥原理 P(A union B) = P(A) + P(B) - P(A intersect B) 可知：
+       max(P(A), P(B)) <= P(A union B) <= min(1, P(A) + P(B))
+
+
+练习2.6.3
+
+假设我们有一系列随机变量，例如 A、B 和 C，其中 B 只依赖于 A，而 C 只依赖于 B，能简化联合概率 P(A, B, C) 吗？
+
+  解答
+
+    这是一个马尔可夫链。
+    根据条件独立性：P(C | A, B) = P(C | B)，P(B | A) 已知。
+    利用条件概率展开：
+    P(A, B, C) = P(C | A, B) P(B | A) P(A)
+               = P(C | B) P(B | A) P(A)
+
+
+练习2.6.4
+
+在2.6.2节中，第一个测试更准确。为什么不运行第一个测试两次，而是同时运行第一个和第二个测试？
+
+  解答
+
+    如果将第一个测试独立进行两次（假设条件独立）：
+    P(D_1 = 1, D_1 = 1 | H = 1) = (P(D_1 = 1 | H = 1))^2 = 1
+    P(D_1 = 1, D_1 = 1) = (0.01)^2 * 0.9985 + 1 * 0.0015 = 0.00159985
+    计算得 P(H = 1 | D_1 = 1, D_1 = 1) 约 0.9376。
+    
+    但在医学和工程实践中，两次同种测试的误差往往不是独立的（具有共同的系统误差或生理干扰因子），同时采用原理不同的两种测试（多源互补）能够有效避免单一测试手段的系统性偏差。

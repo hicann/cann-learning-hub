@@ -1,0 +1,42 @@
+数据预处理
+
+练习2.2.1
+
+删除缺失值最多的列。
+
+  解答
+
+    通过观察，可以看到 MSZoning 和 Alley 列的缺失值一样多，需要考虑到缺失值最多的列有多个的情况。
+    使用 original_data.isna().sum()[original_data.isna().sum() == original_data.isna().sum().max()].index.tolist() 得到最多缺失值的列名，再进行删除。
+
+    代码实现：
+
+    import os
+    import pandas as pd
+    import torch
+
+    # 1. 查找缺失值最多的列名
+    max_missing_cols = original_data.isna().sum()[original_data.isna().sum() == original_data.isna().sum().max()].index.tolist()
+    print("缺失值最多的列：", max_missing_cols)
+
+    # 2. 删除这些列
+    data = original_data.drop(max_missing_cols, axis=1)
+    print(data)
+
+
+练习2.2.2
+
+将预处理后的数据集转换为张量格式。
+
+  解答
+
+    使用 pandas 的 get_dummies 处理离散值（包括缺失值），并使用 torch.tensor 将 DataFrame 的数值转换为 PyTorch 张量。
+
+    代码实现：
+
+    # 将离散列转换为 one-hot 编码
+    data = pd.get_dummies(data, dummy_na=True)
+
+    # 转换为 PyTorch 张量格式
+    tensor_data = torch.tensor(data.values)
+    print(tensor_data)

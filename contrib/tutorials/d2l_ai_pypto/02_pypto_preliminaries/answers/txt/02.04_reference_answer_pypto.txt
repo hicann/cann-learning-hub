@@ -1,0 +1,94 @@
+微积分
+
+练习2.4.1
+
+绘制函数 y = f(x) = x^3 - 1/x 和其在 x = 1 处切线的图像。
+
+  解答
+
+    PyPTO Kernel 路径实现：
+    在 NPU 上用 PyPTO kernel 计算前向曲线与切线。
+
+    import torch
+    import pypto
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    device = "npu:0"
+
+    @pypto.frontend.jit
+    def cubic_recip_kernel(x: pypto.Tensor([1, 190], pypto.DT_FP32),
+                           out: pypto.Tensor([1, 190], pypto.DT_FP32)):
+        pypto.set_vec_tile_shapes(1, 128)
+        out[:] = x ** 3 - 1.0 / x
+
+    @pypto.frontend.jit
+    def tangent_line_kernel(x: pypto.Tensor([1, 190], pypto.DT_FP32),
+                            grad: pypto.Tensor([1, 1], pypto.DT_FP32),
+                            point: pypto.Tensor([1, 1], pypto.DT_FP32),
+                            f_at_point: pypto.Tensor([1, 1], pypto.DT_FP32),
+                            out: pypto.Tensor([1, 190], pypto.DT_FP32)):
+        pypto.set_vec_tile_shapes(1, 128)
+        out[:] = grad * (x - point) + f_at_point
+
+    # 在 NPU 上计算主曲线与切线
+    h = 1e-4
+    x_p = torch.tensor([[1.0]], dtype=torch.float32, device=device)
+    x_ph = torch.tensor([[1.0 + h]], dtype=torch.float32, device=device)
+    f_p = torch.empty(1, 1, dtype=torch.float32, device=device)
+    f_ph = torch.empty(1, 1, dtype=torch.float32, device=device)
+    cubic_recip_kernel(x_p, f_p)
+    cubic_recip_kernel(x_ph, f_ph)
+    grad = (f_ph - f_p) / h
+
+    N = 190
+    x = torch.arange(0.1, 2.0, 0.01, dtype=torch.float32, device=device).reshape(1, N)
+    y = torch.empty(1, N, dtype=torch.float32, device=device)
+    y_tangent = torch.empty(1, N, dtype=torch.float32, device=device)
+    cubic_recip_kernel(x, y)
+    tangent_line_kernel(x, grad, x_p, f_p, y_tangent)
+
+
+练习2.4.2
+
+求函数 f(x) = 3 x_1^2 + 5 e^{x_2} 的梯度。
+
+  解答
+
+    PyPTO 前向与梯度 Kernel 实现：
+    @pypto.frontend.jit
+    def polyexp_forward_kernel(x0: pypto.Tensor([1, 1], pypto.DT_FP32),
+                               x1: pypto.Tensor([1, 1], pypto.DT_FP32),
+                               out: pypto.Tensor([1, 1], pypto.DT_FP32)):
+        pypto.set_vec_tile_shapes(1, 8)
+        out[:] = 3.0 * x0 ** 2 + 5.0 * pypto.exp(x1)
+
+    @pypto.frontend.jit
+    def polyexp_grad_kernel(x0: pypto.Tensor([1, 1], pypto.DT_FP32),
+                            x1: pypto.Tensor([1, 1], pypto.DT_FP32),
+                            out_g0: pypto.Tensor([1, 1], pypto.DT_FP32),
+                            out_g1: pypto.Tensor([1, 1], pypto.DT_FP32)):
+        pypto.set_vec_tile_shapes(1, 8)
+        out_g0[:] = 6.0 * x0
+        out_g1[:] = 5.0 * pypto.exp(x1)
+
+
+练习2.4.3
+
+函数 f(x) = ||x||_2 的梯度是什么？
+
+  解答
+
+    PyPTO 前向与梯度 Kernel 实现：
+    @pypto.frontend.jit
+    def l2norm_forward_kernel(x: pypto.Tensor([1, 4], pypto.DT_FP32),
+                              out: pypto.Tensor([1, 1], pypto.DT_FP32)):
+        pypto.set_vec_tile_shapes(1, 8)
+        out[:] = pypto.sqrt(pypto.sum(x ** 2, dim=-1, keepdim=True))
+
+    @pypto.frontend.jit
+    def l2norm_grad_kernel(x: pypto.Tensor([1, 4], pypto.DT_FP32),
+                           y: pypto.Tensor([1, 1], pypto.DT_FP32),
+                           out: pypto.Tensor([1, 4], pypto.DT_FP32)):
+        pypto.set_vec_tile_shapes(1, 8)
+        out[:] = x / y

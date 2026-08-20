@@ -1,0 +1,99 @@
+自动微分
+
+练习2.5.2
+
+在运行反向传播函数之后，立即再次运行它，看看会发生什么。
+
+  解答
+
+    将 PyPTO kernel 封装为 torch.autograd.Function 并验证 retain_graph=True：
+
+    import torch
+    import pypto
+    import numpy as np
+
+    device = "npu:0"
+
+    @pypto.frontend.jit
+    def square_kernel(x: pypto.Tensor([...], pypto.DT_FP32),
+                      out: pypto.Tensor([...], pypto.DT_FP32)):
+        pypto.set_vec_tile_shapes(1, 4)
+        out[:] = x * x
+
+    class PyPTOSquare(torch.autograd.Function):
+        @staticmethod
+        def forward(ctx, x):
+            ctx.save_for_backward(x)
+            out = torch.empty_like(x)
+            square_kernel(x, out)
+            return out
+
+        @staticmethod
+        def backward(ctx, grad_output):
+            (x,) = ctx.saved_tensors
+            return grad_output * 2.0 * x
+
+    x = torch.arange(4.0, dtype=torch.float32, device=device, requires_grad=True)
+    y = PyPTOSquare.apply(x)
+    y.sum().backward(retain_graph=True)
+    print("第一次 backward 梯度:", x.grad)
+    y.sum().backward()
+    print("第二次 backward 梯度:", x.grad)
+
+
+练习2.5.3 & 练习2.5.4
+
+控制流梯度的分析与说明。
+
+  解答
+
+    PyPTO 静态控制流（pypto.cond / pypto.loop）循环边界需在编译时确定，无法表达数据相关的 while 循环。
+    因此控制流梯度观察主要基于 PyTorch autograd 机制。
+
+
+练习2.5.5
+
+使 f(x) = sin(x)，绘制 f(x) 和 df(x)/dx 的图像。
+
+  解答
+
+    PyPTO 前向 kernel (sin) 与 反向 kernel (cos) 接入 autograd.Function：
+
+    import torch
+    import pypto
+    import matplotlib.pyplot as plt
+
+    device = "npu:0"
+    N = 200
+
+    @pypto.frontend.jit
+    def sin_kernel(x: pypto.Tensor([N], pypto.DT_FP32),
+                   out: pypto.Tensor([N], pypto.DT_FP32)):
+        pypto.set_vec_tile_shapes(N)
+        out[:] = pypto.sin(x)
+
+    @pypto.frontend.jit
+    def cos_kernel(x: pypto.Tensor([N], pypto.DT_FP32),
+                   out: pypto.Tensor([N], pypto.DT_FP32)):
+        pypto.set_vec_tile_shapes(N)
+        out[:] = pypto.cos(x)
+
+    class PyPTOSin(torch.autograd.Function):
+        @staticmethod
+        def forward(ctx, x):
+            ctx.save_for_backward(x)
+            out = torch.empty_like(x)
+            sin_kernel(x, out)
+            return out
+
+        @staticmethod
+        def backward(ctx, grad_output):
+            (x,) = ctx.saved_tensors
+            cos_out = torch.empty_like(x)
+            cos_kernel(x, cos_out)
+            return grad_output * cos_out
+
+    x_pypto = torch.linspace(-2 * torch.pi, 2 * torch.pi, N, device=device, requires_grad=True)
+    y_pypto = PyPTOSin.apply(x_pypto)
+    y_pypto.sum().backward()
+    print("PyPTO 梯度计算成功:", x_pypto.grad.shape)

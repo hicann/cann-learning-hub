@@ -1,0 +1,88 @@
+自动微分
+
+练习2.5.1
+
+为什么计算二阶导数比一阶导数的开销要更大？
+
+  解答
+
+    在 PyTorch 中计算一阶导数和二阶导数都是通过自动微分机制实现的，计算二阶导数开销更大的原因包括：
+    1. 计算图的构建：一阶导数只需构建一次计算图，而二阶导数需要对一阶导数的计算图再次构建计算图。
+    2. 内存占用：计算二阶导数需要同时保留一阶与二阶梯度的中间变量和计算图节点。
+    3. 计算量增加：求二阶导数涉及更多的复合函数求导运算。
+
+
+练习2.5.2
+
+在运行反向传播函数之后，立即再次运行它，看看会发生什么。
+
+  解答
+
+    在运行反向传播函数之后，立即再次运行它会报错 RuntimeError。
+    因为调用 .backward() 时默认会释放计算图中保存的中间张量。
+    若需要多次反向传播，必须在第一次调用时传入 retain_graph=True：
+
+    import torch
+    x = torch.arange(4.0, requires_grad=True)
+    y = (x * x).sum()
+    y.backward(retain_graph=True)
+    print("第一次梯度:", x.grad)
+    y.backward()
+    print("第二次梯度 (累加后):", x.grad)
+
+
+练习2.5.3
+
+在控制流的例子中，我们计算 d 关于 a 的导数，如果将变量 a 更改为随机向量或矩阵，会发生什么？
+
+  解答
+
+    如果将变量 a 改为向量或矩阵，直接调用 d.backward() 会报错。
+    因为 PyTorch autograd 默认只能对标量进行隐式反向传播。
+    对于非标量输出，必须显式传入梯度权重张量，例如 d.backward(torch.ones_like(d))。
+
+
+练习2.5.4
+
+重新设计一个求控制流梯度的例子，运行并分析结果。
+
+  解答
+
+    import torch
+
+    def f(a):
+        b = a * 2
+        while b.norm(1) < 1000:
+            b = b * 2
+        if b.sum() > 0:
+            c = b
+        else:
+            c = 100 * b
+        return c.sum()
+
+    a = torch.randn(size=(), requires_grad=True)
+    d = f(a)
+    d.backward()
+    print("a:", a)
+    print("a.grad:", a.grad)
+
+
+练习2.5.5
+
+使 f(x) = sin(x)，绘制 f(x) 和 df(x)/dx 的图像，其中后者不使用 f'(x) = cos(x)。
+
+  解答
+
+    PyTorch 自动微分画图：
+    import torch
+    import matplotlib.pyplot as plt
+
+    N = 200
+    x_torch = torch.linspace(-2 * torch.pi, 2 * torch.pi, N, requires_grad=True)
+    y_torch = torch.sin(x_torch)
+    y_torch.sum().backward()
+
+    plt.plot(x_torch.detach().numpy(), y_torch.detach().numpy(), label='sin(x)')
+    plt.plot(x_torch.detach().numpy(), x_torch.grad.detach().numpy(), label='df/dx')
+    plt.legend()
+    plt.show()
