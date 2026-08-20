@@ -1,0 +1,280 @@
+### 练习11.7.1
+证明对于正交矩阵U和向量c，以下等式成立：‖c - δ‖₂ = ‖U c - U δ‖₂。为什么这意味着在变量的正交变化之后，扰动的程度不会改变？
+
+**解答：**
+
+首先证明该等式成立：
+
+等式左侧可以展开为：
+
+‖ c-δ‖² = (c-δ)ᵀ(c-δ)=cᵀc-2cᵀδ+δᵀδ
+
+等式右侧可以展开为：
+
+‖ Uc-Uδ‖² = (Uc-Uδ)ᵀ(Uc-Uδ)=cᵀUᵀUc-2cᵀUᵀUδ+δᵀUᵀUδ
+
+由于 U 为正交矩阵，即：
+
+UᵀU=I
+
+所以可得：
+
+cᵀUᵀUc=cᵀc, cᵀUᵀUδ=cᵀδ, δᵀUᵀUδ=δᵀδ
+
+带入以上展开式可证：
+
+‖ c-δ‖₂=‖Uc-Uδ‖₂
+
+为什么这意味着在变量的正交变化之后，扰动的程度不会改变：
+
+我们可以将扰动的程度理解为变换之后的向量与原向量的距离，即假设我们有扰动变量 δ，那么扰动的程度即为原变量 x 与扰动后变量 x+δ 的距离，即 ‖x-(x+δ)‖₂，而我们已经证明，乘以正交矩阵之后该距离没有变化，因此扰动的程度没有改变。
+
+### 练习11.7.2
+尝试对函数f(x) = 0.1 x₁² + 2 x₂²、以及它旋转45度后的函数即f(x) = 0.1 (x₁ + x₂)² + 2 (x₁ - x₂)²使用AdaGrad算法。它的表现会不同吗？
+
+**解答：**
+
+我们首先对 f(x)=0.1x₁²+2x₂² 使用 AdaGrad 算法：
+
+def adagrad_2d(x1, x2, s1, s2):
+    eps = 1e-6
+    g1, g2 = 0.2 * x1, 4 * x2
+    s1 += g1 ** 2
+    s2 += g2 ** 2
+    x1 -= eta / math.sqrt(s1 + eps) * g1
+    x2 -= eta / math.sqrt(s2 + eps) * g2
+    return x1, x2, s1, s2
+
+def f_2d(x1, x2):
+    return 0.1 * x1 ** 2 + 2 * x2 ** 2
+
+eta = 0.4
+show_trace_2d(f_2d, train_2d(adagrad_2d))
+
+接着对旋转后的函数 f(x)=0.1(x₁+x₂)²+2(x₁-x₂)² 使用 AdaGrad 算法：
+
+def adagrad_2d(x1, x2, s1, s2):
+    eps = 1e-6
+    g1, g2 = 4.2 * x1 - 3.8 * x2, 4.2 * x2 - 3.8 * x1
+    s1 += g1 ** 2
+    s2 += g2 ** 2
+    x1 -= eta / math.sqrt(s1 + eps) * g1
+    x2 -= eta / math.sqrt(s2 + eps) * g2
+    return x1, x2, s1, s2
+
+def f_2d_2(x1, x2):
+    return 0.1 * (x1 + x2) ** 2 + 2 * (x1 - x2) ** 2
+
+eta = 0.4
+show_trace_2d(f_2d_2, train_2d(adagrad_2d))
+
+可以看到，两者的步长都是逐渐衰减的。
+
+### 练习11.7.3
+证明[格什戈林圆盘定理](https://en.wikipedia.org/wiki/Gershgorin_circle_theorem)，其中提到，矩阵M的特征值λᵢ在至少一个j的选项中满足|λᵢ - Mⱼⱼ| ≤ Σ_k ≠ j |Mⱼₖ|的要求。
+
+**解答：**
+
+设 ζ≠0 为 M 对应特征值 λ 的特征向量，Mζ=λζ。取 j 使 |ζⱼ|=maxₖ|ζₖ|（ζⱼ≠0）。由第 j 个分量方程
+
+ΣₖMⱼₖζₖ=λζⱼ (λ-Mⱼⱼ)ζⱼ=Σ_k≠ jMⱼₖζₖ.
+
+取绝对值并用 |ζₖ|≤|ζⱼ|：
+
+|λ-Mⱼⱼ||ζⱼ|≤Σ_k≠ j|Mⱼₖ||ζₖ|≤(Σ_k≠ j|Mⱼₖ|)|ζⱼ|.
+
+两边除以 |ζⱼ|≠0 得 |λ-Mⱼⱼ|≤Σ_k≠ j|Mⱼₖ|，即 λ 落在以 Mⱼⱼ 为心、行非对角元绝对值之和为半径的圆盘内。
+
+### 练习11.7.4
+关于对角线预处理矩阵diag^(-(1)/(2))(M) M diag^(-(1)/(2))(M)的特征值，格什戈林的定理告诉了我们什么？
+
+**解答：**
+
+设 Dₘ=diag(M)（M 对角部分，假定对角元非零），预处理矩阵
+
+D=Dₘ^(-1/2)MDₘ^(-1/2), Dᵢⱼ=(Mᵢⱼ)/(√(MᵢᵢMⱼⱼ)).
+
+其对角元 Dᵢᵢ=1，即对角元被归一化为 1。由 Gershgorin 定理，D 的特征值落在以 1 为心、Rᵢ=Σ_j≠ i(|Mᵢⱼ|)/(√(MᵢᵢMⱼⱼ)) 为半径的圆盘并集内。
+
+注意 D 是 M 的合同变换（非相似变换），保持惯性（特征值符号分布）但**不**保持特征值，故一般 μ≠λ。
+
+def accuracy(y_hat, y):
+    if len(y_hat.shape) > 1 and y_hat.shape[1] > 1:
+        y_hat = y_hat.argmax(axis=1)
+    cmp = y_hat.type(y.dtype) == y
+    return float(cmp.type(y.dtype).sum())
+
+def try_gpu(i=0):
+    if torch.npu.is_available():
+        return torch.device(f"npu:{i}")
+    return torch.device("cpu")
+
+# 数据加载使用 drop_last=True（与 src.utils 的 load_data_fashion_mnist 一致）：
+# 丢弃不满的尾批，保证所有 batch 形状一致，避免尾批形状（96/16）
+# 触发新一轮漫长的 PyPTO JIT 编译。
+def load_data_fashion_mnist(batch_size, resize=None):
+    trans = [transforms.ToTensor()]
+    if resize:
+        trans.insert(0, transforms.Resize(resize))
+    trans = transforms.Compose(trans)
+    mnist_train = torchvision.datasets.FashionMNIST(
+        root="../data", train=True, transform=trans, download=True)
+    mnist_test = torchvision.datasets.FashionMNIST(
+        root="../data", train=False, transform=trans, download=True)
+    return (torch.utils.data.DataLoader(mnist_train, batch_size, shuffle=True, drop_last=True),
+            torch.utils.data.DataLoader(mnist_test, batch_size, shuffle=False, drop_last=True))
+
+### 练习11.7.5
+尝试对适当的深度网络使用AdaGrad算法，例如，[06.06_lenet](../06_pypto_pypto_convolutional_networks/06.06_lenet.ipynb)中应用于Fashion-MNIST的深度网络。
+
+**解答：**
+
+net = nn.Sequential(
+    PyPTOConv2d(1, 6, kernel_size=5, padding=2), nn.Sigmoid(),
+    PyPTOAvgPool2d(kernel_size=2, stride=2),
+    PyPTOConv2d(6, 16, kernel_size=5), nn.Sigmoid(),
+    PyPTOAvgPool2d(kernel_size=2, stride=2),
+    nn.Flatten(),
+    PyPTOLinear(16 * 5 * 5, 120), nn.Sigmoid(),
+    PyPTOLinear(120, 84), nn.Sigmoid(),
+    PyPTOLinear(84, 10))
+
+batch_size = 256
+train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
+
+def evaluate_accuracy_gpu(net, data_iter, device=None):
+    """使用GPU计算模型在数据集上的精度"""
+    if isinstance(net, nn.Module):
+        net.eval()  # 设置为评估模式
+        if not device:
+            device = next(iter(net.parameters())).device
+    # 正确预测的数量，总预测的数量
+    metric = Accumulator(2)
+    with torch.no_grad():
+        for X, y in data_iter:
+            if isinstance(X, list):
+                # BERT微调所需的（之后将介绍）
+                X = [x.to(device) for x in X]
+            else:
+                X = X.to(device)
+            y = y.to(device)
+            metric.add(accuracy(net(X), y), y.numel())
+    return metric[0] / metric[1]
+
+
+def train_ch6(net, train_iter, test_iter, num_epochs, lr, device):
+    """用GPU训练模型(在第六章定义)"""
+    def init_weights(m):
+        if type(m) == nn.Linear or type(m) == nn.Conv2d:
+            nn.init.xavier_uniform_(m.weight)
+    net.apply(init_weights)
+    print('training on', device)
+    net.to(device)
+    optimizer = torch.optim.SGD(net.parameters(), lr=lr)
+    loss = nn.CrossEntropyLoss()
+    animator = Animator(xlabel='epoch', xlim=[1, num_epochs],
+                            legend=['train loss', 'train acc', 'test acc'])
+    timer, num_batches = Timer(), len(train_iter)
+    for epoch in range(num_epochs):
+        # 训练损失之和，训练准确率之和，样本数
+        metric = Accumulator(3)
+        net.train()
+        for i, (X, y) in enumerate(train_iter):
+            timer.start()
+            optimizer.zero_grad()
+            X, y = X.to(device), y.to(device)
+            y_hat = net(X)
+            l = loss(y_hat, y)
+            l.backward()
+            optimizer.step()
+            with torch.no_grad():
+                metric.add(l * X.shape[0], accuracy(y_hat, y), X.shape[0])
+            timer.stop()
+            train_l = metric[0] / metric[2]
+            train_acc = metric[1] / metric[2]
+            if (i + 1) % (num_batches // 5) == 0 or i == num_batches - 1:
+                animator.add(epoch + (i + 1) / num_batches,
+                             (train_l, train_acc, None))
+        test_acc = evaluate_accuracy_gpu(net, test_iter)
+        animator.add(epoch + 1, (None, None, test_acc))
+    print(f'loss {train_l:.3f}, train acc {train_acc:.3f}, '
+          f'test acc {test_acc:.3f}')
+    print(f'{metric[2] * num_epochs / timer.sum():.1f} examples/sec '
+          f'on {str(device)}')
+
+# PyPTO 自定义算子首次调用时需要 JIT 编译，每种新的 batch 形状耗时约 1~2 分钟，
+# 期间 notebook 看似“卡住”（无输出），属正常现象，请耐心等待、切勿中断内核。
+# 数据加载已启用 drop_last=True，训练/评估全程只有 bs=256 一种 batch 形状，
+# 因此只需预热该形状（前向+反向）即可；配合 ../ptile_cache 编译缓存，
+# 重启内核后再次运行时本次预热通常只需数秒：
+import time
+
+device = try_gpu()
+net.to(device)
+loss_fn = nn.CrossEntropyLoss()
+t0 = time.time()
+X = torch.randn(256, 1, 28, 28, device=device)
+y = torch.randint(0, 10, (256,), device=device)
+l = loss_fn(net(X), y)
+l.backward()
+net.zero_grad()  # 清除预热引入的梯度，避免影响首轮训练
+print(f'warm up bs=256: {time.time() - t0:.1f}s', flush=True)
+
+lr, num_epochs = 0.9, 20
+train_ch6(net, train_iter, test_iter, num_epochs, lr, try_gpu())
+
+接着，我们将 SGD 优化器替换为 AdaGrad 优化器：
+
+def train_ch6(net, train_iter, test_iter, num_epochs, lr, device):
+    """用GPU训练模型(在第六章定义)"""
+    def init_weights(m):
+        if type(m) == nn.Linear or type(m) == nn.Conv2d:
+            nn.init.xavier_uniform_(m.weight)
+    net.apply(init_weights)
+    print('training on', device)
+    net.to(device)
+    optimizer = torch.optim.Adagrad(net.parameters(), lr=lr)
+    loss = nn.CrossEntropyLoss()
+    animator = Animator(xlabel='epoch', xlim=[1, num_epochs],
+                            legend=['train loss', 'train acc', 'test acc'])
+    timer, num_batches = Timer(), len(train_iter)
+    for epoch in range(num_epochs):
+        # 训练损失之和，训练准确率之和，样本数
+        metric = Accumulator(3)
+        net.train()
+        for i, (X, y) in enumerate(train_iter):
+            timer.start()
+            optimizer.zero_grad()
+            X, y = X.to(device), y.to(device)
+            y_hat = net(X)
+            l = loss(y_hat, y)
+            l.backward()
+            optimizer.step()
+            with torch.no_grad():
+                metric.add(l * X.shape[0], accuracy(y_hat, y), X.shape[0])
+            timer.stop()
+            train_l = metric[0] / metric[2]
+            train_acc = metric[1] / metric[2]
+            if (i + 1) % (num_batches // 5) == 0 or i == num_batches - 1:
+                animator.add(epoch + (i + 1) / num_batches,
+                             (train_l, train_acc, None))
+        test_acc = evaluate_accuracy_gpu(net, test_iter)
+        animator.add(epoch + 1, (None, None, test_acc))
+    print(f'loss {train_l:.3f}, train acc {train_acc:.3f}, '
+          f'test acc {test_acc:.3f}')
+    print(f'{metric[2] * num_epochs / timer.sum():.1f} examples/sec '
+          f'on {str(device)}')
+
+lr, num_epochs = 0.9, 20
+train_ch6(net, train_iter, test_iter, num_epochs, lr, try_gpu())
+
+可以看出，使用 AdaGrad 算法在一开始 loss 下降得更陡峭、迅速，但随后 loss 下降速度开始衰减，显著慢于使用 SGD 算法，以及 20 个 epoch 迭代之后我们对比发现，虽然 AdaGrad 算法在前3个 epoch 就实现了 loss 的骤降，但最终并没能实现稳定的收敛。
+
+### 练习11.7.6
+要如何修改AdaGrad算法，才能使其在学习率方面的衰减不那么激进？
+
+**解答：**
+
+AdaGrad 算法之所以在学习率方面的衰减会越发激进，是因为 AdaGrad 算法会累积历史梯度，造成后续学习率很小，权值无法得到有效更新。
+
+为改进这一问题，有学者提出了 RMSProp 算法，该算法增加了一个衰减系数来控制历史信息的获取，即我们在下一章将要学习的算法。
