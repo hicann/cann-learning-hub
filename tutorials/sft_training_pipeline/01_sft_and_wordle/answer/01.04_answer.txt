@@ -1,0 +1,29 @@
+1. √
+解析：先标 A 的 G；目标词剩余一个 L，猜词中的第一个 L 标为 Y，第二个 L 标为 X；E 标为 Y，Y 标为 X。
+
+2. √
+解析：标准 Wordle 每局最多提供 6 次猜词机会。
+
+3. A
+解析：重复字母按目标词中的剩余数量匹配。唯一可匹配的 L 已分配给前一个 L，因此第二个 L 为 X。
+
+4. B
+解析：当前 verifier 的 XML parser 读取 `<guess>` 字段，`correct_answer` 将解析结果与带方括号的 `[plane]` 精确比较。
+
+5. A
+解析：当前 `_process_wordle_sample` 按顺序拼接 `prompt` 和 `completion`，形成送入 chat template 的训练消息。
+
+6. A
+解析：自回归 next-token 训练用前一个位置预测后一个 token，因此输入去掉末 token，标签去掉首 token。
+
+7. A
+解析：`-100` 让相应目标位置不计入 CE；system/user token 仍保留在输入上下文中并影响 assistant token 的预测。
+
+8. A
+解析：`format_reward` 衡量评分器定义的 `<guess>` XML 格式要求；猜中结果由 `correct_answer` 等指标分别记录。
+
+9. B
+解析：`correct_answer` 记录 parser 提取的猜词内容与目标答案是否精确匹配。
+
+10. A、B
+解析：SFT 拟合训练标签，可以学习输出协议和轨迹中的反馈条件行为。策略表现和规则遵守由独立评测衡量。

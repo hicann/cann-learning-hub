@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="800" viewBox="0 0 900 800" role="img" aria-labelledby="title desc">
+  <title id="title">vf-eval Wordle 单局评测流程</title>
+  <desc id="desc">环境选择秘密词并请求模型猜测；计算反馈后判断游戏是否结束，只有未猜中且不足六轮时才把反馈追加到对话并再次请求模型。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#344054"/>
+    </marker>
+    <style>
+      .title { font: 700 24px "Noto Sans SC", "Microsoft YaHei", sans-serif; fill: #101828; }
+      .label { font: 700 17px "Noto Sans SC", "Microsoft YaHei", sans-serif; fill: #101828; }
+      .detail { font: 14px "Noto Sans SC", "Microsoft YaHei", sans-serif; fill: #475467; }
+      .branch { font: 700 14px "Noto Sans SC", "Microsoft YaHei", sans-serif; fill: #344054; }
+      .arrow { fill: none; stroke: #344054; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="900" height="800" fill="#ffffff"/>
+  <text class="title" x="450" y="34" text-anchor="middle">vf-eval：一局 Wordle 的条件循环</text>
+
+  <rect x="285" y="60" width="330" height="70" rx="8" fill="#ecfdf3" stroke="#12b76a" stroke-width="2"/>
+  <text class="label" x="450" y="91" text-anchor="middle">1. 环境选择秘密词</text>
+  <text class="detail" x="450" y="113" text-anchor="middle">初始化轮次与对话历史</text>
+  <path class="arrow" d="M 450 130 V 157"/>
+
+  <rect x="285" y="165" width="330" height="70" rx="8" fill="#eff8ff" stroke="#2e90fa" stroke-width="2"/>
+  <text class="label" x="450" y="196" text-anchor="middle">2. 发送规则与当前对话</text>
+  <text class="detail" x="450" y="218" text-anchor="middle">调用 OpenAI 兼容推理服务</text>
+  <path class="arrow" d="M 450 235 V 262"/>
+
+  <rect x="285" y="270" width="330" height="70" rx="8" fill="#f4f3ff" stroke="#7f56d9" stroke-width="2"/>
+  <text class="label" x="450" y="301" text-anchor="middle">3. 模型返回本轮猜词</text>
+  <text class="detail" x="450" y="323" text-anchor="middle">解析 &lt;guess&gt; 字段</text>
+  <path class="arrow" d="M 450 340 V 367"/>
+
+  <rect x="285" y="375" width="330" height="70" rx="8" fill="#fff6ed" stroke="#f79009" stroke-width="2"/>
+  <text class="label" x="450" y="406" text-anchor="middle">4. 环境计算 G / Y / X 反馈</text>
+  <text class="detail" x="450" y="428" text-anchor="middle">更新轮次和游戏状态</text>
+  <path class="arrow" d="M 450 445 V 472"/>
+
+  <path d="M 450 480 L 585 545 L 450 610 L 315 545 Z" fill="#fef0c7" stroke="#dc6803" stroke-width="2"/>
+  <text class="label" x="450" y="539" text-anchor="middle">猜中或已完成</text>
+  <text class="label" x="450" y="563" text-anchor="middle">第 6 次猜测？</text>
+
+  <path class="arrow" d="M 450 610 V 665"/>
+  <text class="branch" x="464" y="644">是</text>
+  <rect x="285" y="673" width="330" height="80" rx="8" fill="#ecfdf3" stroke="#12b76a" stroke-width="2"/>
+  <text class="label" x="450" y="706" text-anchor="middle">6. 游戏结束并计算 reward</text>
+  <text class="detail" x="450" y="730" text-anchor="middle">保存逐局结果</text>
+
+  <path class="arrow" d="M 585 545 H 650"/>
+  <text class="branch" x="610" y="532">否</text>
+  <rect x="658" y="495" width="210" height="100" rx="8" fill="#f2f4f7" stroke="#667085" stroke-width="2"/>
+  <text class="label" x="763" y="531" text-anchor="middle">5. 追加反馈</text>
+  <text class="detail" x="763" y="554" text-anchor="middle">保留完整对话历史</text>
+  <text class="detail" x="763" y="575" text-anchor="middle">进入下一轮</text>
+  <path class="arrow" d="M 763 495 V 305 H 625"/>
+  <text class="branch" x="675" y="291">仅在游戏未结束时循环</text>
+</svg>

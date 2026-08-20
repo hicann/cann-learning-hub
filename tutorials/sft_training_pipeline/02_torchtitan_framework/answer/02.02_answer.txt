@@ -1,0 +1,11 @@
+1. √
+解析：FULL_SHARD 在 forward 前收集当前 unit 的参数，在 backward 中归约并分发梯度分片。
+
+2. B
+解析：`data_parallel_replicate_degree=1` 且 `data_parallel_shard_degree=2` 时，模型状态在两个 rank 间分片；由于 CP=1，有效 FSDP mesh degree 也是 2。
+
+3. B
+解析：`parallelize_fn` 是模型相关并行化总入口。当前 Qwen3 实现先处理 CP 约束，再委托上游根据 `parallel_dims` 应用 TP、compile、FSDP 或 DDP 等路径。
+
+4. A、B
+解析：FSDP2 提供 composable `fully_shard` API，并以 per-parameter DTensor 表示分片参数；unit 仍可按 module 划分。

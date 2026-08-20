@@ -5,6 +5,7 @@
 | 教程名称 | 教程描述 | 访问链接 | 状态 |
 |----------|----------|----------|------|
 | 大模型推理系列课程 | 从大语言模型基础出发，介绍 CANN 推理仓、推理优化、量化与 Profiling，并提供 Qwen3-8B 单卡实践 | [llm_inference](./llm_inference) | ✅ 已发布 |
+| 大语言模型 SFT + RL 端到端教程 | 基于 torchtitan-npu 的 Qwen3-1.7B SFT 监督微调与融合算子优化，以及基于 verl + GRPO 的 RL 强化学习训练全流程 | [sft_training_pipeline](./sft_training_pipeline) / [rl_training_pipeline](./rl_training_pipeline)| ✅ 已发布 |
 | Ascend C 算子开发系列教程 | 面向昇腾 NPU 的高性能算子开发全流程教程，包含 Tiling 模板化编程、算子调试、性能优化等核心内容 | [ascendc_operator_development](./ascendc_operator_development) | ✅ 已发布 |
 | Ascend C 算子开发系列教程（Kernel 直调版） | 面向昇腾 NPU 的 Ascend C 算子开发教程，包含算子核函数、Tiling 计算、矩阵算子、CV 融合算子、调试调优等核心内容 | [ascendc_operator_development_light](./ascendc_operator_development_light) | ✅ 已发布 |
 | MC2融合算子开发教程 | MC2融合算子开发教程，详细介绍 MC2 融合算子的概念、开发流程和实践 | [MC2_fused_operator_development](./MC2_fused_operator_development) | ✅ 已发布 |

@@ -1,0 +1,5 @@
+1. A。`last_save_in_hf` 在最后一步导出 HF safetensors 权重布局；从基座模型目录补齐 `config.json`、`tokenizer.json`、`tokenizer_config.json` 等推理资产。
+
+2. A。当前日志记录裁剪前 total norm，因此它可以大于 `max_norm=1.0`；梯度裁剪随后限制实际更新。
+
+3. A、B、C。loss 与 grad_norm 均为有限值、loss 的前后窗口整体下降或稳定，并且没有 `NaN`、`Inf` 或连续数量级增长，说明本次更新链路数值稳定且存在学习信号。

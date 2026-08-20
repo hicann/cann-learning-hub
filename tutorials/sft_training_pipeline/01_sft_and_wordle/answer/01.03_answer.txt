@@ -1,0 +1,8 @@
+1. B
+解析：两者都可使用 next-token Cross-Entropy；本课程 recipe 使用多轮对话，并通过 Label Masking 只让 assistant 目标位置贡献 loss。这是本课程的实现选择，不是所有 SFT 的定义。
+
+2. A
+解析：`-100` 让对应目标位置不计入 CE loss；user token 仍在输入序列中，并会影响后续 assistant token 的预测。
+
+3. A、B
+解析：SFT 可以模仿输出协议和训练轨迹中的条件行为。是否真正理解规则需要行为评测，最优策略也不能由该训练目标保证。

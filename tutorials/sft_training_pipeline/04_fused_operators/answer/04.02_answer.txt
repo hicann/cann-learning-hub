@@ -1,0 +1,4 @@
+1. A。`torch_npu.npu_rms_norm` 返回归一化输出 `y` 和供反向计算使用的 `rstd`；实际 HBM 流量与 kernel 数必须按目标 CANN/torch_npu 版本的 trace 实测，不能固定写成某个比例。
+2. B。
+3. A。
+4. A。
