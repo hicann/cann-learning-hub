@@ -1,6 +1,7 @@
 # cann-learning-hub
 
 ## 🔥Latest News
+- [2026/08] 新增[大模型训练系列课程](./tutorials/sft_training_pipeline)，涵盖大模型监督微调（SFT）核心概念、数据处理、模型训练与完整训练流程实践。
 - [2026/08] 新增[HCCL 集合通信开发系列课程](./tutorials/hccl_development)，涵盖 HCCL 基础概念、集合通信原理、开发流程与通信实践，帮助开发者掌握昇腾多卡集合通信开发。
 - [2026/07] 新增[Ascend C 算子开发系列（Kernel 直调版）教程](./tutorials/ascendc_operator_development_light)，覆盖算子开发基础概念、Ascend C 编程范式、Vector/Cube/融合算子开发与性能优化实战。
 - [2026/07] 新增[大模型推理系列课程](./tutorials/llm_inference)，涵盖大语言模型基础、CANN 推理仓库、推理优化、量化与 Profiling，并提供 Qwen3-8B 单卡实践。
@@ -104,7 +105,7 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 <tr><td></td><td>PyPTO 算子开发系列</td><td>🚧 建设中</td></tr>
 <tr><td></td><td>PyASC 算子开发系列</td><td>🚧 建设中</td></tr>
 <tr><td></td><td>TileLang 算子开发系列</td><td>🚧 建设中</td></tr>
-<tr><td><b>训练</b></td><td>大模型训练优化</td><td>🚧 建设中</td></tr>
+<tr><td><b>训练</b></td><td><a href="./tutorials/sft_training_pipeline">大模型训练优化</a></td><td>✅ 已上线</td></tr>
 <tr><td></td><td>大语言模型微调实战（SwanLab 共建）</td><td>🔍 评审中</td></tr>
 <tr><td><b>推理</b></td><td><a href="./tutorials/llm_inference">大模型推理系列课程</a>（大模型基础 / 推理仓库 / 推理优化 / 量化 / Profiling / Qwen3-8B 实践）</td><td>✅ 已上线</td></tr>
 <tr><td></td><td><a href="./reference_practice/model_inference_optimization">Sana-Video 推理优化实践</a></td><td>✅ 已上线</td></tr>
@@ -130,6 +131,7 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 │   ├── conv_operator_development          # Conv 算子开发实战
 │   ├── MC2_fused_operator_development     # MC2 融合算子开发实战
 │   ├── llm_inference                      # 大模型推理系列课程
+│   ├── sft_training_pipeline              # 大模型 SFT 训练系列课程
 │   ├── hccl_development                   # HCCL 集合通信系列课程
 │   ├── hixl_development                   # HiXL 单边通信应用开发（4 章）
 │   └── ...                                # 待扩展（PyPTO / TileLang 等）

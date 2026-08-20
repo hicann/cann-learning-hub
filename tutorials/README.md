@@ -12,6 +12,7 @@
 | Conv 算子开发实战教程 | 面向昇腾 NPU 的 Conv 算子开发实战教程，覆盖卷积算子开发核心概念与实践 | [conv_operator_development](./conv_operator_development) | ✅ 已发布 |
 | HIXL 应用开发系列教程 | 基于昇腾单边通信库的应用开发教程，包含核心API介绍、传输模式选择、问题定位、性能分析等核心内容 | [hixl_development](./hixl_development) | ✅ 已发布 |
 | HCCL 集合通信系列教程 | 面向昇腾 NPU 的 HCCL 集合通信开发教程，涵盖集合通信基础概念、常用通信算子、开发流程及实践 | [hccl_development](./hccl_development) | ✅ 已发布 |
+| 大模型 SFT 训练系列教程 | 面向大模型监督微调（SFT）的训练实践教程，涵盖数据处理、模型训练及完整 SFT 训练流程 | [sft_training_pipeline](./sft_training_pipeline) | ✅ 已发布 |
 
 ## 教程使用说明
 1. 已发布教程：点击链接可直接进入对应目录，包含教程文档、示例代码、实操步骤等完整内容；
