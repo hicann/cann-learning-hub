@@ -1,0 +1,68 @@
+说明：本节答案 notebook（answers/10.08_reference_answer.ipynb）为自包含实现，含全部 PyPTO 组件（PatchEmbedding / GELU / LayerNorm / 多头注意力 / ViT）与数据加载代码，可直接在 answers 目录下运行；以下为练习分析与验证代码。
+
+## 10.08 视觉 Transformer 练习参考答案
+
+### 练习 10.8.1：`img_size` 的值如何影响训练时间？
+
+**解答：**
+
+图像块数 $m = (img\_size / patch\_size)^2$。训练时间主要受两部分影响：
+
+1. **图像块嵌入**：unfold 切块 + 线性投影的计算量正比于图像块数 $m$（每个块一次投影），所以该项随 $img\_size^2$ 线性增长（patch 固定时）；
+2. **自注意力**：Transformer 编码器对 $m+1$ 个词元（含 cls 标记）做自注意力，注意力矩阵为 $(m+1)\times(m+1)$，时间与空间复杂度均为 $O(m^2)$（[10.6 节](../10.06_self_attention_and_positional_encoding.ipynb)），因此该项随 $img\_size^4$ 增长（patch 固定时 $m \propto img\_size^2$）。
+
+**结论**：$img\_size$ 从 96 增大到 192（patch 仍为 16）时，图像块数从 36 变为 144（4 倍），注意力代价增大 16 倍，训练时间显著增加；同时更大的输入图也使数据加载与显存占用增加。因此 ViT 不适合直接处理高分辨率图像，这也是 Swin Transformer 等分层方法引入局部窗口注意力的动机。
+
+### 练习 10.8.2：如果不将 “&lt;cls&gt;” 标记的表示投影到输出，而是投影图像块表示的均值，你会怎么做？实现这一更改，看看它如何影响准确率。
+
+**解答：**
+
+做法：去掉 cls 标记与对应位置编码，让编码器只处理图像块序列，最后对输出的图像块表示沿序列维求平均（global average pooling），再送入分类头。实现见下（`ViT` 增加 `pool_mode='mean'` 分支：`X.mean(dim=1)`）。
+
+为控制验证时间，用较小配置各训练 3 个 epoch 对比：
+
+验证代码（PyPTO，运行于答案 notebook 环境）：
+
+# 练习 10.8.2：用图像块均值代替 cls 标记
+img_size, patch_size = 64, 8
+num_hiddens, mlp_num_hiddens, num_heads, num_blks = 128, 256, 4, 2
+emb_dropout, blk_dropout, lr = 0.1, 0.1, 0.1
+num_epochs, batch_size = 3, 64
+
+train_iter, test_iter = load_fmnist(img_size, batch_size)
+print('训练集批数：', len(train_iter), '，每批', batch_size)
+
+print('== cls 标记版 ==')
+net_cls = ViT(img_size, patch_size, num_hiddens, mlp_num_hiddens, num_heads,
+              num_blks, emb_dropout, blk_dropout, pool_mode='cls',
+              in_channels=1)  # FashionMNIST 为单通道
+hist_cls = train_vit(net_cls, train_iter, test_iter, lr, num_epochs, device)
+
+print('== 均值池化版 ==')
+net_mean = ViT(img_size, patch_size, num_hiddens, mlp_num_hiddens, num_heads,
+               num_blks, emb_dropout, blk_dropout, pool_mode='mean',
+               in_channels=1)  # FashionMNIST 为单通道
+hist_mean = train_vit(net_mean, train_iter, test_iter, lr, num_epochs, device)
+
+print(f'cls 版最终 test acc: {hist_cls[-1][2]:.3f}')
+print(f'mean 版最终 test acc: {hist_mean[-1][2]:.3f}')
+
+**分析**：均值池化把全局信息平均到每个 patch 的表示上，无 cls 标记位置编码的额外参数；对 Fashion-MNIST 这类小规模数据，两者准确率接近（cls 标记通过自注意力天然聚合全局信息，平均池化则显式平均）。在数据充足的大规模任务上，cls 标记通常略优或相当；均值池化更省参数、实现简单，被部分 ViT 变体（如 Swin 的分类头）采用。
+
+### 练习 10.8.3：你能修改超参数来提高视觉 Transformer 的准确率吗？
+
+**解答：**
+
+可以从以下方向尝试（训练时间允许时可组合验证）：
+
+1. **模型容量**：增大 `num_hiddens` / `mlp_num_hiddens`、增加 `num_blks`、减小 `patch_size`（保留更多图像细节，但注意自注意力 $O(m^2)$ 变贵）；
+2. **优化**：降低学习率并增加 epoch（如 `lr=0.05` + 20 epochs）、改用 AdamW、加学习率 warmup 与余弦退火；
+3. **正则化**：增大 `emb_dropout` / `blk_dropout`、增加数据增强（随机水平翻转、随机裁剪、RandAugment），缓解小数据集上的过拟合；
+4. **结构变体**：使用均值池化（练习 2）、深浅混合层数、Swin 式局部窗口注意力降低计算量。
+
+由于 Transformer 缺少卷积的归纳偏置（平移不变性、局部性），在小数据集上通常难以超过同规模 CNN（ResNet），更大数据集 + 更大模型才能体现 ViT 的扩展性优势（见本节点小结）。
+
+---
+
+## 参考答案来源
+参考答案和 PyTorch 代码实现来源：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/

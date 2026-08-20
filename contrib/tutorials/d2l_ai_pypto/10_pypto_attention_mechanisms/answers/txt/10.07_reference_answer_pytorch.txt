@@ -1,0 +1,110 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / F / pypto / device 等，answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。
+10.7 Transformer 练习参考答案
+
+练习10.7.1
+
+在实验中训练更深的Transformer将如何影响训练速度和翻译效果？
+
+解答：
+增加 num_layers（编码器/解码器层数）会带来两方面的变化：
+- 训练速度：层数越多，每个样本的前向/反向计算量线性增大（每层含 2 个多头注意力 + 2 个前馈网络 + 3 次 AddNorm），训练时间近似线性增长；
+- 翻译效果：更深的模型表达能力更强，在数据充足时通常能降低损失、提升 BLEU；但 Transformer 是深网络，过深会加剧优化困难（需要更精细的初始化、学习率调度与残差连接），在小数据集上（如本节 600 句对的英法数据集）甚至可能过拟合或训练不稳定。
+
+PyTorch 代码（对比 num_layers=2 与 4，各训练 200 个周期至收敛（与主 notebook 10.7 节一致））：
+
+def make_transformer(num_layers):
+    num_hiddens, dropout, batch_size, num_steps = 32, 0.1, 64, 10
+    ffn_num_input, ffn_num_hiddens, num_heads = 32, 64, 4
+    key_size, query_size, value_size = 32, 32, 32
+    norm_shape = [32]
+    train_iter, src_vocab, tgt_vocab = load_data_nmt(batch_size, num_steps)
+    encoder = TransformerEncoder(len(src_vocab), key_size, query_size, value_size,
+                                 num_hiddens, norm_shape, ffn_num_input,
+                                 ffn_num_hiddens, num_heads, num_layers, dropout)
+    decoder = TransformerDecoder(len(tgt_vocab), key_size, query_size, value_size,
+                                 num_hiddens, norm_shape, ffn_num_input,
+                                 ffn_num_hiddens, num_heads, num_layers, dropout)
+    return EncoderDecoder(encoder, decoder), train_iter, src_vocab, tgt_vocab, num_steps
+
+for num_layers in (2, 4):
+    net, train_iter, src_vocab, tgt_vocab, num_steps = make_transformer(num_layers)
+    train_seq2seq(net, train_iter, lr=0.005, num_epochs=200, tgt_vocab=tgt_vocab, device=device)
+    translation, _ = predict_seq2seq(net, 'go .', src_vocab, tgt_vocab, num_steps, device)
+    print(f'num_layers={num_layers}: go . => {translation}, bleu {bleu(translation, "va !", k=2):.3f}')
+
+（PyPTO 版将各 nn.Linear / nn.LayerNorm / torch.bmm 替换为 PyPTOLinear / PyPTOLayerNorm / PyPTOBMM 即可，训练函数相同。）
+
+---
+
+练习10.7.2
+
+在Transformer中使用加性注意力取代缩放点积注意力是不是个好办法？为什么？
+
+解答：
+通常不是好办法。原因：
+- 计算效率：缩放点积注意力只需两次批量矩阵乘法（QK^T 与 softmax(.)V），充分利用矩阵乘法的硬件加速；加性注意力需要 W_q, W_k, w_v 三次线性变换 + 广播求和 + tanh，计算量更大；
+- 参数开销：加性注意力每个头多三组可学习参数，多头（如 8 头）叠加后参数量明显增加；
+- 关键前提：Transformer 中查询与键同维（都是 num_hiddens），满足点积注意力的使用条件，因此可以享受其高效性。
+
+结论：在查询键同维的场景下优先使用缩放点积注意力；加性注意力主要用于查询与键长度不同的场景。
+
+---
+
+练习10.7.3
+
+对于语言模型，应该使用Transformer的编码器还是解码器，或者两者都用？如何设计？
+
+解答：
+取决于任务类型：
+- 双向上下文（BERT 风格）：使用编码器。语言建模目标为"完形填空"（masked LM），每个位置的表示可以看到整个序列（含未来词元），训练效率高；
+- 自回归生成（GPT 风格）：使用解码器。逐词元生成时必须保持自回归属性（掩蔽自注意力保证查询只看过去），用于文本生成、对话等；
+- 两者都用（编码器-解码器）：用于序列转换任务（机器翻译、摘要），编码器读全文，解码器在编码信息指导下生成。
+
+设计要点：语言模型通常堆叠解码器层（含掩蔽自注意力 + 位置编码），输出层预测词表分布；若只做表示学习则用编码器 + 可选任务头。
+
+---
+
+练习10.7.4
+
+如果输入序列很长，Transformer会面临什么挑战？为什么？
+
+解答：
+主要挑战是二次方复杂度：自注意力需要计算 n×n 的注意力分数矩阵并存储，时间和空间复杂度均为 O(n^2)（n 为序列长度）。
+- 计算：每层的计算量为 O(n^2 d)（d 为特征维度），序列长度翻倍则计算量翻四倍；
+- 显存：n×n 的分数矩阵与注意力权重矩阵随 n 平方增长，长序列（如整本书、长文档、高分辨率图像）很容易耗尽显存；
+- 因此对长序列需要稀疏注意力、滑动窗口注意力、低秩近似（Linformer）、FlashAttention 等改进（见练习 10.7.5）。
+
+---
+
+练习10.7.5
+
+如何提高Transformer的计算速度和内存使用效率？提示：可以参考论文 (Tay et al., 2020)。
+
+解答：
+可从以下方向入手：
+- 稀疏注意力（Sparse Attention）：限制每个查询只关注局部窗口或特定步长（stride）的位置（如 Longformer、BigBird），将复杂度降为 O(n) 或 O(n log n)；
+- 低秩/核近似（Low-rank / Kernel Approximation）：用低秩投影近似 QK^T（Linformer：O(n)），或用核方法近似 softmax（Performer：随机特征映射）；
+- FlashAttention：将 QK^T 分块计算并在线 softmax，避免物化 n×n 矩阵，显著降低显存占用并利用 SRAM 带宽；
+- 序列压缩/池化：对长序列先做局部聚合（如文本中的 segment pooling、图像中的 patch 化），缩短有效序列长度；
+- 混合模型：浅层用局部操作（卷积/RNN），深层用全局注意力。
+
+---
+
+练习10.7.6
+
+如果不使用卷积神经网络，如何设计基于Transformer模型的图像分类任务？提示：可以参考Vision Transformer (Dosovitskiy et al., 2021)。
+
+解答：
+参考 Vision Transformer（ViT）的设计：
+1. 图像分块（Patch Embedding）：将 H×W×3 图像切成 HW/P^2 个 P×P×3 的小块，每个小块展平后经线性投影得到 d 维嵌入；
+2. 位置编码：为每个 patch 嵌入加上可学习的位置编码，保留空间顺序信息；
+3. 类别标记（CLS token）：在序列头部拼接一个可学习的 [CLS] 标记，最终取其输出表示用于分类；
+4. Transformer 编码器：堆叠多层标准编码器块（多头自注意力 + 前馈网络 + AddNorm）；
+5. 分类头：对 [CLS] 输出做线性分类。
+
+相比 CNN，ViT 没有卷积的归纳偏置（局部性/平移等变性），需要更多数据或更强的正则（数据增强、蒸馏）才能训练好。
+
+---
+
+## 参考答案来源
+参考答案和 PyTorch 代码实现来源：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/
