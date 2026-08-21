@@ -12,6 +12,8 @@
 - 无须具备 SFT 或 TorchTitan 经验。
 - 建议了解 Python，以及 PyTorch 的 forward → loss → backward → update 基本流程；不熟悉的读者可结合第 1、2 章中的补充说明学习。
 
+> **课程依赖说明（请先阅读）**：本课程的中级系列建议从第 5 章开始运行，**不要求先完成“大模型训练系列（初级）”，也不要求读取初级课程生成的 checkpoint**。第 2.03 notebook 会下载/准备 Wordle 数据集、模型权重并创建 `torchtitan-npu` 环境；后续 notebook 默认复用这些目录中的资源。若从中间章节开始，请先运行本系列第 2.03 的环境检查和数据准备单元（以及目标章节明确标注的训练单元），不能把初级课程的输出目录当作隐含前置条件。
+
 ## 软硬件配套说明
 
 | 项目 | 要求 |
@@ -37,7 +39,8 @@
 
 | 序号 | 主题 | 主要内容 | 课件 |
 |---|---|---|---|
-| 01 | SFT 监督微调 | Wordle 任务、SFT 原理、TorchTitan/FSDP、基线训练、推理评测、Attention/VarLen/通信优化与融合算子性能优化 | [01_sft_training_pipeline.pptx](slides/01_sft_training_pipeline.pptx) |
+| 01 | SFT 监督微调（初阶） | Wordle 任务、SFT 原理、TorchTitan/FSDP、基线训练、推理评测 | [01_sft_training_pipeline.pptx](slides/01_sft_training_pipeline.pptx) |
+| 05 | SFT 监督微调（中阶） | Attention/VarLen/通信优化与融合算子性能优化 | [01_sft_training_pipeline.pptx](slides/01_sft_training_pipeline.pptx) |
 
 
 ## 教程结构
@@ -100,7 +103,7 @@
 | [06.01 章节介绍](06_varlen_attention/06.01_chapter_intro.ipynb) | 变长注意力优化的整体目标 |
 | [06.02 问题定义](06_varlen_attention/06.02_problem_statement.ipynb) | Packed SFT 的 Attention 问题 |
 | [06.03 数据装箱](06_varlen_attention/06.03_dataloader_and_packing.ipynb) | SFT DataLoader：Non-greedy 与 Greedy Packing |
-| [06.04 数据加载分析](06_varlen_attention/06.04_dataloader_profiling.ipynb) | DataLoader 与短程训练对比 |
+| [06.04 数据加载分析](06_varlen_attention/06.04_dataloader_profiling.ipynb) | **以 Wordle 数据集为例**的数据加载与短程训练对比 |
 | [06.05 VarLen Attention](06_varlen_attention/06.05_from_sdpa_to_varlen.ipynb) | 从 Causal SDPA 到 Block-Causal Varlen Attention |
 | [06.06 端到端 Profiling](06_varlen_attention/06.06_end_to_end_profiling.ipynb) | 端到端 Profiling |
 | [06.07 章节练习](06_varlen_attention/06.07_chapter_practice.ipynb) | 章节练习 |
@@ -121,10 +124,10 @@
 | Notebook | 内容 |
 |---|---|
 | [08.01 章节介绍](08_comm_optimizations/08.01_chapter_intro.ipynb) | VarLen+FSDP、VarLen+CP 与 Profiling 的学习目标 |
-| [08.02 VarLen 与 CP 交互](08_comm_optimizations/08.02_varlen_cp_interaction.ipynb) | Varlen+FSDP 短序列 vs Varlen+CP 长序列 |
-| [08.03 TorchTitan Profiling](08_comm_optimizations/08.03_torchtitan_profiling.ipynb) | TorchTitan-NPU Profiling：Varlen+FSDP 4096 vs Varlen+CP 8192 |
-| [08.04 Profiling 分析](08_comm_optimizations/08.04_profiling_analysis.ipynb) | Profiling 分析：Varlen+FSDP 4096 vs Varlen+CP 8192 |
-| [08.05 章节练习](08_comm_optimizations/08.05_chapter_practice.ipynb) | 章节练习 |
+| [08.02 VarLen+CP 长序列设计与正确性验证](08_comm_optimizations/08.02_varlen_cp_interaction.ipynb) | 长序列设计、全局隔离区间约束与 correctness gate |
+| [08.03 CP 长序列容量 Profiling](08_comm_optimizations/08.03_cp_long_sequence_capacity_profiling.ipynb) | **S=16,384 的 no-CP/CP2：理论 activation、OOM、双 rank 峰值与 AllToAll 分析** |
+| [08.04 TP2 与 FSDP2 的 TPS/显存对比实验](08_comm_optimizations/08.04_tp2_fsdp2_comparison.ipynb) | TP2 与 FSDP2 的 TPS、显存和通信证据对比 |
+| [08.05 章节练习](08_comm_optimizations/08.05_chapter_practice.ipynb) | CP 容量、VarLen correctness、TP/FSDP2 与 profiler 判读练习 |
 
 
 
