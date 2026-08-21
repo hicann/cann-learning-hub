@@ -20,7 +20,7 @@ on:
 
 env:
   org_name: ${{ vars.ORG_NAME }}
-  repo_name: ${{ atomgit.event.repository.name}}
+  repo_name: ${{ atomgit.event.repository.name }}
   MERGE_ID: ${{ atomgit.event.pull_request.number }}
   TARGET_BRANCH: ${{ atomgit.base_ref }}
   SOURCE_BRANCH: ${{ atomgit.head_ref }}
@@ -41,7 +41,7 @@ stages:
               repo_name: ${{ env.repo_name }}
               target_branch: ${{ env.TARGET_BRANCH }}
               repo_url: ${{ vars.CI_PATH }}
-        runs-on: [dedicate-hosted, x64, small]
+        runs-on: [self-hosted, arch=x64, spec=small]
         container:
           image: swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu20.04.05_x86:k8s_v1.1006
       JOB_pre:
