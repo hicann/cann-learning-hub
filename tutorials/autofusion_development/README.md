@@ -42,10 +42,10 @@
 
 | Notebook             | 链接           | 状态      |
 | -------------------- | -------------- | --------- |
-| 1.1 章节介绍         | 在线体验建设中 | ✅ 已发布 |
-| 1.2 AutoFuse简介     | 在线体验建设中 | ✅ 已发布 |
-| 1.3 AutoFuse使能基础 | 在线体验建设中 | ✅ 已发布 |
-| 1.4 章节练习         | 在线体验建设中 | ✅ 已发布 |
+| 1.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 1.2 AutoFuse简介     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.02_autofuse_introduction.ipynb) | ✅ 已发布 |
+| 1.3 AutoFuse使能基础 |  [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.03_enable_autofusion.ipynb) | ✅ 已发布 |
+| 1.4 章节练习         |  [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.04_chapter_practice.ipynb) | ✅ 已发布 |
 
 ### 第二章 AutoFuse 自动融合原理
 

@@ -1,6 +1,7 @@
 # cann-learning-hub
 
 ## 🔥Latest News
+- [2026/08] 新增[AutoFusion 自动融合开发系列教程](./tutorials/autofusion_development)，涵盖 AutoFusion 基础概念、自动融合原理与开发实践。
 - [2026/08] 新增[大模型训练系列课程](./tutorials/sft_training_pipeline)，涵盖大模型监督微调（SFT）核心概念、数据处理、模型训练与完整训练流程实践。
 - [2026/08] 新增[HCCL 集合通信开发系列课程](./tutorials/hccl_development)，涵盖 HCCL 基础概念、集合通信原理、开发流程与通信实践，帮助开发者掌握昇腾多卡集合通信开发。
 - [2026/07] 新增[Ascend C 算子开发系列（Kernel 直调版）教程](./tutorials/ascendc_operator_development_light)，覆盖算子开发基础概念、Ascend C 编程范式、Vector/Cube/融合算子开发与性能优化实战。
@@ -111,7 +112,9 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 <tr><td></td><td><a href="./reference_practice/model_inference_optimization">Sana-Video 推理优化实践</a></td><td>✅ 已上线</td></tr>
 <tr><td><b>推荐系统</b></td><td>推荐系统开发（DataWhale 贡献）</td><td>✅ 已上线</td></tr>
 <tr><td><b>应用开发</b></td><td>应用开发系列</td><td>🚧 建设中</td></tr>
-<tr><td><b>图框架</b></td><td>图框架加速 &amp; 图模式应用系列</td><td>🚧 建设中</td></tr>
+<tr><td><b>图框架</b></td><td>TorchAir图模式优化系列教程</td><td>🚧 建设中</td></tr>
+<tr><td></td><td><a href="./tutorials/autofusion_development">AutoFusion 自动融合系列</a></td><td>✅ 已上线</td></tr>
+<tr><td></td><td>GE图引擎开发系列教程</a></td><td>🚧 建设中</td></tr>
 <tr><td><b>集合通信</b></td><td><a href="./tutorials/hccl_development">HCCL 集合通信系列</a></td><td>✅ 已上线</td></tr>
 <tr><td></td><td><a href="./tutorials/hixl_development">HiXL 单边通信系列</a></td><td>✅ 已上线</td></tr>
 <tr><td><b>CANN Bot</b></td><td>CANN Bot 系列课程</td><td>🚧 建设中</td></tr>
@@ -132,6 +135,7 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 │   ├── MC2_fused_operator_development     # MC2 融合算子开发实战
 │   ├── llm_inference                      # 大模型推理系列课程
 │   ├── sft_training_pipeline              # 大模型 SFT 训练系列课程
+│   ├── autofusion_development             # AutoFusion 自动融合开发系列教程
 │   ├── hccl_development                   # HCCL 集合通信系列课程
 │   ├── hixl_development                   # HiXL 单边通信应用开发（4 章）
 │   └── ...                                # 待扩展（PyPTO / TileLang 等）
