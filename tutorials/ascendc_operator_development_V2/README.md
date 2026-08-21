@@ -124,3 +124,4 @@
 | --- | --- |
 | [7.1 章节介绍](07_advanced_operator_practice/07.01_chapter_intro.ipynb) | 🚧 开发中 |
 | [7.3 基于指针的C语言编程算子开发高阶教程](07_advanced_operator_practice/07.03_simd_c_programming_softmax_advanced.ipynb) | 🚧 开发中 |
+| [7.4 SIMD 章节实践](07_advanced_operator_practice/07.04_simd_practice.ipynb) | 🚧 开发中 |
