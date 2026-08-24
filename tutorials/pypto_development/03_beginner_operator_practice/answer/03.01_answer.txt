@@ -1,0 +1,5 @@
+1. B
+2. `pypto.Tensor` 是 kernel 参数描述；调用 kernel 时传入的 `torch.Tensor` 是真实输入输出数据。
+3. C
+4. B
+5. `(out - ref).abs().max().item()` 表示 PyPTO 输出和 PyTorch 参考结果之间的最大绝对误差。
