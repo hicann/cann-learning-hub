@@ -1,0 +1,10 @@
+flowchart LR
+    A["环境准备<br/>CANN / Device / 输入数据"] --> B["构建 Graph<br/>GE API / Parser / ES"]
+    B --> C["可选改图<br/>设置属性 / 动态档位 / 输出"]
+    C --> D["GEInitializeV2<br/>初始化 GE"]
+    D --> E["创建 GeSession"]
+    E --> F["AddGraph<br/>添加图"]
+    F --> G["CompileGraph<br/>编译图"]
+    G --> H["RunGraph<br/>同步或异步执行"]
+    H --> I["处理输出"]
+    I --> J["RemoveGraph / Finalize<br/>释放资源"]

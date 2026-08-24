@@ -1,0 +1,12 @@
+flowchart LR
+    input["模型文件 / GE API 构图"]
+    ascgraph["AscendIR 计算图"]
+    compile["GE 编译"]
+    gemodel["GeModel<br/>在线/离线内部产物"]
+    om["OM 文件<br/>仅离线场景序列化落盘"]
+    execute["GE 执行"]
+    device["昇腾芯片计算"]
+
+    input --> ascgraph --> compile --> gemodel --> execute --> device
+    gemodel -. "离线编译可选序列化" .-> om
+    om -. "离线部署加载后恢复为 GeModel" .-> execute

@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant Host
+    participant Runtime
+    participant Device
+
+    loop 每次模型执行
+        Host->>Runtime: 下发算子 A 的 task
+        Runtime->>Device: 执行算子 A
+        Host->>Runtime: 下发算子 B 的 task
+        Runtime->>Device: 执行算子 B
+        Host->>Runtime: 下发算子 C 的 task
+        Runtime->>Device: 执行算子 C
+    end
+
+    Note over Host,Device: Host 逐算子调度，交互次数随图规模和执行次数增加

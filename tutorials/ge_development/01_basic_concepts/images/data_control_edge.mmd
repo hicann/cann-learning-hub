@@ -1,0 +1,12 @@
+flowchart TB
+    subgraph DataEdge["数据边：传递 Tensor"]
+      A["Node A<br/>(Conv)"] -->|"Tensor / DataAnchor"| B["Node B<br/>(Relu)"]
+    end
+    subgraph ControlEdge["控制边：只约束执行顺序"]
+      C["Node C<br/>(Assign)"] -. "CtrlAnchor<br/>无 Tensor 数据" .-> D["Node D<br/>(Read)"]
+    end
+
+    classDef data fill:#EAF7EF,stroke:#2E7D52,stroke-width:1.5px,color:#123524;
+    classDef ctrl fill:#FFF4E6,stroke:#B45F06,stroke-width:1.5px,color:#3D2500;
+    class A,B data;
+    class C,D ctrl;

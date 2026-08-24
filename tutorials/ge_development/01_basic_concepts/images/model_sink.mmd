@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant Host
+    participant Runtime
+    participant Device
+
+    rect rgb(238, 246, 255)
+        Note over Host,Device: 模型加载阶段
+        Host->>Runtime: 一次性加载 GeModel
+        Runtime->>Device: 下发整图 task / 权重 / 算子二进制
+    end
+
+    rect rgb(240, 248, 240)
+        Note over Host,Device: 多次执行阶段
+        loop 每次模型执行
+            Host->>Runtime: 下发 1 个模型执行 task
+            Runtime->>Device: 触发整图执行
+        end
+    end

@@ -1,0 +1,17 @@
+02.03 课后练习答案
+
+1. 正确。`ge_api_v2.h` 的 GeSession 已将旧接口中分散的编译、加载与执行配合关系收敛到 CompileGraph / RunGraph* 这一组接口，不再单独提供 BuildGraph。
+
+2. 错误。GeSession 支持在单个会话中管理多张图，可通过 AddGraph 添加多张图，通过 RemoveGraph 移除图，每张图由唯一的 graph_id 标识，可独立编译和执行。
+
+3. B。使用 GeSession 的正确生命周期顺序是：GEInitializeV2 → GeSession 构造 → AddGraph → CompileGraph → RunGraph → GEFinalizeV2。必须先初始化 GE 并创建 Session，才能 AddGraph/CompileGraph/RunGraph；GEFinalizeV2 必须在 Session 析构之后调用。A、C、D 的接口顺序均不符合该约束。
+
+4. B。aclgrphParseONNX 用于将 ONNX 模型文件解析为 Graph（头文件 parser/onnx_parser.h）。A 的 aclgrphBuildModel 是离线编译模型、C 的 aclgrphSaveModel 是保存离线模型、D 的 aclgrphBuildInitialize 是离线编译初始化，均不用于解析模型。
+
+5. ABC。A 正确，GeSession 支持实时构图、编译、执行，无需预先生成 OM。B 正确，配置 ge.graphRunMode=1 并使用 Variable 节点可支持训练梯度迭代。C 正确，单 Session 可管理多张图并支持动态添加（AddGraph）与移除（RemoveGraph）。D 错误，在线路径需要实时编译，启动速度通常比直接加载 OM 的离线路径更慢。
+
+6. B。AddGraph 的真实签名为 AddGraph(uint32_t graph_id, const Graph &graph) 以及带 options 的重载 AddGraph(graph_id, graph, options)，参数顺序是 graph_id 在前、graph 在后。写成 AddGraph(graph, graph_id) 是错误的。
+
+7. C。在线接口中，RunGraph 的输入输出张量类型是 gert::Tensor，签名为 RunGraph(uint32_t graph_id, const std::vector<gert::Tensor> &inputs, std::vector<gert::Tensor> &outputs)。注意区分：CompileGraph 传入的输入张量类型是 ge::Tensor（用于描述输入信息/档位 shape），而 RunGraph 真正执行时用的是 gert::Tensor（承载实际数据）。A 的 ge::Tensor 是构图/编译期张量、B 的 aclmdlDataset 是 ACL 离线推理的输入输出容器、D 的 ge::TensorDesc 只是张量描述，均不是 RunGraph 的入参类型。
+
+8. ABC。A 正确，ge.graphRunMode 配置为 "0" 表示在线推理、"1" 表示训练。B 正确，ES 构图的 C++ 入口类是 ge::es::EsGraphBuilder，通过 BuildAndReset() 返回 std::unique_ptr<ge::Graph>。C 正确，ES 构图中加减乘除等运算符已被重载，可直接用 + / * 等连接节点，并可用 CreateVariable(index, name) 创建变量节点（变量按名称共享，需显式指定名称）。D 错误，ge.graphRunMode 在线推理应配置为 "0"，训练才配置为 "1"，并非只能配置为 "1"。

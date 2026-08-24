@@ -1,0 +1,19 @@
+02.02 课后练习答案
+
+1. 错误。ATC 编译 OM 模型时无需昇腾设备在线，纯靠 Host 侧即可完成编译。无卡场景下通过 --soc_version（代码内为 ge.socVersion）指定目标芯片即可。
+
+2. 正确。aclmdlExecute 是同步执行接口，调用返回时推理已完成，输出 dataset 中即为结果。
+
+3. B。aclgrphBuildModel 将输入的 Graph 编译为适配 AI 处理器的离线模型，结果保存在内存缓冲区（ModelBufferData）；随后由 aclgrphSaveModel 落盘为 .om 文件。
+
+4. C。OM 离线模型包含算子二进制、权重数据、执行流信息和模型元信息，但不包含原始模型文件（.onnx / .pb）。这正是 OM 可独立分发、不依赖前端框架运行时的原因。
+
+5. ABCD。所有描述均正确：aclmdlLoadFromFile 从文件加载（A），aclmdlLoadFromMem 从内存加载（B），aclmdlLoadFromFileWithMem 由用户指定工作/权重内存、便于精细化内存管理（C），三个加载接口都返回 model_id，后续通过此 ID 操作模型（D）。
+
+6. C。atc 命令 --framework 取值：3=TensorFlow，5=ONNX，1=MindSpore air。故 5 代表 ONNX。
+
+7. 设置图输出用 graph_builder->SetOutput(result, 0)；完成构图用 graph_builder->BuildAndReset()（产出 ge::Graph）。承载 ES 构图的类名是 ge::es::EsGraphBuilder（其方法为 CreateInput / SetOutput / BuildAndReset）。两个输入用 input_x + input_y 的运算符重载表达 Add。
+
+8. 期望输出为 [[11,22,33],[44,55,66]]（逐元素相加：1+10=11，2+20=22，3+30=33，4+40=44，5+50=55，6+60=66）。Add 图的语义就是逐元素相加，与硬件无关，因此用 numpy 的 input_x + input_y 即可在无 NPU 环境复现同一结果，作为 NPU 推理结果的对拍基准——昇腾推理输出应与该基准完全一致。
+
+9. 错误。aclmdlExecuteAsync 是异步接口，调用立即返回，推理可能尚未完成；必须先调用 aclrtSynchronizeStream 等待对应 stream 上的任务全部完成，才能从输出 dataset 读到正确结果。

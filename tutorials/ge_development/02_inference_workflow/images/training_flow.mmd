@@ -1,0 +1,10 @@
+flowchart LR
+    A["GEInitializeV2<br/>ge.graphRunMode = 1"] --> B["构图<br/>包含 Variable 节点"]
+    B --> C["AddGraph"]
+    C --> D["CompileGraph"]
+    D --> E["准备输入"]
+    E --> F["RunGraph"]
+    F --> G["参数更新 / 读取变量"]
+    G --> E
+    G --> H["RemoveGraph"]
+    H --> I["GEFinalizeV2"]

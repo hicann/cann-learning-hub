@@ -1,0 +1,11 @@
+flowchart TB
+    model["PyTorch Module / Function"]
+    dynamo["TorchDynamo / torch.compile"]
+    fx["PyTorch FX Graph"]
+    torchair["TorchAir NPU Backend"]
+    ascendir["AscendIR Graph"]
+    ge["GE Compiler / Executor"]
+    runtime["Ascend Runtime"]
+    device["Ascend Device"]
+
+    model --> dynamo --> fx --> torchair --> ascendir --> ge --> runtime --> device
