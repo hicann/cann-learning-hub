@@ -10,6 +10,7 @@
 | 2 | [什么是 NPU](./02_what_is_npu.ipynb) | 为什么需要 NPU → CPU vs NPU 算力差距 → 昇腾产品全览 → Host/Device → NPU 内部 6 组件 → AI Core 三大部分 → 多核并行 → GPU 对比 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/02_what_is_npu.ipynb) |
 | 3 | [什么是 CANN](./03_what_is_cann.ipynb) | 从 NPU 到 CANN → 架构总览 → 各组件详解（框架适配/算子库/通信库/图引擎/加速库/Ascend C/编译器/运行时/驱动）→ 一行代码的完整旅程 → CANN vs CUDA → 环境验证 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/03_what_is_cann.ipynb) |
 | 4 | [Hello World：NPU 加法](./04_hello_world_npu.ipynb) | 体验从 PyTorch 到昇腾 NPU 的零门槛迁移：一行代码切换设备，亲手感受 NPU 加速计算 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/04_hello_world_npu.ipynb) |
+| 5 | [课程总结与实践](./05_course_summary.ipynb) | 四节课知识串联成全景图，CANN/CUDA 速查对照，三道难度递进的 NPU 实践题 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/05_course_summary.ipynb) |
 
 ## 课件
 
@@ -37,5 +38,5 @@ cann_basics/
 ├── slides/       # 授课课件
 │   └── artificial_intelligence_basics.pptx
 ├── images/       # 课程图片资源
-└── answer/       # 练习答案
+└── answer/       # 练习答案与批改脚本
 ```
