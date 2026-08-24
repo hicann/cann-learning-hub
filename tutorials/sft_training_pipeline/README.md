@@ -33,9 +33,9 @@
 
 ## 课程内容
 
-| 序号 | 主题 | 主要内容 |
-|---|---|---|
-| 01 | SFT 监督微调 | Wordle 任务、SFT 原理、TorchTitan/FSDP、基线训练、推理评测、Attention/VarLen/通信优化与融合算子性能优化 |
+| 序号 | 主题 | 主要内容 | 课件 |
+| --- | --- | --- | --- |
+| 01 | SFT 监督微调 | Wordle 任务、SFT 原理、TorchTitan/FSDP、基线训练、推理评测、Attention/VarLen/通信优化与融合算子性能优化 |[01_sft_training_pipeline.pptx](./slides/01_sft_training_pipeline.pptx) |
 
 
 ## 教程结构
