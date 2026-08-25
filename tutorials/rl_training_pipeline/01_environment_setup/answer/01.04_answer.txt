@@ -1,0 +1,9 @@
+1. B。param_offload=True 将训练参数从 NPU 设备内存卸载到 CPU，释放 NPU 设备内存供 vLLM-Ascend rollout 使用。这是 Hybrid Engine 时分复用的关键机制。
+
+2. B。AgentLoopManager 管理多个 AgentLoop Worker，每个 Worker 并行处理一组 rollout。参数更新由 Ray Train (FSDP) 负责。
+
+3. A、B、D。RL 不依赖逐 token 人工标注的示范回复，适合多轮决策场景，也可以通过试错优化策略。当前 Wordle 任务仍需要秘密单词作为 `ground_truth` 来计算奖励；RL 训练还需要生成和评价 rollout，通常不会比 SFT 更快。
+
+4. A、B、C。本章初阶训练路径使用 vLLM、vLLM-Ascend 和 verl，由 verl FSDP 后端完成 Actor/Ref 计算。TorchTitan-NPU 是中阶课程使用的另一种训练后端，不是初阶路径的环境依赖。
+
+5. A、B、C、D。verl 框架的四大核心组件：TaskRunner（总调度）、AgentLoopManager（rollout 管理）、vLLM Server（推理引擎）、Ray Train/FSDP（训练引擎）。

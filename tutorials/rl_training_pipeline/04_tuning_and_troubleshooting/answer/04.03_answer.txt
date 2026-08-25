@@ -1,0 +1,9 @@
+1. 对。策略崩塌的典型表现：entropy 突然跌到 0、correct 归零、response_length 升高到 3232 并持续处于高位。模型输出退化为固定模式。
+
+2. C。题目给出的日志中 correct、partial 和 length_bonus 均为 0，format=1.0，加权后 0.2*1.0=0.20，因此选择 C。只有总奖励而没有各项奖励时，不能直接确定得分来源；具体输出形式还需要结合 rollout 文本判断。
+
+3. B。应先回退到验证指标较好的 checkpoint，保持其他参数不变，小幅调整 entropy_coeff 做短程对比。一次修改多项参数无法判断哪项有效。
+
+4. A、B、C、D。崩溃诊断需要联合检查 entropy、response_length、验证 correct、KL 和 grad_norm，并结合 rollout 文本与各项奖励定位输出退化模式，不能由单一指标推断根因。
+
+5. A、B、D。训练监控最佳实践：前 25～30 步密切监控（A）、设置 checkpoint 频率（B）、同时看多个指标（D）。只看 reward（C）是错误做法，reward 可能因为格式奖励而不归零，掩盖崩塌。

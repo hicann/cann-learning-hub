@@ -1,0 +1,9 @@
+1. 对。KL loss 限制当前策略相对参考策略的漂移，entropy bonus 降低分布过早集中的风险。两者互补但不能相互替代。
+
+2. 错。单一指标不能判断训练健康度。reward 可能因为格式奖励而不归零，掩盖输出退化，需要结合 entropy、验证 correct 和 response_length 等指标。
+
+3. B。训练 reward 与任务效果并不总是同步。应优先保留验证 correct 较好的 checkpoint，并结合 entropy、KL、输出长度和多次验证趋势判断。
+
+4. C。单次指标变化不足以确认策略崩塌。应继续检查 KL、各项奖励、rollout 文本和后续趋势，确认多个异常信号是否同时出现。
+
+5. A、B、C。entropy_coeff 控制探索强度，kl_loss_coef 控制策略漂移约束，ACTOR_LR 控制参数更新步长。ROLLOUT_N 影响组内优势估计，但不直接配置这三项权重或更新步长。

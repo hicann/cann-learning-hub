@@ -1,0 +1,9 @@
+1. 对。val-core/wordle/correct/mean@5 表示每个测试词采样 5 次后的验证集平均猜中率，是衡量模型猜词能力最直接的指标。
+
+2. 对。actor/entropy 反映模型输出的不确定性（探索能力）。entropy 高表示模型在尝试不同策略，低表示趋于确定性输出。
+
+3. B。val-core/wordle/correct/mean@5 表示验证集的平均猜中率，直接反映模型猜中秘密单词的能力。
+
+4. C。训练崩塌的典型信号是 entropy 突然跌到 0、response_length 升高到 3232 并持续处于高位、correct 归零。entropy 逐步变化且验证 correct 没有持续恶化（D）不是崩塌信号。
+
+5. A、B、C、D。健康训练需要联合观察：验证 reward 和 correct 整体改善（A、B）、entropy 没有快速逼近 0 或持续加速上升（C）、response_length 在合理范围内波动（D）。

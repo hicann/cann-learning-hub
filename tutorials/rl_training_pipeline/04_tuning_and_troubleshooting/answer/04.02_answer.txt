@@ -1,0 +1,9 @@
+1. 对。先运行 25～30 步，同时观察 entropy、KL、验证 correct 和输出长度，再根据曲线调节 entropy_coeff。
+
+2. 对。RL 更新基于 noisy 的优势估计，需要更保守的步长。RL 学习率通常比 SFT 低 1-2 个数量级。
+
+3. B。entropy_coeff=0.005 实验中 entropy 上升到 3.638，而验证 correct 没有改善，说明 entropy bonus 的相对影响过强，模型探索过度。
+
+4. B。比较 entropy_coeff 时应固定模型、数据、seed、batch、学习率和评测协议做短程实验，并联合观察 entropy、KL、验证 correct 和输出长度。
+
+5. A、B、C、D。entropy、KL、验证 correct 和 response_length 分别反映探索变化、策略漂移、任务效果和输出退化风险，需要联合判断三种力的相对影响是否仍支持学习。
