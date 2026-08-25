@@ -78,11 +78,11 @@ TorchAir 需匹配对应版本的PyTorch、TorchNPU、CANN固件与Python 环境
 
 | Notebook             | Link    | 状态 |
 |:------------------------|:--------| :--- |
-| **1.1 章节介绍**           | 在线体验    | ✅ 已发布 |
-| **1.2 torch.compile原理介绍** | 在线体验    | ✅ 已发布 |
-| **1.3 NPUGraph原理介绍**     | 在线体验 | ✅ 已发布 |
-| **1.4 npugraph_ex基础概念** | 在线体验 | ✅ 已发布 |
-| **1.5 章节练习**           | 在线体验 | ✅ 已发布 |
+| **1.1 章节介绍**           | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.01_chapter_intro.ipynb)    | ✅ 已发布 |
+| **1.2 torch.compile原理介绍** | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.02_torch_compile_intro.ipynb)   | ✅ 已发布 |
+| **1.3 NPUGraph原理介绍**     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.03_npugraph_intro.ipynb) | ✅ 已发布 |
+| **1.4 npugraph_ex基础概念** | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.04_npugraph_ex_basic_concepts.ipynb) | ✅ 已发布 |
+| **1.5 章节练习**           | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.05_chapter_practice.ipynb) | ✅ 已发布 |
 
 
 #### 第二章节 快速上手
@@ -90,9 +90,9 @@ TorchAir 需匹配对应版本的PyTorch、TorchNPU、CANN固件与Python 环境
 
 | Notebook    | Link | 状态 |
 |:---------------| :--- | :--- |
-| **2.1 章节介绍**   | 在线体验     | ✅ 已发布 |
-| **2.2 上手案例** | 在线体验     | ✅ 已发布 |
-| **2.3 章节练习**   | 在线体验     | ✅ 已发布 |
+| **2.1 章节介绍**   | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/02_quick_start/02.01_chapter_intro.ipynb)     | ✅ 已发布 |
+| **2.2 上手案例** | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/02_quick_start/02.02_quick_start.ipynb)   | ✅ 已发布 |
+| **2.3 章节练习**   | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/02_quick_start/02.03_chapter_practice.ipynb)     | ✅ 已发布 |
 
 ---
 

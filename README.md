@@ -1,6 +1,7 @@
 # cann-learning-hub
 
 ## 🔥Latest News
+- [2026/08] 新增[TorchAir图模式优化系列教程](./tutorials/TorchAir_development)，涵盖 TorchAir 基础概念、PyTorch 模型图转换、昇腾 NPU 图模式执行与性能优化实践，帮助开发者掌握基于 TorchAir 的模型开发与优化流程。
 - [2026/08] 新增[GE 图引擎开发系列教程](./tutorials/ge_development)，涵盖 GE 基础概念、图构建与编译、模型执行与优化、扩展开发及问题定位。
 - [2026/08] 新增[AutoFusion 自动融合开发系列教程](./tutorials/autofusion_development)，涵盖 AutoFusion 基础概念、自动融合原理与开发实践。
 - [2026/08] 新增[大模型训练系列课程](./tutorials/sft_training_pipeline)，涵盖大模型监督微调（SFT）核心概念、数据处理、模型训练与完整训练流程实践。
@@ -113,7 +114,7 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 <tr><td></td><td><a href="./reference_practice/model_inference_optimization">Sana-Video 推理优化实践</a></td><td>✅ 已上线</td></tr>
 <tr><td><b>推荐系统</b></td><td>推荐系统开发（DataWhale 贡献）</td><td>✅ 已上线</td></tr>
 <tr><td><b>应用开发</b></td><td>应用开发系列</td><td>🚧 建设中</td></tr>
-<tr><td><b>图框架</b></td><td>TorchAir图模式优化系列教程</td><td>🚧 建设中</td></tr>
+<tr><td><b>图框架</b></td><td><a href="./tutorials/TorchAir_development">TorchAir图模式优化系列教程</td><td>✅ 已上线</td></tr>
 <tr><td></td><td><a href="./tutorials/autofusion_development">AutoFusion 自动融合系列</a></td><td>✅ 已上线</td></tr>
 <tr><td></td><td><a href="./tutorials/ge_development">GE图引擎开发系列教程</a></td><td>✅ 已上线</td></tr>
 <tr><td><b>集合通信</b></td><td><a href="./tutorials/hccl_development">HCCL 集合通信系列</a></td><td>✅ 已上线</td></tr>
@@ -137,6 +138,7 @@ cann-learning-hub 不是孤立的"看教程"，而是打通学习到实战的完
 │   ├── llm_inference                      # 大模型推理系列课程
 │   ├── sft_training_pipeline              # 大模型 SFT 训练系列课程
 │   ├── ge_development                     # GE 图引擎开发系列教程
+│   ├── TorchAir_development               # TorchAir图模式优化系列教程
 │   ├── autofusion_development             # AutoFusion 自动融合开发系列教程
 │   ├── hccl_development                   # HCCL 集合通信系列课程
 │   ├── hixl_development                   # HiXL 单边通信应用开发（4 章）

@@ -14,6 +14,7 @@
 | 大模型 SFT 训练系列教程 | 面向大模型监督微调（SFT）的训练实践教程，涵盖数据处理、模型训练及完整 SFT 训练流程 | [sft_training_pipeline](./sft_training_pipeline) | ✅ 已发布 |
 | AutoFusion 自动融合开发系列教程 | 面向 CANN 图模式的 AutoFusion 自动融合开发教程，涵盖自动融合基础概念、融合原理及开发实践 | [autofusion_development](./autofusion_development) | ✅ 已发布 |
 | GE 图引擎开发系列教程 | 面向 GE 图引擎的开发教程，涵盖基础概念、图构建与编译、模型执行与优化、扩展开发及问题定位 | [ge_development](./ge_development) | ✅ 已发布 |
+| TorchAir 开发系列教程 | 面向昇腾 NPU 的 TorchAir 开发教程，涵盖 PyTorch 模型图转换、图模式执行、模型适配及性能优化实践 | [TorchAir_development](./TorchAir_development) | ✅ 已发布 |
 
 ## 教程使用说明
 1. 已发布教程：点击链接可直接进入对应目录，包含教程文档、示例代码、实操步骤等完整内容；
