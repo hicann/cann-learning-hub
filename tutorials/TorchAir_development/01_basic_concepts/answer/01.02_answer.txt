@@ -1,0 +1,19 @@
+======================================================================
+1.2 torch.compile 原理介绍练习答案
+======================================================================
+
+1.（单选题） 在 FX Graph 中，以下哪种 op 类型表示调用子模块（如 nn.Linear）？
+    答案：C
+    解析：`call_module` 表示调用子模块（如 `nn.Linear`），target 为模块名称（如 `linear`）。`placeholder` 是输入参数，`call_function` 调用自由函数，`get_attr` 从模块中获取属性。
+
+2.（单选题）AOTAutograd 的核心价值是什么？
+    答案：B
+    解析：AOTAutograd 将反向传播计算提前捕获并编译，将前向图和反向图拆分为独立子图，使后端编译器（如 Inductor）能同时看到前后向计算，进行跨前后向的算子融合优化。
+
+3. （单选题）以下关于 torch.compile 三种后端的描述，哪项是正确的？
+    答案：C
+    解析：NPUGraph_EX 后端基于 ACLGraph 调度和 FX 图优化，对大模型推理进行加速。Inductor 支持动态形状但会触发重新编译，NPUGraphs 要求固定形状，优化器通常不入图。
+
+4. （单选题）torch.compile 中，由哪个组件负责将用户代码捕获为 FX Graph？
+    答案：B
+    解析：Dynamo 是前端编译器，通过挂钩 CPython 帧评估 API（PEP 523）重写 Python 字节码，将 PyTorch 操作序列提取为 FX Graph，再交给 AOTAutograd 和后端编译器处理。
