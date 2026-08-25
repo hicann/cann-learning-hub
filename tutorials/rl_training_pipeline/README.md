@@ -46,80 +46,80 @@
 
 #### 第 1 章：强化学习训练环境准备
 
-| Notebook | 内容 |
-|---|---|
-| [01.01 章节介绍](01_environment_setup/01.01_chapter_intro.ipynb) | CANNLab 目录布局、学习目标、SFT 与 RL 的区别 |
-| [01.02 安装 verl 与 vLLM-Ascend](01_environment_setup/01.02_install_verl_and_vllm_ascend.ipynb) | 安装依赖、应用 Wordle Agent Loop patch、验证环境 |
-| [01.03 verl 框架概览](01_environment_setup/01.03_verl_framework_overview.ipynb) | Agent Loop、rollout、FSDP、vLLM 与资源切换 |
-| [01.04 章节练习](01_environment_setup/01.04_chapter_practice.ipynb) | 选择题与判断题 |
+| Notebook | 内容 | 状态 |
+|---|---|---|
+| [01.01 章节介绍](01_environment_setup/01.01_chapter_intro.ipynb) | CANNLab 目录布局、学习目标、SFT 与 RL 的区别 | ✅ 已发布 |
+| [01.02 安装 verl 与 vLLM-Ascend](01_environment_setup/01.02_install_verl_and_vllm_ascend.ipynb) | 安装依赖、应用 Wordle Agent Loop patch、验证环境 | ✅ 已发布 |
+| [01.03 verl 框架概览](01_environment_setup/01.03_verl_framework_overview.ipynb) | Agent Loop、rollout、FSDP、vLLM 与资源切换 | ✅ 已发布 |
+| [01.04 章节练习](01_environment_setup/01.04_chapter_practice.ipynb) | 选择题与判断题 | ✅ 已发布 |
 
 #### 第 2 章：RL 核心概念
 
-| Notebook | 内容 |
-|---|---|
-| [02.01 章节介绍](02_rl_core_concepts/02.01_chapter_intro.ipynb) | 本章目标与内容导航 |
-| [02.02 策略与奖励](02_rl_core_concepts/02.02_policy_and_reward.ipynb) | Policy、Reward、Advantage 与奖励塑形 |
-| [02.03 PPO 与 GRPO](02_rl_core_concepts/02.03_ppo_and_grpo.ipynb) | GRPO 分组采样、优势归一化和策略更新 |
-| [02.04 KL 与训练稳定性](02_rl_core_concepts/02.04_kl_and_stability.ipynb) | KL、Entropy Bonus 与策略崩塌 |
-| [02.05 章节练习](02_rl_core_concepts/02.05_chapter_practice.ipynb) | 选择题与判断题 |
+| Notebook | 内容 | 状态 |
+|---|---|---|
+| [02.01 章节介绍](02_rl_core_concepts/02.01_chapter_intro.ipynb) | 本章目标与内容导航 | ✅ 已发布 |
+| [02.02 策略与奖励](02_rl_core_concepts/02.02_policy_and_reward.ipynb) | Policy、Reward、Advantage 与奖励塑形 | ✅ 已发布 |
+| [02.03 PPO 与 GRPO](02_rl_core_concepts/02.03_ppo_and_grpo.ipynb) | GRPO 分组采样、优势归一化和策略更新 | ✅ 已发布 |
+| [02.04 KL 与训练稳定性](02_rl_core_concepts/02.04_kl_and_stability.ipynb) | KL、Entropy Bonus 与策略崩塌 | ✅ 已发布 |
+| [02.05 章节练习](02_rl_core_concepts/02.05_chapter_practice.ipynb) | 选择题与判断题 | ✅ 已发布 |
 
 #### 第 3 章：Wordle RL 训练
 
-| Notebook | 内容 |
-|---|---|
-| [03.01 章节介绍](03_wordle_rl_training/03.01_chapter_intro.ipynb) | Wordle 任务与训练目标 |
-| [03.02 环境与 Agent Loop](03_wordle_rl_training/03.02_wordle_env_and_agent_loop.ipynb) | 多轮交互、G/Y/X 反馈和 token mask |
-| [03.03 奖励函数与数据](03_wordle_rl_training/03.03_reward_and_data.ipynb) | 四项奖励、Prime-RL 差异和 parquet 数据生成 |
-| [03.04 运行训练与指标](03_wordle_rl_training/03.04_run_training_and_metrics.ipynb) | 终端启动训练、日志解读与 TensorBoard |
-| [03.05 章节练习](03_wordle_rl_training/03.05_chapter_practice.ipynb) | 选择题与判断题 |
+| Notebook | 内容 | 状态 |
+|---|---|---|
+| [03.01 章节介绍](03_wordle_rl_training/03.01_chapter_intro.ipynb) | Wordle 任务与训练目标 | ✅ 已发布 |
+| [03.02 环境与 Agent Loop](03_wordle_rl_training/03.02_wordle_env_and_agent_loop.ipynb) | 多轮交互、G/Y/X 反馈和 token mask | ✅ 已发布 |
+| [03.03 奖励函数与数据](03_wordle_rl_training/03.03_reward_and_data.ipynb) | 四项奖励、Prime-RL 差异和 parquet 数据生成 | ✅ 已发布 |
+| [03.04 运行训练与指标](03_wordle_rl_training/03.04_run_training_and_metrics.ipynb) | 终端启动训练、日志解读与 TensorBoard | ✅ 已发布 |
+| [03.05 章节练习](03_wordle_rl_training/03.05_chapter_practice.ipynb) | 选择题与判断题 | ✅ 已发布 |
 
 #### 第 4 章：调优与问题排查
 
-| Notebook | 内容 |
-|---|---|
-| [04.01 章节介绍](04_tuning_and_troubleshooting/04.01_chapter_intro.ipynb) | 调优目标与诊断方法 |
-| [04.02 超参数调优](04_tuning_and_troubleshooting/04.02_hyperparameter_tuning.ipynb) | entropy、KL 和学习率 |
-| [04.03 训练崩塌分析](04_tuning_and_troubleshooting/04.03_training_collapse_analysis.ipynb) | 异常指标、根因定位与修复 |
-| [04.04 章节练习](04_tuning_and_troubleshooting/04.04_chapter_practice.ipynb) | 选择题与判断题 |
+| Notebook | 内容 | 状态 |
+|---|---|---|
+| [04.01 章节介绍](04_tuning_and_troubleshooting/04.01_chapter_intro.ipynb) | 调优目标与诊断方法 | ✅ 已发布 |
+| [04.02 超参数调优](04_tuning_and_troubleshooting/04.02_hyperparameter_tuning.ipynb) | entropy、KL 和学习率 | ✅ 已发布 |
+| [04.03 训练崩塌分析](04_tuning_and_troubleshooting/04.03_training_collapse_analysis.ipynb) | 异常指标、根因定位与修复 | ✅ 已发布 |
+| [04.04 章节练习](04_tuning_and_troubleshooting/04.04_chapter_practice.ipynb) | 选择题与判断题 | ✅ 已发布 |
 
 ### 中阶课程（第 5～8 章）
 
 #### 第 5 章：从 FSDP 到 TorchTitan-NPU FSDP2
 
-| Notebook | 内容 |
-|---|---|
-| [05.01 章节介绍](05_training_backend/05.01_chapter_intro.ipynb) | 学习目标、前置条件与后端切换范围 |
-| [05.02 训练后端切换原理](05_training_backend/05.02_backend_switch_principles.ipynb) | 配置映射、模块调用链和 Actor 到 vLLM 的权重同步 |
-| [05.03 章节练习](05_training_backend/05.03_chapter_practice.ipynb) | 后端职责、调用链和权重同步练习 |
+| Notebook | 内容 | 状态 |
+|---|---|---|
+| 05.01 章节介绍 | 学习目标、前置条件与后端切换范围 | 🚧 建设中 |
+| 05.02 训练后端切换原理 | 配置映射、模块调用链和 Actor 到 vLLM 的权重同步 | 🚧 建设中 |
+| 05.03 章节练习 | 后端职责、调用链和权重同步练习 | 🚧 建设中 |
 
 #### 第 6 章：TorchTitan-NPU 核心特性
 
-| Notebook | 内容 |
-|---|---|
-| [06.01 章节介绍](06_torchtitan_npu_features/06.01_chapter_intro.ipynb) | TorchTitan 与 TorchTitan-NPU 的定位 |
-| [06.02 FSDP2 与可组合并行](06_torchtitan_npu_features/06.02_fsdp2_and_parallelism.ipynb) | DeviceMesh、两卡 FSDP2 与 CP 长序列扩展 |
-| [06.03 Wordle 训练使用的 TorchTitan-NPU 特性](06_torchtitan_npu_features/06.03_features_used_in_wordle.ipynb) | offload、TND 变长注意力、NPU converter 和权重同步 |
-| [06.04 章节练习](06_torchtitan_npu_features/06.04_chapter_practice.ipynb) | FSDP2、TND、内存策略、NPU converter 和序列长度预算练习 |
+| Notebook | 内容 | 状态 |
+|---|---|---|
+| 06.01 章节介绍 | TorchTitan 与 TorchTitan-NPU 的定位 | 🚧 建设中 |
+| 06.02 FSDP2 与可组合并行 | DeviceMesh、两卡 FSDP2 与 CP 长序列扩展 | 🚧 建设中 |
+| 06.03 Wordle 训练使用的 TorchTitan-NPU 特性 | offload、TND 变长注意力、NPU converter 和权重同步 | 🚧 建设中 |
+| 06.04 章节练习 | FSDP2、TND、内存策略、NPU converter 和序列长度预算练习 | 🚧 建设中 |
 
 #### 第 7 章：Wordle 训练后端切换实践
 
 第 7 章需要单机两张 Ascend NPU。环境准备 Cell 会在同级目录获取或复用 `cann-recipes-train`，使用 uv 创建独立的 `.venv`，并复用或补齐 SFT 模型与 Wordle parquet。三步训练沿用初阶课程的模型、数据、batch、序列长度、rollout、AgentLoop、GRPO 和奖励函数配置。
 
-| Notebook | 内容 |
-|---|---|
-| [07.01 章节介绍](07_torchtitan_wordle_training/07.01_chapter_intro.ipynb) | 实践目标、训练资源和运行要求 |
-| [07.02 准备运行环境与训练资产](07_torchtitan_wordle_training/07.02_prepare_backend.ipynb) | 安装独立后端环境，并准备 SFT 模型与 Wordle parquet |
-| [07.03 确认训练配置](07_torchtitan_wordle_training/07.03_confirm_configuration.ipynb) | 使用 DRY_RUN 核对 TorchTitan、FSDP2、TND 和原有 RL 配置 |
-| [07.04 运行三步训练](07_torchtitan_wordle_training/07.04_run_three_steps.ipynb) | 以 FSDP2 + TND 连续完成 3 个训练 step |
-| [07.05 章节练习](07_torchtitan_wordle_training/07.05_chapter_practice.ipynb) | 环境、配置和三步训练练习 |
+| Notebook | 内容 | 状态 |
+|---|---|---|
+| 07.01 章节介绍 | 实践目标、训练资源和运行要求 | 🚧 建设中 |
+| 07.02 准备运行环境与训练资产 | 安装独立后端环境，并准备 SFT 模型与 Wordle parquet | 🚧 建设中 |
+| 07.03 确认训练配置 | 使用 DRY_RUN 核对 TorchTitan、FSDP2、TND 和原有 RL 配置 | 🚧 建设中 |
+| 07.04 运行三步训练 | 以 FSDP2 + TND 连续完成 3 个训练 step | 🚧 建设中 |
+| 07.05 章节练习 | 环境、配置和三步训练练习 | 🚧 建设中 |
 
 #### 第 8 章：训练后端切换总结
 
-| Notebook | 内容 |
-|---|---|
-| [08.01 章节介绍](08_validation_and_troubleshooting/08.01_chapter_intro.ipynb) | 学习目标和内容安排 |
-| [08.02 后端切换总结](08_validation_and_troubleshooting/08.02_switch_summary.ipynb) | 切换步骤、常见问题和性能指标 |
-| [08.03 综合练习](08_validation_and_troubleshooting/08.03_chapter_practice.ipynb) | 配置、特性和实践综合练习 |
+| Notebook | 内容 | 状态 |
+|---|---|---|
+| 08.01 章节介绍 | 学习目标和内容安排 | 🚧 建设中 |
+| 08.02 后端切换总结 | 切换步骤、常见问题和性能指标 | 🚧 建设中 |
+| 08.03 综合练习 | 配置、特性和实践综合练习 | 🚧 建设中 |
 
 ## 参考
 

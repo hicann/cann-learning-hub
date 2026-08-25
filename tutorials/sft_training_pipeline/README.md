@@ -4,7 +4,7 @@
 
 
 - **SFT 阶段**（`01-sft`）：使用 `torchtitan-npu` 框架，让 Qwen3-1.7B 模仿 Wordle 轨迹中的 `<think>...</think><guess>[word]</guess>` 输出协议，并评测其格式与规则遵守行为。
-- **RL 阶段**（`02-rl`）：使用 `verl` 框架 + GRPO 算法，让模型学会策略性猜词，提高 6 轮内猜中率：见 RL 教程（建设中）。
+- **RL 阶段**（`02-rl`）：使用 `verl` 框架 + GRPO 算法，让模型学会策略性猜词，提高 6 轮内猜中率：见 RL 教程（../rl_training_pipeline）。
 
 
 ## 前置条件
