@@ -2,7 +2,7 @@
 本教程以 `Qwen3-8B` 为例，展示如何在昇腾 NPU 上使用 cann-recipes-infer 离线推理框架完成 Baseline 推理、Profiling 分析，验证 Dense RMSNorm NPU 融合路径的性能收益，并通过 AMCT 工具完成 W8A8 量化导出与推理，以及自定义量化 matmul 算子的开发与接入。课程主流程采用 recipes 的典型用法：查看并修改 `models/qwen/config/` 下的 YAML 配置，通过 `executor/scripts/infer.sh` 拉起离线推理，再从 `res/` 与 `prof/` 目录读取日志和性能产物。
 
 教程包含以下内容：
-- Notebooks：包含环境准备、YAML 修改、`infer.sh` 启动、Profiling 分析和 Dense RMSNorm NPU 融合路径 A/B 验证步骤，可在 GitCode 提供的轻量级 Notebook 上运行，也可在本地 Jupyter 环境中执行。
+- Notebooks：包含环境准备、YAML 修改、`infer.sh` 启动、Profiling 分析和 Dense RMSNorm NPU 融合路径 A/B 验证步骤，可在 CANNLab 中运行，也可在本地 Jupyter 环境中执行。
 - SRC：包含教程中使用的 recipes 推理入口、Qwen3-8B 模型适配代码、NPU 适配辅助函数、运行后处理工具与样例 prompt。
 
 ## 关于 cann-recipes-infer
@@ -13,11 +13,29 @@
 
 本课程采用该仓库的 recipes 工作流与 Qwen3-8B 单卡 BF16 推理所需代码子集，保留 YAML 配置、`executor/scripts/infer.sh` 启动方式、离线推理、Profiling 和 Dense RMSNorm NPU 融合验证链路。学习本课程后，可以继续到完整 `cann-recipes-infer` 仓库中查看更多模型和更复杂的部署优化实践。
 
->- **注意：**
->- 教程支持在CANNLab中执行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）。环境需预置 CANN、`torch` 和 `torch_npu`；公共 `requirements.txt` 只补充推理所需 Python 依赖，不包含 `torch`/`torch_npu`。本地运行前请先执行 `/usr/local/Ascend/ascend-toolkit/set_env.sh` 或等价 CANN 环境脚本。
->- 本教程锁定 `transformers==5.0.0`、`datasets==3.6.0`、`compressed-tensors==0.6.0` 和 `accelerate==1.0.1`，并安装 `modelscope` 用于模型下载。
->- `Qwen3-8B` BF16 权重约 16GB，短上下文单卡验证建议使用 64GB HBM NPU，磁盘空间建议至少 40GB。教程默认关闭 thinking 模式并使用短输出，降低在线环境资源压力。
->- 模型权重使用 `Qwen/Qwen3-8B`。首次运行会通过 ModelScope 下载并缓存权重；如环境中已准备本地权重，可设置 `QWEN3_8B_MODEL_PATH=/path/to/Qwen3-8B`。
+## 软硬件配套说明
+
+| 项目 | 要求 |
+| --- | --- |
+| 支持硬件 | Atlas A2 训练/推理系列产品、Atlas A3 训练/推理系列产品；建议使用单卡 64GB HBM NPU |
+| CANN 版本 | 9.0.0 |
+| Python | 3.11（项目兼容范围为 `>=3.10`） |
+| PyTorch | `torch==2.8.0+cpu`、`torch_npu==2.8.0.post4` |
+| 磁盘空间 | 至少 40GB |
+
+## 在线体验环境
+
+本教程支持以下在线体验环境：
+
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm、cann_9.0.0_py3.11-A3-arm | Python 3.11.4 | 参考 [CANNLab 环境体验指南](../../../docs/CANNLab_env_experience_guide.md)创建环境并运行 Notebook |
+
+> **注意：**
+> - 环境需预置并激活 CANN。第 2 章会按本目录 [`requirements.txt`](./requirements.txt) 检查 1-6 章统一使用的 Python 依赖，仅安装缺失项或替换不匹配的版本；第 3-6 章只检查并复用该环境，不再安装依赖。
+> - 本地运行前请先执行 `/usr/local/Ascend/ascend-toolkit/set_env.sh` 或等价 CANN 环境脚本。
+> - `Qwen3-8B` BF16 权重约 16GB。教程默认关闭 thinking 模式并使用短输出，降低在线环境资源压力。
+> - 模型权重使用 `Qwen/Qwen3-8B`。首次运行会通过 ModelScope 下载并缓存权重；如环境中已准备本地权重，可设置 `QWEN3_8B_MODEL_PATH=/path/to/Qwen3-8B`。
 
 ## 模型权重
 
@@ -29,17 +47,18 @@
 
 ## 端到端复现
 
-Notebook 环境中按顺序打开并 Run All：
+Notebook 环境中按顺序打开并运行。第 6 章包含需要学习者补全的算子实现，完整 Run All 前需先完成对应练习代码：
 
 1. `01_chapter_intro.ipynb`
 2. `02_baseline_inference.ipynb`
 3. `03_profiling_analysis.ipynb`
 4. `04_npu_optimization.ipynb`
 5. `05_quantization_qwen3_8b.ipynb`
+6. `06_custom_matmul_operator_development_and_integration_with_qwen3_8b.ipynb`
 
 首次执行 `02_baseline_inference.ipynb` 的 Baseline 推理 cell 会开始下载并缓存 `Qwen/Qwen3-8B` 权重；如果已设置 `QWEN3_8B_MODEL_PATH`，则直接使用本地权重目录。
 
-`02/03/04` 的环境准备单元会定位仓库目录、创建 `Sources/model_inference_optimization/qwen3_8b` 运行目录、导入 CANN 环境，并安装公共 `requirements.txt`。手工操作时，进入 `src/inference_scripts/recipe_qwen3_8b/models/qwen/config/` 修改 YAML；Notebook 中会把对应 YAML 复制到 `Sources/.../recipe_yaml/`，只填入当前环境可用的模型路径。启动推理时会显式展示并执行：
+第 2 章的环境准备单元会定位仓库目录、创建 `Sources/model_inference_optimization/qwen3_8b` 运行目录、导入 CANN 环境，并按公共 `requirements.txt` 检查统一依赖。若所有包均满足固定版本，会完全跳过 `pip install`；否则仅由 pip 安装缺失项或替换不匹配版本。第 3-6 章不包含安装操作。手工操作时，进入 `src/inference_scripts/recipe_qwen3_8b/models/qwen/config/` 修改 YAML；Notebook 中会把对应 YAML 复制到 `Sources/.../recipe_yaml/`，只填入当前环境可用的模型路径。启动推理时会显式展示并执行：
 
 ```bash
 cd src/inference_scripts/recipe_qwen3_8b
@@ -78,7 +97,7 @@ export QWEN3_8B_MODEL_PATH=/path/to/Qwen3-8B
 
 <table>
 <tr><th>Notebook</th><th>在线体验</th><th>状态</th></tr>
-<tr><td>1. 章节介绍</td><td rowspan="6">在CANNLab中运行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）</td><td>✅ 已发布</td></tr>
+<tr><td>1. 章节介绍</td><td rowspan="6">在 CANNLab 中运行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab 环境体验指南</a>）</td><td>✅ 已发布</td></tr>
 <tr><td>2. Baseline 跑通</td><td>✅ 已发布</td></tr>
 <tr><td>3. Profiling 分析</td><td>✅ 已发布</td></tr>
 <tr><td>4. Dense RMSNorm NPU 融合路径优化验证</td><td>✅ 已发布</td></tr>

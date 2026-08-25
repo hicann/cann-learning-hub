@@ -1,5 +1,29 @@
-transformers==5.0.0
+# Unified Python environment for notebooks 01-06.
+# Validated with Python 3.11.12, CANN 9.0.0 and aarch64; Python support is
+# governed by src/pyproject.toml rather than restricted to that test version.
+# Keep the preinstalled Torch family aligned when upgrading to torch 2.8.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch==2.8.0+cpu
+torch_npu==2.8.0.post4
+torchvision==0.23.0
+torchaudio==2.8.0
+torchao==0.13.0
+
+# Direct dependencies used by the notebooks and bundled inference recipe.
+transformers==5.12.1
+safetensors==0.8.0
 datasets==3.6.0
 compressed-tensors==0.6.0
 accelerate==1.0.1
-modelscope
+modelscope==1.38.1
+numpy==1.26.4
+pandas==2.2.3
+PyYAML==6.0.3
+
+# Additional imports reached by the pinned AMCT LLM deploy path and not already
+# provided by packages above. ONNX belongs to AMCT's graph-mode APIs and is not
+# needed by this LLM tutorial.
+loguru==0.7.3
+scipy==1.15.3
+einops==0.8.2
