@@ -335,7 +335,7 @@
 <tr>
 <td><b>🤖 CANNBot</b></td>
 <td><a href="https://gitcode.com/cann/cannbot-skills">CANNBot</a> · <a href="./contrib/tutorials/data_structure_for_hpc">HPC 数据结构</a><br/><sub>开发辅助、高性能计算基础</sub></td>
-<td>🚧 建设中</td>
+<td><a href="./tutorials/CANNBot/README.md">CANNBot 系列课程</a><br/><sub>用 CANNBot 生成与优化 Ascend 算子</sub></td>
 <td>🚧 建设中</td>
 </tr>
 </table>
@@ -443,6 +443,7 @@
 │   ├── autofusion_development             # AutoFusion 自动融合开发系列教程
 │   ├── hccl_development                   # HCCL 集合通信系列课程
 │   ├── hixl_development                   # HiXL 单边通信应用开发（4 章）
+│   ├── CANNBot                            # CANNBot 算子生成相关课程
 │   └── ...                                # 待扩展（PyPTO / TileLang 等）
 ├── reference_practice                 # 参考实践
 │   ├── model_inference_optimization   # 模型推理优化
@@ -528,6 +529,7 @@
 
 ## 🔥 Latest News
 
+- [2026/08] 新增[CANNBot 系列课程](./tutorials/CANNBot/README.md)，围绕 CANNBot 算子开发工具，系统介绍如何使用 CANNBot 生成与优化 Ascend 算子，覆盖 Ascend C / PyPTO / TileLang-Ascend 等开发路径及算子测试全流程。
 - [2026/08] 新增[TorchAir图模式优化系列教程](./tutorials/TorchAir_development)，涵盖 TorchAir 基础概念、PyTorch 模型图转换、昇腾 NPU 图模式执行与性能优化实践，帮助开发者掌握基于 TorchAir 的模型开发与优化流程。
 - [2026/08] 新增[GE 图引擎开发系列教程](./tutorials/ge_development)，涵盖 GE 基础概念、图构建与编译、模型执行与优化、扩展开发及问题定位。
 - [2026/08] 新增[AutoFusion 自动融合开发系列教程](./tutorials/autofusion_development)，涵盖 AutoFusion 基础概念、自动融合原理与开发实践。
