@@ -1,16 +1,8 @@
 # cann-learning-hub
 
-> cann-learning-hub 是CANN （Compute Architecture for Neural Networks）生态的官方开源学习中心仓库，聚焦 NPU 加速计算开发能力培养，汇聚从入门到进阶的全栈学习资源。 仓库涵盖 CANN 全栈加速计算的系列示例与最佳实践教程，支持以 Notebook 方式在线 / 离线交互式运行，帮助开发者零门槛上手。 我们致力于打造动态、全面的 CANN 知识平台，系统化整理入门指南、高级优化教程、精选算子与模型示例及经过验证的最佳实践方案。通过持续迭代更新，助力开发者快速掌握 CANN 开发技能，高效释放昇腾 NPU 算力，加速 AI 应用的开发与创新。 欢迎广大开发者贡献案例、教程、文档及各类学习资源，共建开放共享的 CANN 开发者生态。
+> cann-learning-hub 是CANN （Compute Architecture for Neural Networks）生态的官方开源学习中心仓库，聚焦 NPU 加速计算开发能力培养，汇聚从入门到进阶的全栈学习资源。仓库涵盖 CANN 全栈加速计算的系列示例与最佳实践教程，支持以 Notebook 方式在线 / 离线交互式运行，帮助开发者零门槛上手。我们致力于打造动态、全面的 CANN 知识平台，系统化整理入门指南、高级优化教程、精选算子与模型示例及经过验证的最佳实践方案。通过持续迭代更新，助力开发者快速掌握 CANN 开发技能，高效释放昇腾 NPU 算力，加速 AI 应用的开发与创新。欢迎广大开发者贡献案例、教程、文档及各类学习资源，共建开放共享的 CANN 开发者生态。
 
 本仓已集成代码仓库智能体，点击 [![Zread](https://img.shields.io/badge/Zread-Ask_AI-_.svg?style=flat&color=0052D9&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/hicann/cann-learning-hub) 徽章，开启在线智能代码学习与知识问答体验！
-
----
-
-> 本项目源码会基于CANN软件的非beta版本进行全量验证，关于CANN软件版本与本项目标签的对应关系请参阅 [release仓库](https://gitcode.com/cann/release-management) 中的相应版本说明，已验证情况如下表所示。
-
-| 已验证支持CANN版本 | 验证日期 |
-|---|---|
-| 9.0.0 | 2026.06.30 |
 
 ---
 
@@ -23,7 +15,7 @@
 | 🏫 **高校教师** | → [高校教学方案专区](#university) |
 | 🏆 **竞赛备赛** | → [赛事备考专区](#competition) |
 | 🏋️ **想做模型微调** | → [SwanLab 共建案例](#swanlab) |
-| 📝 **真实客户实践案例** | → [技术博客](#blogs) |
+| 📝 **想看真实客户实践案例** | → [技术博客](#blogs) |
 
 ---
 
@@ -60,7 +52,7 @@
 | 2 | [什么是 NPU](./quick_start/cann_basics/02_what_is_npu.ipynb) | 昇腾 NPU 硬件架构：DaVinci 核心、AI Core / Vector / Cube 计算单元 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/02_what_is_npu.ipynb) |
 | 3 | [什么是 CANN](./quick_start/cann_basics/03_what_is_cann.ipynb) | CANN 异构计算架构与软件栈：分层架构、Ascend C、torch_npu 适配 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/03_what_is_cann.ipynb) |
 | 4 | [Hello World：NPU 加法](./quick_start/cann_basics/04_hello_world_npu.ipynb) | 基于 torch_npu 跑通第一个运算，验证环境可用 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/04_hello_world_npu.ipynb) |
-| 5 | [	MNIST 手写数字识别（可选）](./contrib/tutorials/swanlab_examples/mnist/mnist.ipynb) | 你的第一个模型训练：数据加载→模型构建→训练→评估，配套 SwanLab 可视化，可直观感受昇腾NPU模型训练 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 5 | [MNIST 手写数字识别（可选）](./contrib/tutorials/swanlab_examples/mnist/mnist.ipynb) | 你的第一个模型训练：数据加载→模型构建→训练→评估，配套 SwanLab 可视化，可直观感受昇腾NPU模型训练 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
 
 ## 🧭 选择你的主线
 
@@ -159,8 +151,8 @@
 
 | 序号 | 课程（实践） | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 9 | [SFT 训练系列（初阶）](tutorials/sft_training_pipeline) | 环境搭建 Torchtitan / Qwen3-1.7B 基线跑通 + Profiling / 应用融合算子 / 性能对比 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
-| 10 | [RL 训练系列（初阶）](tutorials/rl_training_pipeline)  | Qwen3-1.7B 基线跑通 / 训推分离架构 / Wordle 评分 / vLLM-Ascend 适配 / 问题定位 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 9 | [SFT 训练系列（初阶）](./tutorials/sft_training_pipeline) | 环境搭建 Torchtitan / Qwen3-1.7B 基线跑通 + Profiling / 应用融合算子 / 性能对比 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 10 | [RL 训练系列（初阶）](./tutorials/rl_training_pipeline)  | Qwen3-1.7B 基线跑通 / 训推分离架构 / Wordle 评分 / vLLM-Ascend 适配 / 问题定位 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
 
 </details>
 
@@ -426,13 +418,13 @@
 
 ```
 ├── quick_start                        # 快速入门
-│   ├── cann_basics                    # CANN 基础知识（4 篇 + 课件）
+│   ├── cann_basics                    # CANN 基础知识
 │   ├── first_custom_operator          # 第一个自定义算子
 │   ├── first_operator_api_call        # 第一个算子 API 调用
 │   └── first_llm_inference            # 第一个大模型推理和优化
 ├── tutorials                              # 开发教程
-│   ├── ascendc_operator_development       # Ascend C 算子开发（8 章）
-│   ├── ascendc_operator_development_light # Ascend C 算子开发（Kernel 直调版，4 章）
+│   ├── ascendc_operator_development       # Ascend C 算子开发
+│   ├── ascendc_operator_development_light # Ascend C 算子开发（Kernel 直调版）
 │   ├── conv_operator_development          # Conv 算子开发实战
 │   ├── MC2_fused_operator_development     # MC2 融合算子开发实战
 │   ├── llm_inference                      # 大模型推理系列课程
@@ -442,7 +434,7 @@
 │   ├── TorchAir_development               # TorchAir图模式优化系列教程
 │   ├── autofusion_development             # AutoFusion 自动融合开发系列教程
 │   ├── hccl_development                   # HCCL 集合通信系列课程
-│   ├── hixl_development                   # HiXL 单边通信应用开发（4 章）
+│   ├── hixl_development                   # HiXL 单边通信应用开发
 │   ├── CANNBot                            # CANNBot 算子生成相关课程
 │   └── ...                                # 待扩展（PyPTO / TileLang 等）
 ├── reference_practice                 # 参考实践
@@ -450,18 +442,20 @@
 │   │   └── sana_video                # Sana-Video 推理优化
 │   └── pytorch_online_inference_operator_optimize  # PyTorch 在线推理算子优化
 ├── blogs                              # 技术博客
-│   ├── operator                       # 算子（13 篇）
-│   ├── inference                      # 推理（12 篇）
-│   └── training                       # 训练（3 篇）
+│   ├── operator                       # 算子
+│   ├── inference                      # 推理
+│   └── training                       # 训练
 ├── contrib                            # 社区贡献
 │   └── tutorials                      # 外部贡献教程
 │       ├── torch-rechub               # Torch-RecHub 推荐系统实战教程
-│       └── swan_llm_course            # SwanLab 共建：LLM 微调实战
+│       ├── swanlab_examples           # SwanLab 共建微调案例（MNIST/医学/数学等）
+│       ├── swan_llm_course            # SwanLab 共建：LLM 微调实战
+│       └── data_structure_for_hpc     # HPC 数据结构
 ├── skills                             # CANNBot 技能
 │   ├── ascendc-ops-project           # 自定义算子工程生成
 │   └── cannjudge-submit              # CANNJudge 竞赛提交
 ├── docs                               # 文档与指南
-│   ├── cannlab_env_experience_guide.md    # CANNLab 环境体验指南
+│   ├── CANNLab_env_experience_guide.md    # CANNLab 环境体验指南
 │   ├── CANNLab_course_development_guide.md  # 基于 CANNLab 环境开发与提交课程指南
 │   └── course_submission_criteria.md  # 新课程上库与上线验收标准
 └── README.md
@@ -471,7 +465,7 @@
 
 <a id="blogs"></a>
 <details>
-<summary>查看技术博客（大部分为真实客户实践案例，算子 13 篇 / 推理 12 篇 / 训练 3 篇）</summary>
+<summary>查看技术博客（大部分为真实客户实践案例）</summary>
 
 > CANN 在实际业务场景中的最新技术实践与成果。
 
@@ -538,11 +532,11 @@
 - [2026/07] 新增[Ascend C 算子开发系列（Kernel 直调版）教程](./tutorials/ascendc_operator_development_light)，覆盖算子开发基础概念、Ascend C 编程范式、Vector/Cube/融合算子开发与性能优化实战。
 - [2026/07] 新增[大模型推理系列课程](./tutorials/llm_inference)，涵盖大语言模型基础、CANN 推理仓库、推理优化、量化与 Profiling，并提供 Qwen3-8B 单卡实践。
 - [2026/07] 新增[Conv 算子开发实战教程](./tutorials/conv_operator_development)，覆盖卷积算子开发核心概念与实践。
-- [2026/06] cann-learning-hub在线体验适配cann9.0.0
-- [2026/05] cann-learning-hub新增[MC2融合算子开发系列教程](./tutorials/MC2_fused_operator_development)，讲解MC2融合算子核心概念与开发方法。
+- [2026/06] 在线体验适配 CANN 9.0.0。
+- [2026/05] 新增[MC2 融合算子开发系列教程](./tutorials/MC2_fused_operator_development)，讲解 MC2 融合算子核心概念与开发方法。
 - [2026/05] 新增[HIXL应用开发系列教程](./tutorials/hixl_development)，讲解昇腾单边通信库核心概念与开发方法。
-- [2026/04] cann-learning-hub新增[skills](./skills)目录，包含CANNJudge竞赛skill及自定义算子工程算子生成skill。
-- [2026/03] cann-learning-hub技术博客内容添加(blogs目录)
+- [2026/04] 新增[skills](./skills) 目录，包含 CANNJudge 竞赛 skill 及自定义算子工程算子生成 skill。
+- [2026/03] 新增技术博客内容（blogs 目录）。
 - [2026/03] cann-learning-hub项目首次上线。
 
 ---
