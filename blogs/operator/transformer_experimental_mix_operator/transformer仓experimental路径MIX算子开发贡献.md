@@ -284,11 +284,11 @@ at::Tensor rope_matrix_kernel(at::Tensor &x, at::Tensor &y, at::Tensor &sin, at:
 ```
 # How to run this sub-project$, please first read the reade at "experimental/npu_ops_transformer_ext"
 path="path for experimental"
-cd $path$/npu_ops_transformer_ext
+cd $path/npu_ops_transformer_ext
 python -m build --wheel -n
 cd dist
 pip install *.whl --force-reinstall --no-deps
-cd $path$/posembedding/rope_matrix/tests
+cd $path/posembedding/rope_matrix/tests
 python ./test_rope.py # full code can be find at the last of readme.
 ```
 
