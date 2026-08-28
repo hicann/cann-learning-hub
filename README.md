@@ -70,6 +70,8 @@
 
 > 以 Qwen3-8B 端到端推理案例为主线，自然贯通"跑通推理 → 发现瓶颈 → 性能调优 → 量化与算子开发"。
 
+> ⚠️ **前置**：本主线默认你已完成 [阶段一：认识平台](#beginner)（公共基础，约 2h）。未完成请先回上方补齐。
+
 <details>
 <summary><b>阶段二：跑通推理（约 3-4h）</b></summary>
 
@@ -125,6 +127,8 @@
 ### 主线二：🏋️ 大模型训练
 
 > 从微调实战到 SFT/RL 训练全流程，系统掌握大模型训练与性能优化能力。
+
+> ⚠️ **前置**：本主线默认你已完成 [阶段一：认识平台](#beginner)（公共基础，约 2h）。未完成请先回上方补齐。
 
 <details>
 <summary><b>阶段二：微调实战案例（SwanLab 共建）🚧</b></summary>
@@ -187,6 +191,8 @@
 
 > 从"10 分钟体验算子"到系统掌握 Ascend C 编程范式，具备自定义算子开发与工程化能力。
 
+> ⚠️ **前置**：本主线默认你已完成 [阶段一：认识平台](#beginner)（公共基础，约 2h）。未完成请先回上方补齐。
+
 <details>
 <summary><b>阶段二：体验算子（约 2h）</b></summary>
 
@@ -232,6 +238,8 @@
 ### 主线四：📊 推荐系统（约 8h）
 
 > 基于 Torch-RecHub 跑通推荐系统全链路：排序 → 召回 → 多任务 → 工程化。
+
+> ⚠️ **前置**：本主线默认你已完成 [阶段一：认识平台](#beginner)（公共基础，约 2h）。未完成请先回上方补齐。
 
 <details>
 <summary><b>阶段二：跑通 CTR（约 2h）</b></summary>
@@ -326,9 +334,9 @@
 </tr>
 <tr>
 <td><b>🤖 CANNBot</b></td>
-<td><a href="https://gitcode.com/cann/cannbot-skills">CANNBot</a> · <a href="./contrib/tutorials/data_structure_for_hpc">HPC 数据结构</a><br/><sub>开发辅助、高性能计算基础</sub></td>
-<td><a href="./tutorials/CANNBot/README.md">CANNBot 系列课程</a><br/><sub>用 CANNBot 生成与优化 Ascend 算子</sub></td>
-<td>🚧 建设中</td>
+<td><a href="https://gitcode.com/cann/cannbot-skills">CANNBot</a> · <a href="./tutorials/CANNBot/README.md">CANNBot 课程</a><br/><sub>算子开发辅助</sub></td>
+<td>🚧 建设中<br/><sub>训练、推理优化等</sub></td>
+<td>🚧 建设中<br/><sub>融合算子、推理、训练优化高阶课程</sub></td>
 </tr>
 </table>
 
