@@ -82,8 +82,8 @@
 
 | 序号 | 课程（实践） | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 5 | [章节介绍](./tutorials/llm_inference/qwen3_8b/01_chapter_intro.ipynb) | 全流程概览，知道接下来要做什么 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
-| 6 | [Qwen3-8B 推理](./tutorials/llm_inference/qwen3_8b/02_baseline_inference.ipynb) | 跑通 Qwen3-8B BF16 推理，感知大模型推理 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 6 | [章节介绍](./tutorials/llm_inference/qwen3_8b/01_chapter_intro.ipynb) | 全流程概览，知道接下来要做什么 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 7 | [Qwen3-8B 推理](./tutorials/llm_inference/qwen3_8b/02_baseline_inference.ipynb) | 跑通 Qwen3-8B BF16 推理，感知大模型推理 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
 
 </details>
 
@@ -96,8 +96,8 @@
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 7 | [Profiling 分析](./tutorials/llm_inference/qwen3_8b/03_profiling_analysis.ipynb) | 对 Baseline 做 Profiling，定位 RMSNorm 等小算子链路瓶颈 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
-| 8 | [Dense RMSNorm NPU 融合优化](./tutorials/llm_inference/qwen3_8b/04_npu_optimization.ipynb) | 切换融合开关，A/B 对比验证算子融合的性能收益 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 8 | [Profiling 分析](./tutorials/llm_inference/qwen3_8b/03_profiling_analysis.ipynb) | 对 Baseline 做 Profiling，定位 RMSNorm 等小算子链路瓶颈 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 9 | [Dense RMSNorm NPU 融合优化](./tutorials/llm_inference/qwen3_8b/04_npu_optimization.ipynb) | 切换融合开关，A/B 对比验证算子融合的性能收益 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
 
 > 💡 至此完成推理主线核心（约 10h），已具备端到端 BF16 推理调优能力。以下为可选拓展。
 
@@ -112,12 +112,12 @@
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 9 | [量化 Qwen3-8B 模型](./tutorials/llm_inference/qwen3_8b/05_quantization_qwen3_8b.ipynb) | AMCT 工具导出 W8A8 权重 → 量化推理 → Profiling 定位 `QuantBatchMatmulV3` 瓶颈 → 推导 `QmmCustom` 原型 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
-| 10 | [Ascend C 算子开发系列（Kernel 直调版）](./tutorials/ascendc_operator_development_light) | 系统学习 Tiling 设计、Kernel 实现、编译与调试调优全流程 | [在线体验](./tutorials/ascendc_operator_development_light) |
-| 11 | [自定义量化算子开发并接入 Qwen3-8B](./tutorials/llm_inference/qwen3_8b/06_custom_matmul_operator_development_and_integration_with_qwen3_8b.ipynb) | 用步骤 ⑩ 的技能实现步骤 ⑨ 的原型 → 编译 → 替换瓶颈算子 → 验证收益 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 10 | [量化 Qwen3-8B 模型](./tutorials/llm_inference/qwen3_8b/05_quantization_qwen3_8b.ipynb) | AMCT 工具导出 W8A8 权重 → 量化推理 → Profiling 定位 `QuantBatchMatmulV3` 瓶颈 → 推导 `QmmCustom` 原型 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 11 | [Ascend C 算子开发系列（Kernel 直调版）](./tutorials/ascendc_operator_development_light) | 系统学习 Tiling 设计、Kernel 实现、编译与调试调优全流程 | [在线体验](./tutorials/ascendc_operator_development_light) |
+| 12 | [自定义量化算子开发并接入 Qwen3-8B](./tutorials/llm_inference/qwen3_8b/06_custom_matmul_operator_development_and_integration_with_qwen3_8b.ipynb) | 用步骤 ⑪ 的技能实现步骤 ⑩ 的原型 → 编译 → 替换瓶颈算子 → 验证收益 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
 
 
-> 💡 阶段四叙事：**⑨ 量化给动机**（为什么需要自定义算子）→ **⑩ Ascend C 给能力**（怎么开发算子）→ **⑪ 接入给闭环**（学以致用，替换验证）
+> 💡 阶段四叙事：**⑩ 量化给动机**（为什么需要自定义算子）→ **⑪ Ascend C 给能力**（怎么开发算子）→ **⑫ 接入给闭环**（学以致用，替换验证）
 
 </details>
 
@@ -137,10 +137,10 @@
 
 | 序号 | 课程 | 课程内容 | 状态 |
 | :---: | :--- | :--- | :---: |
-| 5 | [医学模型微调](./contrib/tutorials/swanlab_examples/qwen3_medical_sft) | Qwen3 医学领域 SFT + SwanLab 可视化 | ✅ 已上线 |
-| 6 | [ms-swift 框架微调](https://docs.swanlab.cn/course/llm_train_course/03-sft/8.other_frameworks/ms-swift.html) | ms-swift 框架微调 + SwanLab 可视化 | 🚧 建设中 |
-| 7 | [Qwen3-smVL 多模态微调](https://docs.swanlab.cn/course/llm_train_course/06-multillm/2.qwen3_smolvlm_muxi/) | 多模态拼接微调 + SwanLab 可视化 | 🚧 建设中 |
-| 8 | [CosyVoice 语音微调](https://docs.swanlab.cn/course/llm_train_course/07-audio/1.cosyvoice-sft/) | 语音模型微调 + SwanLab 可视化 | 🚧 建设中 |
+| 6 | [医学模型微调](./contrib/tutorials/swanlab_examples/qwen3_medical_sft) | Qwen3 医学领域 SFT + SwanLab 可视化 | ✅ 已上线 |
+| 7 | [ms-swift 框架微调](https://docs.swanlab.cn/course/llm_train_course/03-sft/8.other_frameworks/ms-swift.html) | ms-swift 框架微调 + SwanLab 可视化 | 🚧 建设中 |
+| 8 | [Qwen3-smVL 多模态微调](https://docs.swanlab.cn/course/llm_train_course/06-multillm/2.qwen3_smolvlm_muxi/) | 多模态拼接微调 + SwanLab 可视化 | 🚧 建设中 |
+| 9 | [CosyVoice 语音微调](https://docs.swanlab.cn/course/llm_train_course/07-audio/1.cosyvoice-sft/) | 语音模型微调 + SwanLab 可视化 | 🚧 建设中 |
 
 > 💡 案例正在从 SwanLab 平台迁移至 `contrib/tutorials/swanlab_examples/`，完成后将在 CANNLab 环境提供在线体验。详见 [SwanLab 共建案例](#swanlab)。
 
@@ -155,8 +155,8 @@
 
 | 序号 | 课程（实践） | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 9 | [SFT 训练系列（初阶）](./tutorials/sft_training_pipeline) | 环境搭建 Torchtitan / Qwen3-1.7B 基线跑通 + Profiling / 应用融合算子 / 性能对比 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
-| 10 | [RL 训练系列（初阶）](./tutorials/rl_training_pipeline)  | Qwen3-1.7B 基线跑通 / 训推分离架构 / Wordle 评分 / vLLM-Ascend 适配 / 问题定位 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 10 | [SFT 训练系列（初阶）](./tutorials/sft_training_pipeline) | 环境搭建 Torchtitan / Qwen3-1.7B 基线跑通 + Profiling / 应用融合算子 / 性能对比 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
+| 11 | [RL 训练系列（初阶）](./tutorials/rl_training_pipeline)  | Qwen3-1.7B 基线跑通 / 训推分离架构 / Wordle 评分 / vLLM-Ascend 适配 / 问题定位 | [open in CANNLab](https://gitcode.com/org/cann/cannlab) |
 
 </details>
 
@@ -167,8 +167,8 @@
 
 | 序号 | 课程 | 课程内容 | 状态 |
 | :---: | :--- | :--- | :---: |
-| 11 | SFT 训练系列（中阶） | varlen 注意力与上下文并行（CP）融合适配，消除 padding 冗余，提升长序列训练效率 | 🚧 建设中 |
-| 12 | RL 训练系列（中阶）| 基于 torchtitan-npu 的 RL 后端开发，打通 vLLM rollout→Wordle reward→Actor 更新完整链路，完成多后端一致性对比 | 🚧 建设中 |
+| 12 | SFT 训练系列（中阶） | varlen 注意力与上下文并行（CP）融合适配，消除 padding 冗余，提升长序列训练效率 | 🚧 建设中 |
+| 13 | RL 训练系列（中阶）| 基于 torchtitan-npu 的 RL 后端开发，打通 vLLM rollout→Wordle reward→Actor 更新完整链路，完成多后端一致性对比 | 🚧 建设中 |
 
 </details>
 
@@ -179,8 +179,8 @@
 
 | 序号 | 课程 | 课程内容 | 状态 |
 | :---: | :--- | :--- | :---: |
-| 13 | SFT 训练系列（高阶） | 计算图静态化与 AutoFuse 融合优化，selective AC 显存调优，提升 CP 并行端到端训练吞吐 | 🚧 建设中 |
-| 14 | RL 训练系列（高阶） | 性能基线搭建与瓶颈定位，FSDP2/TP/CP/PP 并行调优，RL 训练流水优化，A/B 验证训练稳定性 | 🚧 建设中 |
+| 14 | SFT 训练系列（高阶） | 计算图静态化与 AutoFuse 融合优化，selective AC 显存调优，提升 CP 并行端到端训练吞吐 | 🚧 建设中 |
+| 15 | RL 训练系列（高阶） | 性能基线搭建与瓶颈定位，FSDP2/TP/CP/PP 并行调优，RL 训练流水优化，A/B 验证训练稳定性 | 🚧 建设中 |
 
 </details>
 
@@ -200,8 +200,8 @@
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 5 | [10 分钟体验自定义算子](./quick_start/first_custom_operator/first_custom_operator.ipynb) | 第一个自定义算子开发，感知 Ascend C 编写与编译全流程 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_custom_operator&scanFilePath=quick_start/first_custom_operator/first_custom_operator.ipynb) |
-| 6 | [10 分钟体验算子 API 调用](./quick_start/first_operator_api_call/first_operator_api_call.ipynb) | 第一个算子调用，感知算子调用与价值 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_operator_api_call&scanFilePath=quick_start/first_operator_api_call/first_operator_api_call.ipynb) |
+| 6 | [10 分钟体验自定义算子](./quick_start/first_custom_operator/first_custom_operator.ipynb) | 第一个自定义算子开发，感知 Ascend C 编写与编译全流程 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_custom_operator&scanFilePath=quick_start/first_custom_operator/first_custom_operator.ipynb) |
+| 7 | [10 分钟体验算子 API 调用](./quick_start/first_operator_api_call/first_operator_api_call.ipynb) | 第一个算子调用，感知算子调用与价值 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_operator_api_call&scanFilePath=quick_start/first_operator_api_call/first_operator_api_call.ipynb) |
 
 </details>
 
@@ -212,7 +212,7 @@
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 7 | [Ascend C 算子开发系列（Kernel 直调版）](./tutorials/ascendc_operator_development_light) | 算子基础概念、编程范式、Vector/Cube/融合算子开发与调试调优 | [在线体验](./tutorials/ascendc_operator_development_light) |
+| 8 | [Ascend C 算子开发系列（Kernel 直调版）](./tutorials/ascendc_operator_development_light) | 算子基础概念、编程范式、Vector/Cube/融合算子开发与调试调优 | [在线体验](./tutorials/ascendc_operator_development_light) |
 
 </details>
 
@@ -223,10 +223,10 @@
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 8 | [Ascend C 算子开发系列（算子工程版）](./tutorials/ascendc_operator_development) | 工程化开发流程、开源社区贡献规范与玩法 | [在线体验](./tutorials/ascendc_operator_development) |
-| 9 | Vector 算子开发| Vector 算子开发实战 | 🚧 建设中 |
-| 10 | Conv 算子开发实战| 卷积算子开发核心概念与实践 | 🚧 建设中 |
-| 11 | [MC2 融合算子实战](./tutorials/MC2_fused_operator_development) | Matmul/Conv/通算融合等典型算子实战 | [在线体验](./tutorials/MC2_fused_operator_development) |
+| 9 | [Ascend C 算子开发系列（算子工程版）](./tutorials/ascendc_operator_development) | 工程化开发流程、开源社区贡献规范与玩法 | [在线体验](./tutorials/ascendc_operator_development) |
+| 10 | Vector 算子开发| Vector 算子开发实战 | 🚧 建设中 |
+| 11 | Conv 算子开发实战| 卷积算子开发核心概念与实践 | 🚧 建设中 |
+| 12 | [MC2 融合算子实战](./tutorials/MC2_fused_operator_development) | Matmul/Conv/通算融合等典型算子实战 | [在线体验](./tutorials/MC2_fused_operator_development) |
 
 > 💡 **进阶练习**：[CANNJudge 算子题库](https://cannjudge.cn) 在线刷题 → [CANN 大赛专区](https://competition.gitcode.com/competition?type=cann) 参赛验证
 
@@ -248,7 +248,7 @@
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 5 | [QuickStart：CTR 预测（DeepFM）](./contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb) | DataFrame → Feature → DeepFM → CTRTrainer → AUC | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb) |
+| 6 | [QuickStart：CTR 预测（DeepFM）](./contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb) | DataFrame → Feature → DeepFM → CTRTrainer → AUC | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/00_QuickStart_CTR_DeepFM.ipynb) |
 
 </details>
 
@@ -259,9 +259,9 @@
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 6 | [序列兴趣建模：DIN](./contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb) | 历史行为序列、SequenceFeature 与 DIN attention | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb) |
-| 7 | [匹配/召回：DSSM + Annoy](./contrib/tutorials/torch-rechub/02_Matching_DSSM.ipynb) | 双塔召回与向量 Top-K 检索 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/02_Matching_DSSM.ipynb) |
-| 8 | [多任务学习：MMOE](./contrib/tutorials/torch-rechub/03_MultiTask_MMOE.ipynb) | 多目标建模、expert、gate 与 tower | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/03_MultiTask_MMOE.ipynb) |
+| 7 | [序列兴趣建模：DIN](./contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb) | 历史行为序列、SequenceFeature 与 DIN attention | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/01_Ranking_DIN.ipynb) |
+| 8 | [匹配/召回：DSSM + Annoy](./contrib/tutorials/torch-rechub/02_Matching_DSSM.ipynb) | 双塔召回与向量 Top-K 检索 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/02_Matching_DSSM.ipynb) |
+| 9 | [多任务学习：MMOE](./contrib/tutorials/torch-rechub/03_MultiTask_MMOE.ipynb) | 多目标建模、expert、gate 与 tower | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/03_MultiTask_MMOE.ipynb) |
 
 </details>
 
@@ -272,8 +272,8 @@
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 9 | [实验跟踪：model_logger](./contrib/tutorials/torch-rechub/04_Experiment_Tracking_Light.ipynb) | WandB / SwanLab / TensorBoardX 轻量实验跟踪 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/04_Experiment_Tracking_Light.ipynb) |
-| 10 | [模型导出与推理验证：ONNX](./contrib/tutorials/torch-rechub/05_Model_Export_and_Serving.ipynb) | ONNX 导出、ONNXRuntime 推理验证和量化入口 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/05_Model_Export_and_Serving.ipynb) |
+| 10 | [实验跟踪：model_logger](./contrib/tutorials/torch-rechub/04_Experiment_Tracking_Light.ipynb) | WandB / SwanLab / TensorBoardX 轻量实验跟踪 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/04_Experiment_Tracking_Light.ipynb) |
+| 11 | [模型导出与推理验证：ONNX](./contrib/tutorials/torch-rechub/05_Model_Export_and_Serving.ipynb) | ONNX 导出、ONNXRuntime 推理验证和量化入口 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/05_Model_Export_and_Serving.ipynb) |
 
 </details>
 
