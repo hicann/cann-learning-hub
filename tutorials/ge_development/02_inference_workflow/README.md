@@ -7,7 +7,7 @@
 
 | Notebook | Link | 状态 |
 | --- | --- | --- |
-| 2.1 章节介绍 | 在线体验建设中 | ✅ 已发布 |
-| 2.2 离线推理流程：ATC 编译与 ACL 推理 | 在线体验建设中 | ✅ 已发布 |
-| 2.3 在线执行流程：GeSession 构图与执行 | 在线体验建设中 | ✅ 已发布 |
-| 2.4 章节练习 | 在线体验建设中 | ✅ 已发布 |
+| 2.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/02_inference_workflow/02.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 2.2 离线推理流程：ATC 编译与 ACL 推理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/02_inference_workflow/02.02_offline_inference.ipynb) | ✅ 已发布 |
+| 2.3 在线执行流程：GeSession 构图与执行 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/02_inference_workflow/02.03_online_execution.ipynb) | ✅ 已发布 |
+| 2.4 章节练习 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/02_inference_workflow/02.04_chapter_practice.ipynb) | ✅ 已发布 |

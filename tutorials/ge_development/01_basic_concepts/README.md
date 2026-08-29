@@ -7,7 +7,7 @@
 
 | Notebook | Link | 状态 |
 | --- | --- | --- |
-| 1.1 章节介绍 | 在线体验建设中 | ✅ 已发布 |
-| 1.2 GE 定位与核心概念 | 在线体验建设中 | ✅ 已发布 |
-| 1.3 AscendIR 基础概念 | 在线体验建设中 | ✅ 已发布 |
-| 1.4 章节练习 | 在线体验建设中 | ✅ 已发布 |
+| 1.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/01_basic_concepts/01.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 1.2 GE 定位与核心概念 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/01_basic_concepts/01.02_ge_overview.ipynb) | ✅ 已发布 |
+| 1.3 AscendIR 基础概念 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/01_basic_concepts/01.03_ascend_ir.ipynb) | ✅ 已发布 |
+| 1.4 章节练习 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/01_basic_concepts/01.04_chapter_practice.ipynb) | ✅ 已发布 |
