@@ -1,5 +1,49 @@
-参考思路（C API 实现 ReLU）：
-// 核函数内搬运 x 到 x_local 后：
-asc_max_scalar(z_local, x_local, 0.0f, block_length);  // 元素级与 0 取最大值
-asc_sync();
-// 也可用 asc_relu 等专用接口，具体以当前 CANN C API 为准。
+// 参考答案：ReLU Device 端核心实现。
+#include <cstdint>
+#include "c_api/asc_simd.h"
+
+constexpr uint32_t TOTAL_LENGTH = 8 * 2048;
+constexpr uint32_t NUM_BLOCKS = 8;
+
+__simd_vf__ inline void relu_vf(__ubuf__ float* x_local, __ubuf__ float* z_local, uint32_t data_len)
+{
+    uint16_t one_rep_size = asc_get_vf_len() / sizeof(float);
+    uint16_t repeat_time = (data_len + one_rep_size - 1) / one_rep_size;
+
+    vector_bool mask;
+    vector_float x_reg;
+    vector_float z_reg;
+    for (uint16_t i = 0; i < repeat_time; ++i) {
+        mask = asc_update_mask_b32(data_len);
+        asc_loadalign(x_reg, x_local + i * one_rep_size);
+        asc_relu(z_reg, x_reg, mask);
+        asc_storealign(z_local + i * one_rep_size, z_reg, mask);
+    }
+}
+
+__global__ __vector__ void relu_custom(__gm__ float* x, __gm__ float* z)
+{
+    asc_init();
+
+    constexpr uint32_t block_length = TOTAL_LENGTH / NUM_BLOCKS;
+    __gm__ float* x_gm = x + block_idx * block_length;
+    __gm__ float* z_gm = z + block_idx * block_length;
+
+    __ubuf__ float x_local[block_length];
+    __ubuf__ float z_local[block_length];
+    constexpr uint32_t block_bytes = block_length * sizeof(float);
+
+    asc_copy_gm2ub_align(x_local, x_gm, block_bytes);
+    asc_sync_notify(PIPE_MTE2, PIPE_V, EVENT_ID0);
+    asc_sync_wait(PIPE_MTE2, PIPE_V, EVENT_ID0);
+
+    relu_vf(x_local, z_local, block_length);
+    asc_sync_notify(PIPE_V, PIPE_MTE3, EVENT_ID0);
+    asc_sync_wait(PIPE_V, PIPE_MTE3, EVENT_ID0);
+
+    asc_copy_ub2gm_align(z_gm, z_local, block_bytes);
+    asc_sync();
+}
+
+// Host 侧调用 relu_custom<<<NUM_BLOCKS, 0, stream>>>(xd, zd)，
+// 并使用 max(x[i], 0.0f) 生成 golden 数据。
