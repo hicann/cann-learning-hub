@@ -82,7 +82,6 @@ print("NPU device count:", torch.npu.device_count())
 cann_basics/
 ├── README.md
 ├── slides/       # 授课课件
-│   └── artificial_intelligence_basics.pptx
 ├── images/       # 课程图片资源
 └── answer/       # 练习答案与批改脚本
 ```
