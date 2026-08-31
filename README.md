@@ -48,7 +48,7 @@
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
-| 1 | [人工智能基础](./quick_start/cann_basics/01_ai_basics.ipynb) | AI 发展历程、算子概念（名称/类型/Tensor/shape/format/Axis） | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/01_ai_basics.ipynb) |
+| 1 | [人工智能基础](./quick_start/cann_basics/01_ai_basics.ipynb) | AI 发展历程、算子概念（名称/类型/Tensor/shape） | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/01_ai_basics.ipynb) |
 | 2 | [什么是 NPU](./quick_start/cann_basics/02_what_is_npu.ipynb) | 昇腾 NPU 硬件架构：DaVinci 核心、AI Core / Vector / Cube 计算单元 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/02_what_is_npu.ipynb) |
 | 3 | [什么是 CANN](./quick_start/cann_basics/03_what_is_cann.ipynb) | CANN 异构计算架构与软件栈：分层架构、Ascend C、torch_npu 适配 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/03_what_is_cann.ipynb) |
 | 4 | [Hello World：NPU 加法](./quick_start/cann_basics/04_hello_world_npu.ipynb) | 基于 torch_npu 跑通第一个运算，验证环境可用 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/04_hello_world_npu.ipynb) |
