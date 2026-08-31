@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="360" viewBox="0 0 1100 360">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#1769aa"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: Arial, "Microsoft YaHei", sans-serif; fill: #172b4d; }
+    .title { font-size: 25px; font-weight: 700; }
+    .label { font-size: 18px; font-weight: 600; }
+    .small { font-size: 15px; }
+    .box { fill: #eef5ff; stroke: #1769aa; stroke-width: 2; rx: 10; }
+    .compute { fill: #e9f8ee; stroke: #19733b; stroke-width: 2; rx: 10; }
+    .line { stroke: #1769aa; stroke-width: 3; marker-end: url(#arrow); }
+  </style>
+  <text x="34" y="42" class="title">DenseAnd 与 BitmapAnd 共用的数据通路</text>
+  <rect x="40" y="95" width="160" height="62" class="box"/>
+  <rect x="40" y="205" width="160" height="62" class="box"/>
+  <text x="91" y="132" class="label">GM A</text><text x="91" y="242" class="label">GM B</text>
+  <line x1="205" y1="126" x2="340" y2="126" class="line"/>
+  <line x1="205" y1="236" x2="340" y2="236" class="line"/>
+  <rect x="350" y="80" width="220" height="205" class="box"/>
+  <text x="408" y="118" class="label">CopyIn</text>
+  <text x="379" y="164" class="small">TQue&lt;VECIN, 1&gt; A</text>
+  <text x="379" y="211" class="small">TQue&lt;VECIN, 1&gt; B</text>
+  <text x="379" y="254" class="small">EnQue → DeQue 同步</text>
+  <line x1="575" y1="183" x2="685" y2="183" class="line"/>
+  <rect x="695" y="116" width="150" height="134" class="compute"/>
+  <text x="742" y="166" class="label">AND</text>
+  <text x="720" y="207" class="small">uint8 / uint32</text>
+  <line x1="850" y1="183" x2="925" y2="183" class="line"/>
+  <rect x="935" y="126" width="130" height="114" class="box"/>
+  <text x="957" y="171" class="label">CopyOut</text><text x="967" y="210" class="small">GM C</text>
+  <text x="54" y="325" class="small">两个实现只改变物理 dtype 和任务总量；Block、Tile、单缓冲队列与计时边界保持一致。</text>
+</svg>
