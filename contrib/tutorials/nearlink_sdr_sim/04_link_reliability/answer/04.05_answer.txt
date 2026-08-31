@@ -1,0 +1,7 @@
+1  h_hop = ch.get_channel_taps(code_n)[0, :]
+2  tracker.record(success)
+3  tracker.apply_suggestion()
+4  补全说明：
+5    第1行：获取当前帧的 Rayleigh 信道系数，模拟跳频分集（每帧独立衰落）；
+6    第2行：将 HARQ 重传后的最终 CRC 结果写入 LinkQualityTracker 滑动窗口；
+7    第3行：根据窗口 FER 决策并应用 MCS 调整（FER<1% 升，>10% 降）。

@@ -1,0 +1,4 @@
+1  rx_signal = ch.apply_awgn(tx_signal)
+2  rx_bits = demod.demodulate(rx_signal)
+3  ber = np.mean(tx_bits[:n] != rx_bits[:n])
+4  补全说明：第1行对调制后的信号施加 AWGN 信道加噪；第2行对加噪信号进行 GFSK 非相干解调恢复比特；第3行逐位比对计算误码率 BER。

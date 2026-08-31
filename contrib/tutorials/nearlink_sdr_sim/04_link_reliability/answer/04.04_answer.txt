@@ -1,0 +1,9 @@
+1  tracker = LinkQualityTracker(window_size=ws)
+2  tracker.record(rx.crc_ok)
+3  tracker.apply_suggestion()
+4  mcs_hist.append(tracker.current_mcs)
+5  补全说明：
+6    第1行：为每个 window_size 创建独立的 Tracker，窗口大小不同 → 对 SNR 变化的响应速度不同；
+7    第2行：将每帧 CRC 结果写入滑动窗口；
+8    第3行：根据窗口 FER 决策并应用 MCS 调整；
+9    第4行：记录当前 MCS 等级到历史列表，供绘图对比。

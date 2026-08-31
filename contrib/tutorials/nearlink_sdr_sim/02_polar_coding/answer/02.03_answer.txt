@@ -1,0 +1,9 @@
+1  symbols = 1.0 - 2.0 * tx_bits.astype(float)
+2  tx_signal = np.convolve(upsampled, mod._rrc, mode="same")
+3  matched = np.convolve(rx_signal, mod._rrc, mode="same")
+4  rx_bits = (np.real(matched[::sps][:len(symbols)]) < 0).astype(int)
+5  补全说明：
+6    第1行：BPSK 星座映射，比特 0→+1、比特 1→-1；
+7    第2行：RRC 脉冲成型，将冲激串与根升余弦滤波器卷积，平滑为连续波形；
+8    第3行：匹配滤波，接收信号再次卷积相同 RRC 滤波器，最大化信噪比；
+9    第4行：下采样（每 sps 取一点）后实部<0 判为比特1，≥0 判为比特0。

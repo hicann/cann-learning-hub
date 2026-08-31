@@ -1,0 +1,7 @@
+1  fer = result["results"][size]["fer"]
+2  tp = (1 - f) * se * sr / 1000
+3  ax.semilogy(snr_range, [max(f, 1e-4) for f in fers], "o-", label=f"{size}B")
+4  补全说明：
+5    第1行：从扫描结果中提取指定载荷大小的 FER 列表，result["results"][size]["fer"] 返回各 SNR 对应的 FER；
+6    第2行：计算有效吞吐量 TP = (1-FER) × 频谱效率 × 符号速率，除以 1000 转为 kbps；
+7    第3行：用 semilogy 绘制各载荷的 FER 曲线，1e-4 下限避免 log(0) 出错。

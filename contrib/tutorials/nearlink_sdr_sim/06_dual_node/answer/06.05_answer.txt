@@ -1,0 +1,7 @@
+1  g_msgs = g.start_pairing(t_addr)
+2  t_msgs = t.process_pairing_message(msg)
+3  g_node.process_feedback(success)
+4  补全说明：
+5    第1行：G 节点发起 ECDH 配对，返回待发送的配对信令列表；
+6    第2行：T 节点逐条处理 G 的配对消息，推进 PairingManager 状态机；
+7    第3行：将加密帧的 CRC 结果传入 LinkQualityTracker，驱动 MCS 自适应。

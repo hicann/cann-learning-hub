@@ -1,0 +1,7 @@
+1  g_msgs = g.start_pairing(t_addr)
+2  t_msgs = t.process_pairing_message(msg)
+3  g_msgs = g.process_pairing_message(msg)
+4  补全说明：
+5    第1行：G 节点发起 ECDH 配对，生成密钥对并返回待发送的配对信令列表；
+6    第2行：T 节点逐条处理 G 发来的配对信令，生成响应信令发给 G；
+7    第3行：G 节点处理 T 的响应信令，完成双向密钥协商。如果配对完成，_setup_crypto() 自动创建加密上下文。

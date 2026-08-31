@@ -1,0 +1,7 @@
+1  phase = np.cumsum(filtered) * freq_dev
+2  signal = np.exp(1j * phase)
+3  bits[i] = 1 if np.sum(phase_diff[start:end]) > 0 else 0
+4  补全说明：
+5    第1行：滤波后的频率偏移量逐采样点累加得到瞬时相位，乘 freq_dev 将频率值转为相位值；
+6    第2行：复指数映射 e^{j*phase} 生成恒包络复基带 IQ 信号；
+7    第3行：每 sps 个相位差累加，和>0 判为比特 1（高频），否则判为 0（低频）。

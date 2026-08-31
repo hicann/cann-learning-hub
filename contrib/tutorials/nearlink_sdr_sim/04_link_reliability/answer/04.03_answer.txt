@@ -1,0 +1,3 @@
+1  while not success and attempts <= max_retries:
+2      success = rx.crc_ok and rx.mac_payload == payload
+3  补全说明：第1行是重传条件——未成功且未超过最大重传次数；第2行在每次重传后更新 success 状态，用于判断是否需要继续重传。
