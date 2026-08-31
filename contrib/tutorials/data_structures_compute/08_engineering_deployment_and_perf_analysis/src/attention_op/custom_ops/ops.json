@@ -1,0 +1,34 @@
+[
+    {
+        "op": "AttentionCustom",
+        "language": "cpp",
+        "input_desc": [
+            {
+                "name": "q",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["float16"]
+            },
+            {
+                "name": "k",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["float16"]
+            },
+            {
+                "name": "v",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["float16"]
+            }
+        ],
+        "output_desc": [
+            {
+                "name": "o",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["float16"]
+            }
+        ]
+    }
+]
