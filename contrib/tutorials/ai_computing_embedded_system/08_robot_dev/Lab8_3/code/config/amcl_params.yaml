@@ -1,0 +1,100 @@
+# Parameters:
+# ROS参数可以使用三种类型来配置amcl节点：verall filter, laser model, 和 odometery model。
+
+# Overall filter 参数
+# ~min_particles (int, default: 100) :允许的最少粒子数。
+# ~max_particles (int, default: 5000) :允许的最多粒子数。
+# ~kld_err (double, default: 0.01) :实际分布与估计分布之间的最大误差。
+# ~kld_z (double, default: 0.99) :Upper standard normal quantile for (1 - p), where p is the probability that the error on the estimated distrubition will be less than kld_err.
+# ~update_min_d (double, default: 0.2 meters) :执行更新过滤器操作之前需要进行平移运动。
+# ~update_min_a (double, default: π/6.0 radians) :执行更新滤波器操作之前需要进行旋转运动。
+# ~resample_interval (int, default: 2) :重新采样前需要的滤波器到更新次数。
+# ~transform_tolerance (double, default: 0.1 seconds) :Time with which to post-date the transform that is published, to indicate that this transform is valid into the future.
+# ~recovery_alpha_slow (double, default: 0.0 (disabled)) :slow average weight滤波器的指数衰减率，用于决定何时通过添加随机位姿进行恢复。建议设置为0.001。Exponential decay rate for the slow average weight filter, used in deciding when to recover by adding random poses. A good value might be 0.001.
+# ~recovery_alpha_fast (double, default: 0.0 (disabled)) :fast average weight滤波器的指数衰减率，用于决定何时通过添加随机位姿进行恢复。建议设置为0.1。Exponential decay rate for the fast average weight filter, used in deciding when to recover by adding random poses. A good value might be 0.1.
+# ~initial_pose_x (double, default: 0.0 meters) :初始位姿mean（x），用于初始化高斯分布的滤波器。
+# ~initial_pose_y (double, default: 0.0 meters) :初始位姿mean（y），用于初始化高斯分布的滤波器。
+# ~initial_pose_a (double, default: 0.0 radians) :初始位姿mean（yaw），用于初始化高斯分布的滤波器。
+# ~initial_cov_xx (double, default: 0.5*0.5 meters) :初始位姿covariance (x*x) ，用于初始化高斯分布的滤波器。
+# ~initial_cov_yy (double, default: 0.5*0.5 meters) :初始位姿covariance (y*y) ，用于初始化高斯分布的滤波器。
+# ~initial_cov_aa (double, default: (π/12) :初始位姿covariance (yaw*yaw) ，用于初始化高斯分布的滤波器。
+# ~gui_publish_rate (double, default: -1.0 Hz) :指定最大可用多大速率(Hz)扫描并发布用于可视化的路径。若设置为-1.0，则表示为禁用。
+# ~save_pose_rate (double, default: 0.5 Hz) :指定在 ~initial_pose_* and ~initial_cov_*变量存储的上次预估的位姿和协方差到参数服务器的最大速率 (Hz)。保存的位姿会在后面初始化滤波器时候使用。若设置为-1.0，则表示为禁用。
+# ~use_map_topic (bool, default: false) :若为true，AMCL将订阅地图话题，而不是进行服务调用来获取其地图。New in navigation 1.4.2.
+# ~first_map_only (bool, default: false) :若为true，AMCL将使用订阅到的第一个地图，不会使用每次更新获取的新地图。New in navigation 1.4.2.
+
+# Laser model 参数
+# 注意：无论使用什么混合权重，权重加总应该等于1。beam model使用了所有的4种权重: z_hit, z_short, z_max, 和 z_rand。likelihood_field model仅仅使用了2种: z_hit 和 z_rand。
+# ~laser_min_range (double, default: -1.0) :指定最小的扫描范围。若设置为-1.0，则表示使用已报告的激光的最小范围。
+# ~laser_max_range (double, default: -1.0) :指定最大的扫描范围。若设置为-1.0，则表示使用已报告的激光的最大范围。
+# ~laser_max_beams (int, default: 30) :在更新滤波器时，每次扫描中使用多少个均匀分布的beam。
+# ~laser_z_hit (double, default: 0.95) :模型的z_hit部分的混合权重。
+# ~laser_z_short (double, default: 0.1) :模型的z_short部分的混合权重。
+# ~laser_z_max (double, default: 0.05) :模型的z_max部分的混合权重。
+# ~laser_z_rand (double, default: 0.05) :模型的z_rand部分的混合权重。
+# ~laser_sigma_hit (double, default: 0.2 meters) :在z_hit部分模型中使用的高斯模型的标准差。
+# ~laser_lambda_short (double, default: 0.1) :模型中z_short部分的指数衰减参数。
+# ~laser_likelihood_max_dist (double, default: 2.0 meters) :在地图上进行障碍物膨胀的最大距离，用于likelihood_field模型。
+# ~laser_model_type (string, default: "likelihood_field") :需要用到哪种模型， either beam, likelihood_field, or likelihood_field_prob (same as likelihood_field but incorporates the beamskip feature, if enabled). 。
+
+# Odometry model 参数
+# 如果~odom_model_type参数设置为“diff”，则使用《Probabilistic Robotics》p136中的sample_motion_model_odometry算法; 正如本书中所定义一样,该模型使用odom_alpha_1到odom_alpha_4的噪声参数。
+# 如果~odom_model_type参数设置为“omni”，那么使用自定义模型用于omni-directional 基座，该模型使用odom_alpha_1到odom_alpha_5的噪声参数。前4个参数类似于“diff”模型，第5个参数用于捕获机器人在垂直于前进方向的位移（没有旋转）趋势。
+# ~odom_model_type (string, default: "diff") :需要使用哪个模型，either "diff", "omni", "diff-corrected" or "omni-corrected"。
+# ~odom_alpha1 (double, default: 0.2) :基于机器人运动旋转分量，来指定里程旋转估计中预期的噪声。Specifies the expected noise in odometry's rotation estimate from the rotational component of the robot's motion.
+# ~odom_alpha2 (double, default: 0.2) :基于机器人运动旋转分量，来指定里程平移估计中预期的噪声。Specifies the expected noise in odometry's rotation estimate from translational component of the robot's motion.
+# ~odom_alpha3 (double, default: 0.2) :基于机器人运动平移分量，来指定里程平移估计中预期的噪声。Specifies the expected noise in odometry's translation estimate from the translational component of the robot's motion.
+# ~odom_alpha4 (double, default: 0.2) :基于机器人运动平移分量，来指定里程旋转估计中预期的噪声。Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion.
+# ~odom_alpha5 (double, default: 0.2) :Translation-related noise parameter (only used if model is "omni").
+# ~odom_frame_id (string, default: "odom") :里程计使用的坐标系。
+# ~base_frame_id (string, default: "base_link") :移动基座使用的坐标系。
+# ~global_frame_id (string, default: "map") :由定位系统发布的坐标系的名称。
+# ~tf_broadcast (bool, default: true) :但若设置为false，则可防止amcl在全局坐标系和里程计坐标系之间发布tf变换。
+# ##############################################################################################
+
+#Overall filter 参数
+min_particles: 2000  #500 #default:100
+max_particles: 5000
+kld_err: 0.05
+kld_z: 0.99
+update_min_d: 0.25  #0.1 #default:0.2
+update_min_a: 0.2
+resample_interval: 1
+transform_tolerance: 1.0  #2.0 #default:0.1
+recovery_alpha_slow: 0.0
+recovery_alpha_fast: 0.0 
+initial_pose_x: 0.0
+initial_pose_y: 0.0
+initial_pose_a: 0.0 
+initial_cov_xx: 2.0 
+initial_cov_yy: 2.0 
+initial_cov_aa: 0 
+gui_publish_rate: 10.0 
+save_pose_rate: 0.5 
+use_map_topic: "false"
+first_map_only: "false"
+
+#Laser model 参数
+laser_min_range: -1.0
+laser_max_range: -1.0
+laser_max_beams: 60  #810 default:30
+laser_z_hit: 0.5
+laser_z_short: 0.05
+laser_z_max: 0.05
+laser_z_rand: 0.5
+laser_sigma_hit: 0.2
+laser_lambda_short: 0.1
+laser_likelihood_max_dist: 2.0
+laser_model_type: "likelihood_field"
+
+#Odometry model 参数
+odom_model_type: "diff"
+odom_alpha1: 0.2
+odom_alpha2: 0.2
+odom_alpha3: 0.2
+odom_alpha4: 0.2
+odom_alpha5: 0.2  #0.1 #default:0.2
+odom_frame_id: "odom"
+base_frame_id: "base_footprint"
+global_frame_id: "map"
+tf_broadcast: "true"

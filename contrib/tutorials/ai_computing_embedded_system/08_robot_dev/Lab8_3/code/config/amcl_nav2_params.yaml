@@ -1,0 +1,50 @@
+# Nav2 AMCL 参数（由 ROS1 params/amcl/amcl_params.yaml 及 launch/include/amcl.launch.xml 迁移）
+# 对应 ROS1: amcl.launch.xml 内联参数 + amcl_params.yaml
+
+amcl:
+  ros__parameters:
+    # Frame（与 ROS1 一致）
+    base_frame_id: "base_footprint"
+    odom_frame_id: "odom"
+    global_frame_id: "map"
+
+    # 里程计模型（ROS1 odom_model_type: diff）
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+    alpha1: 0.25   # odom_alpha1
+    alpha2: 0.25   # odom_alpha2
+    alpha3: 0.25   # odom_alpha3
+    alpha4: 0.25   # odom_alpha4
+    alpha5: 0.1    # odom_alpha5
+
+    # 粒子滤波（ROS1: min_particles, max_particles, kld_err, kld_z）
+    min_particles: 500
+    max_particles: 5000
+    pf_err: 0.05   # kld_err
+    pf_z: 0.99     # kld_z
+    resample_interval: 1
+    transform_tolerance: 1.25
+    recovery_alpha_slow: 0.001
+    recovery_alpha_fast: 0.1
+    update_min_d: 0.05
+    update_min_a: 0.2
+
+    # 激光模型（与 ROS1 一致）
+    laser_model_type: "likelihood_field"
+    max_beams: 60
+    laser_max_range: 10.0
+    laser_min_range: 0.09
+    laser_likelihood_max_dist: 2.0
+    sigma_hit: 0.2
+    lambda_short: 0.1
+    z_hit: 0.5
+    z_short: 0.05
+    z_max: 0.05
+    z_rand: 0.5
+
+    # 话题与地图
+    scan_topic: "scan"
+    map_topic: "map"
+    set_initial_pose: false
+    first_map_only: false
+    save_pose_rate: 0.5
+    tf_broadcast: true
