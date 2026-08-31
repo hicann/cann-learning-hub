@@ -1,4 +1,4 @@
-![面向高性能计算的数据结构](./images/README封面.png)
+﻿![面向高性能计算的数据结构](./images/README封面.png)
 
 ------
 
@@ -50,6 +50,7 @@ CANNLab 环境创建与使用方法请参考 [CANNLab 环境体验指南](https:
 | Notebook | Link | 状态 |
 | -- | -- | -- |
 | 02.00 基于平衡二叉树的并行前缀和实现实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/02_parallel_computing/02.00_intra_prefix_sum_balanced_tree.ipynb) | ✅ 已发布 |
+| 02.01 基于并行广度优先遍历的网络故障诊断实验 | - | 🚧 待内测 |
 | 02.02 矩阵乘法分块优化实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/02_parallel_computing/02.02_extra_ascendc_static_tensor_matmul.ipynb) | ✅ 已发布 |
 | 02.03 稀疏矩阵存储格式与分块计算优化实验 | - | 🚧 待内测 |
 
@@ -67,3 +68,6 @@ CANNLab 环境创建与使用方法请参考 [CANNLab 环境体验指南](https:
 | Notebook | Link | 状态 |
 | -- | -- | -- |
 | 04.01 低精度矩阵乘法优化实验 | - | 🚧 待内测 |
+| 04.02 卷积分类头前向计算实现与优化 | - | 🚧 待内测 |
+| 04.03 RMSNorm向量算子实现与流水优化 | - | 🚧 待内测 |
+
