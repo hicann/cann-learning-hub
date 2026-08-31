@@ -26,11 +26,11 @@ AReaL相较于传统RL训练系统存在三大核心优势：
 
 ## 3、AReaL 在昇腾上的关键适配工作
 
-为了顺利让AReal框架在昇腾上运行起来，昇腾团队分析并做了一系列的适配工作，包括：**vLLM推理引擎支持**、**训练阶段适配**、**权重Resharding功能验证**。
+为了顺利让AReaL框架在昇腾上运行起来，昇腾团队分析并做了一系列的适配工作，包括：**vLLM推理引擎支持**、**训练阶段适配**、**权重Resharding功能验证**。
 
 ### vLLM推理引擎支持
 
-AReaL中的推理后端使用的是服务化的推理引擎。适配前，AReaL 只支持 SGLang推理引擎。而vLLM推理引擎以其稳定性和广泛的生态系统成为众多用户的选择，需要在AReaL框架中适配vLLM推理引擎作为推理后端。强化学习训练过程需要做权重更新，SGLang中的 update_weights 接口支持该功能，而 vLLM不支持，需要适配update_weights接口。因此，AreaL支持vLLM推理引擎分为2个部分： **AReaL 适配 vLLM** 、**vLLM新增支持update_weights权重更新功能**。
+AReaL中的推理后端使用的是服务化的推理引擎。适配前，AReaL 只支持 SGLang推理引擎。而vLLM推理引擎以其稳定性和广泛的生态系统成为众多用户的选择，需要在AReaL框架中适配vLLM推理引擎作为推理后端。强化学习训练过程需要做权重更新，SGLang中的 update_weights 接口支持该功能，而 vLLM不支持，需要适配update_weights接口。因此，AReaL支持vLLM推理引擎分为2个部分： **AReaL 适配 vLLM** 、**vLLM新增支持update_weights权重更新功能**。
 
 对于AReaL 适配 vLLM部分，需要新增vLLM相关的类，继承AReaL中抽象出来的推理引擎接口，实现vLLM的相关模块和功能。
 
