@@ -1,0 +1,74 @@
+综合实践题 2 参考答案：语音对话机器人
+
+# ===== 完整可运行版本（需本地麦克风）=====
+import speech_recognition as sr
+from IPython.display import Audio, display
+
+def voice_chatbot():
+    # 维护对话历史，让 LLM 有上下文记忆
+    messages = [{"role": "system", "content": "你是一个友好的助手，用简洁中文回答。"}]
+
+    r = sr.Recognizer()
+    mic = sr.Microphone()
+    with mic as source:
+        r.adjust_for_ambient_noise(source, duration=1)
+    print("机器人已启动，说话即可对话，说'退出'结束")
+
+    while True:
+        with mic as source:
+            print("\n请说话...")
+            audio = r.listen(source, phrase_time_limit=8)
+
+        # ASR
+        with open("temp.wav", "wb") as f:
+            f.write(audio.get_wav_data(convert_rate=16000, convert_width=2))
+        user_text = str(recognize_audio("temp.wav"))
+        print(f"你: {user_text}")
+
+        if "退出" in user_text:
+            print("再见！")
+            break
+
+        # LLM
+        messages.append({"role": "user", "content": user_text})
+        reply = chat_with_llm(messages, temperature=0.7)
+        print(f"助手: {reply}")
+        messages.append({"role": "assistant", "content": reply})
+
+        # TTS 播报
+        tts_synthesize(reply, "./reply.wav")
+        display(Audio("./reply.wav"))
+
+voice_chatbot()
+
+# 进阶版：用 VCS MULTI 模式 + LLM stream=True 实现实时语音播报
+def voice_chatbot_realtime():
+    """LLM 流式输出 + 声音复刻 MULTI 模式 → 实时语音播报"""
+    import speech_recognition as sr
+    messages = [{"role": "system", "content": "你是友好助手"}]
+    r = sr.Recognizer()
+    mic = sr.Microphone()
+    with mic as source:
+        r.adjust_for_ambient_noise(source, duration=1)
+
+    voice_name = "my_voice_xxx"   # 替换为已注册的克隆音色名
+
+    while True:
+        with mic as source:
+            audio = r.listen(source, phrase_time_limit=8)
+        with open("temp.wav", "wb") as f:
+            f.write(audio.get_wav_data(convert_rate=16000, convert_width=2))
+        user_text = str(recognize_audio("temp.wav"))
+        if "退出" in user_text: break
+
+        messages.append({"role": "user", "content": user_text})
+        # 关键：stream=True 让 LLM 流式输出，逐段送入 VCS MULTI 模式合成
+        # 这样能边生成边播报，延迟大幅降低
+        # （具体实现需用回调累积文本，每凑够一句就调 vcs_client.send_start）
+        reply = chat_with_llm(messages, stream=True)
+        messages.append({"role": "assistant", "content": reply})
+
+# 关键点：
+# - messages 列表维护对话历史，让 LLM 有多轮记忆
+# - 每轮：录音 → ASR → 追加 user → LLM → 追加 assistant → TTS 播报
+# - 进阶：stream=True + MULTI 模式可实现毫秒级首字延迟的实时对话

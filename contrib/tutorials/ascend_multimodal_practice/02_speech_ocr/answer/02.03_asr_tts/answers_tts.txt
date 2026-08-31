@@ -1,0 +1,21 @@
+练习 1 答案：B
+解析：TTS (Text-to-Speech) 的作用是把文字转成音频，与 ASR 正好相反。
+A 是 ASR；C 是翻译；D 是说话人识别（VCS 的另一个功能）。
+
+练习 2 答案：
+- speed 参数范围：-500 到 500
+- 0 表示正常语速
+（-500 最慢，500 最快；负值变慢，正值变快）
+
+练习 3 答案（代码）：
+
+    from IPython.display import Audio, display
+    output = tts_synthesize(
+        text='从前有座山，山里有座庙',
+        output_path='./story.wav',
+        voice='chinese_xiaoyan_common',   # 小妍女声
+        speed=-200                          # 慢速
+    )
+    display(Audio(output))
+
+解析：讲故事用慢速 + 柔和女声（小妍）效果最佳，娓娓道来的感觉。

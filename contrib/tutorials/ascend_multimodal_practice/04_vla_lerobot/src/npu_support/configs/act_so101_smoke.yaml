@@ -1,0 +1,37 @@
+# ACT SO-101 真机数据 smoke 测试配置（昇腾 NPU）
+# 作用：快速验证 NPU 环境、数据加载、训练链路是否正常（不追求效果）
+# 用法：bash src/npu_support/scripts/run_train_npu.sh act_so101_smoke
+#
+# 与官方 aloha 配置的区别：
+#   - 数据集指向本地真机数据 local/so101_block（6维动作，非14维仿真）
+#   - 删除 env/task（真机无 MuJoCo 仿真环境，不做在线评测）
+#   - eval_freq: -1（禁用训练中的在线评测）
+dataset:
+  repo_id: local/so101_block
+  root: ../data_final
+  video_backend: pyav
+
+policy:
+  type: act
+  device: npu
+  push_to_hub: false
+  pretrained_backbone_weights: ResNet18_Weights.IMAGENET1K_V1
+
+# 注意：真机数据没有对应的仿真环境，不配置 env/task，训练期间不做在线评测
+# 评测改为训练后在 04.04 notebook 做离线动作对比，或真机部署
+
+output_dir: ../ckpt/act_so101_smoke
+batch_size: 8
+job_name: act_so101_smoke
+resume: false
+seed: 42
+num_workers: 0  # 单进程加载（CANNLab shm 不足，多 worker 会 Bus error）
+steps: 20                # smoke：仅 20 步，快速验证流程
+eval_freq: -1            # 禁用在线评测（无仿真环境）
+log_freq: 1
+save_checkpoint: true
+save_freq: 20
+use_policy_training_preset: true
+
+wandb:
+  enable: false

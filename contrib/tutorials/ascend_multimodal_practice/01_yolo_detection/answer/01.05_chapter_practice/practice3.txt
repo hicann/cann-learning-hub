@@ -1,0 +1,51 @@
+综合实践题 3 参考答案：设计交通标志检测的 yaml 配置（迁移训练）
+
+# ===== 完整可运行版本 =====
+# Step 1: 用 %%writefile 写 traffic.yaml（在 Jupyter cell 中执行）
+
+# 取消下方注释执行（%%writefile 必须在 cell 第一行）：
+# %%writefile traffic.yaml
+# path: ./traffic_signs/
+# train: images/train
+# val: images/val
+#
+# names:
+#   0: stop
+#   1: speed_limit
+#   2: crosswalk
+
+# 手动创建等价写法（如果 %%writefile 不便使用）：
+traffic_yaml_content = """path: ./traffic_signs/
+train: images/train
+val: images/val
+
+names:
+  0: stop
+  1: speed_limit
+  2: crosswalk
+"""
+with open("traffic.yaml", "w") as f:
+    f.write(traffic_yaml_content)
+print("✅ traffic.yaml 已写入")
+
+# Step 2: 训练代码
+from ultralytics import YOLO
+
+model = YOLO("yolov10n.pt")
+model.train(
+    data="./traffic.yaml",
+    epochs=30,
+    imgsz=640,
+    batch=16,
+    patience=10,          # 开启早停
+    save=True,
+    project="traffic_detect",
+    name="run1"
+)
+
+# 关键点：
+# - path 用相对路径，指向数据集根目录
+# - train/val 是相对 path 的子路径（images/train 而不是 traffic_signs/images/train）
+# - names 用 0/1/2 的数字键，对应标注文件里的类别编号
+# - batch=16 需要足够显存，OOM 时调小到 8 或 4
+# - 3 类用 yolov10n 即可，类别多或难度大可升级到 yolov10s

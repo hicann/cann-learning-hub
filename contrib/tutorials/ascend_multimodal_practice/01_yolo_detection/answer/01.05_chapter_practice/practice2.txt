@@ -1,0 +1,53 @@
+综合实践题 2 参考答案：批量检测多张图片并统计（YOLO 推理）
+
+# ===== 完整可运行版本 =====
+from ultralytics import YOLO
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+model = YOLO("yolov10n.pt")
+
+# Step 1: 构造图片路径列表（用已有图片 + NumPy 生成的测试图凑够 3 张）
+# 用 NumPy 生成两张测试图（保证数量充足）
+img1 = np.full((300, 300, 3), 180, dtype=np.uint8)
+cv2.rectangle(img1, (50, 50), (150, 200), (0, 0, 0), -1)
+cv2.imwrite("test1.jpg", img1)
+img2 = np.full((300, 300, 3), 220, dtype=np.uint8)
+cv2.circle(img2, (150, 150), 60, (0, 0, 0), -1)
+cv2.imwrite("test2.jpg", img2)
+
+img_paths = ["./images/sample_fruit.jpg", "test1.jpg", "test2.jpg"]
+
+# Step 2: 批量推理（YOLO 支持直接传入列表）
+results = model(source=img_paths, conf=0.2, verbose=False)
+
+# Step 3: 统计
+total_objects = 0
+all_classes = set()
+for i, res in enumerate(results):
+    n = len(res.boxes)
+    total_objects += n
+    classes_in_img = [res.names[int(c.item())] for c in res.boxes.cls]
+    all_classes.update(classes_in_img)
+    print(f"图片 {i+1} ({img_paths[i]}): 检测到 {n} 个目标 {classes_in_img}")
+
+print(f"\n总计检测到 {total_objects} 个目标")
+print(f"涉及类别: {all_classes if all_classes else '无（图片中的物体不在 COCO 80 类中）'}")
+
+# Step 4: 并排显示
+fig, axes = plt.subplots(1, len(results), figsize=(15, 5))
+if len(results) == 1:
+    axes = [axes]
+for ax, res, path in zip(axes, results, img_paths):
+    ax.imshow(res.plot()[:, :, ::-1])
+    ax.set_title(f"{path}\n({len(res.boxes)} 个目标)")
+    ax.axis('off')
+plt.tight_layout()
+plt.show()
+
+# 关键点：
+# - model(source=list) 直接支持批量推理，无需循环
+# - results 是列表，每个元素对应一张图
+# - res.boxes.cls 是类别编号，res.names[id] 转成名称
+# - COCO 80 类不含具体水果种类，所以 sample_fruit.jpg 可能检测不到，符合预期

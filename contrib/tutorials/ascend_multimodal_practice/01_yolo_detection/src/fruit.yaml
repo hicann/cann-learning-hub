@@ -1,0 +1,11 @@
+# 水果数据集配置（数据在 src/fruit/ 目录）
+path: ./src/fruit/
+train: images/train
+val: images/val
+
+names:
+  0: avocado
+  1: lemon
+  2: pear
+  3: mango
+  4: persimmon

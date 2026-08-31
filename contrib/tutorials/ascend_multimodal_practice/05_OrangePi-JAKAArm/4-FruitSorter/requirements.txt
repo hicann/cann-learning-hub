@@ -1,0 +1,22 @@
+# 语音&LLMs
+pyaudio
+chardet
+playsound==1.2.2          # 锁定版本，新版有兼容问题
+SpeechRecognition
+python-dotenv             # 读取 .env 凭证
+openai                    # 调用 SJTU 模型网关做语音意图解析
+
+# 华为云语音交互 SDK（ASR/TTS）
+# 注意：huaweicloud_sis 需用源码安装，不能直接 pip：
+#   cd <2.华为语音SDK/speech_llms 目录> && python setup.py install --user
+# 或下载官方包：huaweicloud-python-sdk-sis-1.8.6.tar.gz 后 python setup.py install --user
+
+# （可选，旧方案保留）百度语音 + 文心大模型
+# erniebot
+# baidu-aip
+
+# YOLO
+opencv-python 
+ultralytics
+onnx
+onnxruntime

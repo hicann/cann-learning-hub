@@ -1,0 +1,17 @@
+path: D:\tools\Python\YOLOv11\AgriSpec-2025\training\dataset
+train: D:\tools\Python\YOLOv11\AgriSpec-2025\training\dataset\images\train
+val: D:\tools\Python\YOLOv11\AgriSpec-2025\training\dataset\images\val
+
+names:
+  0: apple
+  1: avocado      # 原先是 pomegranate
+  2: banana       # 原先是 persimmon
+  3: lemon        # 原先是 mandarin
+  4: mandarin     # 原先是 lemon
+  5: mango        # 原先是 avocado
+  6: pear         # 原先是 strawberry
+  7: persimmon    # 原先是 mango
+  8: pomegranate  # 原先是 pear
+  9: strawberry   # 原先是 banana
+
+nc: 10

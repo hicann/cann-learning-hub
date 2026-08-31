@@ -1,0 +1,27 @@
+练习 1 答案：B
+解析：在 HuggingFace transformers / PyTorch 的交叉熵损失函数中，labels 等于
+-100 的位置会被自动忽略，不参与 loss 计算和梯度反传。本实验用它屏蔽 system +
+user 部分（指令），让模型只学习 assistant 的回复内容。A 错（padding 由
+attention_mask 控制）；C/D 错（-100 不是错误标记，也不直接影响速度）。
+
+练习 2 答案：
+- 标记用户发言的特殊 token：<｜User｜>
+- 标记助手发言的特殊 token：<｜Assistant｜>
+- 回答结束符：<｜end▁of▁sentence｜>（即 eos_token / pad_token）
+注意：本模型用的是 DeepSeek 原生模板，不是 ChatML 的 <|im_start|>/<|im_end|>。
+（DeepSeek-R1-Distill-Qwen 词表中没有 ChatML token，误用会被 BPE 拆碎）
+
+练习 3 答案（代码）：
+需要修改 process_func 中 apply_chat_template 里 system 的 content，
+把角色描述替换：
+
+    instruction = tokenizer.apply_chat_template(
+        [
+            {"role": "system", "content": "你是一位 Python 编程助手，请简洁准确地回答问题"},
+            {"role": "user", "content": example['instruction'] + example['input']},
+        ],
+        add_generation_prompt=True, tokenize=True, return_dict=True,
+    )
+
+同时，推理时 apply_chat_template 里的 system content 也要相应改为
+"你是一位 Python 编程助手，请简洁准确地回答问题"，保证训练与推理的 prompt 一致。

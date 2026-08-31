@@ -1,0 +1,38 @@
+# ACT SO-101 真机数据完整训练配置（昇腾 NPU）
+# 作用：在昇腾 NPU 上对 SO-101 真机方块抓取数据做 ACT 完整训练
+# 用法：bash src/npu_support/scripts/run_train_npu.sh act_so101
+#
+# 与官方 aloha 配置的区别：
+#   - 数据集指向本地真机数据 local/so101_block（6维动作，非14维仿真）
+#   - 删除 env/task（真机无 MuJoCo 仿真环境）
+#   - eval_freq: -1（不做在线仿真评测）
+#   - wandb 默认关闭（无外网时可避免启动报错；需要时改 enable: true）
+dataset:
+  repo_id: local/so101_block
+  root: ../data_final
+  video_backend: pyav
+
+policy:
+  type: act
+  device: npu
+  push_to_hub: false
+  pretrained_backbone_weights: ResNet18_Weights.IMAGENET1K_V1
+
+# 真机数据无仿真环境，不配置 env/task
+# 训练完成后用 04.04 notebook 做离线动作对比，或部署到真机评估成功率
+
+output_dir: ../ckpt/act_so101
+batch_size: 8
+job_name: act_so101
+resume: false
+seed: 1000
+num_workers: 0  # 单进程加载（CANNLab shm 不足，多 worker 会 Bus error）
+steps: 5000            # 完整训练 5000步（CANNLab 单进程解码较慢，5000步约2-4小时）
+eval_freq: -1          # 禁用在线评测（无仿真环境）
+log_freq: 100
+save_checkpoint: true
+save_freq: 1000
+use_policy_training_preset: true
+
+wandb:
+  enable: false         # CANNLab 无外网时建议关闭；需要实时面板改 true 并配 wandb 登录

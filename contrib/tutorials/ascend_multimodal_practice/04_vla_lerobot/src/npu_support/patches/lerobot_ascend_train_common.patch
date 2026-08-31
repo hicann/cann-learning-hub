@@ -1,0 +1,453 @@
+diff --git a/src/lerobot/configs/train.py b/src/lerobot/configs/train.py
+index d17915c3..ad8570f4 100644
+--- a/src/lerobot/configs/train.py
++++ b/src/lerobot/configs/train.py
+@@ -106,11 +106,17 @@ class TrainPipelineConfig(HubMixin):
+             else:
+                 self.job_name = f"{self.env.type}_{self.policy.type}"
+ 
++        rank = int(os.environ["RANK"]) if os.environ.get("RANK") is not None else None
++        is_nonzero_distributed_rank = rank is not None and rank != 0
++
+         if not self.resume and isinstance(self.output_dir, Path) and self.output_dir.is_dir():
+-            raise FileExistsError(
+-                f"Output directory {self.output_dir} already exists and resume is {self.resume}. "
+-                f"Please change your output directory so that {self.output_dir} is not overwritten."
+-            )
++            # Under accelerate, rank0 can create the output directory before slower ranks finish validation.
++            # Keep the overwrite protection on rank0, but let non-zero ranks reuse the directory created for the run.
++            if not is_nonzero_distributed_rank:
++                raise FileExistsError(
++                    f"Output directory {self.output_dir} already exists and resume is {self.resume}. "
++                    f"Please change your output directory so that {self.output_dir} is not overwritten."
++                )
+         elif not self.output_dir:
+             now = dt.datetime.now()
+             train_dir = f"{now:%Y-%m-%d}/{now:%H-%M-%S}_{self.job_name}"
+diff --git a/src/lerobot/scripts/lerobot_train.py b/src/lerobot/scripts/lerobot_train.py
+index 7e02f879..39d59983 100644
+--- a/src/lerobot/scripts/lerobot_train.py
++++ b/src/lerobot/scripts/lerobot_train.py
+@@ -1,5 +1,8 @@
+ #!/usr/bin/env python
+-
++# Adapted from
++# lerobot/src/lerobot/scripts/lerobot_train.py
++# Copyright (c) 2026 Institute of Software, Chinese Academy of Sciences (ISCAS). All rights reserved.
++# Copyright (c) 2026, HUAWEI CORPORATION.  All rights reserved.
+ # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+@@ -19,7 +22,11 @@ from contextlib import nullcontext
+ from pprint import pformat
+ from typing import Any
+ 
++from tqdm import tqdm
+ import torch
++import torch_npu
++from torch_npu.contrib import transfer_to_npu
++
+ from accelerate import Accelerator
+ from termcolor import colored
+ from torch.optim import Optimizer
+@@ -52,6 +59,7 @@ from lerobot.utils.utils import (
+ )
+ 
+ 
++# pylint: disable=huawei-too-many-arguments
+ def update_policy(
+     train_metrics: MetricsTracker,
+     policy: PreTrainedPolicy,
+@@ -144,13 +152,16 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+ 
+     # Create Accelerator if not provided
+     # It will automatically detect if running in distributed mode or single-process mode
+-    # We set step_scheduler_with_optimizer=False to prevent accelerate from adjusting the lr_scheduler steps based on the num_processes
++    # We set step_scheduler_with_optimizer=False to prevent accelerate from adjusting
++    # the lr_scheduler steps based on the num_processes
+     # We set find_unused_parameters=True to handle models with conditional computation
+     if accelerator is None:
+         from accelerate.utils import DistributedDataParallelKwargs
+ 
+         ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
+-        accelerator = Accelerator(step_scheduler_with_optimizer=False, kwargs_handlers=[ddp_kwargs])
++        accelerator = Accelerator(
++            step_scheduler_with_optimizer=False, kwargs_handlers=[ddp_kwargs]
++        )
+ 
+     init_logging(accelerator=accelerator)
+ 
+@@ -168,7 +179,9 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+     else:
+         wandb_logger = None
+         if is_main_process:
+-            logging.info(colored("Logs will be saved locally.", "yellow", attrs=["bold"]))
++            logging.info(
++                colored("Logs will be saved locally.", "yellow", attrs=["bold"])
++            )
+ 
+     if cfg.seed is not None:
+         set_seed(cfg.seed, accelerator=accelerator)
+@@ -196,7 +209,9 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+     if cfg.eval_freq > 0 and cfg.env is not None:
+         if is_main_process:
+             logging.info("Creating env")
+-        eval_env = make_env(cfg.env, n_envs=cfg.eval.batch_size, use_async_envs=cfg.eval.use_async_envs)
++        eval_env = make_env(
++            cfg.env, n_envs=cfg.eval.batch_size, use_async_envs=cfg.eval.use_async_envs
++        )
+ 
+     if is_main_process:
+         logging.info("Creating policy")
+@@ -212,7 +227,9 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+     # Create processors - only provide dataset_stats if not resuming from saved processors
+     processor_kwargs = {}
+     postprocessor_kwargs = {}
+-    if (cfg.policy.pretrained_path and not cfg.resume) or not cfg.policy.pretrained_path:
++    if (
++        cfg.policy.pretrained_path and not cfg.resume
++    ) or not cfg.policy.pretrained_path:
+         # Only provide dataset_stats when not resuming from saved processor state
+         processor_kwargs["dataset_stats"] = dataset.meta.stats
+ 
+@@ -221,7 +238,10 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+             "device_processor": {"device": device.type},
+             "normalizer_processor": {
+                 "stats": dataset.meta.stats,
+-                "features": {**policy.config.input_features, **policy.config.output_features},
++                "features": {
++                    **policy.config.input_features,
++                    **policy.config.output_features,
++                },
+                 "norm_map": policy.config.normalization_mapping,
+             },
+         }
+@@ -250,24 +270,36 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+     step = 0  # number of policy updates (forward + backward + optim)
+ 
+     if cfg.resume:
+-        step, optimizer, lr_scheduler = load_training_state(cfg.checkpoint_path, optimizer, lr_scheduler)
++        step, optimizer, lr_scheduler = load_training_state(
++            cfg.checkpoint_path, optimizer, lr_scheduler
++        )
+ 
+-    num_learnable_params = sum(p.numel() for p in policy.parameters() if p.requires_grad)
++    num_learnable_params = sum(
++        p.numel() for p in policy.parameters() if p.requires_grad
++    )
+     num_total_params = sum(p.numel() for p in policy.parameters())
+ 
+     if is_main_process:
+-        logging.info(colored("Output dir:", "yellow", attrs=["bold"]) + f" {cfg.output_dir}")
++        logging.info(
++            colored("Output dir:", "yellow", attrs=["bold"]) + f" {cfg.output_dir}"
++        )
+         if cfg.env is not None:
+             logging.info(f"{cfg.env.task=}")
+             logging.info("Creating environment processors")
+-            env_preprocessor, env_postprocessor = make_env_pre_post_processors(env_cfg=cfg.env)
++            env_preprocessor, env_postprocessor = make_env_pre_post_processors(
++                env_cfg=cfg.env
++            )
+         logging.info(f"{cfg.steps=} ({format_big_number(cfg.steps)})")
+         logging.info(f"{dataset.num_frames=} ({format_big_number(dataset.num_frames)})")
+         logging.info(f"{dataset.num_episodes=}")
+         num_processes = accelerator.num_processes
+         effective_bs = cfg.batch_size * num_processes
+-        logging.info(f"Effective batch size: {cfg.batch_size} x {num_processes} = {effective_bs}")
+-        logging.info(f"{num_learnable_params=} ({format_big_number(num_learnable_params)})")
++        logging.info(
++            f"Effective batch size: {cfg.batch_size} x {num_processes} = {effective_bs}"
++        )
++        logging.info(
++            f"{num_learnable_params=} ({format_big_number(num_learnable_params)})"
++        )
+         logging.info(f"{num_total_params=} ({format_big_number(num_total_params)})")
+ 
+     # create dataloader for offline training
+@@ -326,7 +358,17 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+     if is_main_process:
+         logging.info("Start offline training on a fixed dataset")
+ 
+-    for _ in range(step, cfg.steps):
++    # Initialize progress bar only on main process
++    progress_bar = tqdm(
++        total=cfg.steps,
++        initial=step,
++        desc="Training",
++        disable=not is_main_process,
++        leave=True,
++        dynamic_ncols=True,
++    )
++
++    while step < cfg.steps:
+         start_time = time.perf_counter()
+         batch = next(dl_iter)
+         batch = preprocessor(batch)
+@@ -342,10 +384,18 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+             lr_scheduler=lr_scheduler,
+         )
+ 
+-        # Note: eval and checkpoint happens *after* the `step`th training update has completed, so we
+-        # increment `step` here.
+         step += 1
+         train_tracker.step()
++
++        # Update progress bar
++        if is_main_process:
++            progress_bar.set_postfix(
++                loss=f"{train_tracker.loss.val:.4f}",
++                lr=f"{train_tracker.lr.val:.1e}",
++                grad_norm=f"{train_tracker.grad_norm.val:.2f}",
++            )
++            progress_bar.update(1)
++
+         is_log_step = cfg.log_freq > 0 and step % cfg.log_freq == 0 and is_main_process
+         is_saving_step = step % cfg.save_freq == 0 or step == cfg.steps
+         is_eval_step = cfg.eval_freq > 0 and step % cfg.eval_freq == 0
+@@ -362,7 +412,9 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+         if cfg.save_checkpoint and is_saving_step:
+             if is_main_process:
+                 logging.info(f"Checkpoint policy after step {step}")
+-                checkpoint_dir = get_step_checkpoint_dir(cfg.output_dir, cfg.steps, step)
++                checkpoint_dir = get_step_checkpoint_dir(
++                    cfg.output_dir, cfg.steps, step
++                )
+                 save_checkpoint(
+                     checkpoint_dir=checkpoint_dir,
+                     step=step,
+@@ -376,7 +428,6 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+                 update_last_checkpoint(checkpoint_dir)
+                 if wandb_logger:
+                     wandb_logger.log_policy(checkpoint_dir)
+-
+             accelerator.wait_for_everyone()
+ 
+         if cfg.env and is_eval_step:
+@@ -385,7 +436,7 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+                 logging.info(f"Eval policy at step {step}")
+                 with torch.no_grad(), accelerator.autocast():
+                     eval_info = eval_policy_all(
+-                        envs=eval_env,  # dict[suite][task_id] -> vec_env
++                        envs=eval_env,
+                         policy=accelerator.unwrap_model(policy),
+                         env_preprocessor=env_preprocessor,
+                         env_postprocessor=env_postprocessor,
+@@ -397,14 +448,10 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+                         start_seed=cfg.seed,
+                         max_parallel_tasks=cfg.env.max_parallel_tasks,
+                     )
+-                # overall metrics (suite-agnostic)
+                 aggregated = eval_info["overall"]
+-
+-                # optional: per-suite logging
+                 for suite, suite_info in eval_info.items():
+                     logging.info("Suite %s aggregated: %s", suite, suite_info)
+ 
+-                # meters/tracker
+                 eval_metrics = {
+                     "avg_sum_reward": AverageMeter("∑rwrd", ":.3f"),
+                     "pc_success": AverageMeter("success", ":.1f"),
+@@ -424,10 +471,15 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
+                 if wandb_logger:
+                     wandb_log_dict = {**eval_tracker.to_dict(), **eval_info}
+                     wandb_logger.log_dict(wandb_log_dict, step, mode="eval")
+-                    wandb_logger.log_video(eval_info["overall"]["video_paths"][0], step, mode="eval")
+-
++                    wandb_logger.log_video(
++                        eval_info["overall"]["video_paths"][0], step, mode="eval"
++                    )
+             accelerator.wait_for_everyone()
+ 
++    # Close progress bar
++    if is_main_process:
++        progress_bar.close()
++
+     if eval_env:
+         close_envs(eval_env)
+ 
+diff --git a/src/lerobot/utils/utils.py b/src/lerobot/utils/utils.py
+index c7ad2bbd..423fb086 100644
+--- a/src/lerobot/utils/utils.py
++++ b/src/lerobot/utils/utils.py
+@@ -1,5 +1,8 @@
+ #!/usr/bin/env python
+-
++# Adapted from
++# lerobot/src/lerobot/utils/utils.py
++# Copyright (c) 2026 Institute of Software, Chinese Academy of Sciences (ISCAS). All rights reserved.
++# Copyright (c) 2026, HUAWEI CORPORATION.  All rights reserved.
+ # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+@@ -45,11 +48,16 @@ def auto_select_torch_device() -> torch.device:
+     elif torch.backends.mps.is_available():
+         logging.info("Metal backend detected, using mps.")
+         return torch.device("mps")
++    elif torch.npu.is_available():
++        logging.info("Huawei NPU backend detected, using npu.")
++        return torch.device("npu")
+     elif torch.xpu.is_available():
+         logging.info("Intel XPU backend detected, using xpu.")
+         return torch.device("xpu")
+     else:
+-        logging.warning("No accelerated backend detected. Using default cpu, this will be slow.")
++        logging.warning(
++            "No accelerated backend detected. Using default cpu, this will be slow."
++        )
+         return torch.device("cpu")
+ 
+ 
+@@ -57,23 +65,28 @@ def auto_select_torch_device() -> torch.device:
+ def get_safe_torch_device(try_device: str, log: bool = False) -> torch.device:
+     """Given a string, return a torch.device with checks on whether the device is available."""
+     try_device = str(try_device)
+-    if try_device.startswith("cuda"):
+-        assert torch.cuda.is_available()
+-        device = torch.device(try_device)
+-    elif try_device == "mps":
+-        assert torch.backends.mps.is_available()
+-        device = torch.device("mps")
+-    elif try_device == "xpu":
+-        assert torch.xpu.is_available()
+-        device = torch.device("xpu")
+-    elif try_device == "cpu":
+-        device = torch.device("cpu")
+-        if log:
+-            logging.warning("Using CPU, this will be slow.")
+-    else:
+-        device = torch.device(try_device)
+-        if log:
+-            logging.warning(f"Using custom {try_device} device.")
++    match try_device:
++        case "cuda":
++            assert torch.cuda.is_available()
++            device = torch.device("cuda")
++        case "mps":
++            assert torch.backends.mps.is_available()
++            device = torch.device("mps")
++        case "npu":
++            assert torch.npu.is_available()
++            device = torch.device("npu")
++        case "xpu":
++            assert torch.xpu.is_available()
++            device = torch.device("xpu")
++        case "cpu":
++            device = torch.device("cpu")
++            if log:
++                logging.warning("Using CPU, this will be slow.")
++        case _:
++            device = torch.device(try_device)
++            if log:
++                logging.warning(f"Using custom {try_device} device.")
++
+     return device
+ 
+ 
+@@ -92,7 +105,9 @@ def get_safe_dtype(dtype: torch.dtype, device: str | torch.device):
+             # The `has_fp64` flag is returned by `torch.xpu.get_device_capability()`
+             # when available; if False, we fall back to float32 for compatibility.
+             if not device_capability.get("has_fp64", False):
+-                logging.warning(f"Device {device} does not support float64, using float32 instead.")
++                logging.warning(
++                    f"Device {device} does not support float64, using float32 instead."
++                )
+                 return torch.float32
+         else:
+             logging.warning(
+@@ -110,12 +125,16 @@ def is_torch_device_available(try_device: str) -> bool:
+         return torch.cuda.is_available()
+     elif try_device == "mps":
+         return torch.backends.mps.is_available()
+-    elif try_device == "xpu":
+-        return torch.xpu.is_available()
++    elif try_device == "npu":
++        return torch.npu.is_available()
+     elif try_device == "cpu":
+         return True
++    elif try_device == "xpu":
++        return torch.xpu.is_available()
+     else:
+-        raise ValueError(f"Unknown device {try_device}. Supported devices are: cuda, mps, xpu or cpu.")
++        raise ValueError(
++            f"Unknown device {try_device}. Supported devices are: cuda, mps, npu, xpu or cpu."
++        )
+ 
+ 
+ def is_amp_available(device: str):
+@@ -220,7 +239,9 @@ def say(text: str, blocking: bool = False):
+     if blocking:
+         subprocess.run(cmd, check=True)
+     else:
+-        subprocess.Popen(cmd, creationflags=subprocess.CREATE_NO_WINDOW if system == "Windows" else 0)
++        subprocess.Popen(
++            cmd, creationflags=subprocess.CREATE_NO_WINDOW if system == "Windows" else 0
++        )
+ 
+ 
+ def log_say(text: str, play_sounds: bool = True, blocking: bool = False):
+@@ -266,7 +287,10 @@ def enter_pressed() -> bool:
+             return key in (b"\r", b"\n")  # enter key
+         return False
+     else:
+-        return select.select([sys.stdin], [], [], 0)[0] and sys.stdin.readline().strip() == ""
++        return (
++            select.select([sys.stdin], [], [], 0)[0]
++            and sys.stdin.readline().strip() == ""
++        )
+ 
+ 
+ def move_cursor_up(lines):
+diff --git a/src/lerobot/datasets/video_utils.py b/src/lerobot/datasets/video_utils.py
+index 84ce1377..3ea4c4cf 100644
+--- a/src/lerobot/datasets/video_utils.py
++++ b/src/lerobot/datasets/video_utils.py
+@@ -215,6 +215,7 @@ class FrameTimestampError(ValueError):
+ 
+ 
+ _default_decoder_cache = VideoDecoderCache()
++_TORCHCODEC_RELAXED_TOL_WARNING_EMITTED = False
+ 
+ 
+ def decode_video_frames_torchcodec(
+@@ -252,8 +253,11 @@ def decode_video_frames_torchcodec(
+ 
+     # get metadata for frame information
+     metadata = decoder.metadata
+-    average_fps = metadata.average_fps
++    average_fps = float(metadata.average_fps)
++    effective_tolerance_s = tolerance_s
++    if average_fps > 0:
++        effective_tolerance_s = max(tolerance_s, (1.05 / average_fps) + 1e-6)
+     # convert timestamps to frame indices
+-    frame_indices = [round(ts * average_fps) for ts in timestamps]
++    frame_indices = [int(ts * average_fps + 0.5) for ts in timestamps]
+     # retrieve frames based on indices
+     frames_batch = decoder.get_frames_at(indices=frame_indices)
+@@ -271,9 +275,24 @@ def decode_video_frames_torchcodec(
+     dist = torch.cdist(query_ts[:, None], loaded_ts[:, None], p=1)
+     min_, argmin_ = dist.min(1)
+ 
+-    is_within_tol = min_ < tolerance_s
++    is_within_tol = min_ <= effective_tolerance_s
++    if (
++        is_within_tol.all()
++        and effective_tolerance_s > tolerance_s
++        and (min_ > tolerance_s).any()
++    ):
++        global _TORCHCODEC_RELAXED_TOL_WARNING_EMITTED
++        if not _TORCHCODEC_RELAXED_TOL_WARNING_EMITTED:
++            logging.warning(
++                "torchcodec frame lookup exceeded the strict timestamp tolerance but stayed within one frame "
++                "interval; accepting the nearest decoded frame to keep the fast path enabled. "
++                f"{tolerance_s=}, {effective_tolerance_s=}"
++            )
++            _TORCHCODEC_RELAXED_TOL_WARNING_EMITTED = True
++
+     assert is_within_tol.all(), (
+-        f"One or several query timestamps unexpectedly violate the tolerance ({min_[~is_within_tol]} > {tolerance_s=})."
++        f"One or several query timestamps unexpectedly violate the tolerance "
++        f"({min_[~is_within_tol]} > {effective_tolerance_s=})."
+         "It means that the closest frame that can be loaded from the video is too far away in time."
+         "This might be due to synchronization issues with timestamps during data collection."
+         "To be safe, we advise to ignore this item during training."
