@@ -1,4 +1,4 @@
-![面向智能计算系统的数据结构](./images/README北航头图.png)
+![面向智能计算系统的数据结构](./images/READMEImage.png)
 
 ------
 

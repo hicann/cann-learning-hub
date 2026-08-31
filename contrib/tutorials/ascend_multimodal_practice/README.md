@@ -1,4 +1,4 @@
-![昇腾AI端云协同与多模态机械臂综合实验](./images/README封面.png)
+![昇腾AI端云协同与多模态机械臂综合实验](./images/READMEImage.png)
 
 ------
 

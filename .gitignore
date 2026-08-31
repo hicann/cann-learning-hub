@@ -119,5 +119,3 @@ dist/
 .claude/
 .opencode/
 prime-rl/
-
-*.docx
