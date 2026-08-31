@@ -54,7 +54,7 @@ aclnn_runner/build/main_reduce_benchmark data 1024 4
 ## 目录结构
 
 ```
-04_Reduce算子与优先队列模拟堆/
+04_reduce_priority_queue_heap/
 ├── 04.01_chapter_intro.ipynb   # 章节介绍
 ├── 04.02_reduce_lab.ipynb      # 动手实验
 ├── 04.03_chapter_test.ipynb    # 课后测试

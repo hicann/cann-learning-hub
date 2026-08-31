@@ -1,0 +1,12 @@
+默认运行命令：
+python3 scripts/gen_data.py --num_nodes 31 --seed 10
+python3 scripts/run_lab.py --data_dir data --output data/output.json
+python3 scripts/verify_results.py data/output.json
+
+BFS levels: [1, 2, 4, 8, 16]
+FIFO end_to_end: 119.0
+priority end_to_end: 116.0
+priority_speedup: 1.0258620689655173
+tree dependencies: PASS
+FIFO pipeline: PASS
+priority pipeline: PASS

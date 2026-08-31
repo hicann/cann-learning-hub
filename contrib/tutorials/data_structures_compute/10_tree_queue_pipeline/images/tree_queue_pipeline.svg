@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">树形任务队列与双缓冲流水线</title>
+  <desc id="desc">任务树通过 BFS FIFO 释放 frontier，已就绪任务进入优先队列，随后在 CopyIn、Compute、CopyOut 三阶段流水线中使用两个缓冲槽处理。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
+    <marker id="blueArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2f80ed"/></marker>
+    <style>
+      .title { font: 700 26px "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #182230; }
+      .panel-title { font: 700 19px "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #182230; }
+      .body { font: 15px "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #52606d; }
+      .small { font: 13px "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #52606d; }
+      .node { font: 700 15px "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #182230; text-anchor: middle; }
+      .stage { font: 700 14px "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #ffffff; text-anchor: middle; }
+      .axis { font: 12px "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #7b8794; text-anchor: middle; }
+    </style>
+  </defs>
+  <rect width="1200" height="720" fill="#f7f9fc"/>
+  <text x="600" y="44" class="title" text-anchor="middle">树形任务队列与 CopyIn → Compute → CopyOut 流水线</text>
+  <text x="600" y="70" class="body" text-anchor="middle">父节点完成后释放子节点；就绪任务由优先队列选择，再通过双缓冲流水线推进</text>
+
+  <rect x="28" y="96" width="345" height="535" rx="14" fill="#ffffff" stroke="#d9e2ec"/>
+  <text x="52" y="132" class="panel-title">1. 树形依赖与 BFS frontier</text>
+  <text x="52" y="158" class="small">parent 数组：只有父任务完成，子任务才就绪</text>
+  <path d="M200 222 L115 292 M200 222 L285 292 M115 342 L73 412 M115 342 L157 412 M285 342 L243 412 M285 342 L327 412" fill="none" stroke="#9aa5b1" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="160" y="184" width="80" height="50" rx="12" fill="#dbeafe" stroke="#2f80ed" stroke-width="2"/><text x="200" y="206" class="node">T0</text><text x="200" y="224" class="small" text-anchor="middle">root</text>
+  <rect x="75" y="292" width="80" height="50" rx="12" fill="#e0f2fe" stroke="#38bdf8" stroke-width="2"/><text x="115" y="314" class="node">T1</text><text x="115" y="332" class="small" text-anchor="middle">ready</text>
+  <rect x="245" y="292" width="80" height="50" rx="12" fill="#e0f2fe" stroke="#38bdf8" stroke-width="2"/><text x="285" y="314" class="node">T2</text><text x="285" y="332" class="small" text-anchor="middle">ready</text>
+  <rect x="33" y="412" width="80" height="50" rx="12" fill="#f0fdf4" stroke="#34d399" stroke-width="2"/><text x="73" y="434" class="node">T3</text><text x="73" y="452" class="small" text-anchor="middle">next</text>
+  <rect x="117" y="412" width="80" height="50" rx="12" fill="#f0fdf4" stroke="#34d399" stroke-width="2"/><text x="157" y="434" class="node">T4</text><text x="157" y="452" class="small" text-anchor="middle">next</text>
+  <rect x="203" y="412" width="80" height="50" rx="12" fill="#f0fdf4" stroke="#34d399" stroke-width="2"/><text x="243" y="434" class="node">T5</text><text x="243" y="452" class="small" text-anchor="middle">next</text>
+  <rect x="287" y="412" width="80" height="50" rx="12" fill="#f0fdf4" stroke="#34d399" stroke-width="2"/><text x="327" y="434" class="node">T6</text><text x="327" y="452" class="small" text-anchor="middle">next</text>
+  <rect x="52" y="518" width="297" height="74" rx="10" fill="#f8fafc" stroke="#e5e7eb"/>
+  <text x="70" y="544" class="body">BFS frontier</text><text x="70" y="570" class="small">第 0 层：[T0] → 第 1 层：[T1,T2]</text>
+
+  <rect x="397" y="96" width="350" height="535" rx="14" fill="#ffffff" stroke="#d9e2ec"/>
+  <text x="421" y="132" class="panel-title">2. FIFO 与优先队列</text>
+  <text x="421" y="158" class="small">就绪任务进入队列；堆键可使用剩余子树工作量</text>
+  <rect x="428" y="194" width="288" height="95" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="448" y="220" class="body">FIFO frontier</text>
+  <rect x="448" y="238" width="74" height="32" rx="7" fill="#bfdbfe"/><text x="485" y="259" class="node">T1</text>
+  <rect x="535" y="238" width="74" height="32" rx="7" fill="#bfdbfe"/><text x="572" y="259" class="node">T2</text><text x="629" y="259" class="small">DeQue →</text>
+  <path d="M572 304 L572 345" fill="none" stroke="#2f80ed" stroke-width="2" marker-end="url(#blueArrow)"/><text x="572" y="329" class="small" text-anchor="middle">选择就绪任务</text>
+  <rect x="428" y="354" width="288" height="89" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="448" y="380" class="body">Min-heap：ready tasks</text>
+  <rect x="448" y="395" width="100" height="25" rx="6" fill="#fed7aa"/><text x="498" y="413" class="small" text-anchor="middle">T2 / work=10</text>
+  <rect x="556" y="395" width="100" height="25" rx="6" fill="#ffedd5"/><text x="606" y="413" class="small" text-anchor="middle">T1 / work=8</text>
+  <path d="M572 452 L572 478" fill="none" stroke="#2f80ed" stroke-width="2" marker-end="url(#blueArrow)"/><text x="600" y="469" class="small" text-anchor="start">父任务完成后入堆</text>
+  <rect x="428" y="492" width="288" height="112" rx="10" fill="#f8fafc" stroke="#e5e7eb"/>
+  <text x="448" y="518" class="body">约束保持不变</text><text x="448" y="545" class="small">• 每个任务只执行一次</text><text x="448" y="569" class="small">• parent 必须先于 child</text><text x="448" y="589" class="small">• 堆只改变选择策略</text>
+
+  <rect x="771" y="96" width="401" height="535" rx="14" fill="#ffffff" stroke="#d9e2ec"/>
+  <text x="795" y="132" class="panel-title">3. 双缓冲三阶段流水线</text><text x="795" y="158" class="small">queue_depth=2，Compute lane=2</text>
+  <text x="858" y="195" class="axis">t0</text><text x="930" y="195" class="axis">t1</text><text x="1002" y="195" class="axis">t2</text><text x="1074" y="195" class="axis">t3</text><text x="1146" y="195" class="axis">t4</text><line x1="842" y1="205" x2="1152" y2="205" stroke="#cbd5e1"/>
+  <text x="788" y="238" class="small">CopyIn</text><rect x="842" y="218" width="65" height="31" rx="6" fill="#34d399"/><text x="874" y="239" class="stage">T0</text><rect x="914" y="218" width="65" height="31" rx="6" fill="#34d399"/><text x="946" y="239" class="stage">T1</text><rect x="986" y="218" width="65" height="31" rx="6" fill="#34d399"/><text x="1018" y="239" class="stage">T2</text><rect x="1058" y="218" width="65" height="31" rx="6" fill="#34d399"/><text x="1090" y="239" class="stage">T3</text>
+  <text x="788" y="289" class="small">Compute 0</text><rect x="914" y="269" width="101" height="31" rx="6" fill="#f59e0b"/><text x="964" y="290" class="stage">T0</text><rect x="1022" y="269" width="65" height="31" rx="6" fill="#f59e0b"/><text x="1054" y="290" class="stage">T2</text>
+  <text x="788" y="340" class="small">Compute 1</text><rect x="914" y="320" width="65" height="31" rx="6" fill="#fbbf24"/><text x="946" y="341" class="stage">T1</text><rect x="986" y="320" width="65" height="31" rx="6" fill="#fbbf24"/><text x="1018" y="341" class="stage">T3</text>
+  <text x="788" y="391" class="small">CopyOut</text><rect x="1022" y="371" width="65" height="31" rx="6" fill="#8b5cf6"/><text x="1054" y="392" class="stage">T0</text><rect x="1094" y="371" width="65" height="31" rx="6" fill="#8b5cf6"/><text x="1126" y="392" class="stage">T1</text>
+  <line x1="812" y1="425" x2="1149" y2="425" stroke="#cbd5e1"/>
+  <rect x="812" y="454" width="145" height="70" rx="10" fill="#f0fdf4" stroke="#86efac"/><text x="884" y="480" class="body" text-anchor="middle">Buffer 0</text><text x="884" y="504" class="small" text-anchor="middle">T0 → T2</text>
+  <rect x="976" y="454" width="145" height="70" rx="10" fill="#eff6ff" stroke="#93c5fd"/><text x="1048" y="480" class="body" text-anchor="middle">Buffer 1</text><text x="1048" y="504" class="small" text-anchor="middle">T1 → T3</text>
+  <text x="812" y="565" class="small">阶段重叠隐藏搬运等待，资源约束仍由队列槽位保证</text>
+
+  <rect x="28" y="660" width="1144" height="34" rx="8" fill="#eaf2ff"/>
+  <text x="600" y="682" class="body" text-anchor="middle">实验主线：parent 数组 → BFS frontier → ready heap → 双缓冲流水线 → 依赖与时序校验</text>
+</svg>

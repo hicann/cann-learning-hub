@@ -18,7 +18,7 @@ source /home/developer/Ascend/cann-9.0.0/set_env.sh
 source /usr/local/Ascend/ascend-toolkit/latest/set_env.sh
 
 # 2. 进入实验目录
-cd 04_Reduce算子与优先队列模拟堆/src/reduce_lab
+cd src/reduce_lab
 
 # 3. 编译算子（TARGET=ascend910b，自动设置 BLOCK_DIM=20）
 TARGET=ascend910b bash scripts/build_ops.sh
@@ -76,5 +76,5 @@ Timing: aclrtEvent, 3 warmup + 10 timed iterations
 ## 环境清理
 
 ```bash
-cd 04_Reduce算子与优先队列模拟堆/src/reduce_lab
+cd src/reduce_lab
 rm -rf custom_ops/generated aclnn_runner/build data/input data/output

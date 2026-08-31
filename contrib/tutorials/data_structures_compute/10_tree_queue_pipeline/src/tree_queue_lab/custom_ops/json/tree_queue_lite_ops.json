@@ -1,0 +1,15 @@
+[
+  {
+    "op": "TreeQueuePipelineLite",
+    "language": "cpp",
+    "input_desc": [
+      {"name": "parent", "param_type": "required", "format": ["ND"], "type": ["int32"]},
+      {"name": "cost", "param_type": "required", "format": ["ND"], "type": ["fp16"]},
+      {"name": "order", "param_type": "required", "format": ["ND"], "type": ["int32"]}
+    ],
+    "output_desc": [
+      {"name": "stage_end", "param_type": "required", "format": ["ND"], "type": ["fp16"]},
+      {"name": "dependency_ok", "param_type": "required", "format": ["ND"], "type": ["int32"]}
+    ]
+  }
+]

@@ -1,4 +1,4 @@
-# 07_巧用排序算法优化MoE融合算子
+# 07_sort_for_moe_fusion
 
 本实验围绕 MoE（Mixture of Experts）路由阶段展开，使用 Ascend C 实现并比较 TopK、QuickSort 和 HeapSort 三种专家选择策略，并串联 Token Permute / Unpermute，观察排序算法对融合路径的影响。
 
