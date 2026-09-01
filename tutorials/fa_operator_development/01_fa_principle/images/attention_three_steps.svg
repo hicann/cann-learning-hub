@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="430" viewBox="0 0 940 430" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">Attention 的三步计算：打分 → 归一化 → 加权求和</text>
+
+  <!-- Step 1 -->
+  <g>
+    <rect x="40" y="70" width="250" height="240" rx="10" fill="#F5F9FF" stroke="#B7CFF5" stroke-width="1.5"/>
+    <text x="165" y="98" text-anchor="middle" font-size="15.5" font-weight="bold" fill="#1B4E9B">① 打分：S = Q · Kᵀ / √d</text>
+
+    <rect x="70" y="125" width="60" height="90" rx="3" fill="#4C88F7" fill-opacity="0.2" stroke="#4C88F7" stroke-width="1.6"/>
+    <text x="100" y="175" text-anchor="middle" font-size="14" font-weight="bold" fill="#1B4E9B">Q</text>
+
+    <text x="142" y="175" text-anchor="middle" font-size="16" fill="#555">×</text>
+
+    <rect x="155" y="125" width="60" height="90" rx="3" fill="#34A853" fill-opacity="0.2" stroke="#34A853" stroke-width="1.6"/>
+    <text x="185" y="175" text-anchor="middle" font-size="14" font-weight="bold" fill="#1E6B34">Kᵀ</text>
+
+    <text x="228" y="175" text-anchor="middle" font-size="14" fill="#555">=</text>
+
+    <rect x="238" y="130" width="34" height="80" rx="3" fill="#9334E6" fill-opacity="0.18" stroke="#9334E6" stroke-width="1.6"/>
+    <text x="255" y="176" text-anchor="middle" font-size="13" font-weight="bold" fill="#6B21A8">S</text>
+
+    <text x="165" y="245" text-anchor="middle" font-size="13" fill="#444">第 i 行 = 第 i 个 token 的查询</text>
+    <text x="165" y="268" text-anchor="middle" font-size="13" fill="#444">与所有 token 的键的相似度</text>
+    <text x="165" y="291" text-anchor="middle" font-size="13" fill="#888">（点积越大越“相关”）</text>
+  </g>
+
+  <line x1="298" y1="190" x2="328" y2="190" stroke="#555" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <!-- Step 2 -->
+  <g>
+    <rect x="335" y="70" width="270" height="240" rx="10" fill="#F6FBF6" stroke="#BCE0C3" stroke-width="1.5"/>
+    <text x="470" y="98" text-anchor="middle" font-size="15.5" font-weight="bold" fill="#1E6B34">② 归一化：P = Softmax(S)（按行）</text>
+
+    <rect x="370" y="125" width="34" height="80" rx="3" fill="#9334E6" fill-opacity="0.18" stroke="#9334E6" stroke-width="1.6"/>
+    <text x="387" y="171" text-anchor="middle" font-size="13" font-weight="bold" fill="#6B21A8">S</text>
+
+    <text x="418" y="175" text-anchor="middle" font-size="14" fill="#555">→</text>
+    <rect x="432" y="125" width="90" height="34" rx="16" fill="#34A853" fill-opacity="0.15" stroke="#34A853" stroke-width="1.4"/>
+    <text x="477" y="147" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1E6B34">exp + 求和</text>
+
+    <text x="536" y="175" text-anchor="middle" font-size="14" fill="#555">→</text>
+    <rect x="550" y="125" width="34" height="80" rx="3" fill="#E8446D" fill-opacity="0.15" stroke="#E8446D" stroke-width="1.6"/>
+    <text x="567" y="171" text-anchor="middle" font-size="13" font-weight="bold" fill="#A81640">P</text>
+
+    <text x="470" y="245" text-anchor="middle" font-size="13" fill="#444">每一行变成“注意力权重”</text>
+    <text x="470" y="268" text-anchor="middle" font-size="13" fill="#444">同一行内所有权重之和 = 1</text>
+    <text x="470" y="291" text-anchor="middle" font-size="13" fill="#888">（分数越高，权重越接近 1）</text>
+  </g>
+
+  <line x1="613" y1="190" x2="643" y2="190" stroke="#555" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <!-- Step 3 -->
+  <g>
+    <rect x="650" y="70" width="250" height="240" rx="10" fill="#FFFAF2" stroke="#F2D9AC" stroke-width="1.5"/>
+    <text x="775" y="98" text-anchor="middle" font-size="15.5" font-weight="bold" fill="#8A5500">③ 加权求和：O = P · V</text>
+
+    <rect x="680" y="125" width="34" height="80" rx="3" fill="#E8446D" fill-opacity="0.15" stroke="#E8446D" stroke-width="1.6"/>
+    <text x="697" y="171" text-anchor="middle" font-size="13" font-weight="bold" fill="#A81640">P</text>
+
+    <text x="725" y="175" text-anchor="middle" font-size="16" fill="#555">×</text>
+
+    <rect x="738" y="125" width="60" height="90" rx="3" fill="#F29900" fill-opacity="0.2" stroke="#F29900" stroke-width="1.6"/>
+    <text x="768" y="175" text-anchor="middle" font-size="14" font-weight="bold" fill="#8A5500">V</text>
+
+    <text x="812" y="175" text-anchor="middle" font-size="14" fill="#555">=</text>
+
+    <rect x="822" y="130" width="60" height="80" rx="3" fill="#3EAA8C" fill-opacity="0.18" stroke="#3EAA8C" stroke-width="1.6"/>
+    <text x="852" y="176" text-anchor="middle" font-size="13" font-weight="bold" fill="#166B54">O</text>
+
+    <text x="775" y="245" text-anchor="middle" font-size="13" fill="#444">第 i 行 = 所有 V 的加权和，</text>
+    <text x="775" y="268" text-anchor="middle" font-size="13" fill="#444">权重就是第 i 行的注意力</text>
+    <text x="775" y="291" text-anchor="middle" font-size="13" fill="#888">（“按重要性混合信息”）</text>
+  </g>
+
+  <!-- 底部整体公式 -->
+  <rect x="150" y="345" width="640" height="52" rx="10" fill="#222"/>
+  <text x="470" y="378" text-anchor="middle" font-size="18" fill="#FFF" font-weight="bold">Attention(Q, K, V) = Softmax( Q · Kᵀ / √d ) · V</text>
+</svg>

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="400" viewBox="0 0 920 400" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowK" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="460" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">KV Cache：推理时“历史 K/V 只算一次、反复复用”的缓存</text>
+
+  <!-- 左：Prefill 全量计算 -->
+  <g>
+    <rect x="40" y="60" width="400" height="240" rx="12" fill="#F5F9FF" stroke="#B7CFF5" stroke-width="1.5"/>
+    <text x="240" y="90" text-anchor="middle" font-size="15.5" font-weight="bold" fill="#1B4E9B">Prefill（首字 / 全量）：一次处理整句 Prompt</text>
+
+    <!-- 输入 prompt tokens -->
+    <g font-size="12">
+      <rect x="70" y="115" width="52" height="30" rx="4" fill="#4C88F7" fill-opacity="0.5" stroke="#4C88F7"/>
+      <text x="96" y="135" text-anchor="middle" fill="#1B4E9B">“我”</text>
+      <rect x="126" y="115" width="52" height="30" rx="4" fill="#4C88F7" fill-opacity="0.5" stroke="#4C88F7"/>
+      <text x="152" y="135" text-anchor="middle" fill="#1B4E9B">“爱”</text>
+      <rect x="182" y="115" width="52" height="30" rx="4" fill="#4C88F7" fill-opacity="0.5" stroke="#4C88F7"/>
+      <text x="208" y="135" text-anchor="middle" fill="#1B4E9B">“猫”</text>
+      <rect x="238" y="115" width="52" height="30" rx="4" fill="#4C88F7" fill-opacity="0.5" stroke="#4C88F7"/>
+      <text x="264" y="135" text-anchor="middle" fill="#1B4E9B">“。”</text>
+    </g>
+
+    <!-- cache 条 -->
+    <text x="240" y="180" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E6B34">KV Cache（逐格填入）</text>
+    <g>
+      <rect x="90" y="195" width="52" height="26" rx="3" fill="#34A853" fill-opacity="0.55" stroke="#34A853"/>
+      <rect x="146" y="195" width="52" height="26" rx="3" fill="#34A853" fill-opacity="0.45" stroke="#34A853"/>
+      <rect x="202" y="195" width="52" height="26" rx="3" fill="#34A853" fill-opacity="0.35" stroke="#34A853"/>
+      <rect x="258" y="195" width="52" height="26" rx="3" fill="#34A853" fill-opacity="0.25" stroke="#34A853"/>
+    </g>
+    <line x1="96" y1="148" x2="96" y2="190" stroke="#555" stroke-width="1.4" marker-end="url(#arrowK)"/>
+    <line x1="152" y1="148" x2="152" y2="190" stroke="#555" stroke-width="1.4" marker-end="url(#arrowK)"/>
+    <line x1="208" y1="148" x2="208" y2="190" stroke="#555" stroke-width="1.4" marker-end="url(#arrowK)"/>
+    <line x1="264" y1="148" x2="264" y2="190" stroke="#555" stroke-width="1.4" marker-end="url(#arrowK)"/>
+
+    <text x="240" y="250" text-anchor="middle" font-size="13" fill="#444">Q 与 K、V 都来自这 4 个 token，</text>
+    <text x="240" y="272" text-anchor="middle" font-size="13" fill="#444">一次 Attention 算出全部 4 个输出</text>
+    <text x="240" y="292" text-anchor="middle" font-size="12.5" fill="#888">（对应算子的“全量推理 / Prompt 场景”）</text>
+  </g>
+
+  <!-- 右：Decode 增量计算 -->
+  <g>
+    <rect x="480" y="60" width="400" height="240" rx="12" fill="#F6FBF6" stroke="#BCE0C3" stroke-width="1.5"/>
+    <text x="680" y="90" text-anchor="middle" font-size="15.5" font-weight="bold" fill="#1E6B34">Decode（逐字生成 / 增量）：每步只有 1 个新 token</text>
+
+    <!-- 新 token -->
+    <rect x="620" y="112" width="120" height="34" rx="5" fill="#F29900" fill-opacity="0.55" stroke="#F29900" stroke-width="1.6"/>
+    <text x="680" y="134" text-anchor="middle" font-size="13" font-weight="bold" fill="#8A5500">新 token：Q（1 行）</text>
+
+    <!-- cache 条（已填） -->
+    <text x="680" y="180" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E6B34">KV Cache（历史 K/V 直接读取，不重算）</text>
+    <g>
+      <rect x="530" y="195" width="52" height="26" rx="3" fill="#34A853" fill-opacity="0.55" stroke="#34A853"/>
+      <rect x="586" y="195" width="52" height="26" rx="3" fill="#34A853" fill-opacity="0.45" stroke="#34A853"/>
+      <rect x="642" y="195" width="52" height="26" rx="3" fill="#34A853" fill-opacity="0.35" stroke="#34A853"/>
+      <rect x="698" y="195" width="52" height="26" rx="3" fill="#34A853" fill-opacity="0.25" stroke="#34A853"/>
+      <rect x="754" y="195" width="52" height="26" rx="3" fill="#FFE08A" stroke="#C9A227" stroke-width="1.5"/>
+      <text x="780" y="213" text-anchor="middle" font-size="10.5" fill="#8A6D00">新K/V</text>
+    </g>
+    <line x1="680" y1="150" x2="700" y2="190" stroke="#555" stroke-width="1.4" marker-end="url(#arrowK)"/>
+
+    <text x="680" y="250" text-anchor="middle" font-size="13" fill="#444">1 行 Q × 缓存里的全部 K/V，</text>
+    <text x="680" y="272" text-anchor="middle" font-size="13" fill="#444">算出 1 个新输出（串行逐字生成）</text>
+    <text x="680" y="292" text-anchor="middle" font-size="12.5" fill="#888">（对应算子的“增量推理 / Decode 场景”）</text>
+  </g>
+
+  <rect x="70" y="330" width="780" height="50" rx="10" fill="#FFF8E6" stroke="#F2D9AC"/>
+  <text x="460" y="351" text-anchor="middle" font-size="13.5" fill="#8A5500" font-weight="bold">FusedInferAttentionScore 算子同时支持这两种场景：全量计算与增量计算</text>
+  <text x="460" y="372" text-anchor="middle" font-size="13" fill="#8A5500">KV Cache 通常按“块（block table）”离散存放于显存 —— 这是 Tiling 设计的重要输入</text>
+</svg>

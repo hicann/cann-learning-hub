@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="500" viewBox="0 0 940 500" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">FlashAttention 分块：外层按 Q 块，内层按 KV 块，中间结果不落 HBM</text>
+
+  <!-- 外层：Q 块 -->
+  <g>
+    <text x="105" y="75" text-anchor="middle" font-size="14" font-weight="bold" fill="#1B4E9B">Q（n×d）</text>
+    <rect x="55" y="88" width="100" height="34" rx="4" fill="#4C88F7" fill-opacity="0.5" stroke="#4C88F7" stroke-width="1.6"/>
+    <text x="105" y="110" text-anchor="middle" font-size="12" fill="#1B4E9B" font-weight="bold">Q 块 0</text>
+    <rect x="55" y="128" width="100" height="34" rx="4" fill="#4C88F7" fill-opacity="0.28" stroke="#4C88F7" stroke-width="1.2"/>
+    <text x="105" y="150" text-anchor="middle" font-size="12" fill="#1B4E9B">Q 块 1</text>
+    <rect x="55" y="168" width="100" height="34" rx="4" fill="#4C88F7" fill-opacity="0.14" stroke="#4C88F7" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="105" y="190" text-anchor="middle" font-size="12" fill="#777">Q 块 2 …</text>
+
+    <rect x="40" y="215" width="130" height="26" rx="13" fill="#1B4E9B" fill-opacity="0.08"/>
+    <text x="105" y="233" text-anchor="middle" font-size="12" font-weight="bold" fill="#1B4E9B">外层循环（每块只读1次）</text>
+  </g>
+
+  <line x1="175" y1="150" x2="255" y2="150" stroke="#555" stroke-width="2" marker-end="url(#arrowT)"/>
+
+  <!-- 片上处理：一个 Q 块的生命周期 -->
+  <rect x="262" y="60" width="420" height="330" rx="14" fill="#FFF8E6" stroke="#E0A800" stroke-width="2"/>
+  <rect x="262" y="60" width="420" height="34" rx="14" fill="#E0A800" fill-opacity="0.85"/>
+  <text x="472" y="83" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#FFF">片上 SRAM / Unified Buffer（256KB 量级）</text>
+
+  <!-- 内层循环区域 -->
+  <text x="472" y="122" text-anchor="middle" font-size="13" font-weight="bold" fill="#8A5500">内层循环：对每一个 KV 块（K₀,V₀）→（K₁,V₁）→ …</text>
+
+  <!-- 小 S 块与 online 状态 -->
+  <g>
+    <rect x="300" y="145" width="110" height="64" rx="6" fill="#9334E6" fill-opacity="0.18" stroke="#9334E6" stroke-width="1.5"/>
+    <text x="355" y="172" text-anchor="middle" font-size="13" font-weight="bold" fill="#6B21A8">S 小块 M×B</text>
+    <text x="355" y="194" text-anchor="middle" font-size="11" fill="#6B21A8">只在片上存在！</text>
+
+    <rect x="440" y="145" width="100" height="64" rx="6" fill="#34A853" fill-opacity="0.16" stroke="#34A853" stroke-width="1.5"/>
+    <text x="490" y="172" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E6B34">P̃ 小块</text>
+    <text x="490" y="194" text-anchor="middle" font-size="11" fill="#1E6B34">exp 后即用即弃</text>
+
+    <rect x="570" y="145" width="95" height="64" rx="6" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.5"/>
+    <text x="617" y="168" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#A81640">状态</text>
+    <text x="617" y="188" text-anchor="middle" font-size="11.5" fill="#A81640">m, l, O_acc</text>
+    <text x="617" y="203" text-anchor="middle" font-size="10.5" fill="#A81640">（跨块驻留）</text>
+  </g>
+  <line x1="410" y1="177" x2="435" y2="177" stroke="#555" stroke-width="1.6" marker-end="url(#arrowT)"/>
+  <line x1="540" y1="177" x2="565" y2="177" stroke="#555" stroke-width="1.6" marker-end="url(#arrowT)"/>
+
+  <!-- 两次 GEMM + online softmax 流水 -->
+  <g font-size="12.5">
+    <rect x="300" y="232" width="120" height="46" rx="8" fill="#E8F1FE" stroke="#4C88F7"/>
+    <text x="360" y="252" text-anchor="middle" fill="#1B4E9B" font-weight="bold">GEMM①  Q·Kᵀ</text>
+    <text x="360" y="270" text-anchor="middle" font-size="11" fill="#666">Cube 单元</text>
+
+    <rect x="445" y="232" width="130" height="46" rx="8" fill="#FDE8E8" stroke="#E8446D"/>
+    <text x="510" y="252" text-anchor="middle" fill="#A81640" font-weight="bold">Online Softmax</text>
+    <text x="510" y="270" text-anchor="middle" font-size="11" fill="#666">Vector 单元</text>
+
+    <rect x="600" y="232" width="65" height="46" rx="8" fill="#E8F1FE" stroke="#4C88F7"/>
+    <text x="632" y="252" text-anchor="middle" fill="#1B4E9B" font-weight="bold" font-size="11.5">GEMM②</text>
+    <text x="632" y="270" text-anchor="middle" font-size="11" fill="#666">P̃·V</text>
+  </g>
+  <line x1="420" y1="255" x2="440" y2="255" stroke="#555" stroke-width="1.6" marker-end="url(#arrowT)"/>
+  <line x1="575" y1="255" x2="595" y2="255" stroke="#555" stroke-width="1.6" marker-end="url(#arrowT)"/>
+
+  <text x="472" y="318" text-anchor="middle" font-size="12.5" fill="#8A5500">Q 块驻留片上期间被所有 KV 块复用；每个 KV 块也被 Q 块的 M 行复用</text>
+
+  <!-- 归一化写出 -->
+  <rect x="330" y="336" width="285" height="40" rx="8" fill="#3EAA8C" fill-opacity="0.16" stroke="#3EAA8C" stroke-width="1.6"/>
+  <text x="472" y="361" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#166B54">Q 块收尾：O = O_acc / l，一次写回 HBM</text>
+
+  <!-- KV 块输入 -->
+  <g>
+    <text x="770" y="75" text-anchor="middle" font-size="14" font-weight="bold" fill="#1E6B34">K / V（n×d）</text>
+    <rect x="725" y="88" width="90" height="30" rx="4" fill="#34A853" fill-opacity="0.35" stroke="#34A853"/>
+    <text x="770" y="108" text-anchor="middle" font-size="11.5" fill="#1E6B34">KV 块 0</text>
+    <rect x="725" y="124" width="90" height="30" rx="4" fill="#34A853" fill-opacity="0.22" stroke="#34A853"/>
+    <text x="770" y="144" text-anchor="middle" font-size="11.5" fill="#1E6B34">KV 块 1</text>
+    <rect x="725" y="160" width="90" height="30" rx="4" fill="#34A853" fill-opacity="0.12" stroke="#34A853" stroke-dasharray="4 3"/>
+    <text x="770" y="180" text-anchor="middle" font-size="11.5" fill="#777">KV 块 2 …</text>
+    <text x="770" y="215" text-anchor="middle" font-size="11.5" fill="#888">逐块搬入片上</text>
+  </g>
+  <line x1="720" y1="150" x2="688" y2="177" stroke="#555" stroke-width="1.8" marker-end="url(#arrowT)"/>
+
+  <!-- 输出 -->
+  <line x1="472" y1="395" x2="472" y2="425" stroke="#555" stroke-width="2" marker-end="url(#arrowT)"/>
+  <rect x="350" y="428" width="245" height="40" rx="8" fill="#A8C7E8" stroke="#1B4E9B" stroke-width="1.6"/>
+  <text x="472" y="453" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1B4E9B">HBM：O 按 Q 块粒度流式写回</text>
+
+  <text x="150" y="330" text-anchor="middle" font-size="12.5" fill="#888">n×n 的 S、P</text>
+  <text x="150" y="350" text-anchor="middle" font-size="12.5" fill="#C0392B" font-weight="bold">从未出现在 HBM</text>
+
+  <text x="790" y="330" text-anchor="middle" font-size="12.5" fill="#888">KV 读取次数</text>
+  <text x="790" y="350" text-anchor="middle" font-size="12.5" fill="#1E6B34" font-weight="bold">从 n 次摊薄到 n/M 次</text>
+</svg>

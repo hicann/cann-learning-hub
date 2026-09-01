@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <text x="450" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">Softmax 直觉：一行 4 个得分 → 4 个“和为 1”的权重</text>
+
+  <!-- Step A: 原始得分 -->
+  <g>
+    <text x="150" y="70" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#6B21A8">① 得分行 S[i, :]（QKᵀ/√d 的一行）</text>
+    <g font-size="14" text-anchor="middle">
+      <rect x="30" y="85" width="60" height="40" rx="5" fill="#9334E6" fill-opacity="0.18" stroke="#9334E6" stroke-width="1.5"/>
+      <text x="60" y="110" fill="#6B21A8" font-weight="bold">2.0</text>
+      <rect x="100" y="85" width="60" height="40" rx="5" fill="#9334E6" fill-opacity="0.18" stroke="#9334E6" stroke-width="1.5"/>
+      <text x="130" y="110" fill="#6B21A8" font-weight="bold">0.1</text>
+      <rect x="170" y="85" width="60" height="40" rx="5" fill="#9334E6" fill-opacity="0.18" stroke="#9334E6" stroke-width="1.5"/>
+      <text x="200" y="110" fill="#6B21A8" font-weight="bold">1.3</text>
+      <rect x="240" y="85" width="60" height="40" rx="5" fill="#9334E6" fill-opacity="0.18" stroke="#9334E6" stroke-width="1.5"/>
+      <text x="270" y="110" fill="#6B21A8" font-weight="bold">3.1</text>
+    </g>
+    <text x="150" y="160" text-anchor="middle" font-size="12.5" fill="#888">数值范围不可控，</text>
+    <text x="150" y="178" text-anchor="middle" font-size="12.5" fill="#888">直接 exp 有溢出风险</text>
+  </g>
+
+  <!-- 箭头 -->
+  <path d="M 320 105 L 360 105" stroke="#555" stroke-width="2" fill="none"/>
+  <path d="M 352 99 L 362 105 L 352 111 z" fill="#555"/>
+
+  <!-- Step B: exp -->
+  <g>
+    <text x="470" y="70" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#1E6B34">② 先减去行最大值，再求 exp</text>
+    <g font-size="13" text-anchor="middle">
+      <rect x="370" y="85" width="66" height="40" rx="5" fill="#34A853" fill-opacity="0.16" stroke="#34A853" stroke-width="1.5"/>
+      <text x="403" y="104" fill="#1E6B34" font-weight="bold">0.67</text>
+      <text x="403" y="119" font-size="10.5" fill="#888">e^-1.1</text>
+
+      <rect x="446" y="85" width="66" height="40" rx="5" fill="#34A853" fill-opacity="0.16" stroke="#34A853" stroke-width="1.5"/>
+      <text x="479" y="104" fill="#1E6B34" font-weight="bold">0.08</text>
+      <text x="479" y="119" font-size="10.5" fill="#888">e^-3.0</text>
+
+      <rect x="522" y="85" width="66" height="40" rx="5" fill="#34A853" fill-opacity="0.16" stroke="#34A853" stroke-width="1.5"/>
+      <text x="555" y="104" fill="#1E6B34" font-weight="bold">0.27</text>
+      <text x="555" y="119" font-size="10.5" fill="#888">e^-1.8</text>
+
+      <rect x="598" y="85" width="66" height="40" rx="5" fill="#34A853" fill-opacity="0.16" stroke="#34A853" stroke-width="1.5"/>
+      <text x="631" y="104" fill="#1E6B34" font-weight="bold">1.00</text>
+      <text x="631" y="119" font-size="10.5" fill="#888">e^0（最大）</text>
+    </g>
+    <text x="470" y="160" text-anchor="middle" font-size="12.5" fill="#888">所有值 ∈ (0, 1]，永不溢出</text>
+    <text x="470" y="178" text-anchor="middle" font-size="12.5" fill="#888">（Safe Softmax 的关键）</text>
+  </g>
+
+  <!-- 箭头 -->
+  <path d="M 680 105 L 720 105" stroke="#555" stroke-width="2" fill="none"/>
+  <path d="M 712 99 L 722 105 L 712 111 z" fill="#555"/>
+
+  <!-- Step C: 权重 -->
+  <g>
+    <text x="800" y="70" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#A81640">③ 除以总和 → 权重 P[i, :]</text>
+    <text x="800" y="115" text-anchor="middle" font-size="14" fill="#A81640" font-weight="bold">0.33 ｜ 0.04 ｜ 0.14 ｜ 0.49</text>
+    <text x="800" y="160" text-anchor="middle" font-size="12.5" fill="#888">四个权重相加 = 1.00</text>
+  </g>
+
+  <!-- 下方：条形图 -->
+  <text x="450" y="225" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#444">权重可视化（输出 O 的第 i 行 = 这四个权重去加权 V 的四行）</text>
+
+  <g transform="translate(230, 250)">
+    <rect x="0"    y="0" width="66"  height="33" rx="4" fill="#E8446D" fill-opacity="0.75"/>
+    <rect x="74"   y="27" width="9"   height="6"  rx="2" fill="#E8446D" fill-opacity="0.45"/>
+    <rect x="148"  y="19" width="29"  height="14" rx="4" fill="#E8446D" fill-opacity="0.55"/>
+    <rect x="222"  y="-2" width="96"  height="35" rx="4" fill="#E8446D" fill-opacity="0.95"/>
+    <g font-size="12" fill="#555">
+      <text x="33"  y="50" text-anchor="middle">“我”</text>
+      <text x="79"  y="50" text-anchor="middle">“爱”</text>
+      <text x="163" y="50" text-anchor="middle">“猫”</text>
+      <text x="270" y="50" text-anchor="middle">“猫”（最相关）</text>
+    </g>
+    <line x1="-8" y1="35" x2="330" y2="35" stroke="#BBB" stroke-width="1"/>
+  </g>
+
+  <g transform="translate(560, 250)" font-size="12.5" fill="#666">
+    <text x="0" y="0">得分最大的 token（3.1）拿到近一半权重，</text>
+    <text x="0" y="20">得分最小的 token（0.1）几乎被忽略。</text>
+    <text x="0" y="40">Softmax 就是“放大的赢家通吃”。</text>
+  </g>
+</svg>

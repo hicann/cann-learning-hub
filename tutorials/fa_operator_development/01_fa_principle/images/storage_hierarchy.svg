@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="430" viewBox="0 0 900 430" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <text x="450" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">加速器存储层次：越靠近计算单元，越快但越小</text>
+
+  <!-- 金字塔 -->
+  <g>
+    <!-- SRAM 顶层 -->
+    <polygon points="450,70 560,130 340,130" fill="#FFD966" stroke="#B8860B" stroke-width="1.5"/>
+    <text x="450" y="118" text-anchor="middle" font-size="13" font-weight="bold" fill="#7A5900">片上 SRAM / UB</text>
+
+    <!-- L2 -->
+    <polygon points="340,138 560,138 620,200 280,200" fill="#B7E1CD" stroke="#2E7D32" stroke-width="1.5"/>
+    <text x="450" y="160" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1E6B34">L2 Cache</text>
+    <text x="450" y="182" text-anchor="middle" font-size="12" fill="#2E7D32">AI Core 间共享</text>
+
+    <!-- HBM 底层 -->
+    <polygon points="280,208 620,208 690,290 210,290" fill="#A8C7E8" stroke="#1B4E9B" stroke-width="1.5"/>
+    <text x="450" y="238" text-anchor="middle" font-size="15" font-weight="bold" fill="#1B4E9B">HBM 显存</text>
+    <text x="450" y="262" text-anchor="middle" font-size="12" fill="#1B4E9B">所有输入输出必经之路</text>
+    <text x="450" y="282" text-anchor="middle" font-size="12" fill="#1B4E9B">（Q、K、V、O 都住在这里）</text>
+  </g>
+
+  <!-- 计算单元标记 -->
+  <g>
+    <rect x="390" y="40" width="120" height="22" rx="11" fill="#222"/>
+    <text x="450" y="56" text-anchor="middle" font-size="12" fill="#FFF">Cube / Vector 计算单元</text>
+  </g>
+
+  <!-- 左侧：容量轴 -->
+  <g stroke="#999" stroke-width="1.5">
+    <line x1="120" y1="70" x2="120" y2="290"/>
+    <line x1="113" y1="75" x2="120" y2="70"/>
+    <line x1="113" y1="75" x2="120" y2="80"/>
+    <line x1="127" y1="285" x2="120" y2="290"/>
+    <line x1="127" y1="285" x2="120" y2="295"/>
+  </g>
+  <text x="90" y="185" font-size="14" fill="#555" transform="rotate(-90 90 185)" text-anchor="middle">容量增大 →</text>
+  <g font-size="12.5" fill="#555" text-anchor="end">
+    <text x="105" y="112">256KB 量级</text>
+    <text x="105" y="172">数十 MB</text>
+    <text x="105" y="252">数十 GB</text>
+  </g>
+
+  <!-- 右侧：带宽轴 -->
+  <g stroke="#999" stroke-width="1.5">
+    <line x1="780" y1="290" x2="780" y2="70"/>
+    <line x1="773" y1="75" x2="780" y2="70"/>
+    <line x1="787" y1="75" x2="780" y2="70"/>
+    <line x1="773" y1="75" x2="780" y2="80"/>
+  </g>
+  <text x="812" y="185" font-size="14" fill="#555" transform="rotate(-90 812 185)" text-anchor="middle">带宽升高 →</text>
+  <g font-size="12.5" fill="#555">
+    <text x="795" y="112">~100+ TB/s</text>
+    <text x="795" y="172">~10 TB/s</text>
+    <text x="795" y="252">~1-3 TB/s</text>
+  </g>
+
+  <!-- 底部要点 -->
+  <rect x="70" y="320" width="760" height="86" rx="10" fill="#FDE8E8" stroke="#E8999E"/>
+  <text x="450" y="348" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#A81640">核心矛盾：带宽差 10~100 倍，但片上只放得下 256KB 量级的数据</text>
+  <text x="450" y="374" text-anchor="middle" font-size="13" fill="#A81640">数据留在片上被复用 = “免费”多次计算；落回 HBM 再读回来 = 每次 10~100 倍的带宽惩罚</text>
+  <text x="450" y="396" text-anchor="middle" font-size="13" fill="#A81640">算子优化的目标：让数据尽可能留在金字塔顶端完成全部计算</text>
+</svg>

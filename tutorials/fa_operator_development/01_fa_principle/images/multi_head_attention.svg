@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="430" viewBox="0 0 920 430" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="460" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">多头注意力（Multi-Head Attention）：多组“视角”并行计算后拼接</text>
+
+  <!-- 输入 X -->
+  <rect x="30" y="150" width="80" height="80" rx="5" fill="#F1F3F4" stroke="#9AA0A6" stroke-width="1.6"/>
+  <text x="70" y="185" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">X</text>
+  <text x="70" y="205" text-anchor="middle" font-size="12" fill="#777">n × d_total</text>
+  <text x="70" y="262" text-anchor="middle" font-size="12.5" fill="#888">整句的表示</text>
+
+  <line x1="115" y1="190" x2="165" y2="190" stroke="#555" stroke-width="1.8" marker-end="url(#arrow3)"/>
+
+  <!-- 切分为 h 个头 -->
+  <rect x="170" y="105" width="130" height="170" rx="8" fill="#FAFAFA" stroke="#CCC" stroke-dasharray="5 4"/>
+  <text x="235" y="130" text-anchor="middle" font-size="13" font-weight="bold" fill="#555">沿特征维切分</text>
+  <text x="235" y="150" text-anchor="middle" font-size="12" fill="#888">d_total = h × d</text>
+
+  <g>
+    <rect x="190" y="165" width="90" height="26" rx="4" fill="#4C88F7" fill-opacity="0.2" stroke="#4C88F7"/>
+    <text x="235" y="183" text-anchor="middle" font-size="12" fill="#1B4E9B">头 0：Q,K,V</text>
+    <rect x="190" y="197" width="90" height="26" rx="4" fill="#4C88F7" fill-opacity="0.13" stroke="#4C88F7" stroke-opacity="0.6"/>
+    <text x="235" y="215" text-anchor="middle" font-size="12" fill="#1B4E9B">头 1：Q,K,V</text>
+    <rect x="190" y="229" width="90" height="26" rx="4" fill="#4C88F7" fill-opacity="0.07" stroke="#4C88F7" stroke-opacity="0.35"/>
+    <text x="235" y="247" text-anchor="middle" font-size="12" fill="#777">……</text>
+  </g>
+
+  <line x1="305" y1="190" x2="355" y2="190" stroke="#555" stroke-width="1.8" marker-end="url(#arrow3)"/>
+
+  <!-- h 个并行 attention -->
+  <rect x="360" y="100" width="210" height="180" rx="8" fill="#F5F9FF" stroke="#B7CFF5"/>
+  <text x="465" y="125" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1B4E9B">h 个 Attention 并行</text>
+  <g font-size="12" text-anchor="middle">
+    <rect x="385" y="140" width="160" height="34" rx="5" fill="#FFF" stroke="#4C88F7"/>
+    <text x="465" y="161" fill="#1B4E9B">头 0: Softmax(Q₀K₀ᵀ/√d)V₀</text>
+    <rect x="385" y="180" width="160" height="34" rx="5" fill="#FFF" stroke="#4C88F7" stroke-opacity="0.65"/>
+    <text x="465" y="201" fill="#1B4E9B">头 1: Softmax(Q₁K₁ᵀ/√d)V₁</text>
+    <rect x="385" y="220" width="160" height="34" rx="5" fill="#FFF" stroke="#4C88F7" stroke-opacity="0.35"/>
+    <text x="465" y="241" fill="#888">……（各自独立打分）</text>
+  </g>
+  <text x="465" y="300" text-anchor="middle" font-size="12.5" fill="#888">每个头关注不同模式：语法、指代、语义……</text>
+
+  <line x1="575" y1="190" x2="625" y2="190" stroke="#555" stroke-width="1.8" marker-end="url(#arrow3)"/>
+
+  <!-- 拼接 -->
+  <rect x="630" y="130" width="110" height="120" rx="8" fill="#FAFAFA" stroke="#CCC" stroke-dasharray="5 4"/>
+  <text x="685" y="170" text-anchor="middle" font-size="13" font-weight="bold" fill="#555">拼接 Concat</text>
+  <g>
+    <rect x="655" y="185" width="28" height="46" rx="3" fill="#3EAA8C" fill-opacity="0.35"/>
+    <rect x="687" y="185" width="28" height="46" rx="3" fill="#3EAA8C" fill-opacity="0.25"/>
+    <rect x="719" y="185" width="12" height="46" rx="3" fill="#3EAA8C" fill-opacity="0.15"/>
+  </g>
+  <text x="685" y="270" text-anchor="middle" font-size="12.5" fill="#888">n × d_total</text>
+
+  <line x1="745" y1="190" x2="790" y2="190" stroke="#555" stroke-width="1.8" marker-end="url(#arrow3)"/>
+
+  <!-- 输出投影 -->
+  <rect x="795" y="150" width="95" height="80" rx="5" fill="#3EAA8C" fill-opacity="0.15" stroke="#3EAA8C" stroke-width="1.6"/>
+  <text x="842" y="182" text-anchor="middle" font-size="14" font-weight="bold" fill="#166B54">W_O 输出</text>
+  <text x="842" y="202" text-anchor="middle" font-size="12" fill="#166B54">投影</text>
+  <text x="842" y="256" text-anchor="middle" font-size="12.5" fill="#888">融合多视角</text>
+
+  <!-- 底部说明 -->
+  <rect x="90" y="330" width="740" height="72" rx="10" fill="#FFF8E6" stroke="#F2D9AC"/>
+  <text x="460" y="358" text-anchor="middle" font-size="14.5" fill="#8A5500" font-weight="bold">GQA / MQA：多头推理的 KV Cache 瘦身术</text>
+  <text x="460" y="384" text-anchor="middle" font-size="13" fill="#8A5500">MHA：h 个 Q 头配 h 组 KV ｜ GQA：h 个 Q 头共享少量 KV 组（如 8:1） ｜ MQA：所有 Q 头共享 1 组 KV</text>
+</svg>

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="470" viewBox="0 0 940 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+    <marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#C0392B"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">标准实现：三个独立 Kernel，中间矩阵在 HBM 反复往返</text>
+
+  <!-- HBM 条 -->
+  <rect x="60" y="360" width="820" height="56" rx="8" fill="#A8C7E8" fill-opacity="0.9" stroke="#1B4E9B" stroke-width="1.8"/>
+  <text x="470" y="386" text-anchor="middle" font-size="15" font-weight="bold" fill="#1B4E9B">HBM 显存（Q、K、V、O 以及所有中间结果都写到这里）</text>
+  <text x="470" y="406" text-anchor="middle" font-size="12" fill="#1B4E9B">带宽慢（相比片上）、容量大</text>
+
+  <!-- Kernel 1: Matmul -->
+  <g>
+    <rect x="80" y="80" width="200" height="130" rx="10" fill="#E8F1FE" stroke="#4C88F7" stroke-width="1.6"/>
+    <text x="180" y="108" text-anchor="middle" font-size="15" font-weight="bold" fill="#1B4E9B">Kernel 1：Matmul</text>
+    <text x="180" y="132" text-anchor="middle" font-size="13" fill="#1B4E9B">S = Q · Kᵀ / √d</text>
+    <text x="180" y="160" text-anchor="middle" font-size="12" fill="#666">compute-bound</text>
+    <text x="180" y="180" text-anchor="middle" font-size="12" fill="#666">（GEMM 打满算力）</text>
+    <text x="180" y="204" text-anchor="middle" font-size="12.5" fill="#888">读 Q、K → 算 S → 写 S</text>
+  </g>
+
+  <!-- Kernel 2: Softmax -->
+  <g>
+    <rect x="370" y="80" width="200" height="130" rx="10" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.6"/>
+    <text x="470" y="108" text-anchor="middle" font-size="15" font-weight="bold" fill="#A81640">Kernel 2：Softmax</text>
+    <text x="470" y="132" text-anchor="middle" font-size="13" fill="#A81640">P = Softmax(S) 按行</text>
+    <text x="470" y="160" text-anchor="middle" font-size="12" fill="#888">memory-bound！</text>
+    <text x="470" y="180" text-anchor="middle" font-size="12" fill="#888">（算术强度 ≈ 1 FLOP/Byte）</text>
+    <text x="470" y="204" text-anchor="middle" font-size="12.5" fill="#888">读 S → 写 P，纯搬运为主</text>
+  </g>
+
+  <!-- Kernel 3: Matmul -->
+  <g>
+    <rect x="660" y="80" width="200" height="130" rx="10" fill="#E8F1FE" stroke="#4C88F7" stroke-width="1.6"/>
+    <text x="760" y="108" text-anchor="middle" font-size="15" font-weight="bold" fill="#1B4E9B">Kernel 3：Matmul</text>
+    <text x="760" y="132" text-anchor="middle" font-size="13" fill="#1B4E9B">O = P · V</text>
+    <text x="760" y="160" text-anchor="middle" font-size="12" fill="#666">GEMM 本应打满算力</text>
+    <text x="760" y="180" text-anchor="middle" font-size="12" fill="#C0392B">（却被读 P 拖累）</text>
+    <text x="760" y="204" text-anchor="middle" font-size="12.5" fill="#888">读 P、V → 算 O → 写 O</text>
+  </g>
+
+  <!-- kernel 间箭头（经过HBM） -->
+  <line x1="280" y1="145" x2="360" y2="145" stroke="#555" stroke-width="2" marker-end="url(#arrowD)"/>
+  <text x="320" y="130" text-anchor="middle" font-size="11.5" fill="#777">经 HBM</text>
+  <line x1="570" y1="145" x2="650" y2="145" stroke="#555" stroke-width="2" marker-end="url(#arrowD)"/>
+  <text x="610" y="130" text-anchor="middle" font-size="11.5" fill="#777">经 HBM</text>
+
+  <!-- S 矩阵块 -->
+  <g>
+    <rect x="255" y="215" width="130" height="70" rx="6" fill="#9334E6" fill-opacity="0.15" stroke="#9334E6" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="320" y="245" text-anchor="middle" font-size="13" font-weight="bold" fill="#6B21A8">S：n×n 得分矩阵</text>
+    <text x="320" y="268" text-anchor="middle" font-size="11.5" fill="#6B21A8">n=4096,fp16 时 32 MB</text>
+  </g>
+  <!-- P 矩阵块 -->
+  <g>
+    <rect x="545" y="215" width="130" height="70" rx="6" fill="#E8446D" fill-opacity="0.12" stroke="#E8446D" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="610" y="245" text-anchor="middle" font-size="13" font-weight="bold" fill="#A81640">P：n×n 权重矩阵</text>
+    <text x="610" y="268" text-anchor="middle" font-size="11.5" fill="#A81640">与 S 同样巨大</text>
+  </g>
+
+  <!-- HBM 往返的红箭头 -->
+  <g stroke="#C0392B" stroke-width="2.2" fill="none">
+    <path d="M 180 215 L 180 355" marker-end="url(#arrowR)"/>
+    <path d="M 300 355 L 300 290" marker-end="url(#arrowR)"/>
+    <path d="M 420 215 L 420 355" marker-end="url(#arrowR)"/>
+    <path d="M 560 355 L 560 290" marker-end="url(#arrowR)"/>
+    <path d="M 660 355 L 660 290" marker-end="url(#arrowR)"/>
+    <path d="M 760 215 L 760 355" marker-end="url(#arrowR)"/>
+  </g>
+  <g font-size="11.5" fill="#C0392B" text-anchor="middle">
+    <text x="160" y="290">写 S（2n²）</text>
+    <text x="322" y="330">读 S×2（4n²）</text>
+    <text x="400" y="290">写 P（2n²）</text>
+    <text x="585" y="330">读 P（2n²）</text>
+    <text x="690" y="330">写 O</text>
+    <text x="745" y="290">读 V</text>
+  </g>
+
+  <rect x="60" y="428" width="820" height="36" rx="8" fill="#222"/>
+  <text x="470" y="451" text-anchor="middle" font-size="14.5" fill="#FFF" font-weight="bold">S、P 两个 n×n 巨型矩阵共 5 次穿越 HBM、约 10n² 字节（fp16）—— 这就是 Attention 慢的根源（FlashAttention 要消灭的目标）</text>
+</svg>

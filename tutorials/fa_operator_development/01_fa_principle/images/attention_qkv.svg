@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="400" viewBox="0 0 920 400" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="460" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">Q、K、V 的由来：输入序列经过三个权重矩阵的线性变换</text>
+
+  <!-- 输入序列 X -->
+  <text x="120" y="80" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">输入 X（n 个 token）</text>
+  <g>
+    <rect x="60" y="95" width="120" height="42" rx="6" fill="#F1F3F4" stroke="#9AA0A6" stroke-width="1.5"/>
+    <text x="120" y="121" text-anchor="middle" font-size="14" fill="#333">token 0 ：“我”</text>
+    <rect x="60" y="143" width="120" height="42" rx="6" fill="#F1F3F4" stroke="#9AA0A6" stroke-width="1.5"/>
+    <text x="120" y="169" text-anchor="middle" font-size="14" fill="#333">token 1 ：“爱”</text>
+    <rect x="60" y="191" width="120" height="42" rx="6" fill="#F1F3F4" stroke="#9AA0A6" stroke-width="1.5"/>
+    <text x="120" y="217" text-anchor="middle" font-size="14" fill="#333">token 2 ：“猫”</text>
+    <rect x="60" y="245" width="120" height="24" rx="6" fill="none" stroke="#9AA0A6" stroke-dasharray="4 3"/>
+    <text x="120" y="262" text-anchor="middle" font-size="12" fill="#777">……</text>
+  </g>
+
+  <!-- 三个权重矩阵 -->
+  <g font-size="14">
+    <rect x="330" y="100" width="110" height="40" rx="6" fill="#E8F1FE" stroke="#4C88F7" stroke-width="1.6"/>
+    <text x="385" y="125" text-anchor="middle" fill="#1B4E9B" font-weight="bold">W_Q（查询）</text>
+    <rect x="330" y="170" width="110" height="40" rx="6" fill="#E6F4EA" stroke="#34A853" stroke-width="1.6"/>
+    <text x="385" y="195" text-anchor="middle" fill="#1E6B34" font-weight="bold">W_K（键）</text>
+    <rect x="330" y="240" width="110" height="40" rx="6" fill="#FEF3E2" stroke="#F29900" stroke-width="1.6"/>
+    <text x="385" y="265" text-anchor="middle" fill="#8A5500" font-weight="bold">W_V（值）</text>
+  </g>
+
+  <!-- 箭头 X -> W -->
+  <line x1="185" y1="120" x2="325" y2="120" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="185" y1="190" x2="325" y2="190" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="185" y1="260" x2="325" y2="260" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- Q K V 矩阵 -->
+  <g font-size="14">
+    <rect x="560" y="95" width="90" height="50" rx="4" fill="#4C88F7" fill-opacity="0.18" stroke="#4C88F7" stroke-width="1.8"/>
+    <text x="605" y="118" text-anchor="middle" fill="#1B4E9B" font-weight="bold">Q</text>
+    <text x="605" y="136" text-anchor="middle" font-size="12" fill="#1B4E9B">n × d</text>
+
+    <rect x="560" y="165" width="90" height="50" rx="4" fill="#34A853" fill-opacity="0.18" stroke="#34A853" stroke-width="1.8"/>
+    <text x="605" y="188" text-anchor="middle" fill="#1E6B34" font-weight="bold">K</text>
+    <text x="605" y="206" text-anchor="middle" font-size="12" fill="#1E6B34">n × d</text>
+
+    <rect x="560" y="235" width="90" height="50" rx="4" fill="#F29900" fill-opacity="0.18" stroke="#F29900" stroke-width="1.8"/>
+    <text x="605" y="258" text-anchor="middle" fill="#8A5500" font-weight="bold">V</text>
+    <text x="605" y="276" text-anchor="middle" font-size="12" fill="#8A5500">n × d</text>
+  </g>
+
+  <!-- 箭头 W -> QKV -->
+  <line x1="445" y1="120" x2="555" y2="120" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="445" y1="190" x2="555" y2="190" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="445" y1="260" x2="555" y2="260" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- 语义说明 -->
+  <g font-size="13.5" fill="#444">
+    <rect x="700" y="92" width="200" height="58" rx="6" fill="#FAFAFA" stroke="#DDD"/>
+    <text x="710" y="114">Q：我要找什么</text>
+    <text x="710" y="136">（当前 token 的“提问”）</text>
+
+    <rect x="700" y="162" width="200" height="58" rx="6" fill="#FAFAFA" stroke="#DDD"/>
+    <text x="710" y="184">K：我有什么可被找到</text>
+    <text x="710" y="206">（每个 token 的“索引”）</text>
+
+    <rect x="700" y="232" width="200" height="58" rx="6" fill="#FAFAFA" stroke="#DDD"/>
+    <text x="710" y="254">V：我实际提供的内容</text>
+    <text x="710" y="276">（被加权取出的“内容”）</text>
+  </g>
+
+  <text x="460" y="345" text-anchor="middle" font-size="14" fill="#666">同一个输入 X，乘三组不同的权重，得到三种角色的向量 —— 这是理解 Attention 的第一步</text>
+  <text x="460" y="372" text-anchor="middle" font-size="13" fill="#999">（n 为序列长度，d 为每个 token 的向量维度，即 Head-Dim）</text>
+</svg>

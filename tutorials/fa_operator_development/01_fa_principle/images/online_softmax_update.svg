@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="480" viewBox="0 0 940 480" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">Online Softmax：块一块地到，状态 (m, l, Õ) 一轮轮地修正</text>
+
+  <!-- 三个块依次到达 -->
+  <g>
+    <rect x="50" y="80" width="130" height="90" rx="8" fill="#9334E6" fill-opacity="0.16" stroke="#9334E6" stroke-width="1.6"/>
+    <text x="115" y="115" text-anchor="middle" font-size="14" font-weight="bold" fill="#6B21A8">块 1</text>
+    <text x="115" y="140" text-anchor="middle" font-size="11.5" fill="#6B21A8">S 的一部分</text>
+    <text x="115" y="158" text-anchor="middle" font-size="11.5" fill="#888">（M×B 小块）</text>
+
+    <rect x="50" y="180" width="130" height="90" rx="8" fill="#9334E6" fill-opacity="0.10" stroke="#9334E6" stroke-width="1.2" stroke-dasharray="5 3"/>
+    <text x="115" y="215" text-anchor="middle" font-size="14" font-weight="bold" fill="#8B5CC8">块 2</text>
+    <text x="115" y="240" text-anchor="middle" font-size="11.5" fill="#8B5CC8">稍后到达</text>
+
+    <rect x="50" y="280" width="130" height="90" rx="8" fill="#9334E6" fill-opacity="0.06" stroke="#9334E6" stroke-width="1" stroke-dasharray="3 4"/>
+    <text x="115" y="315" text-anchor="middle" font-size="14" font-weight="bold" fill="#B08BE0">块 3</text>
+    <text x="115" y="340" text-anchor="middle" font-size="11.5" fill="#B08BE0">更晚到达</text>
+  </g>
+
+  <!-- 中央处理单元 -->
+  <rect x="290" y="90" width="300" height="300" rx="12" fill="#FFF8E6" stroke="#E0A800" stroke-width="1.8"/>
+  <text x="440" y="120" text-anchor="middle" font-size="15" font-weight="bold" fill="#8A5500">每来一块，做三件事</text>
+
+  <g font-size="13">
+    <rect x="310" y="140" width="260" height="60" rx="8" fill="#FFF" stroke="#E0A800"/>
+    <text x="325" y="165" font-weight="bold" fill="#8A5500">① 更新行最大值</text>
+    <text x="325" y="188" fill="#666">m = max(m_old, 块内行最大)</text>
+
+    <rect x="310" y="212" width="260" height="60" rx="8" fill="#FFF" stroke="#E0A800"/>
+    <text x="325" y="237" font-weight="bold" fill="#8A5500">② 算新块指数</text>
+    <text x="325" y="260" fill="#666">P̃ = exp(S_new − m_new)</text>
+
+    <rect x="310" y="284" width="260" height="82" rx="8" fill="#FFF" stroke="#E0A800"/>
+    <text x="325" y="309" font-weight="bold" fill="#8A5500">③ 重标定旧状态（α ≤ 1）</text>
+    <text x="325" y="332" fill="#666">α = exp(m_old − m_new)</text>
+    <text x="325" y="354" fill="#666">l = α·l_old + rowsum(P̃)</text>
+  </g>
+
+  <line x1="185" y1="125" x2="285" y2="125" stroke="#555" stroke-width="2" marker-end="url(#arrowO)"/>
+  <line x1="185" y1="225" x2="285" y2="240" stroke="#555" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrowO)"/>
+  <line x1="185" y1="325" x2="285" y2="330" stroke="#555" stroke-width="1.2" stroke-dasharray="3 5" marker-end="url(#arrowO)"/>
+
+  <!-- 状态寄存器 -->
+  <g font-size="13">
+    <rect x="650" y="120" width="240" height="52" rx="8" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.5"/>
+    <text x="770" y="141" text-anchor="middle" font-weight="bold" fill="#A81640">m：至今见过的行最大值</text>
+    <text x="770" y="161" text-anchor="middle" font-size="11.5" fill="#A81640">保证 exp 不溢出</text>
+
+    <rect x="650" y="185" width="240" height="52" rx="8" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.5"/>
+    <text x="770" y="206" text-anchor="middle" font-weight="bold" fill="#A81640">l：未归一化的指数和</text>
+    <text x="770" y="226" text-anchor="middle" font-size="11.5" fill="#A81640">随块累加，可被 α 缩小</text>
+
+    <rect x="650" y="250" width="240" height="52" rx="8" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.5"/>
+    <text x="770" y="271" text-anchor="middle" font-weight="bold" fill="#A81640">Õ：未归一化的输出累加</text>
+    <text x="770" y="291" text-anchor="middle" font-size="11.5" fill="#A81640">Õ = α·Õ_old + P̃·V_new</text>
+  </g>
+  <line x1="595" y1="170" x2="645" y2="146" stroke="#555" stroke-width="1.6" marker-end="url(#arrowO)"/>
+  <line x1="595" y1="240" x2="645" y2="211" stroke="#555" stroke-width="1.6" marker-end="url(#arrowO)"/>
+  <line x1="595" y1="330" x2="645" y2="276" stroke="#555" stroke-width="1.6" marker-end="url(#arrowO)"/>
+
+  <!-- 输出 -->
+  <rect x="650" y="320" width="240" height="70" rx="10" fill="#3EAA8C" fill-opacity="0.15" stroke="#3EAA8C" stroke-width="1.8"/>
+  <text x="770" y="348" text-anchor="middle" font-size="14" font-weight="bold" fill="#166B54">所有块处理完后</text>
+  <text x="770" y="372" text-anchor="middle" font-size="15" fill="#166B54" font-weight="bold">O = Õ / l</text>
+  <line x1="595" y1="380" x2="645" y2="355" stroke="#555" stroke-width="2" marker-end="url(#arrowO)"/>
+
+  <!-- 底部关键点 -->
+  <rect x="70" y="415" width="800" height="50" rx="10" fill="#222"/>
+  <text x="470" y="445" text-anchor="middle" font-size="14" fill="#FFF" font-weight="bold">为什么可行：exp 平移不变性 —— 分子分母同乘 exp(Δ) 结果不变，所以基准 m 可以随时更换，旧结果乘 α 修正即可</text>
+</svg>

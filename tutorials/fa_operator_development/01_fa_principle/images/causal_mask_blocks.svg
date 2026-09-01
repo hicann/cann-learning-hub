@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="430" viewBox="0 0 900 430" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <text x="450" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">因果掩码的整块跳过：下三角保留，上三角整块不计算</text>
+
+  <!-- 分块网格 8x8，块大小 50x42 -->
+  <g transform="translate(250, 60)">
+    <!-- 跳过块（上三角 c > r） -->
+    <g fill="#EDEDED" stroke="#C8C8C8" stroke-width="1">
+      <rect x="50"  y="0"   width="50" height="42"/>
+      <rect x="100" y="0"   width="50" height="42"/><rect x="100" y="42"  width="50" height="42"/>
+      <rect x="150" y="0"   width="50" height="42"/><rect x="150" y="42"  width="50" height="42"/><rect x="150" y="84"  width="50" height="42"/>
+      <rect x="200" y="0"   width="50" height="42"/><rect x="200" y="42"  width="50" height="42"/><rect x="200" y="84"  width="50" height="42"/><rect x="200" y="126" width="50" height="42"/>
+      <rect x="250" y="0"   width="50" height="42"/><rect x="250" y="42"  width="50" height="42"/><rect x="250" y="84"  width="50" height="42"/><rect x="250" y="126" width="50" height="42"/><rect x="250" y="168" width="50" height="42"/>
+      <rect x="300" y="0"   width="50" height="42"/><rect x="300" y="42"  width="50" height="42"/><rect x="300" y="84"  width="50" height="42"/><rect x="300" y="126" width="50" height="42"/><rect x="300" y="168" width="50" height="42"/><rect x="300" y="210" width="50" height="42"/>
+      <rect x="350" y="0"   width="50" height="42"/><rect x="350" y="42"  width="50" height="42"/><rect x="350" y="84"  width="50" height="42"/><rect x="350" y="126" width="50" height="42"/><rect x="350" y="168" width="50" height="42"/><rect x="350" y="210" width="50" height="42"/><rect x="350" y="252" width="50" height="42"/>
+    </g>
+    <!-- 对角块 -->
+    <g fill="#FFE08A" stroke="#C9A227" stroke-width="1.5">
+      <rect x="0"   y="0"   width="50" height="42"/>
+      <rect x="50"  y="42"  width="50" height="42"/>
+      <rect x="100" y="84"  width="50" height="42"/>
+      <rect x="150" y="126" width="50" height="42"/>
+      <rect x="200" y="168" width="50" height="42"/>
+      <rect x="250" y="210" width="50" height="42"/>
+      <rect x="300" y="252" width="50" height="42"/>
+      <rect x="350" y="294" width="50" height="42"/>
+    </g>
+    <!-- 全保留块（严格下三角 c < r） -->
+    <g fill="#A8D8B0" stroke="#2E7D32" stroke-width="1">
+      <rect x="0" y="42"  width="50" height="42"/>
+      <rect x="0" y="84"  width="50" height="42"/><rect x="50" y="84"  width="50" height="42"/>
+      <rect x="0" y="126" width="50" height="42"/><rect x="50" y="126" width="50" height="42"/><rect x="100" y="126" width="50" height="42"/>
+      <rect x="0" y="168" width="50" height="42"/><rect x="50" y="168" width="50" height="42"/><rect x="100" y="168" width="50" height="42"/>
+      <rect x="0" y="210" width="50" height="42"/><rect x="50" y="210" width="50" height="42"/><rect x="100" y="210" width="50" height="42"/><rect x="150" y="210" width="50" height="42"/>
+      <rect x="0" y="252" width="50" height="42"/><rect x="50" y="252" width="50" height="42"/><rect x="100" y="252" width="50" height="42"/><rect x="150" y="252" width="50" height="42"/><rect x="200" y="252" width="50" height="42"/>
+      <rect x="0" y="294" width="50" height="42"/><rect x="50" y="294" width="50" height="42"/><rect x="100" y="294" width="50" height="42"/><rect x="150" y="294" width="50" height="42"/><rect x="200" y="294" width="50" height="42"/><rect x="250" y="294" width="50" height="42"/>
+    </g>
+    <!-- 坐标轴 -->
+    <line x1="0" y1="-12" x2="400" y2="-12" stroke="#4C88F7" stroke-width="2"/>
+    <line x1="-12" y1="0" x2="-12" y2="336" stroke="#4C88F7" stroke-width="2"/>
+    <text x="200" y="-24" text-anchor="middle" font-size="13" fill="#1B4E9B" font-weight="bold">KV 列（j：键的位置）→</text>
+    <text x="-130" y="168" font-size="13" fill="#1B4E9B" font-weight="bold" transform="rotate(-90 -110 168)">Q 行（i：查询的位置）→</text>
+  </g>
+
+  <!-- 图例 -->
+  <g transform="translate(730, 90)" font-size="13">
+    <rect x="0" y="0" width="22" height="18" rx="3" fill="#A8D8B0" stroke="#2E7D32"/>
+    <text x="32" y="14" fill="#1E6B34">全保留块</text>
+    <rect x="0" y="34" width="22" height="18" rx="3" fill="#FFE08A" stroke="#C9A227"/>
+    <text x="32" y="48" fill="#8A6D00">对角块（块内再掩码）</text>
+    <rect x="0" y="68" width="22" height="18" rx="3" fill="#EDEDED" stroke="#C8C8C8"/>
+    <text x="32" y="82" fill="#777">整块跳过</text>
+    <text x="0" y="120" fill="#555" font-size="12.5">因果规则：</text>
+    <text x="0" y="140" fill="#555" font-size="12.5">i &lt; j 时 S[i,j] = −∞</text>
+    <text x="0" y="160" fill="#555" font-size="12.5">（禁止“看未来”）</text>
+    <text x="0" y="190" fill="#C0392B" font-size="12.5" font-weight="bold">8×8 = 64 块中</text>
+    <text x="0" y="210" fill="#C0392B" font-size="12.5" font-weight="bold">28 个整块跳过</text>
+    <text x="0" y="230" fill="#C0392B" font-size="12.5" font-weight="bold">省 44% 计算</text>
+  </g>
+
+  <rect x="80" y="398" width="740" height="26" rx="8" fill="#222"/>
+  <text x="450" y="416" text-anchor="middle" font-size="13.5" fill="#FFF" font-weight="bold">分块让“跳过未来”从逐元素 if 变成整块不进循环：内层只需算到 j ≤ i 的块 —— 块粒度掩码的加速来源</text>
+</svg>
