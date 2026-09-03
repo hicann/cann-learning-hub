@@ -531,6 +531,7 @@
 
 ## 🔥 Latest News
 
+* [2026/09] 新增[面向高性能计算的数据结构](./contrib/tutorials/data_structure_for_hpc)课程，围绕数据结构与高性能计算实践，涵盖并行计算、分布式计算、Ascend C 算子开发与性能优化等内容。
 - [2026/08] 新增[CANNBot 系列课程](./tutorials/CANNBot/README.md)，围绕 CANNBot 算子开发工具，系统介绍如何使用 CANNBot 生成与优化 Ascend 算子，覆盖 Ascend C / PyPTO / TileLang-Ascend 等开发路径及算子测试全流程。
 - [2026/08] 新增[TorchAir图模式优化系列教程](./tutorials/TorchAir_development)，涵盖 TorchAir 基础概念、PyTorch 模型图转换、昇腾 NPU 图模式执行与性能优化实践，帮助开发者掌握基于 TorchAir 的模型开发与优化流程。
 - [2026/08] 新增[GE 图引擎开发系列教程](./tutorials/ge_development)，涵盖 GE 基础概念、图构建与编译、模型执行与优化、扩展开发及问题定位。

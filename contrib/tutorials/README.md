@@ -37,14 +37,20 @@ contrib/tutorials/
 ## 贡献者列表
 
 | 贡献者 | 课程名称 | 贡献日期 | 状态 |
-|--------|----------|----------|------|
+| --- | --- | --- | --- |
 | Datawhale / Torch-RecHub 社区 | [Torch-RecHub 推荐系统实战教程](./torch-rechub) | 2026.05 | 已迁移 |
+| SwanLab / CANN 社区 | [Swan LLM 大模型实战课程](./swan_llm_course) | 2026.05 | 持续建设 |
+| SwanLab / CANN 社区 | [SwanLab 共建训练实战案例](./swanlab_examples) | 2026.08 | 持续建设 |
+| 北京林业大学 | [高性能计算数据结构课程](./data_structure_for_hpc) | 2026.09 | 已发布 |
 
 ## 课程列表
 
 | 教程名称 | 教程描述 | 访问链接 | 状态 |
-|----------|----------|----------|------|
+| --- | --- | --- | --- |
 | Torch-RecHub 推荐系统实战教程 | 基于 Torch-RecHub 的推荐系统端到端实战教程，覆盖 CTR 精排、序列兴趣建模、召回、多任务学习、实验跟踪与模型导出 | [torch-rechub](./torch-rechub) | 已迁移 |
+| Swan LLM 大模型实战课程 | 面向高校学生的大语言模型实战课程，覆盖大模型基础理论、SFT/LoRA 微调、强化学习、推理部署及 Ascend C 性能优化 | [swan_llm_course](./swan_llm_course) | 持续建设 |
+| SwanLab 共建训练实战案例 | SwanLab 与 CANN 社区共建的模型训练实践案例，涵盖 MNIST、Qwen2.5 数学解题 LoRA 微调、Qwen3 医学领域 SFT 等场景 | [swanlab_examples](./swanlab_examples) | 持续建设 |
+| 高性能计算数据结构课程 | 基于昇腾 NPU 与 CANN 的高性能计算数据结构实践课程，覆盖基础数据结构、并行计算、分布式计算及 Ascend C 算子开发与优化 | [data_structure_for_hpc](./data_structure_for_hpc) | 已迁移 |
 
 ---
 

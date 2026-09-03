@@ -1,4 +1,4 @@
-﻿[![面向高性能计算的数据结构](./images/READMEImage.png)](https://e.huawei.com/cn/talent/learning/#/zone?customizedZoneId=qS4mF6lijbGojmzxSlKlhX4ccow)
+[![面向高性能计算的数据结构](./images/READMEImage.png)](https://e.huawei.com/cn/talent/learning/#/zone?customizedZoneId=qS4mF6lijbGojmzxSlKlhX4ccow)
 
 ------
 
@@ -43,34 +43,33 @@ CANNLab 环境创建与使用方法请参考 [CANNLab 环境体验指南](https:
 ### 第一章：高性能计算基础
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 01.00 基于不同存储结构的求和算子实现 | - | 🚧 待内测 |
-| 01.01 基于静态 Tensor 的 ReLU 向量算子 | - | 🚧 待内测 |
+| --- | --- | --- |
+| 01.00 基于不同存储结构的求和算子实现 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/01_base/01_00_extra_ascendc_sum_op_various_storage_struct.ipynb) | ✅ 已发布 |
+| 01.01 基于静态 Tensor 的 ReLU 向量算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/01_base/01_01_extra_ascendc_static_tensor_relu_vector.ipynb) | ✅ 已发布 |
 
 ### 第二章：并行计算
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 02.00 基于平衡二叉树的并行前缀和实现实验 | - | 🚧 待内测 |
-| 02.01 基于并行广度优先遍历的网络故障诊断实验 | - | 🚧 待内测 |
+| --- | --- | --- |
+| 02.00 基于平衡二叉树的并行前缀和实现实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/02_parallel_computing/02.00_intra_prefix_sum_balanced_tree.ipynb) | ✅ 已发布 |
+| 02.01 基于并行广度优先遍历的网络故障诊断实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/02_parallel_computing/02.01_extra_ascendc_parallel_bfs_diagnosis.ipynb) | ✅ 已发布 |
 | 02.02 矩阵乘法分块优化实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/02_parallel_computing/02.02_extra_ascendc_static_tensor_matmul.ipynb) | ✅ 已发布 |
-| 02.03 稀疏矩阵存储格式与分块计算优化实验 | - | 🚧 待内测 |
+| 02.03 稀疏矩阵存储格式与分块计算优化实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/02_parallel_computing/02.03_extra_spmv_storage_format.ipynb) | ✅ 已发布 |
 
 ### 第三章：分布式计算
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 03.01 基于HCCL的分布式字符串词频统计实验 | - | 🚧 待内测 |
-| 03.02 基于一致性哈希环的分布式哈希表模拟实验 | - | 🚧 待内测 |
-| 03.03 分布式B+树结构动态更新与局部数据迁移实验 | - | 🚧 待内测 |
-| 03.04 基于 HCCL 的 CSR 图分区实验 | - | 🚧 待内测 |
+| --- | --- | --- |
+| 03.01 基于HCCL的分布式字符串词频统计实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/03_distributed_computing/03.01_inclass_hccl_string_statistics.ipynb) | ✅ 已发布 |
+| 03.02 基于一致性哈希环的分布式哈希表模拟实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/03_distributed_computing/03.02_extra_consistent_hash_table.ipynb) | ✅ 已发布 |
+| 03.03 分布式B+树结构动态更新与局部数据迁移实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/03_distributed_computing/03.03_extra_distributed_bplus_tree.ipynb) | ✅ 已发布 |
+| 03.04 基于 HCCL 的 CSR 图分区实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/03_distributed_computing/03.04_extra_hccl_csr_graph_partition.ipynb) | ✅ 已发布 |
 
 ### 第四章：算子开发
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 04.00 基于 CANN的Softmax 算子优化 | - | 🚧 待内测 |
-| 04.01 低精度矩阵乘法优化实验 | - | 🚧 待内测 |
-| 04.02 卷积分类头前向计算实现与优化 | - | 🚧 待内测 |
-| 04.03 RMSNorm向量算子实现与流水优化 | - | 🚧 待内测 |
-
+| --- | --- | --- |
+| 04.00 基于 CANN的Softmax 算子优化 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/04_operator_development/04_00_extra_ascendc_cann_softmax.ipynb) | ✅ 已发布 |
+| 04.01 低精度矩阵乘法优化实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/04_operator_development/04.01_extra_low_precision_gemm.ipynb) | ✅ 已发布 |
+| 04.02 卷积分类头前向计算实现与优化 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/04_operator_development/04.02_extra_ascendc_static_tensor_conv_head_kernel_event.ipynb) | ✅ 已发布 |
+| 04.03 RMSNorm向量算子实现与流水优化 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/04_operator_development/04.03_extra_ascendc_tensor_rmsnorm.ipynb) | ✅ 已发布 |
