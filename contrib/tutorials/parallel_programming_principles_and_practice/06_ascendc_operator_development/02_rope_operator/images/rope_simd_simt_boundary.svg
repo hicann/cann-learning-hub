@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+<title>RoPE SIMD与SIMT对比</title><desc>同一RoPE语义在910B3 SIMD和950 SIMT上的并行映射。</desc><rect width="1200" height="520" fill="#fff"/>
+<text x="40" y="52" font-size="28" font-weight="bold" fill="#222" font-family="Microsoft YaHei,Arial,sans-serif">同一 RoPE 语义，两种并行组织</text>
+<rect x="55" y="95" width="515" height="330" rx="14" fill="#e8f1ff" stroke="#5b88c9" stroke-width="2"/><rect x="630" y="95" width="515" height="330" rx="14" fill="#fff3df" stroke="#d28a25" stroke-width="2"/>
+<g font-family="Microsoft YaHei,Arial,sans-serif"><text x="90" y="140" font-size="24" font-weight="bold" fill="#244e87">SIMD / Vector Core</text><text x="665" y="140" font-size="24" font-weight="bold" fill="#8a5511">SIMT / Ascend 950</text>
+<g font-size="18" fill="#222"><text x="90" y="190">• 目标：Ascend 910B3，dav-2201</text><text x="90" y="230">• LocalTensor + DataCopy</text><text x="90" y="270">• Mul/Sub/Add 批量处理 pair</text><text x="90" y="310">• AIV_ONLY Vector Kernel</text><text x="90" y="350">• 本课程真机执行主线</text>
+<text x="665" y="190">• 目标：Ascend 950，dav-3510</text><text x="665" y="230">• blockIdx/threadIdx 线程索引</text><text x="665" y="270">• 一个线程处理一个 pair</text><text x="665" y="310">• count 越界保护</text><text x="665" y="350">• 当前仅提供模板，待 950 验证</text></g></g>
+<rect x="260" y="450" width="680" height="45" rx="10" fill="#eef9f1" stroke="#4a9b62"/><text x="600" y="480" text-anchor="middle" font-size="18" fill="#176b35" font-family="Microsoft YaHei,Arial,sans-serif">两条路径必须保持相同的 pair-planar 输入输出合同</text>
+</svg>

@@ -1,0 +1,1014 @@
+diff --git a/src/backend/npuBackend.cpp b/src/backend/npuBackend.cpp
+index fdb123b..ecf693f 100644
+--- a/src/backend/npuBackend.cpp
++++ b/src/backend/npuBackend.cpp
+@@ -16,6 +16,7 @@
+ #include "aclnnop/aclnn_sigmoid.h"
+ #include "aclnnop/aclnn_argmax.h"
+ #include "aclnnop/aclnn_multinomial.h"
++#include "aclnnop/aclnn_cast.h"
+ 
+ 
+ // File layout:
+@@ -74,7 +75,26 @@ struct CNPUBackend::Impl {
+     aclTensor*   cachedQueryT[kCachedAttentionHeads] = {};   // q per head [1, headSize]
+     aclTensor*   cachedOutputT[kCachedAttentionHeads] = {};  // output per head [1, headSize]
+     bool         descCacheReady = false;
+-    bool         flashAttentionUnavailable = false;
++    // Path B: session-persistent FP16 FlashAttention V4 resources. All storage
++    // is uint16_t (FP16); never declared as float*.
++    bool         flashAttentionPrepared = false;
++    bool         flashPathPrinted = false;
++    uint16_t*    flashQueryBuf = nullptr;     // device FP16 [numHeads * headSize]
++    uint16_t*    flashKScratchBuf = nullptr;  // device FP16 [numKvHeads * headSize]
++    uint16_t*    flashVScratchBuf = nullptr;  // device FP16 [numKvHeads * headSize]
++    uint16_t*    flashOutBuf = nullptr;       // device FP16 [numHeads * headSize]
++    uint16_t*    flashKeyCache = nullptr;     // device FP16 [numLayers][numKvHeads][maxSeqLen][headSize]
++    uint16_t*    flashValueCache = nullptr;   // device FP16, same layout as flashKeyCache
++    PersistentDeviceBuffer flashWorkspace;    // persistent FlashAttention workspace
++    int          flashNumLayers = 0;
++    int          flashNumHeads = 0;
++    int          flashNumKvHeads = 0;
++    int          flashHeadSize = 0;
++    int          flashMaxSeqLen = 0;
++    long long    flashAttentionCalls = 0;
++    long long    flashCastCalls = 0;
++    long long    flashFallbackCount = 0;
++    long long    flashSyncCount = 0;
+     // Session-persistent buffers used by the hot decode path. Reusing them
+     // avoids aclrtMalloc/aclrtFree serialization on every primitive launch.
+     PersistentDeviceBuffer primitiveWorkspace;
+@@ -125,6 +145,32 @@ static void* EnsurePersistentBuffer(CNPUBackend::Impl* impl,
+     return buffer.ptr;
+ }
+ 
++// Dedicated persistent workspace for the FlashAttention V4 op. Semantics match
++// EnsurePersistentBuffer, but any growth sync caused by replacing a live
++// buffer is additionally counted in flashSyncCount (first allocation from
++// nullptr is not a sync).
++static void* EnsureFlashWorkspace(CNPUBackend::Impl* impl,
++                                  size_t requiredBytes) {
++    PersistentDeviceBuffer& buffer = impl->flashWorkspace;
++    if (requiredBytes <= buffer.capacity) {
++        return buffer.ptr;
++    }
++    if (buffer.ptr != nullptr) {
++        ACL_CHECK(aclrtSynchronizeStream(impl->stream_));
++        impl->workspaceGrowthSyncCount++;
++        impl->flashSyncCount++;
++        ACL_CHECK(aclrtFree(buffer.ptr));
++        buffer.ptr = nullptr;
++        buffer.capacity = 0;
++    }
++    if (requiredBytes > 0) {
++        ACL_CHECK(aclrtMalloc(&buffer.ptr, requiredBytes, ACL_MEM_MALLOC_HUGE_FIRST));
++        buffer.capacity = requiredBytes;
++        impl->hotAllocCount++;
++    }
++    return buffer.ptr;
++}
++
+ static void FreeDeviceBuffer(float*& ptr) {
+     if (ptr != nullptr) {
+         aclrtFree(ptr);
+@@ -132,6 +178,13 @@ static void FreeDeviceBuffer(float*& ptr) {
+     }
+ }
+ 
++static void FreeDeviceBuffer(uint16_t*& ptr) {
++    if (ptr != nullptr) {
++        aclrtFree(ptr);
++        ptr = nullptr;
++    }
++}
++
+ static void FreeDeviceWorkspace(void*& ptr) {
+     if (ptr != nullptr) {
+         aclrtFree(ptr);
+@@ -175,6 +228,17 @@ static void ReleaseRopeResources(CNPUBackend::Impl* impl) {
+     FreeDeviceBuffer(impl->ropeSinBuf);
+ }
+ 
++static void ReleaseFlashAttentionResources(CNPUBackend::Impl* impl) {
++    FreeDeviceBuffer(impl->flashQueryBuf);
++    FreeDeviceBuffer(impl->flashKScratchBuf);
++    FreeDeviceBuffer(impl->flashVScratchBuf);
++    FreeDeviceBuffer(impl->flashOutBuf);
++    FreeDeviceBuffer(impl->flashKeyCache);
++    FreeDeviceBuffer(impl->flashValueCache);
++    ReleasePersistentBuffer(impl->flashWorkspace);
++    impl->flashAttentionPrepared = false;
++}
++
+ static void ReleasePersistentResources(CNPUBackend::Impl* impl) {
+     ReleasePersistentBuffer(impl->primitiveWorkspace);
+     ReleasePersistentBuffer(impl->rmsRstd);
+@@ -221,6 +285,7 @@ CNPUBackend::~CNPUBackend() {
+     ACL_CHECK(aclrtSynchronizeStream(pImpl->stream_));
+     ReleaseAttentionResources(pImpl);
+     ReleaseRopeResources(pImpl);
++    ReleaseFlashAttentionResources(pImpl);
+     ReleasePersistentResources(pImpl);
+ 
+     ACL_CHECK(aclrtDestroyStream(pImpl->stream_));
+@@ -248,12 +313,20 @@ void CNPUBackend::resetRuntimeStats() {
+     pImpl->hotAllocCount = 0;
+     pImpl->workspaceGrowthSyncCount = 0;
+     pImpl->tokenBoundarySyncCount = 0;
++    pImpl->flashAttentionCalls = 0;
++    pImpl->flashCastCalls = 0;
++    pImpl->flashFallbackCount = 0;
++    pImpl->flashSyncCount = 0;
+ }
+ 
+ void CNPUBackend::printRuntimeStats() const {
+     std::cout << "[NPU_RUNTIME_STATS] hot_alloc_count=" << pImpl->hotAllocCount
+               << " workspace_growth_sync_count=" << pImpl->workspaceGrowthSyncCount
+               << " token_boundary_sync_count=" << pImpl->tokenBoundarySyncCount
++              << " flash_attention_calls=" << pImpl->flashAttentionCalls
++              << " flash_cast_calls=" << pImpl->flashCastCalls
++              << " flash_fallback_count=" << pImpl->flashFallbackCount
++              << " flash_sync_count=" << pImpl->flashSyncCount
+               << std::endl;
+ }
+ 
+@@ -477,6 +550,31 @@ static void RunAclnnMultinomial(CNPUBackend::Impl* impl,
+     ACL_CHECK(aclnnMultinomial(workspace, workspaceSize, executor, impl->stream_));
+ }
+ 
++// Device-side dtype cast (Path B FP32 <-> FP16). The workspace is served from
++// the shared persistent buffer; no per-call allocation. Counts into
++// flashCastCalls for the structured runtime evidence. targetDtype must match
++// the dtype of the out tensor (official aclnnCast two-stage signature).
++static void RunAclnnCast(CNPUBackend::Impl* impl,
++                         aclTensor* input,
++                         aclDataType targetDtype,
++                         aclTensor* out) {
++    uint64_t workspaceSize = 0;
++    aclOpExecutor* executor = nullptr;
++    ACL_CHECK(aclnnCastGetWorkspaceSize(input, targetDtype, out, &workspaceSize, &executor));
++
++    // Growth of the shared workspace inside a cast is a real synchronous
++    // drain on the flash path: account it in flashSyncCount.
++    const long long growthBefore = impl->workspaceGrowthSyncCount;
++    void* workspace = EnsurePersistentBuffer(
++        impl, impl->primitiveWorkspace, static_cast<size_t>(workspaceSize));
++    const long long growthAfter = impl->workspaceGrowthSyncCount;
++    if (growthAfter > growthBefore) {
++        impl->flashSyncCount += (growthAfter - growthBefore);
++    }
++    ACL_CHECK(aclnnCast(workspace, workspaceSize, executor, impl->stream_));
++    impl->flashCastCalls++;
++}
++
+ // -----------------------------------------------------------------------------
+ // Production primitive ops
+ // -----------------------------------------------------------------------------
+@@ -871,50 +969,213 @@ void CNPUBackend::writeKvCacheFromScratch(float* keyCache, float* valueCache,
+     recordCopy(rowBytes * numKvHeads, true, true);
+ }
+ 
+-bool CNPUBackend::attentionIncreFlashReplacement(float* q, float* keyCache, float* valueCache,
+-                                                 float* branchActivation, int pos, int headSize,
+-                                                 int numHeads, int numKvHeads, int maxSeqLen,
+-                                                 int kvCacheOffset, int kvHeadDim) {
+-    if (pImpl->flashAttentionUnavailable) {
+-        std::cerr << "[NPU_FLASH_ATTENTION] unavailable in this process; rerun without --useNpuFlashAttention "
+-                  << "to use the fp32 device attention implementation." << std::endl;
+-        return false;
++// -----------------------------------------------------------------------------
++// Path A: FP32 decomposed multi-op attention
++// -----------------------------------------------------------------------------
++
++void CNPUBackend::attentionAllHeadsDevice(float* q, float* keyCache, float* valueCache,
++                                          float* attnScores, float* branchActivation,
++                                          int pos, int headSize, int numHeads, int numKvHeads,
++                                          int maxSeqLen, int kvCacheOffset,
++                                          int kvHeadDim, int kvMultiplier) {
++    static bool pathPrinted = false;
++    if (!pathPrinted) {
++        pathPrinted = true;
++        std::cout << "[NPU_ATTENTION_PATH] path=decomposed_fp32 dtype=fp32 "
++                  << "api=multi_op fallback=0" << std::endl;
++    }
++    attentionAllHeadsNpuReplacement(q, keyCache, valueCache,
++                                    attnScores, branchActivation,
++                                    pos, headSize, numHeads, numKvHeads,
++                                    maxSeqLen, kvCacheOffset,
++                                    kvHeadDim, kvMultiplier);
++}
++
++// -----------------------------------------------------------------------------
++// Path B: FP16 aclnnIncreFlashAttentionV4 with persistent low-precision KV cache
++// -----------------------------------------------------------------------------
++
++void CNPUBackend::prepareFlashAttention(int numLayers, int numHeads, int numKvHeads,
++                                        int headSize, int maxSeqLen) {
++    if (numLayers <= 0 || numHeads <= 0 || numKvHeads <= 0 || headSize <= 0 || maxSeqLen <= 0) {
++        std::cerr << "[NPU_FLASH_ATTENTION] invalid model shape: numLayers=" << numLayers
++                  << " numHeads=" << numHeads << " numKvHeads=" << numKvHeads
++                  << " headSize=" << headSize << " maxSeqLen=" << maxSeqLen << std::endl;
++        exit(EXIT_FAILURE);
++    }
++    if (numHeads % numKvHeads != 0) {
++        std::cerr << "[NPU_FLASH_ATTENTION] unsupported head relationship: numHeads="
++                  << numHeads << " numKvHeads=" << numKvHeads
++                  << " (only MHA/GQA with numHeads % numKvHeads == 0 is supported)."
++                  << std::endl;
++        exit(EXIT_FAILURE);
++    }
++    if (numHeads / numKvHeads > 64) {
++        std::cerr << "[NPU_FLASH_ATTENTION] unsupported head relationship: numHeads="
++                  << numHeads << " numKvHeads=" << numKvHeads
++                  << " (numHeads / numKvHeads > 64 is not supported)."
++                  << std::endl;
++        exit(EXIT_FAILURE);
++    }
++
++    if (pImpl->flashAttentionPrepared &&
++        pImpl->flashNumLayers == numLayers &&
++        pImpl->flashNumHeads == numHeads &&
++        pImpl->flashNumKvHeads == numKvHeads &&
++        pImpl->flashHeadSize == headSize &&
++        pImpl->flashMaxSeqLen == maxSeqLen) {
++        return;
++    }
++
++    ACL_CHECK(aclrtSetCurrentContext(pImpl->context_));
++
++    if (pImpl->flashAttentionPrepared) {
++        // Shape change on a live session is a cold-path event: drain the
++        // stream before replacing the persistent FP16 buffers.
++        ACL_CHECK(aclrtSynchronizeStream(pImpl->stream_));
++        pImpl->workspaceGrowthSyncCount++;
++        pImpl->flashSyncCount++;
++        ReleaseFlashAttentionResources(pImpl);
++    }
++
++    const size_t kvCacheBytes = static_cast<size_t>(numLayers) * numKvHeads
++                              * maxSeqLen * headSize * sizeof(uint16_t);
++    const size_t queryBytes = static_cast<size_t>(numHeads) * headSize * sizeof(uint16_t);
++    const size_t kvScratchBytes = static_cast<size_t>(numKvHeads) * headSize * sizeof(uint16_t);
++
++    ACL_CHECK(aclrtMalloc(reinterpret_cast<void**>(&pImpl->flashKeyCache),
++                          kvCacheBytes, ACL_MEM_MALLOC_HUGE_FIRST));
++    ACL_CHECK(aclrtMalloc(reinterpret_cast<void**>(&pImpl->flashValueCache),
++                          kvCacheBytes, ACL_MEM_MALLOC_HUGE_FIRST));
++    ACL_CHECK(aclrtMalloc(reinterpret_cast<void**>(&pImpl->flashQueryBuf),
++                          queryBytes, ACL_MEM_MALLOC_HUGE_FIRST));
++    ACL_CHECK(aclrtMalloc(reinterpret_cast<void**>(&pImpl->flashOutBuf),
++                          queryBytes, ACL_MEM_MALLOC_HUGE_FIRST));
++    ACL_CHECK(aclrtMalloc(reinterpret_cast<void**>(&pImpl->flashKScratchBuf),
++                          kvScratchBytes, ACL_MEM_MALLOC_HUGE_FIRST));
++    ACL_CHECK(aclrtMalloc(reinterpret_cast<void**>(&pImpl->flashVScratchBuf),
++                          kvScratchBytes, ACL_MEM_MALLOC_HUGE_FIRST));
++
++    pImpl->flashNumLayers = numLayers;
++    pImpl->flashNumHeads = numHeads;
++    pImpl->flashNumKvHeads = numKvHeads;
++    pImpl->flashHeadSize = headSize;
++    pImpl->flashMaxSeqLen = maxSeqLen;
++    pImpl->flashAttentionPrepared = true;
++
++    // Only announce the path as enabled after every persistent FP16 buffer
++    // has been allocated and the prepared flag is set.
++    if (!pImpl->flashPathPrinted) {
++        pImpl->flashPathPrinted = true;
++        std::cout << "[NPU_ATTENTION_PATH] path=flash_attention_v4 dtype=fp16 "
++                  << "api=aclnnIncreFlashAttentionV4 fallback=0" << std::endl;
++    }
++}
++
++void CNPUBackend::attentionAllHeadsFlashDevice(float* q, float* kScratch, float* vScratch,
++                                               float* branchActivation, int layerIndex, int pos,
++                                               int headSize, int numHeads, int numKvHeads,
++                                               int maxSeqLen) {
++    if (!pImpl->flashAttentionPrepared) {
++        std::cerr << "[NPU_FLASH_ATTENTION] prepareFlashAttention must be called before "
++                  << "attentionAllHeadsFlashDevice." << std::endl;
++        exit(EXIT_FAILURE);
++    }
++    if (layerIndex < 0 || layerIndex >= pImpl->flashNumLayers ||
++        pImpl->flashNumHeads != numHeads ||
++        pImpl->flashNumKvHeads != numKvHeads ||
++        pImpl->flashHeadSize != headSize ||
++        pImpl->flashMaxSeqLen != maxSeqLen ||
++        pImpl->flashMaxSeqLen < pos + 1) {
++        std::cerr << "[NPU_FLASH_ATTENTION] shape mismatch or invalid position: layer="
++                  << layerIndex << " pos=" << pos << " headSize=" << headSize
++                  << " numHeads=" << numHeads << " numKvHeads=" << numKvHeads
++                  << " maxSeqLen=" << maxSeqLen << std::endl;
++        exit(EXIT_FAILURE);
+     }
+ 
+     ACL_CHECK(aclrtSetCurrentContext(pImpl->context_));
+ 
+     const int dim = numHeads * headSize;
+-    const int kvHeadStride = maxSeqLen * kvHeadDim;
+-
+-    int64_t qShape[] = {1, numHeads, 1, headSize};
+-    int64_t qStrides[] = {(int64_t)dim, headSize, headSize, 1};
+-    aclTensor* qT = aclCreateTensor(qShape, 4, ACL_FLOAT, qStrides, 0,
+-                                    aclFormat::ACL_FORMAT_ND, qShape, 4, q);
+-
+-    void* kBase = keyCache + kvCacheOffset;
+-    int64_t kShape[] = {1, numKvHeads, maxSeqLen, kvHeadDim};
+-    int64_t kStrides[] = {numKvHeads * kvHeadStride, kvHeadStride, kvHeadDim, 1};
+-    aclTensor* kT = aclCreateTensor(kShape, 4, ACL_FLOAT, kStrides, 0,
+-                                    aclFormat::ACL_FORMAT_ND, kShape, 4, kBase);
+-    const aclTensor* kListArr[] = {kT};
+-    aclTensorList* kList = aclCreateTensorList(kListArr, 1);
++    const int kvDim = numKvHeads * headSize;
++    const int64_t flatShape[1] = { dim };
++    const int64_t flatKvShape[1] = { kvDim };
++
++    // 1. FP32 -> FP16 device-side casts (in-order on the shared stream).
++    ScopedAclTensor qF32(CreateCheckedTensorFromDevice(q, flatShape, 1, ACL_FLOAT, "flash_q_f32"));
++    ScopedAclTensor qF16(CreateCheckedTensorFromDevice(pImpl->flashQueryBuf, flatShape, 1, ACL_FLOAT16, "flash_q_f16"));
++    RunAclnnCast(pImpl, qF32, ACL_FLOAT16, qF16);
++
++    ScopedAclTensor kF32(CreateCheckedTensorFromDevice(kScratch, flatKvShape, 1, ACL_FLOAT, "flash_k_f32"));
++    ScopedAclTensor kF16(CreateCheckedTensorFromDevice(pImpl->flashKScratchBuf, flatKvShape, 1, ACL_FLOAT16, "flash_k_f16"));
++    RunAclnnCast(pImpl, kF32, ACL_FLOAT16, kF16);
++
++    ScopedAclTensor vF32(CreateCheckedTensorFromDevice(vScratch, flatKvShape, 1, ACL_FLOAT, "flash_v_f32"));
++    ScopedAclTensor vF16(CreateCheckedTensorFromDevice(pImpl->flashVScratchBuf, flatKvShape, 1, ACL_FLOAT16, "flash_v_f16"));
++    RunAclnnCast(pImpl, vF32, ACL_FLOAT16, vF16);
++
++    // 2. Append only the current FP16 K/V into the persistent per-layer FP16
++    //    cache ([layer][numKvHeads][maxSeqLen][headSize], head-major BNSD).
++    const size_t rowBytes = static_cast<size_t>(headSize) * sizeof(uint16_t);
++    const size_t cachePitch = static_cast<size_t>(maxSeqLen) * rowBytes;
++    const size_t layerBase = static_cast<size_t>(layerIndex) * numKvHeads * maxSeqLen * headSize;
++    uint16_t* dstK = pImpl->flashKeyCache + layerBase + pos * headSize;
++    uint16_t* dstV = pImpl->flashValueCache + layerBase + pos * headSize;
++    ACL_CHECK(aclrtMemcpy2dAsync(dstK, cachePitch,
++                                 pImpl->flashKScratchBuf, rowBytes,
++                                 rowBytes, numKvHeads,
++                                 ACL_MEMCPY_DEVICE_TO_DEVICE,
++                                 pImpl->stream_));
++    ACL_CHECK(aclrtMemcpy2dAsync(dstV, cachePitch,
++                                 pImpl->flashVScratchBuf, rowBytes,
++                                 rowBytes, numKvHeads,
++                                 ACL_MEMCPY_DEVICE_TO_DEVICE,
++                                 pImpl->stream_));
++    recordCopy(rowBytes * numKvHeads, true, true);
++    recordCopy(rowBytes * numKvHeads, true, true);
+ 
+-    void* vBase = valueCache + kvCacheOffset;
+-    aclTensor* vT = aclCreateTensor(kShape, 4, ACL_FLOAT, kStrides, 0,
+-                                    aclFormat::ACL_FORMAT_ND, kShape, 4, vBase);
+-    const aclTensor* vListArr[] = {vT};
++    // 3. Incremental FlashAttention V4 (BNSD, FP16, single token at pos).
++    int64_t bnsdQShape[4] = {1, numHeads, 1, headSize};
++    ScopedAclTensor qT(CreateCheckedTensorFromDevice(
++        pImpl->flashQueryBuf, bnsdQShape, 4, ACL_FLOAT16, "flash_q_bnsd"));
++    ScopedAclTensor oT(CreateCheckedTensorFromDevice(
++        pImpl->flashOutBuf, bnsdQShape, 4, ACL_FLOAT16, "flash_o_bnsd"));
++
++    int64_t bnsdKvShape[4] = {1, numKvHeads, maxSeqLen, headSize};
++    // 所有权契约：aclCreateTensorList 成功后会接管其中 Tensor 的所有权，
++    // 之后只能通过 aclDestroyTensorList 释放，不能再单独 aclDestroyTensor。
++    // 因此 kT/vT 用裸句柄创建（不用 ScopedAclTensor 包装），避免列表销毁后
++    // 再次 aclDestroyTensor 造成重复释放；列表创建失败时所有权尚未转移，
++    // 由失败分支显式释放裸句柄。
++    aclTensor* kT = CreateCheckedTensorFromDevice(
++        pImpl->flashKeyCache + layerBase, bnsdKvShape, 4, ACL_FLOAT16, "flash_k_bnsd");
++    aclTensor* vT = CreateCheckedTensorFromDevice(
++        pImpl->flashValueCache + layerBase, bnsdKvShape, 4, ACL_FLOAT16, "flash_v_bnsd");
++
++    const aclTensor* kListArr[] = { kT };
++    aclTensorList* kList = aclCreateTensorList(kListArr, 1);
++    if (kList == nullptr) {
++        std::cerr << "[NPU_FLASH_ATTENTION] aclCreateTensorList(key) failed." << std::endl;
++        aclDestroyTensor(kT);
++        aclDestroyTensor(vT);
++        exit(EXIT_FAILURE);
++    }
++    const aclTensor* vListArr[] = { vT };
+     aclTensorList* vList = aclCreateTensorList(vListArr, 1);
+-
++    if (vList == nullptr) {
++        std::cerr << "[NPU_FLASH_ATTENTION] aclCreateTensorList(value) failed." << std::endl;
++        aclDestroyTensorList(kList);
++        aclDestroyTensor(vT);
++        exit(EXIT_FAILURE);
++    }
+     int64_t actualLen = pos + 1;
+     aclIntArray* seqLenArr = aclCreateIntArray(&actualLen, 1);
++    if (seqLenArr == nullptr) {
++        std::cerr << "[NPU_FLASH_ATTENTION] aclCreateIntArray(actualSeqLengths) failed." << std::endl;
++        exit(EXIT_FAILURE);
++    }
+ 
+-    int64_t oShape[] = {1, numHeads, 1, headSize};
+-    int64_t oStrides[] = {(int64_t)dim, headSize, headSize, 1};
+-    aclTensor* oT = aclCreateTensor(oShape, 4, ACL_FLOAT, oStrides, 0,
+-                                    aclFormat::ACL_FORMAT_ND, oShape, 4,
+-                                    branchActivation);
+-
+-    double scaleVal = 1.0 / std::sqrt((double)headSize);
++    const double scaleVal = 1.0 / std::sqrt((double)headSize);
+     char layoutStr[] = "BNSD";
+ 
+     uint64_t wsSize = 0;
+@@ -924,80 +1185,45 @@ bool CNPUBackend::attentionIncreFlashReplacement(float* q, float* keyCache, floa
+         nullptr, nullptr, seqLenArr,
+         nullptr, nullptr, nullptr, nullptr, nullptr,
+         nullptr, nullptr, nullptr, nullptr,
+-        numHeads, scaleVal, layoutStr, numKvHeads, 0, 0,
++        (int64_t)numHeads, scaleVal, layoutStr, (int64_t)numKvHeads,
++        (int64_t)0, (int64_t)0,
+         oT, &wsSize, &executor);
+-
+     if (st != ACL_SUCCESS) {
+-        std::cerr << "[NPU_FLASH_ATTENTION] GetWorkspaceSize failed, code="
+-                  << st << " msg=" << aclGetRecentErrMsg() << std::endl;
+-        pImpl->flashAttentionUnavailable = true;
+-        aclDestroyTensor(qT); aclDestroyTensor(kT); aclDestroyTensor(vT); aclDestroyTensor(oT);
+-        aclDestroyTensorList(kList); aclDestroyTensorList(vList);
+-        aclDestroyIntArray(seqLenArr);
+-        return false;
+-    }
+-
+-    void* wsBuf = nullptr;
+-    if (wsSize > 0) {
+-        ACL_CHECK(aclrtMalloc(&wsBuf, wsSize, ACL_MEM_MALLOC_HUGE_FIRST));
++        pImpl->flashFallbackCount++;
++        std::cerr << "[NPU_FLASH_ATTENTION] aclnnIncreFlashAttentionV4GetWorkspaceSize "
++                  << "failed, code=" << st << " msg=" << aclGetRecentErrMsg()
++                  << std::endl;
++        exit(EXIT_FAILURE);
+     }
++    void* wsBuf = EnsureFlashWorkspace(
++        pImpl, static_cast<size_t>(wsSize));
+ 
++    // Second-stage FA dispatch; the FA call count only grows after this
++    // succeeds. No host sync: the WO matmul queued later on the same stream
++    // consumes the FP16 output via the final cast.
+     st = aclnnIncreFlashAttentionV4(wsBuf, wsSize, executor, pImpl->stream_);
+     if (st != ACL_SUCCESS) {
+-        std::cerr << "[NPU_FLASH_ATTENTION] Execute failed, code="
++        pImpl->flashFallbackCount++;
++        std::cerr << "[NPU_FLASH_ATTENTION] aclnnIncreFlashAttentionV4 failed, code="
+                   << st << " msg=" << aclGetRecentErrMsg() << std::endl;
+-        pImpl->flashAttentionUnavailable = true;
+-        if (wsBuf) aclrtFree(wsBuf);
+-        aclDestroyTensor(qT); aclDestroyTensor(kT); aclDestroyTensor(vT); aclDestroyTensor(oT);
+-        aclDestroyTensorList(kList); aclDestroyTensorList(vList);
+-        aclDestroyIntArray(seqLenArr);
+-        return false;
+-    }
+-
+-    aclError syncStatus = aclrtSynchronizeStream(pImpl->stream_);
+-    if (syncStatus != ACL_ERROR_NONE) {
+-        std::cerr << "[NPU_FLASH_ATTENTION] stream sync failed, code="
+-                  << syncStatus << " msg=" << aclGetRecentErrMsg() << std::endl;
+-        pImpl->flashAttentionUnavailable = true;
+-        if (wsBuf) aclrtFree(wsBuf);
+-        aclDestroyTensor(qT); aclDestroyTensor(kT); aclDestroyTensor(vT); aclDestroyTensor(oT);
+-        aclDestroyTensorList(kList); aclDestroyTensorList(vList);
+-        aclDestroyIntArray(seqLenArr);
+-        return false;
+-    }
+-
+-    if (wsBuf) {
+-        ACL_CHECK(aclrtFree(wsBuf));
+-    }
+-    aclDestroyTensor(qT); aclDestroyTensor(kT); aclDestroyTensor(vT); aclDestroyTensor(oT);
+-    aclDestroyTensorList(kList); aclDestroyTensorList(vList);
+-    aclDestroyIntArray(seqLenArr);
+-    return true;
+-}
+-
+-void CNPUBackend::attentionAllHeadsDevice(float* q, float* keyCache, float* valueCache,
+-                                          float* attnScores, float* branchActivation,
+-                                          int pos, int headSize, int numHeads, int numKvHeads,
+-                                          int maxSeqLen, int kvCacheOffset,
+-                                          int kvHeadDim, int kvMultiplier,
+-                                          bool preferFlashAttention) {
+-    if (preferFlashAttention) {
+-        if (!attentionIncreFlashReplacement(q, keyCache, valueCache, branchActivation,
+-                                            pos, headSize, numHeads, numKvHeads,
+-                                            maxSeqLen, kvCacheOffset, kvHeadDim)) {
+-            std::cerr << "[ERROR:] --useNpuFlashAttention requested, but CANN IncreFlashAttention "
+-                      << "is not available for the current fp32 path. Rerun without this flag "
+-                      << "to use the built-in fp32 NPU attention implementation." << std::endl;
+-            exit(EXIT_FAILURE);
+-        }
+-        return;
++        exit(EXIT_FAILURE);
+     }
++    pImpl->flashAttentionCalls++;
+ 
+-    attentionAllHeadsNpuReplacement(q, keyCache, valueCache,
+-                                    attnScores, branchActivation,
+-                                    pos, headSize, numHeads, numKvHeads,
+-                                    maxSeqLen, kvCacheOffset,
+-                                    kvHeadDim, kvMultiplier);
++    aclDestroyTensorList(kList);
++    aclDestroyTensorList(vList);
++    aclDestroyIntArray(seqLenArr);
++
++    // 4. FP16 -> FP32 device-side cast back into branchActivation.
++    //    aclnnCast requires the input and output tensors to have the same
++    //    logical shape. oT is the BNSD [1,numHeads,1,headSize] FP16 view used
++    //    by FlashAttention, so alias the same flashOutBuf as a flat [dim]
++    //    FP16 tensor for the cast.
++    ScopedAclTensor outF16Flat(CreateCheckedTensorFromDevice(
++        pImpl->flashOutBuf, flatShape, 1, ACL_FLOAT16, "flash_out_f16_flat"));
++    ScopedAclTensor outF32(CreateCheckedTensorFromDevice(
++        branchActivation, flatShape, 1, ACL_FLOAT, "flash_out_f32"));
++    RunAclnnCast(pImpl, outF16Flat, ACL_FLOAT, outF32);
+ }
+ 
+ // B2a: no-reference NPU attention replacement (per-head loop, writes to branchActivation)
+diff --git a/src/backend/npuBackend.hpp b/src/backend/npuBackend.hpp
+index 4837805..719285b 100644
+--- a/src/backend/npuBackend.hpp
++++ b/src/backend/npuBackend.hpp
+@@ -39,21 +39,26 @@ public:
+                                  float* kScratch, float* vScratch,
+                                  int pos, int numKvHeads, int maxSeqLen,
+                                  int kvCacheOffset, int kvHeadDim);
++    // Path A: FP32 decomposed multi-op attention (no flash branch).
+     void attentionAllHeadsDevice(float* q, float* keyCache, float* valueCache,
+                                  float* attnScores, float* branchActivation,
+                                  int pos, int headSize, int numHeads, int numKvHeads,
+                                  int maxSeqLen, int kvCacheOffset,
+-                                 int kvHeadDim, int kvMultiplier,
+-                                 bool preferFlashAttention);
++                                 int kvHeadDim, int kvMultiplier);
++    // Path B: FP16 aclnnIncreFlashAttentionV4 with a session-persistent
++    // low-precision KV cache. prepareFlashAttention must be called once per
++    // model configuration before the first forward step.
++    void prepareFlashAttention(int numLayers, int numHeads, int numKvHeads,
++                               int headSize, int maxSeqLen);
++    void attentionAllHeadsFlashDevice(float* q, float* kScratch, float* vScratch,
++                                      float* branchActivation, int layerIndex, int pos,
++                                      int headSize, int numHeads, int numKvHeads,
++                                      int maxSeqLen);
+ 
+     struct Impl;
+     Impl* pImpl;
+ 
+ private:
+-    bool attentionIncreFlashReplacement(float* q, float* keyCache, float* valueCache,
+-                                        float* branchActivation, int pos, int headSize,
+-                                        int numHeads, int numKvHeads, int maxSeqLen,
+-                                        int kvCacheOffset, int kvHeadDim);
+     void attentionAllHeadsNpuReplacement(float* q, float* keyCache, float* valueCache,
+                                          float* attnScores, float* branchActivation,
+                                          int pos, int headSize, int numHeads, int numKvHeads,
+diff --git a/src/infer/infer.cpp b/src/infer/infer.cpp
+index d163d85..b83437a 100644
+--- a/src/infer/infer.cpp
++++ b/src/infer/infer.cpp
+@@ -87,7 +87,7 @@ void printSafeString(const std::string& piece) {
+     if (piece.size() == 1) {
+         unsigned char byteVal = static_cast<unsigned char>(piece[0]);
+         if (!(std::isprint(byteVal) || std::isspace(byteVal))) {
+-            return; 
++            return;
+         }
+     }
+ 
+@@ -101,7 +101,7 @@ void CInfer::build(std::string modelPath,std::string tknzrPath, ModelType mt, Ba
+     if(bt == CPU){
+         backend = new CBackend();
+         state = new CRunState();
+-      } 
++      }
+     #ifdef USE_CUDA
+     else if(bt == CUDA){
+         backend = new CCUDABackend();
+@@ -149,13 +149,21 @@ void CInfer::build(std::string modelPath,std::string tknzrPath, ModelType mt, Ba
+             }
+             const int headSize = model->config.dim / model->config.numHeads;
+             npuBackend->prepareRopeCache(model->config.maxSeqLen, model->config.numHeads, headSize);
++            model->useNpuFlashAttention = ::useNpuFlashAttention;
++            if (model->useNpuFlashAttention) {
++                // Path B: allocate the persistent FP16 FlashAttention V4
++                // resources once per model configuration.
++                npuBackend->prepareFlashAttention(
++                    model->config.numLayers, model->config.numHeads,
++                    model->config.numKvHeads, headSize, model->config.maxSeqLen);
++            }
+         }
+ #endif
+      } else{
+         std::cerr<< "[ERROR:] Unsupported model type\n"<<std::endl;
+         exit(1);
+     }
+-     
++
+     tokenizer = new CTokenizer();
+     sampler = new CSampler();
+     this->dumpTokens      = ::dumpTokens;
+@@ -177,6 +185,15 @@ void CInfer::build(std::string modelPath,std::string tknzrPath, ModelType mt, Ba
+     this->useNpuFlashAttention = ::useNpuFlashAttention;
+     this->useNpuRopeElementwise  = ::useNpuRopeElementwise;
+ 
++    // Parameter-combination gate: the FP16 FlashAttention V4 path is only
++    // defined for the NPU full-device forward path.
++    if (this->useNpuFlashAttention && (this->bt != NPU || !deviceOpt)) {
++        std::cerr << "[ERROR:] --useNpuFlashAttention requires --backend npu with "
++                  << "--enableDeviceOpt (fp16 aclnnIncreFlashAttentionV4 path)."
++                  << std::endl;
++        exit(EXIT_FAILURE);
++    }
++
+     if (this->bt == NPU) {
+         if (this->dumpLogits) {
+             std::cerr << "[ERROR:] --dumpLogits/--dumpTopK require host logits, but the NPU path "
+@@ -194,19 +211,13 @@ void CInfer::build(std::string modelPath,std::string tknzrPath, ModelType mt, Ba
+                       << std::endl;
+             exit(EXIT_FAILURE);
+         }
+-        if (this->useNpuFlashAttention) {
+-            std::cerr << "[ERROR:] --useNpuFlashAttention is not enabled for the current fp32 full-device path. "
+-                      << "Use the built-in fp32 NPU attention path until fp16/bf16 is added."
+-                      << std::endl;
+-            exit(EXIT_FAILURE);
+-        }
+     }
+ 
+     model->dumpLayerStatsStep = this->dumpLayerStatsStep;
+     model->profileNpu      = this->profileNpu;
+     model->profileNpuStart = this->profileNpuStart;
+     model->profileNpuEnd   = this->profileNpuEnd;
+-    
++
+     tokenizer->initializeTokenizer(tknzrPath,model->config.vocabSize);
+     sampler->initializeSampler(model->config.vocabSize, temperature, topp, rngSeed);
+ }
+@@ -225,12 +236,12 @@ std::tuple<std::string, int, long> CInfer::generate(std::string prompt) {
+         exit(EXIT_FAILURE);
+     }
+ 
+-    long start = 0;      
+-    long end = 0;        
++    long start = 0;
++    long end = 0;
+     long elapsed;
+-    int next;                    
+-    int token = promptTokens[0]; 
+-    int pos = 0;               
++    int next;
++    int token = promptTokens[0];
++    int pos = 0;
+     std::vector<int> promptTokenIds;
+     std::vector<int> prefillForcedTokenIds;
+     std::vector<int> decodeGeneratedTokenIds;
+@@ -325,8 +336,8 @@ std::tuple<std::string, int, long> CInfer::generate(std::string prompt) {
+             std::cout << "[TOKEN] " << next << std::endl;
+         }
+ 
+-        if (next == 1) { 
+-            break; 
++        if (next == 1) {
++            break;
+         }
+         // if(pos==10){
+         //     break;
+@@ -336,8 +347,8 @@ std::tuple<std::string, int, long> CInfer::generate(std::string prompt) {
+         printSafeString(decodedToken);
+         token = next;
+ 
+-        if (start == 0) { 
+-            start = timeInMs(); 
++        if (start == 0) {
++            start = timeInMs();
+         }
+     }
+     printf("\n");
+diff --git a/src/model/model.cpp b/src/model/model.cpp
+index d4bec1d..9c50b9e 100644
+--- a/src/model/model.cpp
++++ b/src/model/model.cpp
+@@ -3,6 +3,7 @@
+ CModel::CModel()
+     : state(nullptr), backend(nullptr), dumpLayerStatsStep(-1),
+       profileNpu(false), profileNpuStart(0), profileNpuEnd(-1),
++      useNpuFlashAttention(false),
+       fd(-1), data(reinterpret_cast<float*>(MAP_FAILED)), fileSize(0),
+       weightsBase(nullptr), ownsWeightsBuffer(false) {}
+ 
+@@ -36,14 +37,14 @@ void CModel::encode(CTokenizer* tokenizer, std::string text, int8_t bos, int8_t
+         }
+         qsort(tokenizer->vocabSortedList, tokenizer->vocabSize, sizeof(CTokenIndex), compareTokens);
+     }
+-    
++
+     char* strBuffer = static_cast<char*>(malloc((tokenizer->maxTokenLength * 2 + 1 + 2) * sizeof(char)));
+     size_t strLen = 0;
+ 
+     *numTokens = 0;
+ 
+     if (bos) tokens[(*numTokens)++] = 1;
+-    
++
+     if (text[0] != '\0') {
+         int dummyPrefix = getTokenIndex(" ", tokenizer->vocabSortedList, tokenizer->vocabSize);
+         tokens[(*numTokens)++] = dummyPrefix;
+@@ -92,14 +93,14 @@ void CModel::encode(CTokenizer* tokenizer, std::string text, int8_t bos, int8_t
+         }
+ 
+         if (bestIdx == -1) {
+-            break; 
++            break;
+         }
+ 
+         tokens[bestIdx] = bestId;
+         for (int i = bestIdx + 1; i < (*numTokens - 1); i++) {
+             tokens[i] = tokens[i + 1];
+         }
+-        (*numTokens)--; 
++        (*numTokens)--;
+     }
+ 
+     if (eos) tokens[(*numTokens)++] = 2;
+@@ -116,14 +117,14 @@ char* CModel::decode(CTokenizer* tokenizer, int previousToken, int token) {
+     if (sscanf(piece, "<0x%02hhX>", &byteVal) == 1) {
+         piece = reinterpret_cast<char*>(tokenizer->bytePieces) + byteVal * 2;
+     }
+-    return piece;  
++    return piece;
+ }
+ 
+ 
+ void CModel::mapWeightsToMemory(CModelConfig* modelConfig, float* ptr, int sharedWeights){
+     const int headSize = modelConfig->dim / modelConfig->numHeads;
+     const uint64_t numLayers = modelConfig->numLayers;
+-    float* currentPtr = ptr; 
++    float* currentPtr = ptr;
+ 
+ 
+     w.tokenEmbeddingTable = currentPtr;
+@@ -132,28 +133,28 @@ void CModel::mapWeightsToMemory(CModelConfig* modelConfig, float* ptr, int share
+ 
+     w.rmsAttWeight = currentPtr;
+     currentPtr += numLayers * modelConfig->dim;
+-    
++
+     w.wq = currentPtr;
+     currentPtr += numLayers * modelConfig->dim * (modelConfig->numHeads * headSize);
+-    
++
+     w.wk = currentPtr;
+     currentPtr += numLayers * modelConfig->dim * (modelConfig->numKvHeads * headSize);
+-    
++
+     w.wv = currentPtr;
+     currentPtr += numLayers * modelConfig->dim * (modelConfig->numKvHeads * headSize);
+-    
++
+     w.wo = currentPtr;
+     currentPtr += numLayers * (modelConfig->numHeads * headSize) * modelConfig->dim;
+ 
+     w.rmsFfnWeight = currentPtr;
+     currentPtr += numLayers * modelConfig->dim;
+-    
++
+     w.w1 = currentPtr;
+     currentPtr += numLayers * modelConfig->dim * modelConfig->feedForwardDim;
+-    
++
+     w.w2 = currentPtr;
+     currentPtr += numLayers * modelConfig->feedForwardDim * modelConfig->dim;
+-    
++
+     w.w3 = currentPtr;
+     currentPtr += numLayers * modelConfig->dim * modelConfig->feedForwardDim;
+ 
+@@ -162,8 +163,8 @@ void CModel::mapWeightsToMemory(CModelConfig* modelConfig, float* ptr, int share
+     currentPtr += modelConfig->dim;
+ 
+ 
+-    currentPtr += modelConfig->maxSeqLen * headSize / 2; 
+-    currentPtr += modelConfig->maxSeqLen * headSize / 2; 
++    currentPtr += modelConfig->maxSeqLen * headSize / 2;
++    currentPtr += modelConfig->maxSeqLen * headSize / 2;
+ 
+ 
+     w.wcls = sharedWeights ? w.tokenEmbeddingTable : currentPtr;
+@@ -171,7 +172,7 @@ void CModel::mapWeightsToMemory(CModelConfig* modelConfig, float* ptr, int share
+ 
+ 
+ void CModel::load(const std::string& checkpointPath, CModelConfig* modelConfig, int* fileDescriptor, float** data, ssize_t* totalFileSize) {
+-    
++
+ 
+     std::ifstream fileStream(checkpointPath, std::ios::binary | std::ios::ate);
+     if (!fileStream) {
+@@ -244,7 +245,7 @@ void CModel::load(const std::string& checkpointPath, CModelConfig* modelConfig,
+ }
+ 
+ 
+-void CModel::initializeModel(const std::string checkpointPath,CBackend *backend,CRunState *state){ 
++void CModel::initializeModel(const std::string checkpointPath,CBackend *backend,CRunState *state){
+     this->backend = backend;
+     this->state = state;
+     load(checkpointPath, &config, &fd, &data, &fileSize);
+@@ -261,7 +262,7 @@ void CModel::freeModel() {
+     if (data != MAP_FAILED) {
+         munmap(data, fileSize);
+     }
+-    
++
+     if (fd != -1) {
+         close(fd);
+     }
+@@ -460,13 +461,13 @@ ForwardOutput CModel::forward(int token, int pos) {
+     if(isDeviceBackend(backend->type)){
+         backend->matmul(state->logits_gpu, inputVec, w.wcls, embeddingDim, config->vocabSize);
+         backend->copyMemory(
+-                state->logits, 
++                state->logits,
+                 state->logits_gpu,
+                 config->vocabSize * sizeof(float),
+                 /*dstOnDevice=*/false,
+                 /*srcOnDevice=*/true
+             );
+-    } 
++    }
+     else
+         backend->matmul(state->logits, inputVec, w.wcls, embeddingDim, config->vocabSize);
+     return {state->logits, TensorLocation::Host};
+diff --git a/src/model/model.hpp b/src/model/model.hpp
+index 3633b01..6174859 100644
+--- a/src/model/model.hpp
++++ b/src/model/model.hpp
+@@ -27,10 +27,11 @@ public:
+     bool profileNpu;
+     int profileNpuStart;
+     int profileNpuEnd;
+-  
+-    int fd;             
+-    float* data;         
+-    ssize_t fileSize;    
++    bool useNpuFlashAttention;   // Path B: FP16 aclnnIncreFlashAttentionV4 (default false)
++
++    int fd;
++    float* data;
++    ssize_t fileSize;
+     float* weightsBase;
+     bool ownsWeightsBuffer;
+ 
+@@ -66,10 +67,10 @@ public:
+         float* rmsFinalWeight;
+         float* wcls;
+     } w; // 模型权重信息
+-    CModel(); 
+-    virtual ~CModel() ; 
+-    
+-    virtual void load(const std::string& checkpointPath, CModelConfig* modelConfig, int* fileDescriptor, float** data, ssize_t* totalFileSize) ; 
++    CModel();
++    virtual ~CModel() ;
++
++    virtual void load(const std::string& checkpointPath, CModelConfig* modelConfig, int* fileDescriptor, float** data, ssize_t* totalFileSize) ;
+     virtual void encode(CTokenizer* t, std::string text, int8_t bos, int8_t eos, int *tokens, int *nTokens);
+     virtual ForwardOutput forward(int token, int pos);
+     virtual char* decode(CTokenizer* t, int prevToken, int token);
+diff --git a/src/model/modelForwardOpt.cpp b/src/model/modelForwardOpt.cpp
+index 1b7e5c5..660a882 100644
+--- a/src/model/modelForwardOpt.cpp
++++ b/src/model/modelForwardOpt.cpp
+@@ -50,9 +50,9 @@ ForwardOutput CModelForwardOpt::forward(int token, int pos) {
+         backend->rmsnorm(state->branchActivation, inputVec, w.rmsFfnWeight + layer * embeddingDim, embeddingDim);
+ 
+         backend->matmul(state->hiddenBuffer, state->branchActivation, w.w1 + layer * embeddingDim * ffnHiddenDim, embeddingDim, ffnHiddenDim);
+-       
++
+         backend->matmul(state->extraHiddenBuffer, state->branchActivation, w.w3 + layer * embeddingDim * ffnHiddenDim, embeddingDim, ffnHiddenDim);
+-       
++
+         backend->swiGLLUFunc(state->hiddenBuffer, state->extraHiddenBuffer, ffnHiddenDim);
+ 
+         backend->matmul(state->branchActivation, state->hiddenBuffer, w.w2 + layer * ffnHiddenDim * embeddingDim, ffnHiddenDim, embeddingDim);
+@@ -63,9 +63,9 @@ ForwardOutput CModelForwardOpt::forward(int token, int pos) {
+     backend->rmsnorm(inputVec, inputVec, w.rmsFinalWeight, embeddingDim);
+ 
+     backend->matmul(state->logits_gpu, inputVec, w.wcls, embeddingDim, config->vocabSize);
+-    
++
+     backend->copyMemory(
+-            state->logits, 
++            state->logits,
+             state->logits_gpu,
+             config->vocabSize * sizeof(float),
+             /*dstOnDevice=*/false,
+@@ -85,7 +85,7 @@ ForwardOutput CModelForwardOpt::forward(int token, int pos) {
+     const int ffnHiddenDim = config->feedForwardDim;
+ 
+     float* tokenEmbedding = w.tokenEmbeddingTable + token * embeddingDim;
+-    
++
+     backend->copyMemory(
+         inputVec,
+         tokenEmbedding,
+@@ -93,7 +93,7 @@ ForwardOutput CModelForwardOpt::forward(int token, int pos) {
+         /*dstOnDevice=*/true,
+         /*srcOnDevice=*/false
+     );
+-  
++
+     for (uint64_t layer = 0; layer < config->numLayers; ++layer) {
+ 
+         backend->rmsnorm(state->branchActivation, inputVec, w.rmsAttWeight + layer * embeddingDim, embeddingDim);
+@@ -111,28 +111,28 @@ ForwardOutput CModelForwardOpt::forward(int token, int pos) {
+         backend->ropeEncoding(state->q, state->k, headSize, pos, embeddingDim, kvDim);
+ 		backend->multiHeadAttention(pos, config, state, kvDim, kvHeadMultiplier, headSize, kvCacheOffset);
+         backend->gemvAxpyFused(
+-            inputVec,           
+-            state->branchActivation,            
+-            w.wo + layer * embeddingDim * embeddingDim, 
+-            embeddingDim,                            
+-            embeddingDim,                            
++            inputVec,
++            state->branchActivation,
++            w.wo + layer * embeddingDim * embeddingDim,
++            embeddingDim,
++            embeddingDim,
+             1.0f,
+             1.0f);
+ 
+         backend->rmsnorm(state->branchActivation, inputVec, w.rmsFfnWeight + layer * embeddingDim, embeddingDim);
+ 
+         backend->matmul(state->hiddenBuffer, state->branchActivation, w.w1 + layer * embeddingDim * ffnHiddenDim, embeddingDim, ffnHiddenDim);
+-       
++
+         backend->matmul(state->extraHiddenBuffer, state->branchActivation, w.w3 + layer * embeddingDim * ffnHiddenDim, embeddingDim, ffnHiddenDim);
+-       
++
+         backend->swiGLLUFunc(state->hiddenBuffer, state->extraHiddenBuffer, ffnHiddenDim);
+ 
+         backend->gemvAxpyFused(
+-            inputVec,                 
+-            state->hiddenBuffer,                     
+-            w.w2 + layer * ffnHiddenDim * embeddingDim, 
+-            ffnHiddenDim,                                
+-            embeddingDim,                      
++            inputVec,
++            state->hiddenBuffer,
++            w.w2 + layer * ffnHiddenDim * embeddingDim,
++            ffnHiddenDim,
++            embeddingDim,
+             1.0f,
+             1.0f);
+ 
+@@ -141,7 +141,7 @@ ForwardOutput CModelForwardOpt::forward(int token, int pos) {
+ 
+     backend->matmul(state->logits_gpu, inputVec, w.wcls, embeddingDim, config->vocabSize);
+     backend->copyMemory(
+-                state->logits, 
++                state->logits,
+                 state->logits_gpu,
+                 config->vocabSize * sizeof(float),
+                 /*dstOnDevice=*/false,
+@@ -265,20 +265,31 @@ ForwardOutput CModelForwardOpt::forward(int token, int pos) {
+         recordStage(doProfileNpu, stageStartMs, profileAcc.ropeMs);
+ 
+         int kvHeadDim = kvDim / config->numKvHeads;
+-        npuBackend->writeKvCacheFromScratch(
+-            state->keyCache, state->valueCache,
+-            state->k, state->v,
+-            pos, config->numKvHeads, config->maxSeqLen,
+-            kvCacheOffset, kvHeadDim);
+-        recordStage(doProfileNpu, stageStartMs, profileAcc.kvCacheMs);
+-
+-        npuBackend->attentionAllHeadsDevice(
+-            state->q, state->keyCache, state->valueCache,
+-            state->attentionScores, state->branchActivation,
+-            pos, headSize, config->numHeads, config->numKvHeads,
+-            config->maxSeqLen, kvCacheOffset, kvHeadDim, kvHeadMultiplier,
+-            false);
+-        recordStage(doProfileNpu, stageStartMs, profileAcc.attentionMs);
++        if (useNpuFlashAttention) {
++            // Path B: FP16 incremental FlashAttention V4 with a persistent
++            // low-precision KV cache. The FP32 KV cache is not written and the
++            // decomposed FP32 attention is not executed on this branch.
++            npuBackend->attentionAllHeadsFlashDevice(
++                state->q, state->k, state->v,
++                state->branchActivation, (int)layer, pos, headSize,
++                config->numHeads, config->numKvHeads, config->maxSeqLen);
++            // Path B is a fused experimental chain (cast + KV append + FA +
++            // cast): record the whole stage into attentionMs only.
++            recordStage(doProfileNpu, stageStartMs, profileAcc.attentionMs);
++        } else {
++            npuBackend->writeKvCacheFromScratch(
++                state->keyCache, state->valueCache,
++                state->k, state->v,
++                pos, config->numKvHeads, config->maxSeqLen,
++                kvCacheOffset, kvHeadDim);
++            recordStage(doProfileNpu, stageStartMs, profileAcc.kvCacheMs);
++            npuBackend->attentionAllHeadsDevice(
++                state->q, state->keyCache, state->valueCache,
++                state->attentionScores, state->branchActivation,
++                pos, headSize, config->numHeads, config->numKvHeads,
++                config->maxSeqLen, kvCacheOffset, kvHeadDim, kvHeadMultiplier);
++            recordStage(doProfileNpu, stageStartMs, profileAcc.attentionMs);
++        }
+ 
+         backend->matmul(state->extraBuffer, state->branchActivation, w.wo + layer * embeddingDim * embeddingDim, embeddingDim, embeddingDim);
+         recordStage(doProfileNpu, stageStartMs, profileAcc.attentionOutMatmulMs);
