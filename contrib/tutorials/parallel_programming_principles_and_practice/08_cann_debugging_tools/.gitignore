@@ -1,0 +1,4 @@
+build/
+.ipynb_checkpoints/
+src/operator_project_sanitizer/build-*/
+src/operator_project_sanitizer/test/build-*/

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="860" viewBox="0 0 920 860">
+  <title>pyACL 调用 SpMV / GEMM 执行流程</title>
+  <desc>Host/Device 调用链：初始化、数据搬运、算子执行、同步、结果拷回与回收。910B3/CANN9 上 SpMV 为 AI CPU。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="460" y="36" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a1a1a">pyACL 调用 SpMV / GEMM 执行流程（Ascend 910B3 / CANN 9）</text>
+
+  <!-- Host 区 -->
+  <rect x="30" y="60" width="360" height="770" rx="10" fill="#eef4fb" stroke="#7fa8d9" stroke-width="1.5"/>
+  <text x="210" y="86" text-anchor="middle" font-size="16" font-weight="bold" fill="#2b5ea7">Host 侧（CPU）</text>
+
+  <!-- Device 区 -->
+  <rect x="520" y="60" width="370" height="770" rx="10" fill="#fdf3e7" stroke="#d9a05b" stroke-width="1.5"/>
+  <text x="705" y="86" text-anchor="middle" font-size="16" font-weight="bold" fill="#a05b2b">Device 侧（NPU）</text>
+
+  <!-- 步骤盒子：x=50 左列 / x=545 右列，宽 300，高 46 -->
+  <!-- 1 -->
+  <rect x="50" y="110" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="200" y="128" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">1. acl.init()</text>
+  <text x="200" y="146" text-anchor="middle" font-size="11" fill="#555">初始化 ACL 运行时</text>
+
+  <!-- 2 -->
+  <rect x="50" y="180" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="200" y="198" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">2. acl.op.set_model_dir(dir)</text>
+  <text x="200" y="216" text-anchor="middle" font-size="11" fill="#555">指定 singleop OM 目录</text>
+
+  <!-- 3 -->
+  <rect x="50" y="250" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="200" y="268" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">3. acl.rt.set_device(0)</text>
+  <text x="200" y="286" text-anchor="middle" font-size="11" fill="#555">设置第 0 张 NPU</text>
+
+  <!-- 4 -->
+  <rect x="50" y="320" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="200" y="338" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">4. acl.rt.create_context(0)</text>
+  <text x="200" y="356" text-anchor="middle" font-size="11" fill="#555">创建上下文</text>
+
+  <!-- 5 -->
+  <rect x="50" y="390" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="200" y="408" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">5. acl.rt.create_stream()</text>
+  <text x="200" y="426" text-anchor="middle" font-size="11" fill="#555">创建流（任务排队执行）</text>
+
+  <!-- 1->2..4->5 箭头 -->
+  <line x1="200" y1="156" x2="200" y2="180" stroke="#333" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="200" y1="226" x2="200" y2="250" stroke="#333" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="200" y1="296" x2="200" y2="320" stroke="#333" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="200" y1="366" x2="200" y2="390" stroke="#333" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- 6 -->
+  <rect x="545" y="110" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="695" y="128" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">6. acl.rt.malloc(nbytes, 2)</text>
+  <text x="695" y="146" text-anchor="middle" font-size="11" fill="#555">申请设备内存（flag=2）</text>
+
+  <!-- 7 -->
+  <rect x="545" y="180" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="695" y="198" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">7. acl.rt.memcpy H2D</text>
+  <text x="695" y="216" text-anchor="middle" font-size="11" fill="#555">Host→Device 拷贝输入（numpy_to_ptr）</text>
+
+  <!-- 8 -->
+  <rect x="545" y="250" width="300" height="70" rx="8" fill="#fff8e1" stroke="#b8860b" stroke-width="1.6"/>
+  <text x="695" y="272" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5c00">8. 算子调用（异步提交）</text>
+  <text x="695" y="292" text-anchor="middle" font-size="11" fill="#555">GEMM: acl.blas.gemm_ex（19 参数）</text>
+  <text x="695" y="308" text-anchor="middle" font-size="11" fill="#555">SpMV: acl.op.execute_v2（7 参数）</text>
+
+  <!-- 9 -->
+  <rect x="545" y="344" width="300" height="46" rx="8" fill="#fff8e1" stroke="#b8860b" stroke-width="1.6"/>
+  <text x="695" y="362" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5c00">9. acl.rt.synchronize_stream()</text>
+  <text x="695" y="380" text-anchor="middle" font-size="11" fill="#555">同步：等待算子真正完成</text>
+
+  <!-- 10 -->
+  <rect x="545" y="414" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="695" y="432" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">10. acl.rt.memcpy D2H</text>
+  <text x="695" y="450" text-anchor="middle" font-size="11" fill="#555">Device→Host 拷贝输出结果</text>
+
+  <!-- 6->7->8->9->10 箭头 -->
+  <line x1="695" y1="156" x2="695" y2="180" stroke="#333" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="695" y1="226" x2="695" y2="250" stroke="#333" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="695" y1="320" x2="695" y2="344" stroke="#333" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="695" y1="390" x2="695" y2="414" stroke="#333" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- 5 -> 6 跨区箭头（初始化完成后进入设备侧） -->
+  <path d="M 350 413 L 520 413 L 520 133 L 545 133" fill="none" stroke="#666" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="435" y="403" text-anchor="middle" font-size="10" fill="#666">进入设备侧</text>
+
+  <!-- 10 -> 11 跨区箭头（结果拷回 Host 后回收；终点对齐步骤 11 右侧边缘中点 y=503，不穿过底部说明框） -->
+  <path d="M 545 437 L 520 437 L 520 503 L 350 503" fill="none" stroke="#666" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="435" y="495" text-anchor="middle" font-size="10" fill="#666">回到 Host 侧</text>
+
+  <!-- 11 -->
+  <rect x="50" y="480" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="200" y="498" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">11. acl.rt.free(ptr)</text>
+  <text x="200" y="516" text-anchor="middle" font-size="11" fill="#555">回收设备内存（与 malloc 成对）</text>
+
+  <!-- 12 -->
+  <rect x="50" y="550" width="300" height="46" rx="8" fill="#ffffff" stroke="#333" stroke-width="1.2"/>
+  <text x="200" y="568" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">12. acl.finalize()</text>
+  <text x="200" y="586" text-anchor="middle" font-size="11" fill="#555">释放 ACL 运行时（与 init 配对）</text>
+
+  <!-- 步骤 5 与步骤 11 之间没有直接连线：5 只经跨区箭头进入 6，10 经回程箭头回到 11 -->
+  <line x1="200" y1="526" x2="200" y2="550" stroke="#333" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- 底部说明 -->
+  <rect x="50" y="640" width="795" height="126" rx="10" fill="#f4f4f4" stroke="#999" stroke-width="1"/>
+  <text x="70" y="666" font-size="13" font-weight="bold" fill="#333">说明</text>
+  <text x="70" y="690" font-size="12" fill="#444">· 步骤 8 是异步提交：调用返回后算子可能尚未完成，必须步骤 9 同步后才可读输出。</text>
+  <text x="70" y="712" font-size="12" fill="#444">· Host 数组指针必须用 acl.util.numpy_to_ptr(array) 获取后再 memcpy，不能直接用 raw 指针。</text>
+  <text x="70" y="734" font-size="12" fill="#444">· 910B3/CANN9 上 SpMV（SparseTensorDenseMatMul）实测为 AI CPU（tf_kernel）路径，</text>
+  <text x="70" y="754" font-size="12" fill="#444">  backend_classification=AICPU，aicore_accelerated=false，不等于 AI Core 加速。</text>
+</svg>

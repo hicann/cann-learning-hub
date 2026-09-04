@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600">
+  <title>SpMV 与 GEMM 数据合同</title>
+  <desc>GEMM 五输入合同与 SparseTensorDenseMatMul 四输入合同的形状、类型与 pyACL 调用接口。</desc>
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <text x="500" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#1a1a1a">SpMV 与 GEMM 的 singleop 数据合同（910B3/CANN 9 实机验证合同）</text>
+
+  <!-- ================= GEMM 面板 ================= -->
+  <rect x="30" y="60" width="450" height="510" rx="10" fill="#eef4fb" stroke="#7fa8d9" stroke-width="1.5"/>
+  <text x="255" y="88" text-anchor="middle" font-size="16" font-weight="bold" fill="#2b5ea7">GEMM（稠密，FP16）</text>
+
+  <text x="50" y="120" font-size="13" font-weight="bold" fill="#333">输入（input_desc，5 个）</text>
+  <!-- a -->
+  <rect x="50" y="132" width="180" height="52" rx="6" fill="#ffffff" stroke="#333" stroke-width="1"/>
+  <text x="140" y="152" text-anchor="middle" font-size="12" font-weight="bold" fill="#111">a [m, k]</text>
+  <text x="140" y="170" text-anchor="middle" font-size="11" fill="#555">float16 · 左矩阵</text>
+  <!-- b -->
+  <rect x="280" y="132" width="180" height="52" rx="6" fill="#ffffff" stroke="#333" stroke-width="1"/>
+  <text x="370" y="152" text-anchor="middle" font-size="12" font-weight="bold" fill="#111">b [k, n]</text>
+  <text x="370" y="170" text-anchor="middle" font-size="11" fill="#555">float16 · 右矩阵</text>
+  <!-- c -->
+  <rect x="50" y="200" width="180" height="52" rx="6" fill="#ffffff" stroke="#333" stroke-width="1"/>
+  <text x="140" y="220" text-anchor="middle" font-size="12" font-weight="bold" fill="#111">c [m, n]</text>
+  <text x="140" y="238" text-anchor="middle" font-size="11" fill="#555">float16 · 输出累加矩阵</text>
+  <!-- alpha -->
+  <rect x="280" y="200" width="180" height="52" rx="6" fill="#ffffff" stroke="#333" stroke-width="1"/>
+  <text x="370" y="220" text-anchor="middle" font-size="12" font-weight="bold" fill="#111">alpha []</text>
+  <text x="370" y="238" text-anchor="middle" font-size="11" fill="#555">float16 · 标量（shape=[]）</text>
+  <!-- beta -->
+  <rect x="50" y="268" width="180" height="52" rx="6" fill="#ffffff" stroke="#333" stroke-width="1"/>
+  <text x="140" y="288" text-anchor="middle" font-size="12" font-weight="bold" fill="#111">beta []</text>
+  <text x="140" y="306" text-anchor="middle" font-size="11" fill="#555">float16 · 标量（shape=[]）</text>
+
+  <!-- 调用框 -->
+  <rect x="50" y="348" width="410" height="60" rx="8" fill="#fff8e1" stroke="#b8860b" stroke-width="1.6"/>
+  <text x="255" y="372" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5c00">acl.blas.gemm_ex（19 参数）</text>
+  <text x="255" y="392" text-anchor="middle" font-size="11" fill="#555">Device ptr · lda/ldb/ldc=-1 · dtype=FP16 · compute=0</text>
+
+  <!-- 输出 -->
+  <rect x="50" y="440" width="410" height="52" rx="6" fill="#e8f7ee" stroke="#2e8b57" stroke-width="1.2"/>
+  <text x="255" y="462" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d6b42">输出：c [m, n]（写回设备内存）</text>
+  <text x="255" y="480" text-anchor="middle" font-size="11" fill="#555">attr: transpose_a=false, transpose_b=false</text>
+
+  <!-- ================= SpMV 面板 ================= -->
+  <rect x="520" y="60" width="450" height="510" rx="10" fill="#fdf3e7" stroke="#d9a05b" stroke-width="1.5"/>
+  <text x="745" y="88" text-anchor="middle" font-size="16" font-weight="bold" fill="#a05b2b">SparseTensorDenseMatMul（稀疏，FP32）</text>
+
+  <text x="540" y="120" font-size="13" font-weight="bold" fill="#333">输入（input_desc，4 个，顺序固定）</text>
+  <!-- indices -->
+  <rect x="540" y="132" width="200" height="52" rx="6" fill="#ffffff" stroke="#333" stroke-width="1"/>
+  <text x="640" y="152" text-anchor="middle" font-size="12" font-weight="bold" fill="#111">1. indices [nnz, 2]</text>
+  <text x="640" y="170" text-anchor="middle" font-size="11" fill="#555">int64 · COO 坐标 (row, col)</text>
+  <!-- values -->
+  <rect x="760" y="132" width="190" height="52" rx="6" fill="#ffffff" stroke="#333" stroke-width="1"/>
+  <text x="855" y="152" text-anchor="middle" font-size="12" font-weight="bold" fill="#111">2. values [nnz]</text>
+  <text x="855" y="170" text-anchor="middle" font-size="11" fill="#555">float · COO 非零值</text>
+  <!-- dense_shape -->
+  <rect x="540" y="200" width="200" height="52" rx="6" fill="#ffffff" stroke="#333" stroke-width="1"/>
+  <text x="640" y="220" text-anchor="middle" font-size="12" font-weight="bold" fill="#111">3. dense_shape [2]</text>
+  <text x="640" y="238" text-anchor="middle" font-size="11" fill="#555">int64 · 逻辑形状 [m, n]</text>
+  <!-- x2 -->
+  <rect x="760" y="200" width="190" height="52" rx="6" fill="#ffffff" stroke="#333" stroke-width="1"/>
+  <text x="855" y="220" text-anchor="middle" font-size="12" font-weight="bold" fill="#111">4. x2 [n, 1]</text>
+  <text x="855" y="238" text-anchor="middle" font-size="11" fill="#555">float · 右乘向量</text>
+
+  <!-- 调用框 -->
+  <rect x="540" y="348" width="410" height="60" rx="8" fill="#fff8e1" stroke="#b8860b" stroke-width="1.6"/>
+  <text x="745" y="372" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5c00">acl.op.execute_v2（恰 7 参数）</text>
+  <text x="745" y="392" text-anchor="middle" font-size="11" fill="#555">desc 列表 + data buffer 列表 + attr + stream</text>
+
+  <!-- 输出 -->
+  <rect x="540" y="440" width="410" height="52" rx="6" fill="#e8f7ee" stroke="#2e8b57" stroke-width="1.2"/>
+  <text x="745" y="462" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d6b42">输出：y [m, 1] float</text>
+  <text x="745" y="480" text-anchor="middle" font-size="11" fill="#555">attr: adjoint_a=false, adjoint_b=false</text>
+
+  <!-- 910B3 边界提示 -->
+  <rect x="540" y="515" width="410" height="42" rx="8" fill="#fdeaea" stroke="#c0392b" stroke-width="1.4"/>
+  <text x="745" y="533" text-anchor="middle" font-size="12" font-weight="bold" fill="#a5281b">910B3/CANN9：backend_classification = AICPU（tf_kernel）</text>
+  <text x="745" y="549" text-anchor="middle" font-size="11" fill="#a5281b">aicore_accelerated=false —— AI CPU 不等于 AI Core 加速</text>
+
+  <!-- 语义提示 -->
+  <rect x="30" y="590" width="940" height="0" fill="none"/>
+  <text x="500" y="596" text-anchor="middle" font-size="0" fill="#000"> </text>
+</svg>
