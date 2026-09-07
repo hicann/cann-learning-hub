@@ -55,65 +55,63 @@
 ### 第一章：GFSK 调制解调与 BER 性能分析
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 1.1 章节介绍 | - | ✅ 已发布 |
-| 1.2 GFSK 调制解调完整流程 | - | ✅ 已发布 |
-| 1.3 BER 扫描与参数分析 | - | ✅ 已发布 |
-| 1.4 章节实践 | - | ✅ 已发布 |
-
+| --- | --- | --- |
+| 1.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/01_gfsk_basics/01.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 1.2 GFSK 调制解调完整流程 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/01_gfsk_basics/01.02_gfsk.ipynb) | ✅ 已发布 |
+| 1.3 BER 扫描与参数分析 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/01_gfsk_basics/01.03_param_sweep.ipynb) | ✅ 已发布 |
+| 1.4 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/01_gfsk_basics/01.04_chapter_test.ipynb) | ✅ 已发布 |
 
 ## 星闪通信链路仿真（中级）
 
 ### 第二章：Polar 编码与性能对比
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 2.1 章节介绍 | - | ✅ 已发布 |
-| 2.2 信道编码与 Polar 码原理 | - | ✅ 已发布 |
-| 2.3 无编码 BPSK BER 扫描 | - | ✅ 已发布 |
-| 2.4 Polar 编码性能对比与分析 | - | ✅ 已发布 |
-| 2.5 章节实践 | - | ✅ 已发布 |
+| --- | --- | --- |
+| 2.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/02_polar_coding/02.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 2.2 信道编码与 Polar 码原理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/02_polar_coding/02.02_polar_theory.ipynb) | ✅ 已发布 |
+| 2.3 无编码 BPSK BER 扫描 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/02_polar_coding/02.03_uncoded_bpsk.ipynb) | ✅ 已发布 |
+| 2.4 Polar 编码性能对比与分析 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/02_polar_coding/02.04_polar_compare.ipynb) | ✅ 已发布 |
+| 2.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/02_polar_coding/02.05_chapter_test.ipynb) | ✅ 已发布 |
 
 ### 第三章：MAC 帧类型传输
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 3.1 章节介绍 | - | ✅ 已发布 |
-| 3.2 MAC 帧结构与适配原理 | - | ✅ 已发布 |
-| 3.3 MAC 帧类型传输演示 | - | ✅ 已发布 |
-| 3.4 MAC 帧 FER 扫描与吞吐量分析 | - | ✅ 已发布 |
-| 3.5 章节实践 | - | ✅ 已发布 |
-
+| --- | --- | --- |
+| 3.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/03_mac_frames/03.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 3.2 MAC 帧结构与适配原理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/03_mac_frames/03.02_mac_theory.ipynb) | ✅ 已发布 |
+| 3.3 MAC 帧类型传输演示 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/03_mac_frames/03.03_frame.ipynb) | ✅ 已发布 |
+| 3.4 MAC 帧 FER 扫描与吞吐量分析 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/03_mac_frames/03.04_fer_scan.ipynb) | ✅ 已发布 |
+| 3.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/03_mac_frames/03.05_chapter_test.ipynb) | ✅ 已发布 |
 
 ## 星闪通信链路仿真（高级）
 
 ### 第四章：HARQ 重传、AMC 自适应与流控
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 4.1 章节介绍 | - | ✅ 已发布 |
-| 4.2 HARQ、AMC 与流控原理 | - | ✅ 已发布 |
-| 4.3 HARQ 重传仿真 | - | ✅ 已发布 |
-| 4.4 AMC 跟踪与 QoS 流控 | - | ✅ 已发布 |
-| 4.5 章节实践 | - | ✅ 已发布 |
+| --- | --- | --- |
+| 4.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/04_link_reliability/04.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 4.2 HARQ、AMC 与流控原理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/04_link_reliability/04.02_reliability_theory.ipynb) | ✅ 已发布 |
+| 4.3 HARQ 重传仿真 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/04_link_reliability/04.03_harq.ipynb) | ✅ 已发布 |
+| 4.4 AMC 跟踪与 QoS 流控 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/04_link_reliability/04.04_amc_and_qos_flow.ipynb) | ✅ 已发布 |
+| 4.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/04_link_reliability/04.05_chapter_test.ipynb) | ✅ 已发布 |
 
 ### 第五章：跳频抗干扰、接入与功率控制
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 5.1 章节介绍 | - | ✅ 已发布 |
-| 5.2 跳频、接入与功率控制原理 | - | ✅ 已发布 |
-| 5.3 跳频分集仿真 | - | ✅ 已发布 |
-| 5.4 接入建链仿真 | - | ✅ 已发布 |
-| 5.5 功率自适应仿真 | - | ✅ 已发布 |
-| 5.6 章节实践 | - | ✅ 已发布 |
+| --- | --- | --- |
+| 5.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/05_advanced_features/05.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 5.2 跳频、接入与功率控制原理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/05_advanced_features/05.02_advanced_theory.ipynb) | ✅ 已发布 |
+| 5.3 跳频分集仿真 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/05_advanced_features/05.03_hopping.ipynb) | ✅ 已发布 |
+| 5.4 接入建链仿真 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/05_advanced_features/05.04_access.ipynb) | ✅ 已发布 |
+| 5.5 功率自适应仿真 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/05_advanced_features/05.05_power_adapt.ipynb) | ✅ 已发布 |
+| 5.6 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/05_advanced_features/05.06_chapter_test.ipynb) | ✅ 已发布 |
 
 ### 第六章：SleNode 双节点端到端通信
 
 | Notebook | Link | 状态 |
-| -- | -- | -- |
-| 6.1 章节介绍 | - | ✅ 已发布 |
-| 6.2 双节点基础 FER/BER 扫描 | - | ✅ 已发布 |
-| 6.3 安全通信仿真 | - | ✅ 已发布 |
-| 6.4 MCS 自适应跟踪 | - | ✅ 已发布 |
-| 6.5 章节实践 | - | ✅ 已发布 |
+| --- | --- | --- |
+| 6.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/06_dual_node/06.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 6.2 双节点基础 FER/BER 扫描 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/06_dual_node/06.02_dual_node_fer.ipynb) | ✅ 已发布 |
+| 6.3 安全通信仿真 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/06_dual_node/06.03_secure_link.ipynb) | ✅ 已发布 |
+| 6.4 MCS 自适应跟踪 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/06_dual_node/06.04_mcs_adapt.ipynb) | ✅ 已发布 |
+| 6.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/nearlink_sdr_sim&scanFilePath=contrib/tutorials/nearlink_sdr_sim/06_dual_node/06.05_chapter_test.ipynb) | ✅ 已发布 |
