@@ -292,7 +292,7 @@
 <tr><th width="16%">技术领域</th><th width="28%">初级课程</th><th width="28%">中级课程</th><th width="28%">高级课程</th></tr>
 <tr>
 <td><b>⚙️ 算子开发</b></td>
-<td><a href="./tutorials/ascendc_operator_development_light">Kernel 直调版</a> · d2l PyPTO 实战 🚧 · PyASC 入门 🚧<br/><sub>算子基础概念、编程范式、PyPTO Tensor 编程、PyASC 函数开发</sub></td>
+<td><a href="./tutorials/ascendc_operator_development_light">Kernel 直调版</a> · <a href="./tutorials/pyasc_operator_development">PyASC 入门</a> · <a href="./tutorials/pypto_development">PyPTO 入门</a><br/><sub>算子基础概念、编程范式、PyASC 函数开发、PyPTO Tensor 编程</sub></td>
 <td><a href="./tutorials/ascendc_operator_development">算子工程版</a> · Conv 算子实战 🚧 · Vector 算子实战 🚧<br/><sub>Vector/Cube/融合算子开发、工程化流程、卷积与矢量算子实战</sub></td>
 <td><a href="./tutorials/MC2_fused_operator_development">MC2 融合算子实战</a> · AscendC V2 高阶 🚧 · MoE/FA 算子实战 🚧<br/><sub>Matmul/Conv/通算融合、aclnn/aclGraph 工程化</sub></td>
 </tr>
@@ -566,7 +566,9 @@
 │   ├── hccl_development                   # HCCL 集合通信系列课程
 │   ├── hixl_development                   # HiXL 单边通信应用开发
 │   ├── CANNBot                            # CANNBot 算子生成相关课程
-│   └── ...                                # 待扩展（PyPTO / TileLang 等）
+│   ├── pyasc_operator_development         # PyASC 算子开发（Python 原生语法）
+│   ├── pypto_development                  # PyPTO 算子开发（Tensor 编程范式）
+│   └── ...                                # 待扩展（TileLang 等）
 ├── reference_practice                 # 参考实践
 │   ├── model_inference_optimization   # 模型推理优化
 │   │   └── sana_video                # Sana-Video 推理优化
@@ -652,8 +654,9 @@
 </details>
 
 ## 🔥 Latest News
-
-* [2026/09] 新增[面向高性能计算的数据结构](./contrib/tutorials/data_structure_for_hpc)课程，围绕数据结构与高性能计算实践，涵盖并行计算、分布式计算、Ascend C 算子开发与性能优化等内容。
+- [2026/09] 新增[面向高性能计算的数据结构](./contrib/tutorials/data_structure_for_hpc)课程，围绕数据结构与高性能计算实践，涵盖并行计算、分布式计算、Ascend C 算子开发与性能优化等内容。
+- [2026/08] 新增[PyPTO 算子开发系列教程](./tutorials/pypto_development)，基于 PyPTO Tensor 编程范式开发昇腾算子，涵盖 CANN/芯片认知、MPMD 编程范式、elementwise/matmul/reduction 基础实践与 Attention/Transformer 中高级实践。
+- [2026/08] 新增[PyASC 算子开发系列教程](./tutorials/pyasc_operator_development)，基于 Python 原生语法开发昇腾算子，涵盖 pyasc 概述与环境准备、核函数开发基础，Vector/Matmul 算子开发与调试调优（初阶已上线）。
 - [2026/08] 新增[CANNBot 系列课程](./tutorials/CANNBot/README.md)，围绕 CANNBot 算子开发工具，系统介绍如何使用 CANNBot 生成与优化 Ascend 算子，覆盖 Ascend C / PyPTO / TileLang-Ascend 等开发路径及算子测试全流程。
 - [2026/08] 新增[TorchAir图模式优化系列教程](./tutorials/TorchAir_development)，涵盖 TorchAir 基础概念、PyTorch 模型图转换、昇腾 NPU 图模式执行与性能优化实践，帮助开发者掌握基于 TorchAir 的模型开发与优化流程。
 - [2026/08] 新增[GE 图引擎开发系列教程](./tutorials/ge_development)，涵盖 GE 基础概念、图构建与编译、模型执行与优化、扩展开发及问题定位。
