@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260">
+<rect x="20" y="90" width="150" height="80" rx="10" fill="#2E86AB"/><text x="95" y="135" fill="#fff" font-size="22" text-anchor="middle">数据增强</text>
+<rect x="200" y="90" width="160" height="80" rx="10" fill="#E67E22"/><text x="280" y="135" fill="#fff" font-size="20" text-anchor="middle">前向 + 反向</text>
+<rect x="390" y="90" width="150" height="80" rx="10" fill="#27AE60"/><text x="465" y="135" fill="#fff" font-size="22" text-anchor="middle">优化器更新</text>
+<rect x="570" y="90" width="160" height="80" rx="10" fill="#8E44AD"/><text x="650" y="135" fill="#fff" font-size="20" text-anchor="middle">验证 + 保存</text>
+<rect x="760" y="90" width="120" height="80" rx="10" fill="#1F4E79"/><text x="820" y="135" fill="#fff" font-size="20" text-anchor="middle">评估</text>
+<line x1="170" y1="130" x2="200" y2="130" stroke="#1F4E79" stroke-width="4"/>
+<line x1="360" y1="130" x2="390" y2="130" stroke="#1F4E79" stroke-width="4"/>
+<line x1="540" y1="130" x2="570" y2="130" stroke="#1F4E79" stroke-width="4"/>
+<line x1="730" y1="130" x2="760" y2="130" stroke="#1F4E79" stroke-width="4"/>
+<text x="450" y="45" fill="#1F4E79" font-size="26" text-anchor="middle" font-weight="bold">训练 Pipeline 总览</text>
+</svg>

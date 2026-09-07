@@ -1,0 +1,74 @@
+project:
+  name: yolo_single_npu_ascend_voc
+  output_dir: runs/yolo_single_npu_voc
+
+data:
+  root: /mnt/workspace/datasets/voc
+  train_images: images
+  train_labels: labels
+  train_list: splits/train.txt
+  val_images: images
+  val_labels: labels
+  val_list: splits/val.txt
+  class_names:
+    - aeroplane
+    - bicycle
+    - bird
+    - boat
+    - bottle
+    - bus
+    - car
+    - cat
+    - chair
+    - cow
+    - diningtable
+    - dog
+    - horse
+    - motorbike
+    - person
+    - pottedplant
+    - sheep
+    - sofa
+    - train
+    - tvmonitor
+  image_size: 640
+
+model:
+  num_classes: 20
+  grid_size: 20
+  anchors:
+    - [12, 16]
+    - [19, 36]
+    - [40, 28]
+    - [36, 75]
+    - [76, 55]
+    - [72, 146]
+
+train:
+  epochs: 20
+  batch_size: 16
+  workers: 8
+  learning_rate: 0.01
+  min_learning_rate: 0.0001
+  momentum: 0.937
+  weight_decay: 0.0005
+  warmup_epochs: 3
+  warmup_bias_lr: 0.1
+  label_smoothing: 0.0
+  amp: true
+  gradient_accumulation: 1
+  log_interval: 20
+  save_interval: 5
+  resume: ""
+  synthetic_when_missing: false
+
+distributed:
+  backend: hccl
+  init_method: env://
+  sync_batchnorm: true
+  find_unused_parameters: false
+
+profile:
+  enabled: false
+  warmup_steps: 10
+  active_steps: 20

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="240" viewBox="0 0 900 240">
+<rect x="50" y="70" width="180" height="90" rx="10" fill="#2E86AB"/><text x="140" y="120" fill="#fff" font-size="22" text-anchor="middle">W0（冻结）</text>
+<rect x="350" y="70" width="180" height="90" rx="10" fill="#E67E22"/><text x="440" y="120" fill="#fff" font-size="22" text-anchor="middle">B × A（训练）</text>
+<text x="500" y="45" fill="#1F4E79" font-size="26" text-anchor="middle" font-weight="bold">h = W0x + BAx</text>
+<line x1="230" y1="115" x2="350" y2="115" stroke="#1F4E79" stroke-width="4"/>
+</svg>

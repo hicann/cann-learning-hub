@@ -1,0 +1,12 @@
+# Python dependencies for the YOLO Edge TBE Ascend notebooks.
+# CANN Toolkit, PyACL, atc, opc, msopgen and msprof are provided by Ascend CANN
+# and must be installed separately on the development board.
+
+numpy>=1.21,<2.0
+Pillow>=9.0
+PyYAML>=6.0
+opencv-python-headless>=4.5
+matplotlib>=3.5
+tabulate>=0.9
+protobuf==3.20.0
+onnx>=1.12,<1.17

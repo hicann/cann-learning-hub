@@ -1,0 +1,51 @@
+project:
+  name: yolo_edge_tbe_ascend
+  output_dir: outputs/yolo_edge
+
+device:
+  board_name: Atlas 200I DK
+  chip: Ascend 310B4
+  device_id: 0
+  acl_json: ""
+
+
+data:
+  dataset_name: COCO80 sample images
+  sample_image: src/data/images/bus.jpg
+  image_dir: src/data/images
+  class_names: src/data/coco80.names
+  source_note: YOLOv5s is pretrained on COCO 80 classes; this edge deployment lab only needs a few validation-style images for inference and profiling.
+
+model:
+  onnx_path: models/yolov5s.onnx
+  om_path: models/yolov5s_310b4.om
+  input_name: images
+  input_shape: [1, 3, 640, 640]
+  output_shape: [1, 25200, 85]
+  input_format: NCHW
+  precision_mode: allow_mix_precision
+  soc_version: Ascend310B4
+
+preprocess:
+  image_size: 640
+  mean: [0.0, 0.0, 0.0]
+  std: [255.0, 255.0, 255.0]
+  keep_ratio: true
+
+postprocess:
+  num_classes: 80
+  score_threshold: 0.25
+  nms_iou_threshold: 0.45
+  max_detections: 300
+  class_agnostic: false
+
+benchmark:
+  warmup: 20
+  repeat: 100
+  random_seed: 2026
+
+custom_op:
+  enabled: false
+  backend: ascendc
+  op_name: YoloNmsCustom
+  so_path: build/libyolo_nms_custom.so
