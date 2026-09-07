@@ -1,0 +1,7 @@
+1  consec_fails += 1
+2  consec_fails >= threshold
+3  tx_power = min(tx_power + power_step, max_power)
+4  补全说明：
+5    第1行：失败时连续失败计数器 +1，记录连续失败次数；
+6    第2行：当连续失败达到阈值（3次）时触发升功率；
+7    第3行：升功率一个步长（2 dB），并用 min() 钳位在硬件上限 15 dBm 以内。

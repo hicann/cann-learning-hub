@@ -1,0 +1,7 @@
+1  frame_errors += 1
+2  byte_errors += sum(a != b for a, b in zip(payload, rx.data))
+3  byte_ber = byte_errors / max(total_bytes, 1)
+4  补全说明：
+5    第1行：帧失败时 frame_errors 计数 +1，用于计算 FER = frame_errors / n_frames；
+6    第2行：逐字节比对原始 payload 与 rx.data，统计实际出错的字节数——帧出错不代表所有字节都错；
+7    第3行：Byte BER = 错误字节数 / 总传输字节数，比 FER 更精细地反映链路质量。

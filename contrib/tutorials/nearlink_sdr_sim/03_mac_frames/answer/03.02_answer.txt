@@ -1,0 +1,5 @@
+1. D  广播帧不属于星闪 SLE 的三种 MAC 帧类型
+2. B  mac_to_iq 将 MAC 字节流转换为 IQ 信号
+3. C  CRC 校验通过 = 余数为 0
+4. C  复用帧载荷最大，单帧出错概率最高
+5. D  MCS=7 对应 QPSK 码率 7/8，SE = 1.75 bit/symbol

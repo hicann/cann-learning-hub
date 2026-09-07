@@ -1,0 +1,5 @@
+1  result = sim_mac_data_link(payload_sizes=[10], snr_range_db=snr_range, n_frames=50, mcs_index=mcs)
+2  fer = result["results"][10]["fer"]
+3  补全说明：
+4    第1行：对当前 MCS 等级扫描数据帧 FER，payload 固定为 10 字节，每 SNR 发 50 帧；
+5    第2行：从返回结果中提取 10 字节载荷对应的 FER 列表。

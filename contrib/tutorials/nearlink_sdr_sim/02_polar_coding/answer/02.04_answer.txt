@@ -1,0 +1,7 @@
+1  coded = enc.encode(info)
+2  noise_var = 1.0 / (2.0 * R_val * snr_lin)
+3  decoded = dec.decode(llr)
+4  补全说明：
+5    第1行：将 K 个信息比特通过 Polar 蝶形编码生成 N 位码字；
+6    第2行：码率补偿的噪声方差，R_val=K/N 将总能量按信息比特归一化，不加补偿会低估噪声导致 BER 偏小；
+7    第3行：SC 译码器对 N 个信道 LLR 逐比特判决，输出 K 个恢复比特。

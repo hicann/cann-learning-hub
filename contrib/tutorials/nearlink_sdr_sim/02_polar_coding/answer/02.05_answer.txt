@@ -1,0 +1,5 @@
+1  noise_var = 1.0 / (2.0 * R_val * snr_linear)
+2  coding_gain = snr_uncoded_1e3 - snr_polar_1e3
+3  补全说明：
+4    第1行：码率补偿的噪声方差——R_val=K/N 将总能量按信息比特归一化，不加码率补偿会低估噪声导致 BER 偏小；
+5    第2行：编码增益 = 同 BER 下无编码所需 SNR - 有编码所需 SNR，正值表示编码改善了链路性能。

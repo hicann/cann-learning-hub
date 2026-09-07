@@ -1,0 +1,9 @@
+1  h_hop = ch.get_channel_taps(code_n)[0, :]
+2  tracker.record(rx.crc_ok)
+3  tracker.apply_suggestion()
+4  mcs_idx = tracker.current_mcs
+5  补全说明：
+6    第1行：每帧生成独立的 Rayleigh 信道系数 h，模拟跳频分集；
+7    第2行：将本帧 CRC 结果写入 LinkQualityTracker 的滑动窗口；
+8    第3行：根据窗口 FER 决策并应用 MCS 调整（FER<1% 升，>10% 降）；
+9    第4行：读取调整后的 MCS 等级，下一帧用新 MCS 重建 TxConfig。

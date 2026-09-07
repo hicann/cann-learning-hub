@@ -1,0 +1,9 @@
+1  nrz = 2.0 * tx_bits.astype(float) - 1.0
+2  tx_signal = np.exp(1j * phase)
+3  phase_diff = np.angle(rx_signal[1:] * np.conj(rx_signal[:-1]))
+4  rx_bits[i] = 1 if np.sum(segment) > 0 else 0
+5  补全说明：
+6    第1行：NRZ 映射，比特 0→-1、1→+1；
+7    第2行：将积分相位通过复指数映射为恒包络 IQ 信号；
+8    第3行：频率鉴别器核心——相邻采样点共轭相乘取相位差，提取瞬时频率信息；
+9    第4行：符号判决——累加 sps 个相位差，和>0 判为比特1（高频），≤0判为比特0（低频）。

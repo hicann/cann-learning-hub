@@ -1,0 +1,7 @@
+1  h_hop = ch.get_channel_taps(code_n)[0, :]
+2  rx = tx * h_fixed + n
+3  llr = 4 * np.real(rx * np.conj(h_fixed)) * snr_lin
+4  补全说明：
+5    第1行：跳频每帧生成独立的信道系数 h，模拟"跳到一个新频率、遇到新多径环境"的效果；
+6    第2行：固定信道所有帧使用同一个 h_fixed，计算接收信号 r = h·s + n；
+7    第3行：MMSE 单抽头均衡后计算 LLR，h_fixed 已知（信道估计完美），公式 LLR = 4·Re(rx·h*)·SNR。

@@ -1,0 +1,8 @@
+1  frame = AsyncDataFrame(segment_type=0, data=payload)
+2  mac_bytes = frame.pack()
+3  payload_w = encode_payload(data_bits, cfg)
+4  symbols = frame_to_symbols(fields, frame_cfg)
+5  补全说明：
+6    第 1-2 行：创建异步数据帧并序列化为 MAC 字节流，pack() 将帧头+载荷+CRC 打包为字节序列；
+7    第 3 行：对载荷数据比特进行 Polar 编码（含 CRC 添加+速率匹配+编码）；
+8    第 4 行：将组装好的帧字段映射为 QPSK 调制符号（每组 2 比特 → 1 个复数符号 + 导频插入）。

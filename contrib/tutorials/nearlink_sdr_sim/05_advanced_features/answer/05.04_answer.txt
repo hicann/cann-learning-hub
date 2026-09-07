@@ -1,0 +1,7 @@
+1  g.accept_connection(t_addr, Role.G_NODE)
+2  noisy_iq = ch.apply_awgn(tx.iq, g._tx_config.sps)
+3  if rx.success and rx.data == payload:
+4  补全说明：
+5    第1行：G 节点接受 T 的连接请求，分配 G_NODE 角色，触发调度器注册和状态迁移到 CONNECTED；
+6    第2行：将 IQ 信号通过 AWGN 信道加噪，sps 参数补偿上采样引入的功率摊薄；
+7    第3行：判断数据往返成功——CRC 校验通过且接收数据与发送数据完全一致。

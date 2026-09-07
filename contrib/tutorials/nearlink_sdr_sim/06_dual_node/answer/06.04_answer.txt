@@ -1,0 +1,7 @@
+1  g_node.process_feedback(success)
+2  suggested = g_node.recommended_mcs
+3  g_node.update_mcs(suggested)
+4  补全说明：
+5    第1行：将本帧 CRC 结果传入 LinkQualityTracker，record() 写入滑动窗口；
+6    第2行：读取 recommend_mcs 属性——内部调 suggest_mcs_adjustment() 根据窗口 FER 返回新 MCS；
+7    第3行：应用新 MCS，重建 TxConfig（调制/码率/导频全部更新）。
