@@ -1,0 +1,32 @@
+# PyAsc 开发环境依赖
+# CANN 社区 JupyterLab 已预装 CANN 工具链、Python 3.9+、JupyterLab
+# 以下为 PyAsc 教程额外需要的包
+
+# PyAsc 编译框架（核心）
+pyasc>=1.1.0
+
+# 结果校验
+torch>=2.0.0
+
+# 运行时依赖
+numpy>=1.24.4,<1.26.4
+scipy>=1.13.0
+attrs>=24.0
+decorator>=5.0
+psutil>=6.0
+pyyaml>=6.0
+importlib-metadata>=8.0
+
+# 测试工具
+pytest>=8.0
+pytest-xdist>=3.6
+lit>=18.0
+
+# 构建依赖（仅源码开发时需要）
+# cmake>=3.20
+# ninja>=1.11
+# pybind11==2.13.1
+# setuptools>=71
+# setuptools-scm>=8,<9
+# typing_extensions>=4.0
+# wheel
