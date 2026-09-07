@@ -51,21 +51,21 @@ CANNLab 环境创建与使用方法请参考 [CANNLab 环境体验指南](https:
 
 | Notebook | Link | 状态 |
 | -- | -- | -- |
-| 01 毕昇编译器优化验证 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/01_bisheng_compiler_optimization/01_bisheng_compiler_optimization.ipynb) | 🚧 待内测 |
+| 01 毕昇编译器优化验证 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/01_bisheng_compiler_optimization/01_bisheng_compiler_optimization.ipynb) | ✅ 已发布|
 
 ### 第二章：PyAsc Python 前端
 
 | Notebook | Link | 状态 |
 | -- | -- | -- |
-| 02 PyAsc 简单算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/02_pyasc_simple_operator/02_pyasc_simple_operator.ipynb) | 🚧 待内测 |
-| 03 Python↔C 前端映射 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/03_python_c_mapping/03_python_c_mapping.ipynb) | 🚧 待内测 |
+| 02 PyAsc 简单算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/02_pyasc_simple_operator/02_pyasc_simple_operator.ipynb) | ✅ 已发布|
+| 03 Python↔C 前端映射 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/03_python_c_mapping/03_python_c_mapping.ipynb) | ✅ 已发布|
 
 ### 第三章：MLIR 与代码生成
 
 | Notebook | Link | 状态 |
 | -- | -- | -- |
-| 04 MLIR 定义 ASC-IR | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/04_mlir_asc_ir/04_mlir_asc_ir.ipynb) | 🚧 待内测 |
-| 05 ASC-IR→AscendC 代码生成 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/05_ascir_to_ascendc/05_ascir_to_ascendc.ipynb) | 🚧 待内测 |
+| 04 MLIR 定义 ASC-IR | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/04_mlir_asc_ir/04_mlir_asc_ir.ipynb) | ✅ 已发布|
+| 05 ASC-IR→AscendC 代码生成 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/pyasc_compiler_development&scanFilePath=contrib/tutorials/pyasc_compiler_development/05_ascir_to_ascendc/05_ascir_to_ascendc.ipynb) | ✅ 已发布|
 
 ## 参考资料
 
