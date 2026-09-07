@@ -1,0 +1,34 @@
+练习 1 答案：B
+解析：OpenCV 读取图片时通道顺序是 BGR（蓝-绿-红），而 Matplotlib 的 imshow
+默认按 RGB（红-绿-蓝）解释通道。两者顺序不同导致红色和蓝色互换。解决方法是用
+cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 转换后再显示。A/C/D 都不对。
+
+练习 2 答案：
+- OpenCV 绘图坐标格式：(x, y) 即 (列, 行)
+- NumPy 数组索引格式：[y, x] 即 [行, 列]
+两者顺序相反，这是初学者最常踩的坑，务必牢记。
+
+练习 3 答案（代码）：
+
+    import numpy as np
+    import cv2
+    import matplotlib.pyplot as plt
+
+    # 用 NumPy 构造一张 200x200 浅灰图
+    img = np.full((200, 200, 3), 230, dtype=np.uint8)
+
+    # 中央画红色实心圆：圆心(100,100)，半径30，颜色 BGR(0,0,255)=红，-1实心
+    cv2.circle(img, (100, 100), 30, (0, 0, 255), -1)
+
+    # 圆下方写文字 "Center"：位置(70, 155)
+    cv2.putText(img, "Center", (70, 155), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 200), 2)
+
+    # 转 RGB 显示
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+    plt.show()
+
+解析：
+- 圆心 (100,100) 是 (x,y) 格式，对应图片正中央（200x200 图的中心）
+- 颜色 (0,0,255) 是 BGR 中的红色（R=255 在最后）
+- 文字位置 (70,155) 的 y=155 在圆心下方，确保文字不与圆重叠

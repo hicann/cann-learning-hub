@@ -1,0 +1,20 @@
+练习 1 答案：B
+解析：OCR (Optical Character Recognition，光学字符识别) 的作用是从图片中提取文字。
+A 是文字渲染（与 OCR 相反）；C 是翻译；D 是图像压缩。
+
+练习 2 答案：
+- 调用华为云 OCR API 时，图片需要先 Base64 编码（base64.b64encode）后传入请求
+- 返回结果中，words_result 字段存放识别出的文字行列表
+（每行包含 words 文字内容和 location 位置坐标）
+
+练习 3 答案（代码）：
+
+    result = ocr_general_text("ocr_test.png")
+    total_chars = 0
+    for item in result.words_result:
+        total_chars += len(item.words)
+    print(f"识别到 {len(result.words_result)} 行文字")
+    print(f"总字符数: {total_chars}")
+
+解析：words_result 是列表，每个元素代表一行，item.words 是该行文字。
+累加所有行 words 的长度即为总字符数。

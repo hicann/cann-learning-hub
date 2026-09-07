@@ -1,0 +1,39 @@
+综合实践题 1 参考答案：用预训练模型对自定义数据推理
+
+# ===== 完整可运行版本 =====
+import zipfile, torch, numpy as np, os
+
+# Step 1: 解压预训练模型（如果尚未解压）
+if not os.path.exists('./pretrained_model') and os.path.exists('pretrained_model.zip'):
+    with zipfile.ZipFile('pretrained_model.zip', 'r') as z:
+        z.extractall('./pretrained_model')
+    print("✅ 预训练模型已解压")
+
+# Step 2: 加载预训练模型
+from lerobot.common.policies.act.modeling_act import ACTPolicy
+policy = ACTPolicy.from_pretrained('./pretrained_model')
+policy.eval()
+policy.to('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"✅ 模型加载完成，设备: {next(policy.parameters()).device}")
+
+# Step 3: 取 5 个 episode 的首帧推理
+# 注意：实际 episode 边界需从 dataset.meta.episode_index 获取，这里用估算
+episode_len = len(dataset) // dataset.meta.total_episodes
+print(f"每个 episode 约 {episode_len} 帧，共 {dataset.meta.total_episodes} episodes\n")
+
+for ep_id in range(5):
+    frame_idx = ep_id * episode_len
+    if frame_idx >= len(dataset): break
+    sample = dataset[frame_idx]
+    batch = {k: v.unsqueeze(0).to(policy.device) for k, v in sample.items() if hasattr(v, 'unsqueeze')}
+    with torch.no_grad():
+        pred = policy.select_action(batch)
+    pred_arr = pred.cpu().numpy().flatten()[:6]
+    print(f"Episode {ep_id} 起始帧{frame_idx}:")
+    print(f"  预测动作 = {pred_arr}")
+
+# 思考题答案：
+# 同一个任务的不同起点，预测动作不同，因为：
+# 1. 每个起点观察到的摄像头画面不同（方块位置、机械臂姿态不同）；
+# 2. ACT 是条件策略 π(action|observation)，观察不同 → 输出动作不同；
+# 3. 模型学到了"根据当前观察生成相应动作"的映射，而非固定动作序列。

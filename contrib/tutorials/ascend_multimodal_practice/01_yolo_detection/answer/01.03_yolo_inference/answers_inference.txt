@@ -1,0 +1,35 @@
+练习 1 答案：B
+解析：boxes.conf 返回的是置信度（confidence），范围 0-1，表示模型对该检测
+结果的把握程度。0.85 表示模型有 85% 的把握认为这里确实有这个物体。A 错
+（1-0.85=0.15 才是出错概率）；C/D 错（conf 与面积、位置无关）。
+
+练习 2 答案：
+- result.plot() 返回 BGR 格式
+- matplotlib 显示前需要转成 RGB 格式
+转换方法：cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 或 NumPy 写法 img[:,:,::-1]
+
+练习 3 答案（代码）：
+
+    from ultralytics import YOLO
+    import matplotlib.pyplot as plt
+
+    model = YOLO("yolov10n.pt")
+    results = model(source="./images/sample_wangzai.png", conf=0.1, verbose=False)
+    res = results[0]
+
+    # 只打印置信度 > 0.5 的目标
+    for box in res.boxes:
+        conf = box.conf[0].item()
+        if conf > 0.5:
+            cls = int(box.cls[0].item())
+            name = res.names[cls]
+            print(f"类别={name}, 置信度={conf:.3f}")
+
+    # 可视化全部结果
+    plt.figure(figsize=(10, 8))
+    plt.imshow(res.plot()[:, :, ::-1])
+    plt.axis('off')
+    plt.show()
+
+解析：注意推理时 conf 要设得低一点（如 0.1），让模型尽量多检测，然后在代码里
+用 if conf > 0.5 手动过滤。这样灵活性更高，不必反复推理。

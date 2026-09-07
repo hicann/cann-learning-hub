@@ -1,0 +1,27 @@
+综合实践题 3 参考答案：概念题
+
+题 1 (ASR)：
+ASR = Automatic Speech Recognition（自动语音识别）。
+作用：将语音信号（音频）转换为文本。
+华为云 SIS 对应 API：一句话识别（SASR / AsrCustomizationClient.get_short_response）
+和实时语音识别（RASR）。本课程用的是 SASR。
+
+题 2 (TTS)：
+TTS = Text-to-Speech（文本转语音 / 语音合成）。
+作用：将文本转换为自然语音音频。
+华为云 SIS 对应 API：语音合成（TtsCustomizationClient.get_ttsc_response）。
+本课程封装成了 tts_synthesize 函数。
+
+题 3 (声音复刻三步骤)：
+Step 1 注册音色：上传参考音频（≥5 秒，≥16kHz，内容清晰），调用
+       VcsClient.register_voice()，得到 voice_name。
+Step 2 查询确认：等待异步处理完成（几秒到几十秒），可调用查询接口确认状态。
+Step 3 使用音色合成：用 VcsStreamClient + 注册的 voice_name 进行流式语音合成，
+       合成出的语音带参考音频的音色。支持 ONLY（单段）和 MULTI（连续多段）模式。
+
+题 4 (采样率/位深)：
+- 采样率（Sample Rate）：每秒采样次数，影响音频的【频率范围/音质细节】。
+  采样率越高，能还原的声音频率范围越广（如 16kHz 够语音，44.1kHz 才能还原音乐）。
+- 位深（Bit Depth）：每个采样点用多少 bit 存储，影响音频的【动态范围/振幅精度】。
+  位深越大，能记录的声音强弱差异越细腻（16bit 约 6.5 万级，8bit 仅 256 级）。
+华为云 SIS 要求 16kHz + 16bit，这是电话级音质，平衡了识别准确率和数据量。

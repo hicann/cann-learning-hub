@@ -1,0 +1,23 @@
+练习 1 答案：B
+解析：system 角色用于定义 AI 的人设和行为规则，例如"你是一个友好的助手"、
+"用简洁的中文回答"。它会影响后续所有对话的风格。user 角色才是存储用户输入。
+
+练习 2 答案：
+工具调用（Function Calling）工作流程：
+- 用户提问 → LLM 判断是否需要工具 → 生成工具调用参数（含函数名和参数值）
+  → 执行工具（本地代码运行）→ 把工具结果返回给 LLM → LLM 总结成自然语言最终回复
+
+练习 3 答案（代码）：翻译 Agent
+
+    def translate_agent(user_input, target_lang='English'):
+        messages = [
+            {"role": "system", "content": f"你是翻译助手，把用户输入翻译成{target_lang}，只输出译文。"},
+            {"role": "user", "content": user_input}
+        ]
+        return chat_with_llm(messages, temperature=0.3)
+
+    print(translate_agent("今天天气真好"))            # 默认译英文
+    print(translate_agent("今天天气真好", "日语"))     # 译日语
+
+解析：翻译本质就是 LLM 的能力，这里"工具调用"其实是让 LLM 扮演翻译器。
+temperature 调低（0.3）让翻译更稳定准确，不发散。

@@ -1,0 +1,55 @@
+综合实践题 1 参考答案：语音 + OCR 智能助手
+
+# ===== 完整可运行版本（需本地麦克风+摄像头）=====
+import speech_recognition as sr
+import cv2
+from IPython.display import Audio, display
+
+def voice_ocr_assistant():
+    r = sr.Recognizer()
+    mic = sr.Microphone()
+    with mic as source:
+        r.adjust_for_ambient_noise(source, duration=1)
+    print("助手已启动：说'拍照'拍照识别，说'退出'结束")
+
+    while True:
+        with mic as source:
+            print("\n请说话...")
+            audio = r.listen(source, phrase_time_limit=3)
+
+        # 录音存盘 → ASR
+        with open("temp.wav", "wb") as f:
+            f.write(audio.get_wav_data(convert_rate=16000, convert_width=2))
+        command = str(recognize_audio("temp.wav"))
+        print(f"听到: {command}")
+
+        if "拍照" in command:
+            # Step 1: 拍照
+            cap = cv2.VideoCapture(0)
+            ret, frame = cap.read()
+            cap.release()
+            if ret:
+                cv2.imwrite("capture.jpg", frame)
+                print("✅ 已拍照")
+                # Step 2: OCR
+                try:
+                    result = ocr_general_text("capture.jpg")
+                    text = " ".join([w.words for w in result.words_result]) or "没识别到文字"
+                    print(f"识别到: {text}")
+                    # Step 3: TTS 播报
+                    tts_synthesize(text, "./speak.wav")
+                    display(Audio("./speak.wav"))
+                except Exception as e:
+                    print(f"OCR 失败: {e}")
+        elif "退出" in command:
+            print("再见！")
+            break
+
+voice_ocr_assistant()
+
+# 关键点：
+# - while True 循环持续监听
+# - ASR 把语音转文字，再用 in 判断关键词
+# - "拍照" → cv2 拍照 → OCR → TTS → 播放
+# - "退出" → break 结束循环
+# - 这是 ASR + OCR + TTS 三能力综合应用的典型场景

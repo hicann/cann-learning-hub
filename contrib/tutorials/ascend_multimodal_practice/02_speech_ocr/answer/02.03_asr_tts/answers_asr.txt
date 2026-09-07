@@ -1,0 +1,21 @@
+练习 1 答案：B
+解析：ASR (Automatic Speech Recognition，自动语音识别) 把音频转成文字。
+A 是 TTS；C 是翻译；D 与音频识别无关。
+
+练习 2 答案：
+- 一句话识别(SASR)支持的最大音频时长：60 秒
+- 调用时第 4 个必填参数是 project_id（项目ID，从华为云"我的凭证"页面获取）
+（AsrCustomizationClient 的签名是 ak, sk, region, project_id, ...）
+
+练习 3 答案（代码）：
+英文识别时 language 改为 english_16k_general：
+
+    result = sasr_recognize(
+        audio_path="./english.wav",
+        language='english_16k_general'   # 改成英文模型
+    )
+
+注意：
+- AsrCustomShortRequest 构造是 3 个位置参数 (audio_format, language, data)
+- 英文音频同样需要 16k16bit wav 格式
+- language 参数对应 SDK 文档里的 model_property 字段

@@ -1,0 +1,89 @@
+综合实践题 1 参考答案：Python 编程助手微调
+
+# ===== 完整可运行版本 =====
+import torch
+import torch_npu  # noqa: F401  让 PyTorch 识别昇腾 NPU
+from datasets import Dataset
+from transformers import (AutoTokenizer, AutoModelForCausalLM,
+                          DataCollatorForSeq2Seq, TrainingArguments, Trainer)
+from peft import LoraConfig, TaskType, get_peft_model
+
+# Step 1: 构造至少 5 条编程问答数据
+my_data = [
+    {"instruction": "如何反转一个列表？", "input": "", "output": "可以使用切片 list[::-1]，或者 list.reverse() 方法（原地修改）。"},
+    {"instruction": "如何读取一个文本文件？", "input": "", "output": "使用 with open('file.txt', 'r', encoding='utf-8') as f: content = f.read()。"},
+    {"instruction": "Python 中如何定义一个函数？", "input": "", "output": "用 def 关键字：def func_name(args): 然后缩进写函数体。"},
+    {"instruction": "如何把字符串按逗号分割成列表？", "input": "", "output": "使用 s.split(',')，例如 'a,b,c'.split(',') 得到 ['a','b','c']。"},
+    {"instruction": "如何获取字典的所有键？", "input": "", "output": "使用 dict.keys()，例如 {'a':1}.keys() 得到 dict_keys(['a'])。"},
+    {"instruction": "如何捕获异常？", "input": "", "output": "用 try...except 语句：try: 可能出错的代码 except Exception as e: 处理逻辑。"},
+]
+ds_code = Dataset.from_list(my_data)
+
+# Step 2: 修改 system prompt 的 process_func
+tokenizer = AutoTokenizer.from_pretrained('./src/DeepSeek-R1-Distill-Qwen-1.5B',
+                                          use_fast=False, trust_remote_code=True)
+
+def process_func_code(example):
+    MAX_LENGTH = 384
+    # 用模型原生 apply_chat_template（DeepSeek 模板，非 ChatML），与主流程一致
+    instruction = tokenizer.apply_chat_template(
+        [
+            {"role": "system", "content": "你是一位专业的 Python 编程助手，请简洁准确地回答编程问题"},
+            {"role": "user", "content": example['instruction'] + example['input']},
+        ],
+        add_generation_prompt=True, tokenize=True, return_dict=True,
+    )
+    response = tokenizer(example['output'], add_special_tokens=False)
+    input_ids = instruction["input_ids"] + response["input_ids"] + [tokenizer.pad_token_id]
+    attention_mask = instruction["attention_mask"] + response["attention_mask"] + [1]
+    labels = [-100] * len(instruction["input_ids"]) + response["input_ids"] + [tokenizer.pad_token_id]
+    if len(input_ids) > MAX_LENGTH:
+        input_ids = input_ids[:MAX_LENGTH]
+        attention_mask = attention_mask[:MAX_LENGTH]
+        labels = labels[:MAX_LENGTH]
+    return {"input_ids": input_ids, "attention_mask": attention_mask, "labels": labels}
+
+# Step 3: 数据预处理
+tokenized = ds_code.map(process_func_code, remove_columns=ds_code.column_names)
+
+# Step 4: 加载模型 + 配置 LoRA（只 attention 4 层，节省时间）
+model = AutoModelForCausalLM.from_pretrained('./src/DeepSeek-R1-Distill-Qwen-1.5B',
+                                             torch_dtype=torch.bfloat16, device_map='npu')
+model.enable_input_require_grads()
+config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
+    inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1
+)
+model = get_peft_model(model, config)
+
+# Step 5: 训练 1 个 epoch（数据量小，1 epoch 足够演示）
+args = TrainingArguments(
+    output_dir="./output_code_assistant",
+    per_device_train_batch_size=2, gradient_accumulation_steps=2,
+    num_train_epochs=1, logging_steps=2, save_steps=10,
+    learning_rate=1e-4, save_on_each_node=True,
+)
+trainer = Trainer(model=model, args=args, train_dataset=tokenized,
+                  data_collator=DataCollatorForSeq2Seq(tokenizer=tokenizer, padding=True))
+trainer.train()
+
+# Step 6: 推理测试
+import os, glob
+ckpts = sorted(glob.glob(os.path.join("./output_code_assistant", 'checkpoint-*')),
+               key=lambda p: int(os.path.basename(p).rsplit('-', 1)[1]))
+from peft import PeftModel
+model = AutoModelForCausalLM.from_pretrained('./src/DeepSeek-R1-Distill-Qwen-1.5B',
+    torch_dtype=torch.bfloat16, trust_remote_code=True).eval()
+model = PeftModel.from_pretrained(model, model_id=ckpts[-1]).to('npu')
+inputs = tokenizer.apply_chat_template(
+    [{"role": "system", "content": "你是一位专业的 Python 编程助手，请简洁准确地回答编程问题"},
+     {"role": "user", "content": "如何读取文件"}],
+    add_generation_prompt=True, tokenize=True, return_tensors="pt", return_dict=True
+).to('npu')
+with torch.no_grad():
+    outputs = model.generate(**inputs, max_new_tokens=512, do_sample=False)  # 贪心解码，结果可复现
+    print(tokenizer.decode(outputs[0, inputs['input_ids'].shape[1]:], skip_special_tokens=True))
+
+# 说明：因数据量极小（仅 6 条），微调效果有限，主要用于验证全流程跑通。
+# 实际应用需要数百至数千条高质量数据。
