@@ -118,3 +118,7 @@ dist/
 *.whl
 .claude/
 .opencode/
+
+
+# Windows Zone.Identifier 元数据文件（下载标记，纯垃圾文件）
+*:Zone.Identifier

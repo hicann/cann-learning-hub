@@ -1,0 +1,1 @@
+standard_course/**/*.pptx filter=lfs diff=lfs merge=lfs -text
