@@ -1,0 +1,9 @@
+1. Kernel 入口只能使用指针或 C/C++ 基础类型参数。totalLength 和 tileNum 是两个明确的 uint32_t 启动参数；它们的顺序与类型由 Host 侧的 <<<>>> 调用和 Kernel 入口共同约定，因此不需要传递自定义结构体。
+
+2. 16384 个元素先分给 8 个核，每核得到 2048 个元素。每核再切成 8 个 Tile，因此每个 Tile 有 2048 / 8 = 256 个 float，即 1024 字节。
+
+3. progress 是当前 Tile 的编号，progress * tileLength_ 才是该 Tile 在本核数据段中的起始下标。若偏移固定为 0，每轮都会重复处理第一个 Tile，其余数据不会被处理。GlobalTensor 已在 Init() 中加上核间偏移，这里只计算核内偏移。
+
+4. Kernel 发射是异步的。Host 若不先调用 aclrtSynchronizeStream，可能在 Kernel 尚未完成时就把输出读回，导致结果不完整或不稳定。
+
+5. 新的元素总数必须能被启动核数整除，得到的每核元素数还必须能被 tileNum 整除；每个 Tile 的字节数也应满足 DataCopy 的 32 字节对齐要求。相应地更新 Host 的 totalLength、启动核数和 tileNum。

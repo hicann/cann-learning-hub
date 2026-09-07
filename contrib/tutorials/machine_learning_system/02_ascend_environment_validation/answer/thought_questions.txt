@@ -1,0 +1,21 @@
+Lab 2 思考题参考答案
+
+1. npu-smi 顶部的 Version 属于哪一层？CANN Toolkit 版本从哪里读取？
+
+npu-smi 顶部的 Version 属于管理工具或驱动侧。CANN Toolkit 版本从安装信息中读取，通常查看 ascend_toolkit_install.info 文件的 version 字段。
+
+2. 空闲环境中 AI Core 利用率为 0 时，还应查看哪个字段判断设备状态？
+
+查看 Health 等状态字段。AI Core 利用率只反映查询时的计算负载，不能单独用于判断设备是否正常。
+
+3. torch_npu 导入成功后，哪些结果共同确认 NPU 可以执行？
+
+torch.npu.is_available() 应返回 True，torch.npu.device_count() 至少为 1，并且 1 元素 NPU 张量能够完成分配与同步。
+
+4. 哪两个环境变量通常指向 CANN Toolkit 根目录？哪个变量指向 OPP？
+
+ASCEND_HOME_PATH 和 ASCEND_TOOLKIT_HOME 通常指向 CANN Toolkit 根目录，ASCEND_OPP_PATH 指向 OPP。
+
+5. 在 npu-smi 成功且 torch.npu.is_available() 输出 False 时，应从哪两层开始定位？
+
+先检查当前 Python Kernel 和 torch_npu 兼容层，包括解释器路径、软件包版本与导入状态；再检查 CANN 环境变量和 Runtime 是否正确加载。

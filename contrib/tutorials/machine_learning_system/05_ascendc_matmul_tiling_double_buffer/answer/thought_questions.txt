@@ -1,0 +1,19 @@
+1. K 是归约维。所有 K Tile 共同计算同一个 (mTile, nTile) 输出区域，不会生成彼此独立的输出，因此输出 Tile 数量是 mTiles * nTiles。
+
+2. 行主序映射为 mTile = outputTile / nTiles，nTile = outputTile % nTiles。每个 Core 从 GetBlockIdx() 对应的输出 Tile 开始，再以 usedCoreNum 为步长处理后续 Tile。即使输出 Tile 多于 Cube Core，也能全部覆盖。
+
+3. 三个矩阵在 GM 中都使用 ND 行主序，坐标 (row, col) 的一维偏移是 row * rowStride + col。A 的偏移为 mStart * K + kStart，B 为 kStart * N + nStart，C 为 mStart * N + nStart + fragment * 16。A 的行宽是 K，B、C 的行宽是 N。
+
+4. 第一块 K Tile 需要从零初始化 CO1，即 cmatrixInitVal = true。后续 K Tile 以 CO1 中已有的结果为初值继续累加，因此 cmatrixInitVal = false。代码可写为 cmatrixInitVal = (kTile == 0)。
+
+5. Cube 的 B 操作数以 ZN 形式进入 L0B。本实验使用 FRAGMENT_N = 16，与 C0 粒度匹配。按 16 列转换和计算后，LoadData、Mmad 与 Fixpipe 处理的布局和输出范围能够对应起来。
+
+6. kTiles 大于 1 时，进入稳态循环前先把 Tile 0 和 Tile 1 放入两个队列槽位。计算当前 Tile 时，下一个 Tile 已经就绪。只有一个 K Tile 时不需要填充第二个槽位。
+
+7. 计算 kTile 时，kTile + 1 已经位于另一个队列槽位。当前槽位释放后，下一块尚未入队的数据是 kTile + 2，因此只在 kTile + 2 < kTiles 时预取。重复搬入当前 Tile 或 kTile + 1 会破坏队列中的数据顺序。
+
+8. 读取 Sweep CSV 后先筛选 passed = True 的记录。比较 T1–T5 时固定 buffer_num，分别在 Single Buffer 和 Double Buffer 记录中按 median_us 升序或 GFLOP/s 降序排列。全部有效记录中 median_us 最小的配置最快。解释结果时还要结合 outputTileCount、kTiles、nFragments 和 Buffer 占用。
+
+9. Double Buffer 不一定对每种 Tiling 都提速。固定 tiling_id 后计算 double_buffer_speedup = single_us / double_us：大于 1 表示提速，等于 1 表示持平，小于 1 表示变慢。Tile 计算量较小、搬运与计算难以重叠，或队列、同步和片上存储开销较大时，Double Buffer 的额外成本可能抵消收益。
+
+10. 不一定。性能还取决于 Mmad 利用率、访存、并行度、同步和流水重叠。应把最快配置与 Buffer 估算表放在一起分析，不能只根据片上 Buffer 占用判断性能。
