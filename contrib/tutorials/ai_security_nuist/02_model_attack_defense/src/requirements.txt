@@ -1,0 +1,22 @@
+# MindSpore BadNets onsite demo dependencies.
+# Recommended runtime from README_ONSITE_DEMO.md:
+#   Python 3.9, Ascend Snt9B/CANN environment, JupyterLab 4.x.
+#
+# On Huawei Cloud MindSpore Notebook images, MindSpore and CANN are often
+# preinstalled. If installation fails, use the MindSpore package/version that
+# matches the cloud image and CANN driver, then install the remaining packages.
+
+mindspore>=2.2,<2.8
+
+numpy>=1.23,<2.0
+pandas>=1.5,<3.0
+matplotlib>=3.6,<4.0
+Pillow>=9.0,<12.0
+sympy>=1.10,<2.0
+attrs>=22.0,<24.0
+
+ipython>=8.0,<9.0
+jupyterlab>=4.0,<5.0
+notebook>=7.0,<8.0
+# ipywidgets>=8.0,<9.0
+# jupyterlab_widgets>=3.0,<4.0
