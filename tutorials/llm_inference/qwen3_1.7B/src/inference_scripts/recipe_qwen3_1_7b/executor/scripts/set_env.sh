@@ -9,7 +9,7 @@
 
 #!/bin/bash
 
-rm -rf /root/atc_data/
+rm -rf "${ATC_DATA_DIR:-/root/atc_data}/"
 
 CURRENT_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 RECIPES_PATH=$(dirname "$(dirname "$CURRENT_PATH")")

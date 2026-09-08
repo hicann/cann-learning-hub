@@ -1,4 +1,4 @@
-"""Dependency checks shared by the Qwen3-8B notebooks."""
+"""Dependency checks shared by the Qwen3-1.7B notebooks."""
 
 from __future__ import annotations
 
