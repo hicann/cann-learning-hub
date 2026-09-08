@@ -1,0 +1,6 @@
+crobot_control:
+  ros__parameters:
+    motor:
+      pid_interval: 50
+      count_per_rev: 3900
+      reverse: false

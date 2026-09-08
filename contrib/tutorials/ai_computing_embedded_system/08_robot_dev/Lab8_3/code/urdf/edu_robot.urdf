@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="crobot_description_2wd">
+  <link name="base_footprint">
+    <visual>
+      <geometry>
+        <sphere radius="0.001" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://crobot_description/meshes/base_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="base_link2base_footprint" type="fixed">
+        <parent link="base_footprint" />
+        <child link="base_link" />
+        <origin xyz="0 0 0.05" />
+  </joint>
+
+  <link name="left wheel_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://crobot_description/meshes/left_wheel_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="left_wheel_joint" type="fixed">
+    <origin xyz="0 0.0805 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="left wheel_Link" />
+  </joint>
+
+  <link name="right wheel_Link">
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://crobot_description/meshes/right_wheel_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_wheel_joint" type="fixed">
+    <origin xyz="0 -0.0805 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="right wheel_Link" />
+  </joint>
+
+  <link name="laser_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://crobot_description/meshes/laser_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.0588235294117647 0.00784313725490196 0 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="laser_Joint" type="fixed">
+    <origin xyz="0.030241 0 0.078" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="laser_link" />
+  </joint>
+
+  <link name="imu_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://crobot_description/meshes/imu_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="imu_Joint" type="fixed">
+    <origin xyz="-0.069143 -0.00060249 0.0496" rpy="0 0 1.5707" />
+    <parent link="base_link" />
+    <child link="imu_link" />
+  </joint>
+
+  <link name="camera_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://crobot_description/meshes/camera_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.894117647058823 0.913725490196078 0.929411764705882 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="camera" type="fixed">
+    <origin xyz="0.0655 0 0.13" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="camera_Link" />
+  </joint>
+
+  <link name="ultrasonic_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://crobot_description/meshes/ultrasonic_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.894117647058823 0.913725490196078 0.929411764705882 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="ultrasonic_Joint" type="fixed">
+    <origin xyz="0.072976 0 0.00825" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="ultrasonic_Link" />
+    <axis xyz="1 0 0" />
+    <limit lower="0" upper="0" effort="0" velocity="0" />
+  </joint>
+</robot>

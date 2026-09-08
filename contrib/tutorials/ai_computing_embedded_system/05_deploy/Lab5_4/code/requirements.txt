@@ -1,0 +1,5 @@
+# 香橙派开发板 Python 依赖
+# 安装: pip3 install -r requirements.txt
+
+numpy<2          # 数值计算（ACL 兼容 NumPy 1.x）
+Pillow>=9.0.0    # 图像读取与处理（PIL）

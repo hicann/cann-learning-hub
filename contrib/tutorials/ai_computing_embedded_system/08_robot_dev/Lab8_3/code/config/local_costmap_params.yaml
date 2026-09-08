@@ -1,0 +1,13 @@
+local_costmap:
+  global_frame: odom
+  robot_base_frame: base_footprint
+  update_frequency: 8.0
+  publish_frequency: 2.0
+  rolling_window: true
+  width: 6.0
+  height: 6.0
+  resolution: 0.02
+  plugins:
+    - {name: lidar_obstacle_layer,    type: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"}
+    #- {name: virtual_wall, type: "virtual_wall::VirtualWall"}
+    - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}

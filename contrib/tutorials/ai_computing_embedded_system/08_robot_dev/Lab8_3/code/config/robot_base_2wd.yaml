@@ -1,0 +1,6 @@
+crobot_control:
+  ros__parameters:
+    robot_base:
+      type: 0
+      radius: 0.078
+      separation: 0.172
