@@ -4,7 +4,7 @@
 ## 教程列表
 | 教程名称 | 教程描述 | 访问链接 | 状态 |
 |----------|----------|----------|------|
-| 大模型推理系列课程 | 从大语言模型基础出发，介绍 CANN 推理仓、推理优化、量化与 Profiling，并提供 Qwen3-8B 单卡实践 | [llm_inference](./llm_inference) | ✅ 已发布 |
+| 大模型推理系列课程 | 从大语言模型基础出发，介绍 CANN 推理仓、推理优化、量化与 Profiling，并提供 Qwen3 单卡实践 | [llm_inference](./llm_inference) | ✅ 已发布 |
 | Ascend C 算子开发系列教程 | 面向昇腾 NPU 的高性能算子开发全流程教程，包含 Tiling 模板化编程、算子调试、性能优化等核心内容 | [ascendc_operator_development](./ascendc_operator_development) | ✅ 已发布 |
 | Ascend C 算子开发系列教程（Kernel 直调版） | 面向昇腾 NPU 的 Ascend C 算子开发教程，包含算子核函数、Tiling 计算、矩阵算子、CV 融合算子、调试调优等核心内容 | [ascendc_operator_development_light](./ascendc_operator_development_light) | ✅ 已发布 |
 | PyASC 算子开发系列教程 | Ascend C 姊妹篇，基于 Python 原生语法开发昇腾算子，涵盖 pyasc 概述、核函数开发基础、Vector/Matmul 算子开发与调试调优 | [pyasc_operator_development](./pyasc_operator_development) | ✅ 已发布 |
