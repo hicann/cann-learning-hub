@@ -33,27 +33,30 @@ CANNLab 环境创建与使用方法请参考 [CANNLab 环境体验指南](https:
 
 ### 第一章：PyTorch 模型训练与推理
 
-| Notebook | Link | 状态 |
-| -- | -- | -- |
-| 01 PyTorch 模型训练与推理 | | |
+| Notebook | 状态 |
+| --- | --- |
+| 01 PyTorch 模型训练与推理 | ✅ 已发布 |
 
-###  第二章：昇腾环境检查与连通验证
-| Notebook | Link | 状态 |
-| -- | -- | -- |
-| 01 昇腾环境检查与连通验证 | | |
+### 第二章：昇腾环境检查与连通验证
+
+| Notebook | 状态 |
+| --- | --- |
+| 01 昇腾环境检查与连通验证 | ✅ 已发布 |
 
 ### 第三章：PyTorch/torch_npu 模型迁移与训练
-| Notebook | Link | 状态 |
-| -- | -- | -- |
-| 01 PyTorch/torch_npu 模型迁移与训练 | | |
+
+| Notebook | 状态 |
+| --- | --- |
+| 01 PyTorch/torch_npu 模型迁移与训练 | ✅ 已发布 |
 
 ### 第四章：Ascend C 算子开发
 
-| Notebook | Link | 状态 |
-| -- | -- | -- |
-| 01 Ascend C 典型算子开发 | | |
+| Notebook | 状态 |
+| --- | --- |
+| 01 Ascend C 典型算子开发 | ✅ 已发布 |
 
 ### 第五章：Ascend C MatMul Tiling 与 Double Buffer 优化
-| Notebook | Link | 状态 |
-| -- | -- | -- |
-| 01 Ascend C MatMul Tiling 与 Double Buffer 优化 | | |
+
+| Notebook | 状态 |
+| --- | --- |
+| 01 Ascend C MatMul Tiling 与 Double Buffer 优化 | ✅ 已发布 |
