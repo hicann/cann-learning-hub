@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="240" viewBox="0 0 900 240">
+<rect x="20" y="70" width="150" height="90" rx="10" fill="#2E86AB"/><text x="95" y="120" fill="#fff" font-size="22" text-anchor="middle">数据准备</text>
+<rect x="210" y="70" width="150" height="90" rx="10" fill="#E67E22"/><text x="285" y="120" fill="#fff" font-size="22" text-anchor="middle">模型构建</text>
+<rect x="400" y="70" width="150" height="90" rx="10" fill="#27AE60"/><text x="475" y="120" fill="#fff" font-size="22" text-anchor="middle">训练优化</text>
+<rect x="590" y="70" width="150" height="90" rx="10" fill="#8E44AD"/><text x="665" y="120" fill="#fff" font-size="22" text-anchor="middle">评估推理</text>
+<rect x="770" y="70" width="110" height="90" rx="10" fill="#1F4E79"/><text x="825" y="120" fill="#fff" font-size="20" text-anchor="middle">NPU 迁移</text>
+<line x1="170" y1="115" x2="210" y2="115" stroke="#1F4E79" stroke-width="4"/>
+<line x1="360" y1="115" x2="400" y2="115" stroke="#1F4E79" stroke-width="4"/>
+<line x1="550" y1="115" x2="590" y2="115" stroke="#1F4E79" stroke-width="4"/>
+<line x1="740" y1="115" x2="770" y2="115" stroke="#1F4E79" stroke-width="4"/>
+<text x="450" y="40" fill="#1F4E79" font-size="26" text-anchor="middle" font-weight="bold">MobileNetV3 图像分类完整流程</text>
+</svg>

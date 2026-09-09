@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260">
+<rect x="20" y="90" width="150" height="80" rx="10" fill="#2E86AB"/><text x="95" y="135" fill="#fff" font-size="22" text-anchor="middle">Conv</text>
+<rect x="190" y="90" width="150" height="80" rx="10" fill="#E67E22"/><text x="265" y="135" fill="#fff" font-size="22" text-anchor="middle">BatchNorm</text>
+<rect x="400" y="90" width="180" height="80" rx="10" fill="#27AE60"/><text x="490" y="135" fill="#fff" font-size="20" text-anchor="middle">融合后的 Conv
+(W', b')</text>
+<rect x="640" y="90" width="150" height="80" rx="10" fill="#8E44AD"/><text x="715" y="135" fill="#fff" font-size="22" text-anchor="middle">激活函数</text>
+<line x1="170" y1="130" x2="190" y2="130" stroke="#1F4E79" stroke-width="4"/>
+<line x1="340" y1="130" x2="400" y2="130" stroke="#1F4E79" stroke-width="4"/>
+<line x1="580" y1="130" x2="640" y2="130" stroke="#1F4E79" stroke-width="4"/>
+<text x="450" y="45" fill="#1F4E79" font-size="26" text-anchor="middle" font-weight="bold">Conv+BN 融合：两个算子合成一个算子</text>
+<text x="450" y="210" fill="#555" font-size="18" text-anchor="middle">W' = gamma*W/sqrt(var+eps)，b' = gamma*(b-mean)/sqrt(var+eps)+beta</text>
+</svg>

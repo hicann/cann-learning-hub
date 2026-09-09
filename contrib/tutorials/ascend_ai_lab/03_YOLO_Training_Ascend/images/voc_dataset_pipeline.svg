@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="250" viewBox="0 0 980 250" role="img" aria-label="PASCAL VOC to YOLO dataset pipeline">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2563eb"/>
+    </marker>
+    <style>
+      .box { fill: #f8fafc; stroke: #2563eb; stroke-width: 2; rx: 8; }
+      .title { font: 700 20px Arial, sans-serif; fill: #0f172a; }
+      .text { font: 15px Arial, sans-serif; fill: #334155; }
+      .small { font: 13px Arial, sans-serif; fill: #64748b; }
+      .arrow { stroke: #2563eb; stroke-width: 2.4; marker-end: url(#arrow); fill: none; }
+    </style>
+  </defs>
+  <rect width="980" height="250" fill="#ffffff"/>
+  <text x="40" y="38" class="title">PASCAL VOC 数据准备流程</text>
+  <text x="40" y="64" class="small">从官方图片和 XML 标注，转换为训练脚本直接读取的 YOLO txt、split 列表和镜像目录。</text>
+
+  <rect x="40" y="92" width="170" height="88" class="box"/>
+  <text x="62" y="122" class="title">1. 下载</text>
+  <text x="62" y="150" class="text">VOC2007 trainval/test</text>
+  <text x="62" y="170" class="text">VOC2012 trainval</text>
+
+  <path d="M220 136 H285" class="arrow"/>
+
+  <rect x="300" y="92" width="175" height="88" class="box"/>
+  <text x="322" y="122" class="title">2. 原始结构</text>
+  <text x="322" y="150" class="text">JPEGImages/*.jpg</text>
+  <text x="322" y="170" class="text">Annotations/*.xml</text>
+
+  <path d="M485 136 H550" class="arrow"/>
+
+  <rect x="565" y="92" width="175" height="88" class="box"/>
+  <text x="587" y="122" class="title">3. 转换脚本</text>
+  <text x="587" y="150" class="text">prepare_voc_yolo.py</text>
+  <text x="587" y="170" class="text">XML bbox -> YOLO txt</text>
+
+  <path d="M750 136 H815" class="arrow"/>
+
+  <rect x="830" y="92" width="110" height="88" class="box"/>
+  <text x="850" y="122" class="title">4. 训练</text>
+  <text x="850" y="150" class="text">train.txt</text>
+  <text x="850" y="170" class="text">val.txt</text>
+
+  <text x="42" y="218" class="small">输出目录：images/train2007、images/train2012、images/val2007、labels/...、splits/train.txt、splits/val.txt</text>
+</svg>
