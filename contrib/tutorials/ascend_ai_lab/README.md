@@ -30,8 +30,7 @@
 
 | 环境 | 状态 | 说明 |
 | --- | --- | --- |
-| gitcode 在线体验 notebook | - | 在线体验链接由 committer 统一配置 |
-| CANNLab 云开发环境 | ✅ | 见 [CANNLab 环境体验指南](./CANNLab_env_experience_guide.md)；用于第 02、03、05、06 章实验；第 03 章已验证 YOLO 单卡 NPU 训练与 MSPROF 分析；NPU 镜像模板名称：待补充；Python 内核版本：3.11.4 |
+| CANNLab 云开发环境 | ✅ | 见 [CANNLab 环境体验指南](./CANNLab_env_experience_guide.md)；用于第 02、03、05、06 章实验；第 03 章已验证 YOLO 单卡 NPU 训练与 MSPROF 分析；NPU 镜像模板名称：cann_9.0.0 py3.11-A2-arm；Python 内核版本：3.11.4 |
 | Atlas 200I DK A2 开发板环境 | ✅ | 用于第 04 章端侧推理与自定义算子集成；已验证 Ascend 310B4、CANN Toolkit 8.0.RC1、PyACL、ATC、msopgen、opc、ACLNN、msprof/MindStudio Profiling 流程 |
 
 ## 课程章节目录
