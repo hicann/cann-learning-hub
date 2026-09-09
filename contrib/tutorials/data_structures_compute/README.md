@@ -39,29 +39,113 @@
 
 ## 在线体验环境
 
-本课程支持在 CANNLab 云开发环境中体验，环境配置如下：
+- gitcode 在线体验 Notebook
+- CANNLab 云开发环境
+  - NPU 镜像模板：`cann_9.0.0_py3.11-A2-arm`
+  - 规格：`1*NPU 910B3 16vCPUs 32GiB`
+  - Python 内核：Python 3.11.4
 
-| 项目 | 配置 |
-| --- | --- |
-| CANN 版本 | `9.0.0` |
-| NPU 镜像模板 | `cann_9.0.0 py3.11-A2-arm` |
-| Notebook 内核 | `Python 3.11.4 (CANN)`，内核名称为 `cann_py311` |
-| 环境指南 | [CANNLab 环境体验指南](../../../docs/CANNLab_env_experience_guide.md) |
+CANNLab 环境创建与使用方法请参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)。
 
 
-## 课程目录
+## 课程章节目录
 
-| 实验 | 标题 | 状态 |
+### 第一章：基础实操
+
+| Notebook | Link | 状态 |
 | --- | --- | --- |
-| 实验 1 | 基础实操 | ✅ 已完成 |
-| 实验 2 | 括号匹配及表达式求值 | ✅ 已完成 |
-| 实验 3 | 双缓冲数据流水线 | ✅ 已完成 |
-| 实验 4 | Reduce算子与优先队列模拟堆 | ✅ 已完成 |
-| 实验 5 | 图邻接表向CSR稀疏张量的格式转换 | ✅ 已完成 |
-| 实验 6 | 链表与连续数组的访存对比 | ✅ 已完成 |
-| 实验 7 | 巧用排序算法优化MoE融合算子 | ✅ 已完成 |
-| 实验 8 | 工程部署及性能分析 | ✅ 已完成 |
-| 实验 9 | 装填因子与线性探测的访存优化 | ✅ 已完成 |
-| 实验 10 | 树形任务队列与流水线调度 | ✅ 已完成 |
-| 实验 11 | 位图压缩与集合交运算的带宽优化 | ✅ 已完成 |
-| 实验 12 | MoE融合算子与性能分析 | ✅ 已完成 |
+| 01.01 章节介绍：基础实操 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/01_basic_operations/01.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 01.02 环境与工程一键启动 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/01_basic_operations/01.02_environment_and_project.ipynb) | ✅ 已发布 |
+| 01.03 VectorAdd 算子实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/01_basic_operations/01.03_vector_add_operator.ipynb) | ✅ 已发布 |
+| 01.04 Tiling 可视化交互实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/01_basic_operations/01.04_tiling_visualization.ipynb) | ✅ 已发布 |
+| 01.05 章节实践：独立完成 VectorAdd | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/01_basic_operations/01.05_chapter_test.ipynb) | ✅ 已发布 |
+
+### 第二章：括号匹配及表达式求值
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 02.01 章节介绍：括号匹配及表达式求值 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/02_stack_expr_lab/02.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 02.02 括号匹配及表达式求值动手实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/02_stack_expr_lab/02.02_stack_expr_lab.ipynb) | ✅ 已发布 |
+| 02.03 章节实践与测试：括号匹配及表达式求值 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/02_stack_expr_lab/02.03_chapter_test.ipynb) | ✅ 已发布 |
+
+### 第三章：双缓冲数据流水线
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 03.01 章节介绍：双缓冲数据流水线 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/03_double_buffer_pipeline/03.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 03.02 TQue 队列基础 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/03_double_buffer_pipeline/03.02_queue_basics.ipynb) | ✅ 已发布 |
+| 03.03 双缓冲 VectorAdd | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/03_double_buffer_pipeline/03.03_double_buffer_vector_add.ipynb) | ✅ 已发布 |
+| 03.04 章节实践：独立完成双缓冲调度 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/03_double_buffer_pipeline/03.04_chapter_test.ipynb) | ✅ 已发布 |
+
+### 第四章：Reduce算子与优先队列模拟堆
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 04.01 章节介绍：Reduce算子与优先队列模拟堆 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/04_reduce_priority_queue_heap/04.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 04.02 Reduce算子与优先队列模拟堆动手实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/04_reduce_priority_queue_heap/04.02_reduce_lab.ipynb) | ✅ 已发布 |
+| 04.03 课后测试：Reduce算子与优先队列模拟堆 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/04_reduce_priority_queue_heap/04.03_chapter_test.ipynb) | ✅ 已发布 |
+
+### 第五章：图邻接表向CSR稀疏张量的格式转换
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 05.01 图邻接表与并行 SSSP 章节概述 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/05_graph_adj_to_csr_tensor/05.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 05.02 基于图邻接表向 CSR 转换的并行 SSSP 算子开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/05_graph_adj_to_csr_tensor/05.02_parallel_sssp.ipynb) | ✅ 已发布 |
+| 05.03 章节实践：图邻接表向CSR稀疏张量的格式转换 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/05_graph_adj_to_csr_tensor/05.03_chapter_practice.ipynb) | ✅ 已发布 |
+
+### 第六章：链表与连续数组的访存对比
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 06.01 链表与连续数组的访存对比章节概述 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/06_linked_list_vs_contiguous_array/06.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 06.02 链表与连续数组访存对比实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/06_linked_list_vs_contiguous_array/06.02_memory_access_compare.ipynb) | ✅ 已发布 |
+| 06.03 章节实践：链表与连续数组的访存对比 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/06_linked_list_vs_contiguous_array/06.03_chapter_practice.ipynb) | ✅ 已发布 |
+
+### 第七章：巧用排序算法优化MoE融合算子
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 07.01 章节介绍：巧用排序算法优化MoE融合算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/07_sort_for_moe_fusion/07.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 07.02 MoE 排序路由动手实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/07_sort_for_moe_fusion/07.02_moe_sort_lab.ipynb) | ✅ 已发布 |
+| 07.03 章节测试：巧用排序算法优化MoE融合算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/07_sort_for_moe_fusion/07.03_chapter_test.ipynb) | ✅ 已发布 |
+
+### 第八章：工程部署及性能分析
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 08.01 章节介绍：工程部署及性能分析 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/08_engineering_deployment_and_perf_analysis/08.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 08.02 Attention 算子工程部署动手实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/08_engineering_deployment_and_perf_analysis/08.02_attention_operator_lab.ipynb) | ✅ 已发布 |
+| 08.03 章节实践与测试：工程部署及性能分析 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/08_engineering_deployment_and_perf_analysis/08.03_chapter_test.ipynb) | ✅ 已发布 |
+
+### 第九章：装填因子与线性探测的访存优化
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 09.01 装填因子与线性探测的访存优化章节概述 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/09_load_factor_and_linear_probing/09.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 09.02 开放寻址批量查询实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/09_load_factor_and_linear_probing/09.02_open_addressing_lookup.ipynb) | ✅ 已发布 |
+| 09.03 装填因子与线性探测的访存优化章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/09_load_factor_and_linear_probing/09.03_chapter_practice.ipynb) | ✅ 已发布 |
+
+### 第十章：树形任务队列与流水线调度
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 10.01 章节介绍：树形任务队列与流水线调度 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/10_tree_queue_pipeline/10.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 10.02 树形任务队列与流水线调度动手实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/10_tree_queue_pipeline/10.02_tree_queue_lab.ipynb) | ✅ 已发布 |
+| 10.03 章节测试：树形任务队列与流水线调度 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/10_tree_queue_pipeline/10.03_chapter_test.ipynb) | ✅ 已发布 |
+
+### 第十一章：位图压缩与集合交运算的带宽优化
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 11.00 章节介绍：位图压缩与集合交运算的带宽优化 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/11_bitmap_set_bandwidth/11.00_chapter_intro.ipynb) | ✅ 已发布 |
+| 11.01 位图集合的数据结构设计 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/11_bitmap_set_bandwidth/11.01_bitmap_set_structure.ipynb) | ✅ 已发布 |
+| 11.02 集合交算子与带宽实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/11_bitmap_set_bandwidth/11.02_bitmap_and_operator.ipynb) | ✅ 已发布 |
+| 11.03 章节实践：独立完成位图集合交 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/11_bitmap_set_bandwidth/11.03_chapter_test.ipynb) | ✅ 已发布 |
+
+### 第十二章：MoE融合算子与性能分析
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 12.01 章节介绍：MoE融合算子与性能分析 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/12_moe_fused/12.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 12.02 MoE Router 融合算子动手实验 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/12_moe_fused/12.02_moe_router_fused_lab.ipynb) | ✅ 已发布 |
+| 12.03 章节实践与测试：MoE融合算子与性能分析 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structures_compute&scanFilePath=contrib/tutorials/data_structures_compute/12_moe_fused/12.03_chapter_test.ipynb) | ✅ 已发布 |
