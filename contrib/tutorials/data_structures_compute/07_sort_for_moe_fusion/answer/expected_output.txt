@@ -1,0 +1,21 @@
+=== MoE Lite Parallel Routing Benchmark ===
+T=1024 H=128 K=2 E=64 total=2048
+
+Routing selection algorithms are parallel alternatives, not a serial chain.
+Each algorithm reads the same logits and writes [T,K] expert indices plus probabilities.
+
+Selection TopK:       0.0XX ms
+Full QuickSort TopK:  0.0XX ms
+Heap Extract TopK:    0.0XX ms
+TopK vs QuickSort indices match: YES
+TopK vs HeapSort indices match:  YES
+
+=== MoE Lite Full-Flow Benchmark ===
+flow                route    order+copy     permute   unpermute  device_total    end_to_end
+TopK full flow      0.0XX     0.0XX          0.0XX     0.0XX      0.0XX           0.0XX
+QuickSort full flow 0.0XX     0.0XX          0.0XX     0.0XX      0.0XX           0.0XX
+HeapSort full flow  0.0XX     0.0XX          0.0XX     0.0XX      0.0XX           0.0XX
+
+topk: indices=PASS unpermute=PASS
+quicksort: indices=PASS unpermute=PASS
+heapsort: indices=PASS unpermute=PASS

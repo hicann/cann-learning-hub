@@ -1,0 +1,33 @@
+[
+  {
+    "op": "ReduceSumLite",
+    "language": "cpp",
+    "input_desc": [
+      {"name": "x", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ],
+    "output_desc": [
+      {"name": "y", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ]
+  },
+  {
+    "op": "ReduceMaxLite",
+    "language": "cpp",
+    "input_desc": [
+      {"name": "x", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ],
+    "output_desc": [
+      {"name": "y", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ]
+  },
+  {
+    "op": "TopKReduceLite",
+    "language": "cpp",
+    "input_desc": [
+      {"name": "x", "param_type": "required", "format": ["ND"], "type": ["fp16"]}
+    ],
+    "output_desc": [
+      {"name": "values", "param_type": "required", "format": ["ND"], "type": ["fp16"]},
+      {"name": "indices", "param_type": "required", "format": ["ND"], "type": ["int32"]}
+    ]
+  }
+]

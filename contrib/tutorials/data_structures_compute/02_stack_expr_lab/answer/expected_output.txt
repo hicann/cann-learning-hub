@@ -1,0 +1,37 @@
+=== Stack Expression Evaluation Lab Benchmark ===
+BLOCK_DIM=8 EXPR_LEN=128 TOKEN_LEN=64
+
+[BracketMatch] time=0.0076 ms
+  expr[0]: result=0 ref=0 OK
+  expr[1]: result=0 ref=0 OK
+  expr[2]: result=0 ref=0 OK
+  expr[3]: result=2 ref=2 OK
+  expr[4]: result=1 ref=1 OK
+  expr[5]: result=3 ref=3 OK
+  expr[6]: result=0 ref=0 OK
+  expr[7]: result=0 ref=0 OK
+  PASS
+
+[SuffixEval]   time=0.0074 ms
+  expr[0]: result=11.0000 ref=11.0000 err=0.0000 OK
+  expr[1]: result=8.0000 ref=8.0000 err=0.0000 OK
+  expr[2]: result=5.0000 ref=5.0000 err=0.0000 OK
+  expr[3]: result=14.0000 ref=14.0000 err=0.0000 OK
+  expr[4]: result=12.0000 ref=12.0000 err=0.0000 OK
+  expr[5]: result=9.0000 ref=9.0000 err=0.0000 OK
+  expr[6]: result=30.0000 ref=30.0000 err=0.0000 OK
+  expr[7]: result=40.0000 ref=40.0000 err=0.0000 OK
+  PASS
+
+[InfixToPostfix] time=0.0080 ms
+  expr[0]: abc*+ OK
+  expr[1]: ab+c* OK
+  expr[2]: abc+* OK
+  expr[3]: 42*7+82/- OK
+  expr[4]: ab+ OK
+  expr[5]: a OK
+  expr[6]: ab*cd*+ OK
+  expr[7]: ab+cd-* OK
+  PASS
+
+=== Result: 3/3 PASS ===

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2560" height="1440" viewBox="0 0 1800 1200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<style type="text/css">
+  .node-box { rx:24; ry:24; stroke:#333; stroke-width:3; }
+  .node-text { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 30px; fill: #fff; text-anchor: middle; dominant-baseline: middle; font-weight: bold; }
+  .node-sub { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 20px; fill: #eee; text-anchor: middle; dominant-baseline: middle; }
+  .arrow { stroke: #555; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+  .arrow-dash { stroke: #555; stroke-width: 2; fill: none; stroke-dasharray: 8,4; marker-end: url(#arrowhead); }
+  .label { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 18px; fill: #666; text-anchor: middle; }
+  .title { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 44px; fill: #333; text-anchor: middle; font-weight: bold; }
+  .eq { font-family: "Consolas, monospace"; font-size: 22px; fill: #333; text-anchor: middle; }
+</style>
+<defs>
+  <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+  </marker>
+</defs>
+<rect width="1800" height="1200" fill="#f8f9fa" rx="16"/>
+<text x="900" y="70" class="title">注意力算子数据流（QKᵀ → scale → softmax → AV）</text>
+
+<rect x="140" y="160" width="280" height="120" class="node-box" fill="#2196F3"/>
+<text x="280" y="205" class="node-text">Q [S, D]</text>
+<text x="280" y="245" class="node-sub">查询矩阵</text>
+
+<rect x="520" y="160" width="280" height="120" class="node-box" fill="#2196F3"/>
+<text x="660" y="205" class="node-text">Kᵀ [D, S]</text>
+<text x="660" y="245" class="node-sub">键矩阵（预转置）</text>
+
+<rect x="900" y="160" width="280" height="120" class="node-box" fill="#FF9800"/>
+<text x="1040" y="205" class="node-text">scores [S, S]</text>
+<text x="1040" y="245" class="node-sub">Q · Kᵀ</text>
+
+<path class="arrow" d="M 420 220 L 520 220"/>
+<path class="arrow" d="M 800 220 L 900 220"/>
+<text x="860" y="200" class="label">×</text>
+
+<rect x="1280" y="160" width="280" height="120" class="node-box" fill="#9C27B0"/>
+<text x="1420" y="205" class="node-text">P [S, S]</text>
+<text x="1420" y="245" class="node-sub">softmax(scores·scale)</text>
+
+<path class="arrow" d="M 1180 220 L 1280 220"/>
+<text x="1230" y="200" class="label">scale + softmax</text>
+
+<rect x="140" y="420" width="280" height="120" class="node-box" fill="#4CAF50"/>
+<text x="280" y="465" class="node-text">V [S, D]</text>
+<text x="280" y="505" class="node-sub">值矩阵</text>
+
+<rect x="520" y="420" width="280" height="120" class="node-box" fill="#F44336"/>
+<text x="660" y="465" class="node-text">o [S, D]</text>
+<text x="660" y="505" class="node-sub">P · V</text>
+
+<path class="arrow" d="M 420 480 L 520 480"/>
+<text x="470" y="460" class="label">×</text>
+<path class="arrow" d="M 1040 280 C 1040 380 800 380 800 480"/>
+<text x="930" y="380" class="label">P 行（UB 数组，不落 GM）</text>
+
+<rect x="1000" y="420" width="560" height="120" class="node-box" fill="#607D8B"/>
+<text x="1280" y="465" class="node-text">多核切分（40 × AIV）</text>
+<text x="1280" y="505" class="node-sub">每核处理行子集（SPMD 并行）</text>
+
+<path class="arrow" d="M 660 540 C 660 620 1280 620 1280 540"/>
+<text x="970" y="610" class="label">行间无依赖 → 多核并行</text>
+
+<text x="900" y="760" class="eq">scores[i][j] = Σₖ q[i][k] · kt[k][j] · scale    （O(S²·D)）</text>
+<text x="900" y="820" class="eq">P[i][j] = exp(scores[i][j] − maxⱼ) / Σⱼ exp(...)   （行 softmax）</text>
+<text x="900" y="880" class="eq">o[i][j] = Σₖ P[i][k] · v[k][j]    （O(S²·D)）</text>
+
+<rect x="340" y="960" width="1120" height="90" class="node-box" fill="#FFF3E0" stroke="#FF9800"/>
+<text x="900" y="1005" class="eq" style="font-size:24px; fill:#E65100;">总复杂度 O(S²·D)：seq_len 翻倍 → 耗时约 ×4（实测：85 / 355 / 1386 / 5506 ms）</text>
+</svg>

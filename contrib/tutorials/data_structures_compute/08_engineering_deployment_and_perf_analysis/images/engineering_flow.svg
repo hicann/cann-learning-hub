@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2560" height="1440" viewBox="0 0 1800 1200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<style type="text/css">
+  .node-box { rx:24; ry:24; stroke:#333; stroke-width:3; }
+  .node-text { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 26px; fill: #fff; text-anchor: middle; dominant-baseline: middle; font-weight: bold; }
+  .node-sub { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 18px; fill: #eee; text-anchor: middle; dominant-baseline: middle; }
+  .arrow { stroke: #555; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+  .label { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 18px; fill: #666; text-anchor: middle; }
+  .title { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 44px; fill: #333; text-anchor: middle; font-weight: bold; }
+  .group-box { rx:32; ry:32; stroke:#aaa; stroke-width:2; stroke-dasharray: 12,6; fill:none; }
+  .group-label { font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 26px; fill: #888; text-anchor: middle; font-weight: bold; }
+</style>
+<defs>
+  <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+  </marker>
+</defs>
+<rect width="1800" height="1200" fill="#f8f9fa" rx="16"/>
+<text x="900" y="70" class="title">自定义算子工程全流程</text>
+
+<rect x="60" y="130" width="1680" height="420" class="group-box"/>
+<text x="900" y="170" class="group-label">开发侧（Host）</text>
+
+<rect x="100" y="220" width="280" height="110" class="node-box" fill="#2196F3"/>
+<text x="240" y="265" class="node-text">① 原型定义</text>
+<text x="240" y="300" class="node-sub">ops.json（q/k/v → o）</text>
+
+<rect x="460" y="220" width="280" height="110" class="node-box" fill="#009688"/>
+<text x="600" y="265" class="node-text">② msOpGen 生成</text>
+<text x="600" y="300" class="node-sub">msopgen gen -i ops.json</text>
+
+<rect x="820" y="220" width="280" height="110" class="node-box" fill="#4CAF50"/>
+<text x="960" y="265" class="node-text">③ Host + Kernel</text>
+<text x="960" y="300" class="node-sub">Tiling + Kernel 三步</text>
+
+<rect x="1180" y="220" width="280" height="110" class="node-box" fill="#FF9800"/>
+<text x="1320" y="265" class="node-text">④ 编译打包</text>
+<text x="1320" y="300" class="node-sub">build.sh → .run 安装包</text>
+
+<path class="arrow" d="M 380 275 L 460 275"/>
+<path class="arrow" d="M 740 275 L 820 275"/>
+<path class="arrow" d="M 1100 275 L 1180 275"/>
+
+<rect x="100" y="400" width="280" height="110" class="node-box" fill="#F44336"/>
+<text x="240" y="445" class="node-text">⑤ 部署安装</text>
+<text x="240" y="480" class="node-sub">install 到用户目录</text>
+
+<rect x="460" y="400" width="280" height="110" class="node-box" fill="#607D8B"/>
+<text x="600" y="445" class="node-text">⑥ aclnn 调用</text>
+<text x="600" y="480" class="node-sub">aclnn 单算子调用</text>
+
+<rect x="820" y="400" width="280" height="110" class="node-box" fill="#9C27B0"/>
+<text x="960" y="445" class="node-text">⑦ 精度验证</text>
+<text x="960" y="480" class="node-sub">与 torch 参考比对 PASS</text>
+
+<rect x="1180" y="400" width="280" height="110" class="node-box" fill="#3F51B5"/>
+<text x="1320" y="445" class="node-text">⑧ 性能分析</text>
+<text x="1320" y="480" class="node-sub">msProf op 采集报告解读</text>
+
+<path class="arrow" d="M 240 330 L 240 400"/>
+<path class="arrow" d="M 600 330 L 600 400"/>
+<path class="arrow" d="M 960 330 L 960 400"/>
+<path class="arrow" d="M 1320 330 L 1320 400"/>
+
+<path class="arrow" d="M 380 455 L 460 455"/>
+<path class="arrow" d="M 740 455 L 820 455"/>
+<path class="arrow" d="M 1100 455 L 1180 455"/>
+
+<rect x="60" y="620" width="1680" height="280" class="group-box"/>
+<text x="900" y="660" class="group-label">调试与检测（贯穿）</text>
+
+<rect x="100" y="720" width="400" height="120" class="node-box" fill="#795548"/>
+<text x="300" y="770" class="node-text">msSanitizer 异常检测</text>
+<text x="300" y="810" class="node-sub">地址越界 / 内存泄漏 / UB 风险检测</text>
+
+<rect x="700" y="720" width="400" height="120" class="node-box" fill="#795548"/>
+<text x="900" y="770" class="node-text">msDebug 调试</text>
+<text x="900" y="810" class="node-sub">断点 / 单步 / 变量内存查看</text>
+
+<rect x="1300" y="720" width="400" height="120" class="node-box" fill="#FF9800"/>
+<text x="1500" y="770" class="node-text">复杂度演示</text>
+<text x="1500" y="810" class="node-sub">多 seq_len 实测 O(S²) 曲线</text>
+
+<path class="arrow" d="M 500 780 L 700 780"/>
+<path class="arrow" d="M 1100 780 L 1300 780"/>
+
+<text x="900" y="1000" class="title" style="font-size:30px;">本章实验 = 打通 ①→⑧ 全链路，以注意力算子为载体</text>
+</svg>

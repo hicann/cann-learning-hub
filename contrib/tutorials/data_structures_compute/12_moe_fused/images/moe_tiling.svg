@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="470" viewBox="0 0 860 470" font-family="DejaVu Sans, Arial, sans-serif">
+  <style>
+    .title { font-size: 17px; font-weight: bold; fill: #1a1a1a; }
+    .sub { font-size: 13px; font-weight: bold; fill: #333; }
+    .lbl { font-size: 12px; fill: #1a1a1a; }
+    .small { font-size: 11px; fill: #555; }
+    .c0 { fill: #d6eaf8; stroke: #2e6da4; }
+    .c1 { fill: #fdebd0; stroke: #ca6f1e; }
+    .c2 { fill: #d5f5e3; stroke: #1e8449; }
+    .c3 { fill: #fadbd8; stroke: #c0392b; }
+    .cell { stroke-width: 1.2; }
+    .bad { stroke: #c0392b; stroke-width: 2.5; }
+  </style>
+
+  <text x="20" y="28" class="title">多核行切分与输出 cache line 归属（910B 标量 GM 写，line = 64B）</text>
+
+  <!-- ============ 上：跨步行进（错误） ============ -->
+  <text x="20" y="60" class="sub">跨步行进切分（n = coreId; n += blockDim）：输出行按字节交错，多核共写同一 line → 丢写</text>
+
+  <text x="20" y="86" class="small">topk_idx 输出（每行 K=2 × 4B = 8B）—— 一条 64B line 容纳 8 个 token 行：</text>
+  <g>
+    <rect x="20"  y="96" width="80" height="30" class="cell c0"/><text x="60"  y="115" text-anchor="middle" class="lbl">row 0 (核0)</text>
+    <rect x="100" y="96" width="80" height="30" class="cell c1"/><text x="140" y="115" text-anchor="middle" class="lbl">row 1 (核1)</text>
+    <rect x="180" y="96" width="80" height="30" class="cell c2"/><text x="220" y="115" text-anchor="middle" class="lbl">row 2 (核2)</text>
+    <rect x="260" y="96" width="80" height="30" class="cell c3"/><text x="300" y="115" text-anchor="middle" class="lbl">row 3 (核3)</text>
+    <rect x="340" y="96" width="80" height="30" class="cell c0"/><text x="380" y="115" text-anchor="middle" class="lbl">row 4 (核0)</text>
+    <rect x="420" y="96" width="80" height="30" class="cell c1"/><text x="460" y="115" text-anchor="middle" class="lbl">row 5 (核1)</text>
+    <rect x="500" y="96" width="80" height="30" class="cell c2"/><text x="540" y="115" text-anchor="middle" class="lbl">row 6 (核2)</text>
+    <rect x="580" y="96" width="80" height="30" class="cell c3"/><text x="620" y="115" text-anchor="middle" class="lbl">row 7 (核3)</text>
+  </g>
+  <rect x="18" y="94" width="644" height="34" fill="none" class="bad"/>
+  <text x="680" y="115" class="small" fill="#c0392b">← 同一条 64B line</text>
+  <text x="20" y="150" class="small" fill="#c0392b">4 个核并发写同一条 line：核间无写一致性，部分写非确定性丢失（实测 30%~60% 输出元素错）</text>
+
+  <line x1="20" y1="170" x2="840" y2="170" stroke="#bbb" stroke-dasharray="6 4"/>
+
+  <!-- ============ 下：连续块（正确） ============ -->
+  <text x="20" y="198" class="sub">连续块切分（本算子采用）：每核一段连续行，块边界对齐 64B → 每条 line 只有一个写入核</text>
+
+  <text x="20" y="224" class="small">N=16、K=2：idx 共 128B = 2 条 line；R_align = 64/gcd(2K,64) = 16 行，N &lt; R_align 时单核执行（blockDim=1）</text>
+  <g>
+    <rect x="20"  y="234" width="320" height="30" class="cell c0"/>
+    <text x="180" y="253" text-anchor="middle" class="lbl">rows 0-15 → 核 0（line 0，64B）</text>
+    <rect x="340" y="234" width="320" height="30" class="cell c0"/>
+    <text x="500" y="253" text-anchor="middle" class="lbl">（line 1，64B）</text>
+  </g>
+
+  <text x="20" y="296" class="small">N=128、K=2：idx 共 1KB = 16 条 line；blockDim=8、每核 16 行 = 128B = 2 条完整 line：</text>
+  <g>
+    <rect x="20"  y="306" width="160" height="30" class="cell c0"/><text x="100" y="325" text-anchor="middle" class="lbl">rows 0-15 → 核0</text>
+    <rect x="180" y="306" width="160" height="30" class="cell c1"/><text x="260" y="325" text-anchor="middle" class="lbl">rows 16-31 → 核1</text>
+    <rect x="340" y="306" width="160" height="30" class="cell c2"/><text x="420" y="325" text-anchor="middle" class="lbl">rows 32-47 → 核2</text>
+    <rect x="500" y="306" width="120" height="30" fill="#eee" stroke="#999" class="cell"/>
+    <text x="560" y="325" text-anchor="middle" class="small">…… 共 8 核</text>
+  </g>
+  <text x="20" y="356" class="small">块边界行号 = 16 的倍数 → idx 段（8B/行）与 wt 段（4B/行）字节边界均落在 64B 对齐处</text>
+
+  <line x1="20" y1="376" x2="840" y2="376" stroke="#bbb" stroke-dasharray="6 4"/>
+
+  <text x="20" y="402" class="sub">切分公式（host 侧 TilingFunc）</text>
+  <text x="20" y="424" class="small">R_align = 64 / gcd(2K, 64)；blockDim = min(AIV核数, N / R_align)；rowsPerCore = R_align × ceil(N / (blockDim × R_align))；blockDim = ceil(N / rowsPerCore)</text>
+  <text x="20" y="444" class="small">每核负责 [coreId × rowsPerCore, (coreId+1) × rowsPerCore)，尾核收尾到 N —— 任意两核行数差 &lt; R_align（负载均衡）</text>
+</svg>

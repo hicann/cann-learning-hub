@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="360" viewBox="0 0 1000 360">
+  <style>
+    text { font-family: Arial, "Microsoft YaHei", sans-serif; fill: #172b4d; }
+    .title { font-size: 24px; font-weight: 700; }
+    .label { font-size: 18px; }
+    .small { font-size: 15px; }
+    .bit { fill: #e9f2ff; stroke: #1769aa; stroke-width: 2; }
+    .active { fill: #8fd3a8; stroke: #19733b; stroke-width: 2; }
+    .pad { fill: #f2f3f5; stroke: #8a94a6; stroke-width: 2; stroke-dasharray: 7 5; }
+  </style>
+  <text x="36" y="42" class="title">U = 33：逻辑成员、有效字与 32 Byte 物理行</text>
+  <text x="36" y="92" class="label">逻辑元素</text>
+  <rect x="160" y="65" width="640" height="42" rx="6" class="bit"/>
+  <rect x="160" y="65" width="620" height="42" rx="6" class="active"/>
+  <text x="175" y="92" class="small">元素 0 … 31</text>
+  <text x="748" y="92" class="small">32</text>
+  <text x="820" y="92" class="small">仅 33 个 bit 有效</text>
+  <text x="36" y="172" class="label">有效字</text>
+  <rect x="160" y="140" width="260" height="58" rx="6" class="active"/>
+  <rect x="430" y="140" width="260" height="58" rx="6" class="active"/>
+  <text x="245" y="176" class="label">word 0</text>
+  <text x="515" y="176" class="label">word 1</text>
+  <text x="710" y="176" class="small">validWords = 2</text>
+  <text x="36" y="264" class="label">物理行</text>
+  <g transform="translate(160,230)">
+    <rect x="0" y="0" width="90" height="58" class="active"/>
+    <rect x="90" y="0" width="90" height="58" class="active"/>
+    <rect x="180" y="0" width="90" height="58" class="pad"/>
+    <rect x="270" y="0" width="90" height="58" class="pad"/>
+    <rect x="360" y="0" width="90" height="58" class="pad"/>
+    <rect x="450" y="0" width="90" height="58" class="pad"/>
+    <rect x="540" y="0" width="90" height="58" class="pad"/>
+    <rect x="630" y="0" width="90" height="58" class="pad"/>
+    <text x="22" y="35" class="small">w0</text><text x="112" y="35" class="small">w1</text>
+    <text x="208" y="35" class="small">padding × 6</text>
+  </g>
+  <text x="160" y="327" class="small">physicalWords = 8，8 × 4 Byte = 32 Byte；填充不属于集合且必须为 0</text>
+</svg>

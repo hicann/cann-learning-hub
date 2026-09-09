@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="350" viewBox="0 0 1000 350">
+  <defs>
+    <style>text{font-family:Arial,"Microsoft YaHei",sans-serif;fill:#172b4d}.title{font-size:22px;font-weight:700}.label{font-size:15px;font-weight:600}.small{font-size:13px}.focus{fill:#b54708;font-weight:700}</style>
+  </defs>
+  <rect width="1000" height="350" fill="#fff"/>
+  <text x="500" y="34" text-anchor="middle" class="title">一维数组的 Block 与 Tile 两级切分</text>
+  <text x="55" y="78" class="label">全局向量 N = 16384</text>
+  <g transform="translate(55,92)">
+    <rect x="0" y="0" width="890" height="54" rx="8" fill="#edf3ff" stroke="#4c6fff" stroke-width="2"/>
+    <rect x="222" y="1" width="111" height="52" fill="#fff1dc"/>
+    <g stroke="#4c6fff" stroke-width="1.5">
+      <path d="M111 0V54"/><path d="M222 0V54"/><path d="M333 0V54"/><path d="M445 0V54"/>
+      <path d="M556 0V54"/><path d="M667 0V54"/><path d="M778 0V54"/>
+    </g>
+    <g class="label" text-anchor="middle">
+      <text x="55" y="33">Block 0</text><text x="166" y="33">Block 1</text><text x="277" y="33" class="focus">Block 2</text>
+      <text x="389" y="33">Block 3</text><text x="500" y="33">Block 4</text><text x="611" y="33">Block 5</text>
+      <text x="722" y="33">Block 6</text><text x="834" y="33">Block 7</text>
+    </g>
+  </g>
+  <text x="55" y="177" class="small">blockOffset = blockIdx × blockLength</text>
+  <path d="M55 191 H166" stroke="#172b4d" stroke-width="2"/>
+  <path d="M55 186 V196 M166 186 V196" stroke="#172b4d" stroke-width="2"/>
+  <text x="110" y="214" text-anchor="middle" class="small">blockLength = 2048 个元素</text>
+  <text x="500" y="177" class="small focus">Block 2 起点 = 2 × 2048 = 4096</text>
+
+  <text x="55" y="252" class="label">Block 2 内的 8 个 Tile</text>
+  <g transform="translate(260,228)">
+    <rect x="0" y="0" width="685" height="54" rx="8" fill="#edfff4" stroke="#24a148" stroke-width="2"/>
+    <rect x="257" y="1" width="85" height="52" fill="#fff1dc"/>
+    <g stroke="#24a148" stroke-width="1.5">
+      <path d="M85 0V54"/><path d="M171 0V54"/><path d="M257 0V54"/><path d="M342 0V54"/>
+      <path d="M428 0V54"/><path d="M514 0V54"/><path d="M600 0V54"/>
+    </g>
+    <g class="label" text-anchor="middle">
+      <text x="42" y="33">T0</text><text x="128" y="33">T1</text><text x="214" y="33">T2</text><text x="299" y="33" class="focus">T3</text>
+      <text x="385" y="33">T4</text><text x="471" y="33">T5</text><text x="557" y="33">T6</text><text x="642" y="33">T7</text>
+    </g>
+  </g>
+  <text x="602" y="310" text-anchor="middle" class="small">tileLength = 256 个元素；tileCount 表示真实 GM Tile 数，与队列槽位数无关</text>
+  <text x="602" y="334" text-anchor="middle" class="small focus">Block 2、Tile 3：起点 4096 + 3 × 256 = 4864，区间 [4864, 5120)</text>
+</svg>

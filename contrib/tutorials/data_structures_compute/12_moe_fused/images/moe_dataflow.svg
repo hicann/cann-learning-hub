@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="430" viewBox="0 0 860 430" font-family="DejaVu Sans, Arial, sans-serif">
+  <style>
+    .title { font-size: 17px; font-weight: bold; fill: #1a1a1a; }
+    .sub { font-size: 13px; font-weight: bold; fill: #333; }
+    .box { stroke-width: 1.5; rx: 6; }
+    .gm { fill: #fdecea; stroke: #c0392b; }
+    .ub { fill: #e8f6ef; stroke: #1e8449; }
+    .op { fill: #eaf2fb; stroke: #2e6da4; }
+    .lbl { font-size: 12px; fill: #1a1a1a; }
+    .small { font-size: 11px; fill: #555; }
+    .arrow { stroke: #555; stroke-width: 1.6; fill: none; marker-end: url(#ah); }
+    .strike { stroke: #c0392b; stroke-width: 2; }
+  </style>
+  <defs>
+    <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="28" class="title">MoE Router 融合前后数据流对比（中间张量介质：GM → UB）</text>
+
+  <!-- ============ 上半：未融合 ============ -->
+  <text x="20" y="62" class="sub">未融合：4 个 kernel，中间张量全部经 GM（HBM）往返，4 次发射</text>
+
+  <rect x="20"  y="80" width="90" height="34" class="box gm"/><text x="65" y="101" text-anchor="middle" class="lbl">GM: x [N,D]</text>
+  <rect x="20"  y="122" width="90" height="34" class="box gm"/><text x="65" y="143" text-anchor="middle" class="lbl">GM: W [D,E]</text>
+
+  <rect x="150" y="98" width="110" height="40" class="box op"/><text x="205" y="115" text-anchor="middle" class="lbl">matmul</text><text x="205" y="129" text-anchor="middle" class="small">kernel 1</text>
+  <rect x="300" y="98" width="110" height="40" class="box op"/><text x="355" y="115" text-anchor="middle" class="lbl">softmax</text><text x="355" y="129" text-anchor="middle" class="small">kernel 2</text>
+  <rect x="450" y="98" width="110" height="40" class="box op"/><text x="505" y="115" text-anchor="middle" class="lbl">topk</text><text x="505" y="129" text-anchor="middle" class="small">kernel 3</text>
+  <rect x="600" y="98" width="110" height="40" class="box op"/><text x="655" y="115" text-anchor="middle" class="lbl">div (renorm)</text><text x="655" y="129" text-anchor="middle" class="small">kernel 4</text>
+
+  <rect x="750" y="86" width="90" height="28" class="box gm"/><text x="795" y="104" text-anchor="middle" class="lbl">topk_idx</text>
+  <rect x="750" y="120" width="90" height="28" class="box gm"/><text x="795" y="138" text-anchor="middle" class="lbl">topk_weights</text>
+
+  <path d="M110,97 L148,110" class="arrow"/>
+  <path d="M110,139 L148,128" class="arrow"/>
+  <path d="M260,118 L298,118" class="arrow"/>
+  <path d="M410,118 L448,118" class="arrow"/>
+  <path d="M560,118 L598,118" class="arrow"/>
+  <path d="M710,110 L748,100" class="arrow"/>
+  <path d="M710,126 L748,132" class="arrow"/>
+
+  <text x="280" y="92" text-anchor="middle" class="small">GM: scores [N,E]</text>
+  <text x="430" y="92" text-anchor="middle" class="small">GM: gate [N,E]</text>
+  <text x="580" y="92" text-anchor="middle" class="small">GM: topk_scores [N,K]</text>
+  <text x="430" y="166" text-anchor="middle" class="small">中间张量 3 次写 + 3 次读 GM：16·N·E + 8·N·K 字节（BF16/FP16）</text>
+
+  <line x1="20" y1="192" x2="840" y2="192" stroke="#bbb" stroke-dasharray="6 4"/>
+
+  <!-- ============ 下半：融合 ============ -->
+  <text x="20" y="222" class="sub">融合：1 个 kernel（moe_router_fused），中间张量全部驻留 UB，1 次发射</text>
+
+  <rect x="20" y="250" width="90" height="34" class="box gm"/><text x="65" y="271" text-anchor="middle" class="lbl">GM: x [N,D]</text>
+  <rect x="20" y="292" width="90" height="34" class="box gm"/><text x="65" y="313" text-anchor="middle" class="lbl">GM: W [D,E]</text>
+
+  <rect x="150" y="240" width="520" height="100" class="box ub"/>
+  <text x="410" y="260" text-anchor="middle" class="lbl" font-weight="bold">单 kernel（纯标量，SPMD 多核按行块切分）</text>
+
+  <rect x="170" y="272" width="110" height="40" class="box op"/><text x="225" y="289" text-anchor="middle" class="lbl">标量点积</text><text x="225" y="303" text-anchor="middle" class="small">scores 行（UB 数组）</text>
+  <rect x="300" y="272" width="110" height="40" class="box op"/><text x="355" y="289" text-anchor="middle" class="lbl">softmax</text><text x="355" y="303" text-anchor="middle" class="small">原地（UB 数组）</text>
+  <rect x="430" y="272" width="110" height="40" class="box op"/><text x="485" y="289" text-anchor="middle" class="lbl">K 轮 max topk</text><text x="485" y="303" text-anchor="middle" class="small">选择问题（UB 数组）</text>
+  <rect x="560" y="272" width="90" height="40" class="box op"/><text x="605" y="289" text-anchor="middle" class="lbl">renorm</text><text x="605" y="303" text-anchor="middle" class="small">标量写回</text>
+
+  <path d="M280,292 L298,292" class="arrow"/>
+  <path d="M410,292 L428,292" class="arrow"/>
+  <path d="M540,292 L558,292" class="arrow"/>
+
+  <path d="M110,267 L148,280" class="arrow"/>
+  <path d="M110,309 L148,300" class="arrow"/>
+
+  <rect x="750" y="256" width="90" height="28" class="box gm"/><text x="795" y="274" text-anchor="middle" class="lbl">topk_idx</text>
+  <rect x="750" y="290" width="90" height="28" class="box gm"/><text x="795" y="308" text-anchor="middle" class="lbl">topk_weights</text>
+  <path d="M670,282 L748,270" class="arrow"/>
+  <path d="M670,300 L748,302" class="arrow"/>
+
+  <text x="410" y="362" text-anchor="middle" class="small">中间张量 GM 流量：16·N·E + 8·N·K 字节 → 0（全部驻留 UB，&lt; 0.5KB/行）；发射 4 次 → 1 次</text>
+
+  <!-- legend -->
+  <rect x="20" y="386" width="16" height="12" class="box gm"/><text x="42" y="396" class="small">GM（HBM，慢、容量大）</text>
+  <rect x="210" y="386" width="16" height="12" class="box ub"/><text x="232" y="396" class="small">UB（片上，快、192KB/核）</text>
+  <rect x="430" y="386" width="16" height="12" class="box op"/><text x="452" y="396" class="small">计算步骤</text>
+</svg>

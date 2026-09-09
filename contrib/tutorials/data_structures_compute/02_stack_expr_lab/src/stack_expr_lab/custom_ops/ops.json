@@ -1,0 +1,83 @@
+[
+    {
+        "op": "BracketMatchLite",
+        "language": "cpp",
+        "input_desc": [
+            {
+                "name": "x",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["int8"]
+            }
+        ],
+        "output_desc": [
+            {
+                "name": "y",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["int32"]
+            }
+        ],
+        "attr": [
+            {
+                "name": "exprLength",
+                "param_type": "required",
+                "type": "int"
+            }
+        ]
+    },
+    {
+        "op": "SuffixEvalLite",
+        "language": "cpp",
+        "input_desc": [
+            {
+                "name": "x",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["int32"]
+            }
+        ],
+        "output_desc": [
+            {
+                "name": "y",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["float"]
+            }
+        ],
+        "attr": [
+            {
+                "name": "tokenCount",
+                "param_type": "required",
+                "type": "int"
+            }
+        ]
+    },
+    {
+        "op": "InfixToPostfixLite",
+        "language": "cpp",
+        "input_desc": [
+            {
+                "name": "x",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["int8"]
+            }
+        ],
+        "output_desc": [
+            {
+                "name": "y",
+                "param_type": "required",
+                "format": ["ND"],
+                "type": ["int8"]
+            }
+        ],
+        "attr": [
+            {
+                "name": "exprLength",
+                "param_type": "required",
+                "type": "int"
+            }
+        ]
+    }
+]
