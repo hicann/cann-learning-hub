@@ -1,0 +1,77 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / pypto / device 等；answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。若片段引用主 notebook 中未定义的类或函数（如 knn、get_similar_tokens、get_analogy 等），请先运行对应参考答案 notebook 获取其定义。
+
+13.7 词的相似性和类比任务 练习参考答案
+
+练习13.7.1
+
+题目： 使用 TokenEmbedding('wiki.en') 测试 fastText 结果。
+
+解答： wiki.en 是 fastText 在英文维基百科上预训练的 300 维词向量（含子词信息，能较好处理 OOV 与形态变化）。把主 notebook 中加载 GloVe 的位置换成 TokenEmbedding('wiki.en') 即可复用 knn / get_similar_tokens / get_analogy。注意该文件较大（约 2.4GB），下载耗时较长；若网络受限下载失败，下面代码会自动回退到 glove.6b.50d 演示相同流程。
+
+PyTorch 代码：
+
+import logging
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+logging.getLogger("torch_npu").setLevel(logging.WARNING)
+
+try:
+    embed = TokenEmbedding('wiki.en')
+    print('已加载 fastText wiki.en')
+except Exception as e:
+    print(f'wiki.en 下载失败（{e.__class__.__name__}），回退到 GloVe glove.6b.50d 演示：')
+    embed = TokenEmbedding('glove.6b.50d')
+print(f'词表大小: {len(embed)}')
+print(f'向量维度: {embed.idx_to_vec.shape[1]}')
+
+def knn(W, W_norm_sq, x, k):
+    # 余弦相似度 = W·x / (‖W‖·‖x‖)
+    cos = ((W @ x.reshape(-1, 1)) /
+           (W_norm_sq.sqrt() * torch.norm(x) + 1e-9)).reshape(-1)
+    topk = torch.topk(cos, k=k)[1]
+    return topk.cpu(), cos[topk].cpu()
+
+def get_similar_tokens(query_token, k, embed):
+    topk, cos = knn(embed.idx_to_vec, embed.w_norm_sq,
+                    embed[[query_token]], k + 1)
+    for i, c in zip(topk[1:], cos[1:]):
+        print(f'{embed.idx_to_token[int(i)]}：cosine相似度={float(c):.3f}')
+
+for token in ['computer', 'good', 'beautiful']:
+    print(f'--- 与 "{token}" 最相似的词（fastText wiki.en）---')
+    get_similar_tokens(token, 3, embed)
+
+def get_analogy(token_a, token_b, token_c, embed):
+    vecs = embed[[token_a, token_b, token_c]]
+    x = vecs[1] - vecs[0] + vecs[2]
+    topk, cos = knn(embed.idx_to_vec, embed.w_norm_sq, x, 3)
+    for i, c in zip(topk, cos):
+        token = embed.idx_to_token[int(i)]
+        if token not in (token_a, token_b, token_c) and token != '<unk>':
+            return token
+    return '<unk>'
+
+for trio in [('man', 'woman', 'son'), ('beijing', 'china', 'tokyo'),
+             ('do', 'did', 'go')]:
+    print(f'{trio[0]} : {trio[1]} = {trio[2]} : '
+          f'{get_analogy(*trio, embed)}')
+
+
+---
+
+练习13.7.2
+
+题目： 当词表非常大时，我们怎样才能更快地找到相似的词或完成一个词的类比呢？
+
+解答： 暴力法对词表 V 逐个算余弦相似度是 O(|V| · d)，词表很大（如千万级）时不可接受。加速手段包括：
+
+- 近似最近邻（ANN）：用 HNSW、乘积量化（PQ）等索引结构，把查询降到 O(log |V|) 量级，牺牲少量精度换取数量级的速度提升；
+- 局部敏感哈希（LSH）：把相似的向量以高概率映射到同一桶，桶内再做精确搜索；
+- 子词/前缀索引：利用词形态（如 Trie 树）快速缩小候选集；
+- 降维：对超大词表先用 PCA/随机投影降维再检索，进一步减少每次点积的开销。
+
+工程实践：业界常用向量检索库（如 FAISS、Milvus）封装上述 ANN 算法，把“找相似词/类比”变成标准 KNN 查询，避免自己实现。
+
+---
+
+## 参考答案来源
+参考答案和 PyTorch 代码实现来源：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/

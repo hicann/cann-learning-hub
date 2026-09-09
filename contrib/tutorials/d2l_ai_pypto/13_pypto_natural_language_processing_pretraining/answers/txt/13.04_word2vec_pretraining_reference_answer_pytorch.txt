@@ -1,0 +1,184 @@
+说明：以下代码片段依赖主 notebook 环境（已导入 torch / nn / pypto / device 等；answers 子目录需先执行 sys.path.insert(0, "..") 以导入 src.utils / src.pypto_ops）。若片段引用主 notebook 中未定义的类或函数（如 skip_gram、SigmoidBCELoss、TokenEmbedding 等），请先运行对应参考答案 notebook 获取其定义。
+
+13.4 预训练word2vec 练习参考答案
+
+练习13.4.1
+
+题目： 使用训练好的模型，找出其他输入词在语义上相似的词。您能通过调优超参数来改进结果吗？
+
+解答： 可以。以下先复用主 notebook 的训练流程（skip_gram + 融合 BCE 损失）在 PTB 上训练一个 5 轮的小模型，再对多个查询词找最近邻；之后通过调大嵌入维度/负采样数、调小学习率等观察相似词质量的变化。影响词向量质量的超参数主要有：
+
+1. embed_size（嵌入维度）：越大表达能力越强，但训练更慢、小语料上易过拟合；
+2. max_window_size（上下文窗口）：越大上下文信息越多，但噪声也越多；
+3. num_noise_words（负采样数 K）：越大负样本越充分、训练越稳，但更慢；
+4. lr（学习率）与 num_epochs：影响收敛质量。
+
+PyTorch 代码：
+
+import logging
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+logging.getLogger("torch_npu").setLevel(logging.WARNING)
+
+def skip_gram(center, contexts_and_negatives, embed_v, embed_u):
+    v = embed_v(center)
+    u = embed_u(contexts_and_negatives)
+    pred = torch.bmm(v, u.transpose(1, 2))
+    return pred.reshape(v.shape[0], 1, -1)
+
+class SigmoidBCELoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, inputs, target, mask=None):
+        if mask is None:
+            mask = torch.ones_like(target)
+        # mask 为 int64（batchify 原样返回），NPU 的 BCE 需 float 权重
+        out = F.binary_cross_entropy_with_logits(
+            inputs, target, mask.float(), reduction='none').mean(dim=1, keepdim=True)
+        return out
+
+loss_fn_ = SigmoidBCELoss()
+
+def train(net, data_iter, lr, num_epochs, device=try_gpu()):
+    def init_weights(m):
+        if type(m) == nn.Embedding:
+            nn.init.xavier_uniform_(m.weight)
+    net.apply(init_weights)
+    net = net.to(device)
+    optimizer = torch.optim.Adam(net.parameters(), lr=lr)
+    metric = Accumulator(2)
+    for epoch in range(num_epochs):
+        timer = Timer()
+        for i, batch in enumerate(data_iter):
+            optimizer.zero_grad()
+            center, context_negative, mask, label = [
+                data.to(device) for data in batch]
+            pred = skip_gram(center, context_negative, net[0], net[1])
+            l = (loss_fn_(pred.reshape(label.shape).float(), label.float(), mask)
+                     / mask.sum(axis=1) * mask.shape[1])
+            l.sum().backward()
+            optimizer.step()
+            metric.add(l.sum(), l.numel())
+        print(f'epoch {epoch + 1}, loss {metric[0] / metric[1]:.3f}, '
+              f'{metric[1] / timer.stop():.0f} tokens/sec')
+    return net
+
+def get_similar_tokens(query_token, k, embed, W_norm_sq, vocab):
+    W = embed.weight.data
+    x = W[vocab[query_token]]
+    # 余弦相似度 = W·x / (‖W‖·‖x‖)
+    cos = (W @ x) / (W_norm_sq.sqrt().squeeze(1) * torch.norm(x) + 1e-9)
+    topk = torch.topk(cos, k=k + 1)[1].cpu().numpy().astype('int32')
+    for i in topk[1:]:
+        print(f'cosine sim={float(cos[i]):.3f}: {vocab.to_tokens(i)}')
+
+# 数据与模型（小规模：embed_size=100，K=5）
+data_iter, vocab = load_data_ptb(512, 5, 5)
+embed_size = 100
+net = nn.Sequential(nn.Embedding(num_embeddings=len(vocab),
+                                 embedding_dim=embed_size),
+                    nn.Embedding(num_embeddings=len(vocab),
+                                 embedding_dim=embed_size))
+train(net, data_iter, 0.002, 3, device=device)
+
+W_norm_sq = torch.sum(net[0].weight.data ** 2, dim=1, keepdim=True)  # 行范数平方一次预计算
+for token in ['chip', 'baby', 'beautiful']:
+    print(f'--- 与 "{token}" 最相似的词 ---')
+    get_similar_tokens(token, 3, net[0], W_norm_sq, vocab)
+
+# ── 调优：embed_size=300、K=10 再训练，观察相似词质量变化 ──
+data_iter2, vocab2 = load_data_ptb(512, 5, 10)
+net2 = nn.Sequential(nn.Embedding(num_embeddings=len(vocab2),
+                                  embedding_dim=300),
+                     nn.Embedding(num_embeddings=len(vocab2),
+                                  embedding_dim=300))
+train(net2, data_iter2, 0.002, 3, device=device)
+print('--- 调优后与 "chip" 最相似的词 ---')
+W_norm_sq2 = torch.sum(net2[0].weight.data ** 2, dim=1, keepdim=True)
+get_similar_tokens('chip', 3, net2[0], W_norm_sq2, vocab2)
+
+
+---
+
+练习13.4.2
+
+题目： 当训练语料库很大时，在更新模型参数时，我们经常对当前小批量的*中心词*进行上下文词和噪声词的采样。换言之，同一中心词在不同的训练迭代轮数可以有不同的上下文词或噪声词。这种方法的好处是什么？尝试实现这种训练方法。
+
+解答： 好处主要有：
+
+- 降低内存/显存占用：不必一次性为整个语料生成全部（中心词，上下文）对并驻留内存，而是每轮按中心词现场采样，语料越大优势越明显；
+- 提升泛化能力：同一中心词每轮看到不同的上下文/负样本，等价于数据增强，降低了模型对特定共现的过拟合；
+- 更好处理长尾词：低频词也能在每轮获得不同的上下文搭配，训练更充分。
+
+实现思路：把“离线生成 all_centers/all_contexts/all_negatives”改成在每个 epoch 内重新对语料做中心词/上下文/负采样（保留 Vocab 与词频表，仅每次重新调用 get_centers_and_contexts 与 get_negatives），再喂给 DataLoader。由于采样成本与每轮批次数成正比，训练时用同样的小批量流程即可。
+
+PyTorch 代码：
+
+import logging
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+logging.getLogger("torch_npu").setLevel(logging.WARNING)
+
+import random
+from src.utils import (read_ptb, Vocab, subsample, get_centers_and_contexts,
+                       get_negatives, batchify)
+
+# 当前全局 skip_gram / loss_fn_ 为 PyPTO 版，此处覆盖回 torch 版
+def skip_gram(center, contexts_and_negatives, embed_v, embed_u):
+    v = embed_v(center)
+    u = embed_u(contexts_and_negatives)
+    pred = torch.bmm(v, u.transpose(1, 2))
+    return pred.reshape(v.shape[0], 1, -1)
+
+class SigmoidBCELoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, inputs, target, mask=None):
+        if mask is None:
+            mask = torch.ones_like(target)
+        # mask 为 int64（batchify 原样返回），NPU 的 BCE 需 float 权重
+        out = F.binary_cross_entropy_with_logits(
+            inputs, target, mask.float(), reduction='none').mean(dim=1, keepdim=True)
+        return out
+
+loss_fn_ = SigmoidBCELoss()
+
+sentences = read_ptb()
+vocab3 = Vocab(sentences, min_freq=10)
+subsampled, counter = subsample(sentences, vocab3)
+
+def dynamic_train(net, vocab, counter, num_epochs, batch_size=512,
+                  max_window_size=5, K=5, lr=0.002, device=try_gpu()):
+    net = net.to(device)
+    optimizer = torch.optim.Adam(net.parameters(), lr=lr)
+    metric = Accumulator(2)
+    for epoch in range(num_epochs):
+        # 每个 epoch 重新采样（同一中心词得到不同上下文与噪声词）
+        corpus = [vocab[line] for line in subsampled]
+        all_centers, all_contexts = get_centers_and_contexts(corpus, max_window_size)
+        all_negatives = get_negatives(all_contexts, vocab, counter, K)
+        data = list(zip(all_centers, all_contexts, all_negatives))
+        random.shuffle(data)
+        timer = Timer()
+        for start in range(0, len(data), batch_size):
+            center, context_negative, mask, label = [
+                t.to(device) for t in batchify(data[start:start + batch_size])]
+            optimizer.zero_grad()
+            pred = skip_gram(center, context_negative, net[0], net[1])
+            l = (loss_fn_(pred.reshape(label.shape).float(), label.float(), mask)
+                     / mask.sum(axis=1) * mask.shape[1])
+            l.sum().backward()
+            optimizer.step()
+            metric.add(l.sum(), l.numel())
+        print(f'epoch {epoch + 1}, loss {metric[0] / metric[1]:.3f}, '
+              f'{metric[1] / timer.stop():.0f} tokens/sec')
+
+net3 = nn.Sequential(nn.Embedding(num_embeddings=len(vocab3), embedding_dim=100),
+                     nn.Embedding(num_embeddings=len(vocab3), embedding_dim=100))
+dynamic_train(net3, vocab3, counter, num_epochs=2, device=device)
+
+
+---
+
+## 参考答案来源
+参考答案和 PyTorch 代码实现来源：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/
