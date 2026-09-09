@@ -1,0 +1,11 @@
+flowchart TB
+    subgraph single["单流模式（按图编译入口开启）"]
+        S1["stream0: [算1][算2][算3][算4]...<br/>串行，确定性强，无跨流同步"]
+    end
+    subgraph multi["多流模式（默认）"]
+        M1["stream0: [算1]──[算3]─────"]
+        M2["stream1: [算2]──[算4]──<br/>无依赖算子并行，吞吐更高"]
+        M3["跨流处插入 Event/Notify 保证数据一致"]
+        M1 -.-> M3
+        M2 -.-> M3
+    end

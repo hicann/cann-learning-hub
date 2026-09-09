@@ -1,0 +1,13 @@
+flowchart TB
+    subgraph A["路线 A：Pattern 匹配（推荐）"]
+        A1["继承 PatternFusionPass / DecomposePass"]
+        A2["重写 Patterns() → MeetRequirements() → Replacement()"]
+        A3["REG_FUSION_PASS / REG_DECOMPOSE_PASS 注册"]
+        A1 --> A2 --> A3
+    end
+    subgraph B["路线 B：改图接口"]
+        B1["编写 graphStatus CustomPassFunc(graph, ctx)"]
+        B2["手动 FindNodes → CreateNode → AddDataEdge → RemoveNode"]
+        B3["REGISTER_CUSTOM_PASS注册"]
+        B1 --> B2 --> B3
+    end

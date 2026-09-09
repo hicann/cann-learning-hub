@@ -1,0 +1,14 @@
+flowchart LR
+    A["真实输入<br/>带具体 shape"]
+    B{"编译后的<br/>执行单元"}
+    C["运行期 InferShape<br/>仅确需动态推导的节点"]
+    D["运行期 Tiling<br/>仅需要 Tiling 的算子"]
+    E["获取/刷新 Buffer<br/>通常复用缓存池"]
+    F["Kernel Launch"]
+    G["Device 执行"]
+    H["Known Shape 子图"]
+    I["静态执行器<br/>模型任务触发"]
+
+    A --> B
+    B -->|Unknown Shape 节点| C --> D --> E --> F --> G
+    B -->|Known Shape 子图| H --> I --> G

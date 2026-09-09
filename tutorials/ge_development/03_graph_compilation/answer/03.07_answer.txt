@@ -1,0 +1,57 @@
+03.07 图编译 章节练习答案
+
+一、判断题
+
+1. 正确。GE 接受两类图输入：AscendIR API 手工构图，或通过 Parser（aclgrphParseONNX / aclgrphParseTensorFlow 等）解析框架模型；两种方式产出的都是同一种 AscendIR 图，进入统一编译流程。
+
+2. 错误。编译配置通常分全局选项、Session（会话）选项、图级选项三层，且存在优先级与传递关系，并非只有单一全局层级。
+
+3. 正确。外置权重把权重数据从 OM 内部移出独立存放，便于多模型/多实例共享，是面向部署的产物形态优化。
+
+4. 错误。REG_OP 的 op type 名、REG_AUTO_MAPPING_OP 的类名、构图侧使用的 op type 必须三者完全一致，GE 不会模糊匹配；不一致会导致找不到实现类。
+
+5. 错误。基于 Pattern 匹配的融合 Pass 不支持匹配控制边、不支持嵌套子图（Pattern 必须是扁平 DAG），也不支持动态输入/输出个数的节点。
+
+6. 正确。自定义算子以 .so 交付件通过 ASCEND_CUSTOM_OPP_PATH 加载，自定义融合 Pass 以 .so 插件安装到 opp/vendors/<xxx>/custom_fusion_passes/ 加载，二者都不需要修改并重新编译 GE 框架。
+
+7. 正确。模型编译缓存命中可跳过重复编译；当 soc_version、编译选项、图结构等发生变化导致不再匹配时，缓存会失效，需要重新编译。
+
+二、单选题
+
+8. B。已有 ONNX/pb 模型迁移时优先用 Parser 解析，全新构图或需要精细控制时用 AscendIR API。Parser 也支持 TensorFlow（C 选项错误），两种方式产出同一种 IR 并进入同一编译流程（D 错误）。
+
+9. B。precision_mode 这类精度配置用于在精度与性能之间做取舍，例如是否允许降精度以换取性能。
+
+10. B。SO in OM 机制把自定义算子的 .so 随模型一起打包发布，便于部署，使含自定义算子的 OM 可独立分发。
+
+11. B。EagerExecuteOp::Execute 是 V2 机制的运行时核心接口，负责获取输入、分配输出、launch kernel。A 是编译期 shape 推导，C 是序列化，D 是地址刷新。
+
+12. B。Patterns 用于定义匹配模板，是 PatternFusionPass 必须重写的函数（Replacement 也必须重写）。MeetRequirements 可选，Run 由基类实现，Compile 属于自定义算子接口。
+
+13. B。kBeforeInferShape（InferShape 前）最常用，replacement 后续进入统一 shape 推导流程，无需自行处理 shape。
+
+14. B（针对支持 GE V2 的版本）。离线 OM 下沉需要 CompilableOp 生成设备 binary，并由 PortableOp 将 binary 序列化进 OM；CANN 9.0.0 的 3.05 离线样例改用标准 V1 Ascend C 算子包，不依赖这两个 9.1 接口。
+
+三、多选题
+
+15. ABC。A 正确，三层配置体系有优先级。B 正确，融合配置可开关规则、设置白/黑名单用于调试关闭指定融合。C 正确，多 stream 并行但数量有上限。D 错误，buffer/内存复用是可开关的配置，且有明确作用范围。
+
+16. ABC。A 正确，算子在 GE 仓外维护、通过 ASCEND_CUSTOM_OPP_PATH 加载。B 正确，V2 能力接口按需组合，GE 通过 dynamic_cast 检测。C 正确，TensorFlow 场景可从 TF 原型自动生成 GE proto。D 错误，fallback 下发仅适用于训练或在线推理，不支持离线推理。
+
+17. ABC。A 正确，两条实现路线（Pattern 匹配推荐、改图接口）。B 正确，Pattern 边界规则要求外部输入与「替换后外部仍使用的输出」都声明。C 正确，DecomposePass 适合单算子展开为多算子。D 错误，Pass .so 安装后由 GE 自动加载，无需重新编译 GE。
+
+18. ABC。A 正确，DUMP_GE_GRAPH=1 可 dump 编译过程图对比融合前后。B 正确，离线链路成功会生成 .om 并打印执行成功信息。C 正确，性能收益需结合 Profiling 判断。D 错误，图结构正确不等于一定有性能提升，必须靠 Profiling 确认收益。
+
+四、实践题（验收要点）
+
+19. 自定义算子离线 OM 闭环。验收：运行 3.05 离线示例的 `Sources/03.05/offline_add_custom/run.sh`，在生成的 vendor 根目录设置 `ASCEND_CUSTOM_OPP_PATH`；`output/` 下生成 `single_add.air` 与 `single_add.om`，ATC 使用 `--framework=1 --soc_version=Ascend910B4`，ACL 执行后打印 `First element of output: 3.000000`。关键链路：标准 Ascend C `OpDef/Tiling/kernel` → 构图导出 AIR → ATC 读取 OPP 并生成 OM → ACL 加载 OM。
+
+20. 自定义融合 Pass 闭环与验证。验收：编译并 make install 把 libfuse_matmul_add_pass.so 安装到 opp/vendors/<xxx>/custom_fusion_passes/；DUMP_GE_GRAPH=1 后日志出现 "Define pattern for FuseMatMulAndAddPass"/"Define replacement ..."；对比 ge_onnx_xxxx_PreRunBegin.pbtxt（融合前）与 ge_onnx_xxxx_RunCustomPassBeforeInfershape.pbtxt（融合后），确认 MatMul+Add 被替换为单个 GEMM。
+
+21. 编译配置改动观察。验收：能明确说出改的是全局/会话/图级中的哪一层、预期与实际现象、以及定位入口。示例答案：在融合黑名单中加入某 Pass 后，dump 图中对应算子不再融合，说明融合配置生效；或调整 precision_mode 影响算子精度选择；或调整 stream 配置后结合 Profiling 看并行度变化。
+
+22. 命名一致性实验。验收：故意改名后应复现 "GE 找不到自定义算子" 类报错；正确做法是保证 REG_OP 名 / REG_AUTO_MAPPING_OP 类名 / 构图侧 op type 三者一致。CANN 9.0 在线场景下，还应确认 ASCEND_CUSTOM_OPP_PATH 的某个路径项直接指向包含 libcust_opapi.so 的目录；离线 ATC 场景则应指向包含 op_proto、op_impl、op_tiling 等交付件的 vendor 根目录。
+
+23. Pass 阶段改动实验。验收：阶段从 kBeforeInferShape 改为 kAfterInferShape 后，dump 图文件名从 ..._RunCustomPassBeforeInfershape.pbtxt 变为 ..._RunCustomPass_AfterInferShape.pbtxt；并说明 InferShape 后阶段时 replacement 需自行保证输出 shape 正确（必要时调用 GeUtils::InferShape），CheckNodeSupportOnAicore 等接口需在 InferShape 之后调用。
+
+24. Parser 导入改动实验。验收：含 GE 不识别 op type 的 ONNX 模型导入时，ONNX Parser 会报 "The type is not supported"（PARAM_INVALID）；解决思路是编写 ONNX 解析插件（REGISTER_CUSTOM_OP + ParseParamsFn，OriginOpType 格式为 domain::version::OpType）把 ONNX 节点映射为 GE 算子，并提供 GE 侧自定义算子交付件 .so，且解析插件需在 ATC 编译前通过 ASCEND_CUSTOM_OPP_PATH 加载。

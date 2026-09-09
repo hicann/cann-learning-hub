@@ -1,0 +1,15 @@
+04.05 课后练习答案
+
+1. 正确。动态分档在编译期枚举档位、为每个档位生成独立的静态优化子图；命中某档位时即按静态 Shape 子图执行，重新获得静态 Shape 的编译优化与整图下沉收益。
+
+2. 正确。动态分档模型的特征内存按「最大档位」预留，以保证任意档位都能容纳；因此即便执行最小档位，模型内存占用仍接近最大档位——这是「以内存换性能」的代价。
+
+3. 错误。动态 batch（--dynamic_batch_size）、动态分辨率（--dynamic_image_size）、任意维度动态（--dynamic_dims）三种分档模式互斥，不能同时使用。
+
+4. C。`--dynamic_batch_size` 用于配置「仅 batch 维度变化」的动态分档；`--dynamic_image_size` 配置 HW 分辨率，`--dynamic_dims` 配置任意维度。
+
+5. B。离线推理时动态 batch 模型执行前用 `aclmdlSetDynamicBatchSize` 设置真实 batch 档位；动态分辨率用 `aclmdlSetDynamicHWSize`，任意维度用 `aclmdlSetInputDynamicDims`。
+
+6. C。分档 Session 负责高频档位，动态 Session 负责未命中的输入，兼顾分档性能与动态 shape 的鲁棒性。只有确认 padding 不会改变模型语义时，才可把请求补齐到下一档；否则应直接走动态 Session。
+
+7. ABC。A 正确，动态分档本质是把可枚举的 shape 重新变回静态 Shape 以重获优化；B 正确，未命中任何编译档位且没有动态图兜底时会执行失败；C 正确，动态 shape 范围用 `~` 表区间、`-1` 表无限定，仍属动态 Shape 路径。D 错误，档位越多编译时间与内存开销越大，不能无限增加。

@@ -1,0 +1,9 @@
+flowchart TB
+    H["ModelFileHeader（模型文件头：版本/魔数/分区表）"]
+    A["MODEL_DEF — 模型定义（图结构/算子属性）"]
+    B["MODEL_WEIGHTS — 权重数据（卷积核/BN参数…）"]
+    C["MODEL_TBE_KERNEL — 算子二进制（适配 AI Core）"]
+    D["SO_BINS — 算子 .so 集合（SO in OM 用）"]
+    E["TILING_DATA — 预计算 tiling 参数"]
+
+    H --> A --> B --> C --> D --> E

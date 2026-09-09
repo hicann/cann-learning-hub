@@ -1,0 +1,5 @@
+flowchart LR
+    A["model.onnx"] --> |aclgrphParseONNX| B["AscendIR Graph"]
+    C["model.pb"] --> |aclgrphParseTensorFlow| B
+    D["*.prototxt+*.caffemodel"] --> |aclgrphParseCaffe| B
+    B --> E["后续可改图 / 编译"]

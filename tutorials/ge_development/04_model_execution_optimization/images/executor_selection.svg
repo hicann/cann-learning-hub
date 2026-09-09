@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="340" viewBox="0 0 1000 340"
+     role="img" aria-labelledby="title desc">
+  <title id="title">GE 执行路径选择因素</title>
+  <desc id="desc">GE 综合图属性、API 场景和运行配置选择静态执行器、RT2 或特殊执行路径；RT2 模型内部仍可包含 Known Shape 静态子图。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#555"/>
+    </marker>
+    <style>
+      text { font-family: "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif; fill: #222; }
+      .neutral { fill: #f7f7f8; stroke: #666; stroke-width: 1.5; }
+      .static { fill: #eef9f1; stroke: #3f8f5f; stroke-width: 1.5; }
+      .dynamic { fill: #f4f1ff; stroke: #7057b8; stroke-width: 1.5; }
+      .special { fill: #fff7e8; stroke: #b47a21; stroke-width: 1.5; }
+      .title-text { font-size: 14px; font-weight: 600; text-anchor: middle; }
+      .detail { font-size: 12px; text-anchor: middle; fill: #444; }
+      .path-label { font-size: 11px; fill: #555; text-anchor: middle; }
+      .arrow { fill: none; stroke: #555; stroke-width: 1.6; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="neutral" x="15" y="130" width="170" height="80" rx="8"/>
+  <text class="title-text" x="100" y="163">API 入口</text>
+  <text class="detail" x="100" y="188">ACL / GeSession</text>
+
+  <line class="arrow" x1="185" y1="170" x2="220" y2="170"/>
+
+  <rect class="neutral" x="225" y="120" width="210" height="100" rx="8"/>
+  <text class="title-text" x="330" y="153">综合选择执行路径</text>
+  <text class="detail" x="330" y="178">图属性 + API 场景</text>
+  <text class="detail" x="330" y="200">+ 运行配置</text>
+
+  <polyline class="arrow" points="435,145 460,145 460,58 485,58"/>
+  <text class="path-label" x="570" y="15">满足完整静态执行条件</text>
+
+  <rect class="static" x="490" y="20" width="230" height="75" rx="8"/>
+  <text class="title-text" x="605" y="49">完整 Known Shape</text>
+  <text class="detail" x="605" y="73">静态执行器 / Task Sink</text>
+
+  <line class="arrow" x1="435" y1="170" x2="485" y2="170"/>
+
+  <rect class="dynamic" x="490" y="125" width="230" height="90" rx="8"/>
+  <text class="title-text" x="605" y="154">包含 Unknown Shape</text>
+  <text class="detail" x="605" y="179">CANN 9.0 普通图默认 RT2</text>
+  <text class="detail" x="605" y="199">仍可动静态混合执行</text>
+
+  <polyline class="arrow" points="435,195 460,195 460,285 485,285"/>
+
+  <rect class="special" x="490" y="250" width="230" height="70" rx="8"/>
+  <text class="title-text" x="605" y="276">特殊执行路径</text>
+  <text class="detail" x="605" y="298">单算子 / 特定入口 / 显式配置</text>
+
+  <polyline class="arrow" points="720,155 750,155 750,140 775,140"/>
+
+  <rect class="dynamic" x="780" y="105" width="205" height="70" rx="8"/>
+  <text class="title-text" x="882" y="133">Unknown Shape 部分</text>
+  <text class="detail" x="882" y="155">运行时 ExecuteGraph 节点</text>
+
+  <polyline class="arrow" points="720,190 750,190 750,240 775,240"/>
+
+  <rect class="static" x="780" y="205" width="205" height="70" rx="8"/>
+  <text class="title-text" x="882" y="233">Known Shape 子图</text>
+  <text class="detail" x="882" y="255">静态模型任务触发</text>
+</svg>

@@ -1,0 +1,7 @@
+flowchart LR
+    A["静态 Shape<br/>性能最佳，能写死就写死"]
+    B["动态多档位（分档）<br/>推荐折中：每档按静态 Shape 优化，性能≈静态<br/>shape 变化但可枚举"]
+    C["完全动态 Shape<br/>灵活性最高，但优化最少、Host 开销最大<br/>shape 变化无法枚举"]
+
+    C --> |shape 变化但可枚举| B
+    B --> |能写死就写死| A

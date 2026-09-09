@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="140" viewBox="0 0 780 140"
+     role="img" aria-labelledby="title desc">
+  <title id="title">动态 Shape 优化优先级</title>
+  <desc id="desc">从完全动态到静态 Shape 的优化优先级递进。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#555"/>
+    </marker>
+    <style>
+      text { font-family: "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif; fill: #222; }
+      .box { fill: #f4f1ff; stroke: #7057b8; stroke-width: 1.5; }
+      .title { font-size: 14px; font-weight: 600; text-anchor: middle; }
+      .detail { font-size: 12px; text-anchor: middle; fill: #444; }
+      .arrow { stroke: #555; stroke-width: 1.6; marker-end: url(#arrow); }
+      .note { font-size: 10px; text-anchor: middle; fill: #888; }
+    </style>
+  </defs>
+
+  <rect class="box" x="10" y="25" width="200" height="90" rx="8"/>
+  <text class="title" x="110" y="52">完全动态 Shape</text>
+  <text class="detail" x="110" y="75">灵活性最高，但优化最少</text>
+  <text class="detail" x="110" y="95">Host 开销最大</text>
+
+  <line class="arrow" x1="210" y1="70" x2="270" y2="70"/>
+  <text class="note" x="240" y="62">shape 可枚举</text>
+
+  <rect class="box" x="275" y="25" width="230" height="90" rx="8"/>
+  <text class="title" x="390" y="52">动态多档位（分档）</text>
+  <text class="detail" x="390" y="75">推荐折中：每档按静态优化</text>
+  <text class="detail" x="390" y="95">性能≈静态，shape 可枚举</text>
+
+  <line class="arrow" x1="505" y1="70" x2="565" y2="70"/>
+  <text class="note" x="535" y="62">能写死就写死</text>
+
+  <rect class="box" x="570" y="25" width="200" height="90" rx="8"/>
+  <text class="title" x="670" y="52">静态 Shape</text>
+  <text class="detail" x="670" y="75">性能最佳</text>
+  <text class="detail" x="670" y="95">能写死就写死</text>
+</svg>

@@ -1,0 +1,15 @@
+04.02 课后练习答案
+
+1. 正确。整图 Task Sink 的核心前提是相关 Tensor 的 shape 在编译期完全确定，使 GE 能完成模型级内存编排，并提前做好不依赖运行时输入数据的 Tiling 等 Host 侧计算。对于 `tiling_depend` 算子，还需要满足 Tiling 下沉条件，否则可能进入动态执行路径。
+
+2. 错误。整图下沉的核心收益正是：编译生成的 Task 在加载阶段已预分发到 Device，执行阶段 Host 只需下发一个模型执行 Task，即可触发预分发的任务链，不再在每次执行时逐一 Launch 编译后的 Task。
+
+3. 错误。包含 Unknown Shape 节点的图不能作为一个完整静态模型整体 Task Sink，但 GE 可以把图划分为 Known Shape 与 Unknown Shape 子图；满足条件的 Known Shape 子图仍可使用静态执行器和 Task Sink，动态部分走动态执行路径。
+
+4. B。模型下沉调度分为「模型加载」和「模型执行」两个阶段：加载阶段整图下沉一次，执行阶段下发一个模型 Task 触发执行。
+
+5. B。整图下沉消除的是 Host 逐算子下发开销，因此对 Host Bound（单算子计算很快、算子数量多、Host 下发跟不上 Device）的模型收益最大；Device Bound 模型瓶颈在算子计算本身，下沉收益有限。
+
+6. B。Tiling 下沉通过编译选项 `ge.tiling_schedule_optimize`（取值 "0" 关闭 / "1" 开启）控制，让满足算子和硬件能力条件的数据依赖 Tiling 在 Device 侧（AICPU）完成，避免运行时回到 Host，并使相应算子能够留在静态下沉路径中。
+
+7. ABC。A 正确，在本教程基线 CANN 9.0 中可用 `msprof --application` 拉起离线推理程序采集 timeline；B 正确，整图 Task Sink 路径以一个模型执行 Task 触发预分发的任务链；C 正确，下沉通常能减少由 Host 调度造成的 Device 空泡，但仍需 profiling 实测。D 错误，下沉对 Host Bound 场景的潜在收益较大，但对 Device Bound 模型的 E2E 可能变化不明显，不能一概而论。

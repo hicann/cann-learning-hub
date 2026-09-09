@@ -1,0 +1,7 @@
+flowchart TB
+    subgraph A["传统流程（Tiling 在 Host）"]
+        A1["Host(Tiling)"] --> |下发参数| A2["Device(AI Core 执行)"]
+    end
+    subgraph B["Tiling 下沉流程（Tiling 在 Device AICPU）"]
+        B1["Device(AICPU Tiling)"] --> B2["Device(AI Core 执行)"]
+    end

@@ -1,0 +1,17 @@
+03.05 课后练习答案
+
+1. 错误。自定义算子通过独立的算子原型、Host 实现和 Device kernel 接入 GE，不需要修改 GE 框架源码。
+
+2. 正确。在线示例通过 `Session::AddGraph + Session::RunGraph` 在当前进程内完成编译和执行，不调用 ATC，也不生成 OM。
+
+3. B。`REG_OP` 用于定义算子的输入、输出、属性和支持的数据类型。`IMPL_OP` 注册 shape/dtype 推导，`REG_AUTO_MAPPING_OP` 绑定在线执行实现，`OP_ADD` 用于标准 Ascend C 算子工程注册。
+
+4. B。`IMPL_OP(AddCustom)` 注册输出 shape 和 dtype 推导，GE 依靠这些信息完成图编译、格式推导和内存规划。
+
+5. ABC。`EagerExecuteOp::Execute()` 在执行期获取输入 Tensor、申请输出 Tensor，并在 GE 提供的 stream 上启动 Device kernel。它不调用 ATC，也不负责生成 OM。
+
+6. B。`aclrtc` 生成的是内存 Device ELF，本例读取 npubin 字节后使用 `aclrtBinaryLoadFromData`，并设置相应的 magic 加载选项。
+
+7. ABC。离线示例使用标准 Ascend C V1 算子工程生成自定义 OPP 包，构图程序先导出 AIR，ATC 再生成 OM，最后由 ACL 加载执行。D 错误，离线执行不依赖 `EagerExecuteOp` 加载外置 npubin。
+
+8. C。离线链路中的 `ASCEND_CUSTOM_OPP_PATH` 应指向包含 `op_proto`、`op_impl`、`op_tiling` 和 kernel 等交付件的 vendor 根目录，ATC 才能发现完整的自定义算子能力。

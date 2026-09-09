@@ -1,0 +1,15 @@
+04.03 课后练习答案
+
+1. 正确。包含 Unknown Shape 节点的完整图不能作为一个静态模型整体 Task Sink，但 GE 可以划分 Known Shape 与 Unknown Shape 执行单元；满足规模和能力条件的 Known Shape 子图仍可由静态执行器通过模型任务触发。
+
+2. 错误。只有被编译结果判定为需要运行时 Shape 推导的节点才运行 InferShape；只有需要运行时 Tiling 的算子才重新计算 Tiling。Known Shape 子图、已知 shape 节点和无 Tiling 算子都属于例外。
+
+3. 正确。GE 编译期与运行期复用同一套算子 InferShape 注册函数，保证编译期推导与运行期推导结果一致，避免行为不一致。
+
+4. B。对需要运行时 Shape/Tiling 的 Unknown Shape AI Core 节点，典型链路是：InferShape（推导运行时 shape）→ Tiling（计算执行参数）→ Buffer 获取/刷新（通常复用缓存池）→ 下发 Kernel。不是每个原始算子都必须执行全部步骤。
+
+5. B。RT2.0 把模型生命周期拆为 Init Graph（加载期初始化）/ Main Graph（可重复执行）/ DeInit Graph（卸载期清理）。Main Graph 除实际计算外，也可以包含 InferShape、Tiling、Buffer 获取和 Kernel Launch 等运行时辅助节点。
+
+6. B。Host 线很长且 Device 大量空泡，说明 Device 经常等待 Host 备料，属于 Host Bound。应优先减少 profiling 已确认的 Host 工作，例如通过动态分档让命中档位走静态优化子图。
+
+7. ABC。A 正确，运行期 InferShape 只作用于确需动态推导的节点；B 正确，动态/分区模型中仍可保留 Known Shape 静态子图；C 正确，RT2 Main Graph 可以包含运行时辅助节点。D 错误，PipeUtilization 描述 Task 内计算、Scalar、MTE 等流水单元的 cycle/耗时占比，不等同于整段执行期间的 Device 忙碌率。

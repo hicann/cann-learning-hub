@@ -1,0 +1,17 @@
+flowchart LR
+    subgraph host["Host 侧"]
+        A["下发 Task 1"]
+        B["下发 Task 2"]
+        C["下发 Task 3"]
+        D["...（逐 Task 下发）"]
+    end
+    subgraph device["Device 侧"]
+        E["执行 Task 1"]
+        F["执行 Task 2"]
+        G["执行 Task 3"]
+        H["..."]
+    end
+    A --> E
+    B --> F
+    C --> G
+    D --> H

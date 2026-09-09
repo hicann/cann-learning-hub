@@ -1,0 +1,76 @@
+04.06 模型执行与优化 章节练习答案
+
+一、判断题
+
+1. 正确。静态 Shape 整图下沉要求编译期能够确定模型内 Tensor 的 shape，据此完成算子选择、Tiling、内存规划和任务固化；这是必要基础，但模型最终能否整体下沉还受算子能力、图分区等条件影响。
+2. 正确。整图任务已在模型加载阶段下发后，稳定执行阶段 Host 通常只需触发一次模型级执行，由 Device 调度模型内的多个 Task；不要把 Device 上的算子 Task 数误认为 Host 的模型触发次数。
+3. 错误。包含 Unknown Shape 节点的完整图不能作为一个静态模型整体 Task Sink；动态图中满足条件的 Known Shape 子图仍可通过静态执行器执行。
+4. 错误。只有编译结果判定为需要运行时 Shape 推导或 Tiling 的节点才执行相应步骤；Known Shape 节点可以复用已有 shape，部分算子无须 Tiling，Buffer 通常来自缓存池而不是每轮申请新的物理显存。
+5. 正确。`ge.tiling_schedule_optimize` 的 Tiling 下沉面向静态 Shape 图，动态图不适用。
+6. 错误。TensorMove 消除与 Concat No Task 由 GE 编译期自动完成，无需用户手工配置。
+7. 正确。在线 GE 使用图级 option `ge.enableSingleStream=true`；Ascend Graph C++ 构建将 `{ge::ir_option::ENABLE_SINGLE_STREAM, "true"}` 放入 `aclgrphBuildInitialize` 的 `global_options`；ATC 使用命令行参数 `--enable_single_stream=true`。三种入口不能混用各自的配置写法；开启单流后也不能设置 `ge::public_attr::USER_STREAM_LABEL`。
+8. 正确。动态分档模型按最大档位进行模型侧内存规划/预留，因此执行较小档位并不会相应缩小这部分内存；进程总占用还会受运行时和应用侧分配影响。
+
+二、单选题
+
+9. B。模型下沉调度分为“模型加载”和“模型执行”两个阶段。
+10. B。整图下沉对 Host Bound（单算子快、算子多、Host 下发成为瓶颈）的模型收益通常最大。
+11. B。对确实需要运行时处理的 Unknown Shape AI Core 节点，典型链路为 InferShape → Tiling → Buffer 获取/刷新 → 下发 Kernel；Buffer 可从缓存池复用，不能理解为每轮都申请新的物理显存。
+12. B。ACL 离线模型加载（V1）通过公开配置项 `ACL_MDL_WORKSPACE_MEM_OPTIMIZE` 配置 workspace 的输入输出内存优化，ACL 内部再转换为相应 GE 图选项。
+13. C。`--dynamic_batch_size` 用于配置“仅 batch 维度变化”的动态分档。
+14. B。离线动态 batch 执行前使用 `aclmdlSetDynamicBatchSize` 设置真实档位。
+15. B。Host 线长且 Device 存在由 Host 供给不及时造成的空泡，是 Host Bound 的典型信号；应结合 GE Host、Runtime API、Device Task 和 E2E 数据确认后，再优先减少 Host 运行时工作。
+
+三、多选题
+
+16. ABC。A、B 正确；C 的前提是原瓶颈确由 Host 调度造成。D 错误：Device Bound 模型的主要耗时在算子计算，下沉减少的 Host 开销占比较小，E2E 不一定明显下降。
+17. ABCD。A 说明完整 Unknown Shape 图不能作为静态模型整体 Task Sink；B 说明运行时步骤只发生在需要它们的节点且 Buffer 可复用；C 说明编译期与运行期 InferShape 语义保持一致；D 体现动态图可以包含 Known Shape 静态执行子图。E 错误，动态执行有额外 Host 工作，其时延稳定性不可能被保证优于静态执行。
+18. ABC。A 静态 Shape 可做模型级内存复用；B 多流并行需要跨流 Event/Notify 同步；C 是 RT2 StreamExecutor 强输出零拷贝的调用方契约。D 错误，流过多会增加同步和资源开销，并非越多越好。
+19. ABC。A、B 正确；C 中只有语义上不能安全 padding 的未命中输入才需要路由到动态图兜底。D 错误，增加档位会增加编译时间、模型体积或内存开销，需按高频 shape 取舍。
+20. ABC。A、B 正确；C 给出了完整的配置创建、采集区间和销毁顺序。D 错误，Host/Device Bound 的判定直接决定应优化调度还是算子计算。
+
+四、实践题（参考思路，重在跑通闭环、记录数据并说明定位依据）
+
+21. （静态 Shape 闭环）参考要点：
+   - 编译示例：
+     `atc --model=resnet50.onnx --framework=5 --output=resnet50_static --input_shape="input:1,3,224,224" --soc_version=Ascend910B1`
+   - 推理程序应先 warm-up，再重复执行固定次数；采集示例：
+     `msprof --application="./main resnet50_static.om" --output=./prof_static --runtime-api=on --task-time=on --ai-core=on`
+     `--task-time` 和应用场景下的 `--ai-core` 当前默认开启，这里显式写出以固定实验口径；只有模型实际包含 AICPU 算子时才需要额外开启 `--aicpu=on`。
+   - 分开统计首次加载/初始化与稳定执行。静态下沉的稳定执行通常表现为每轮一个模型级触发，Device 内仍有多个算子 Task；具体调用名和次数以本机 timeline 为准，不能用 Device Task 数代替 Host 触发数。
+   - Device Task 较连续且 Runtime API 未显示 Host 持续逐算子 Launch，可作为走整图下沉的证据；仍需结合空泡前后的 Host/Runtime 活动判断空泡成因。
+
+22. （完全动态 Shape 对照）参考要点：
+   - 编译示例：
+     `atc --model=resnet50.onnx --framework=5 --output=resnet50_dynamic --input_shape="input:-1,3,224,224" --soc_version=Ascend910B1`
+   - ACL 执行前为动态输入调用 `aclmdlSetDatasetTensorDesc` 设置本轮真实描述，执行后用 `aclmdlGetDatasetTensorDesc` 获取动态输出描述；仅把 `-1` 写入编译命令并不足以构成完整执行闭环。
+   - 采集示例：
+     `msprof --application="./main resnet50_dynamic.om" --output=./prof_dynamic --ge-api=l1 --runtime-api=on --task-time=on --ai-core=on`
+   - 对照相同输入、warm-up 和稳定态迭代，查看哪些节点实际出现运行时 InferShape/Tiling、Buffer 获取或刷新，以及这些 Host 阶段与 Runtime Launch 是否对应 Device 空泡；不要预设所有节点都会重做这些步骤。
+   - 若 Host/Runtime 工作形成关键路径并使 Device 等待，则判为 Host Bound；若 Device 持续繁忙且主要耗时在算子 Task，则判为 Device Bound。最终结论必须来自采集数据。
+
+23. （动态分档对照）参考要点：
+   - 编译示例：
+     `atc --model=resnet50.onnx --framework=5 --output=resnet50_gears --input_shape="input:-1,3,224,224" --dynamic_batch_size="1,8,16" --soc_version=Ascend910B1`
+   - 通过 `aclmdlGetInputIndexByName(..., ACL_DYNAMIC_TENSOR_NAME, ...)` 获取动态档位输入下标，执行前调用 `aclmdlSetDynamicBatchSize` 设置命中档位（如 8）。
+   - 使用与第 22 题相同的输入、warm-up、迭代数和 profiling 选项，对比 GE Host 阶段、Host Runtime 模型触发、Device Task/空泡及 E2E，而不是只比较一个 Task 数。
+   - 命中档位可走已编译的静态分支，因此预期减少运行时 Shape/Tiling 和 Host 调度开销并改善 E2E；收益大小仍取决于原瓶颈，应以实测数据为准。
+
+24. （零拷贝 / I/O 内存优化）参考要点：
+   - ACL V1 使用公开配置项并通过同一配置句柄加载模型，例如：
+     ```cpp
+     size_t policy = ACL_WORKSPACE_MEM_OPTIMIZE_INPUTOUTPUT;
+     aclmdlSetConfigOpt(config_handle, ACL_MDL_WORKSPACE_MEM_OPTIMIZE,
+                        &policy, sizeof(policy));
+     // 继续设置模型加载参数，并调用 aclmdlLoadWithConfig(config_handle, ...)。
+     ```
+     I/O 应使用满足该执行路径要求的 Device 缓冲区。`ge.exec.reuseZeroCopyMemory` 是 ACL 内部映射到的 GE 选项，不应作为 ACL V1 应用直接设置的公开入口。
+   - 用 `--runtime-api=on` 比较稳定模型执行窗口中的 memcpy，并结合日志中的 `[ForceCopy]` 判断是否发生回退。业务为了送入/取回数据而产生的 H2D/D2H 可能仍然存在；这里重点排查模型侧额外 D2D 拷贝。仅观察到应用地址相同，不能证明最终 Kernel 直接读写该地址。
+   - RT2 StreamExecutor 的 `gert::LoweringOption::always_zero_copy` 是强输出零拷贝契约，不是 ACL V1 配置项。调用方必须提供有效的输出 Tensor 和地址，容量不小于按实际 shape/dtype 计算的大小，并保证 placement 符合执行要求；条件不满足时直接报错，不走普通模式的回退分配/拷贝。
+
+25. （动态服务定位）参考思路：
+   - 使用 `msprof` 同时采集 GE API/Host、Runtime API、Device Task/AI Core，并在一致的 warm-up 和稳定态窗口内比较 Host 阶段、Runtime Launch、Device busy time/空泡和 E2E；P50/P95/P99 则由应用侧逐请求计时统计。先用这些证据判断 Host Bound 还是 Device Bound。
+   - 若确认 Host Bound，可优先：①把高频且可枚举的 shape 编成合理数量的动态档位；②收敛/归一输入 shape，并在算子语义允许时 padding 到最近档位；③复用 Session/执行器、Dataset、Device Buffer 和内存池，避免重复加载与申请释放；④减少不必要的 Host-Device 同步，并在依赖允许时增加流水并行。
+   - Padding 只有在填充值、有效长度/mask、输出裁剪等都能保持业务语义时才安全；图像缩放、序列位置编码或对 padding 敏感的算子不能无条件归档。
+   - 未命中档位且不能安全 padding 时，路由到独立动态图是正确性与可用性兜底；它仍保留动态 InferShape/Tiling/调度开销，因此本身不是 Host Bound 性能优化。
+   - 若实测为 Device Bound，应转向热点算子实现、数据布局/精度、融合与并行度等 Device 侧优化，而不是继续增加档位。

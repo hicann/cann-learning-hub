@@ -1,0 +1,15 @@
+04.04 课后练习答案
+
+1. 正确。零拷贝的目标是消除用户缓冲区与模型内存之间不必要的 H2D、D2H 或 D2D 搬运。在执行路径支持地址刷新且内存约束满足时，模型可直接使用调用方提供的 Device I/O 地址；否则仍可能回退为显式拷贝。
+
+2. 错误。TensorMove 消除与 Concat No Task 属于 GE 编译期自动完成的优化，对用户透明，无需手工配置选项。
+
+3. 正确。三种入口对应同一项静态 Shape 单流能力，但写法和传入位置不同：在线 GE 使用图级 option `ge.enableSingleStream=true`；Ascend Graph C++ 构建将 `{ge::ir_option::ENABLE_SINGLE_STREAM, "true"}` 放入 `aclgrphBuildInitialize` 的 `global_options`；ATC 使用命令行参数 `--enable_single_stream=true`。三种写法不能跨入口混用；开启单流后也不能再设置 `ge::public_attr::USER_STREAM_LABEL`。
+
+4. B。ACL 离线模型加载（V1）通过公开配置项 `ACL_MDL_WORKSPACE_MEM_OPTIMIZE` 配置 workspace 的输入输出内存优化，ACL 内部再转换为相应的 GE 图选项。其余选项分别用于优先级、加载类型和权重路径。
+
+5. B。同一条流内的任务严格按序执行，不同流之间可以并行。GE 对静态 Shape 默认走多流模式，让无依赖算子并行。
+
+6. B。输入在内存中连续排列是 Concat No Task 的核心前提，但不是充分条件；还必须属于支持的 `ConcatD` / `ConcatV2D` 类型，并满足 Known Shape、拼接维度、地址对齐和输入来源等约束。
+
+7. ABC。A 正确，静态 Shape 下 GE 可做模型级内存复用降低显存；B 正确，多流并发让无依赖算子并行、跨流处插入 Event/Notify 同步；C 正确，RT2 的 `always_zero_copy` 强输出零拷贝要求用户保证输出内存大小与 placement 正确，否则报错。D 错误，流并非越多越好——流过多会带来过多同步与资源开销，需权衡。
