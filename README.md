@@ -334,8 +334,8 @@
 </tr>
 <tr>
 <td><b>🤖 CANNBot</b></td>
-<td><a href="https://gitcode.com/cann/cannbot-skills">CANNBot</a> · <a href="./tutorials/CANNBot/README.md">CANNBot 课程</a><br/><sub>算子开发辅助</sub></td>
-<td>🚧 建设中<br/><sub>训练、推理优化等</sub></td>
+<td><a href="https://gitcode.com/cann/cannbot-skills">CANNBot</a> · <a href="./tutorials/CANNBot/README.md#初级课程cannbot基础">CANNBot基础</a><br/><sub>CANNBot 入门、Ascend C / PyPTO / TileLang-Ascend 三种开发路径实操</sub></td>
+<td><a href="./tutorials/CANNBot/README.md#中级课程cannbot算子开发进阶">CANNBot算子开发进阶</a><br/><sub>Vector 算子自动生成与性能优化、多线程算子、Harness 工程与算子测试</sub></td>
 <td>🚧 建设中<br/><sub>融合算子、推理、训练优化高阶课程</sub></td>
 </tr>
 </table>

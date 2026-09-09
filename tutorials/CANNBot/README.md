@@ -27,12 +27,21 @@ CANNBot 的 Skills 与 Agents 统一托管在以下仓库（课件中的链接�
 
 ## 课程内容
 
+本课程分为**初级课程**与**中级课程**两部分：初级课程（第 1～4 课）从零开始带你用 CANNBot 生成第一个算子，并覆盖 Ascend C、PyPTO、TileLang-Ascend 三种主流算子开发路径；中级课程（第 5～9 课）深入算子自动生成、性能优化、多线程算子、Harness 工程建设与算子测试全流程。
+
+### 🟢 初级课程：CANNBot基础
+
 | 序号 | 主题 | 主要内容 | 前置 | 课件 |
 | :---: | :--- | :--- | :--- | :--- |
 | 1 | CANNBot 入门：从 0 到 1 生成你的第一个算子 | CANNBot 简介，从零开始生成第一个算子 | 无（具备[前置知识](#前置知识)即可） | [01_cannbot_start.pdf](./slides/01_cannbot_start.pdf) |
 | 2 | CANNBot 开发进阶：Ascend C 算子开发实操 | 基于 Ascend C 的算子开发实操 | 第 1 课 | [02_ascend_c_operator.pdf](./slides/02_ascend_c_operator.pdf) |
 | 3 | CANNBot 开发进阶：PyPTO 算子开发实操 | 基于 PyPTO 的算子开发实操 | 第 1 课（与第 2 课平行，任选其一） | [03_pypto_operator.pdf](./slides/03_pypto_operator.pdf) |
 | 4 | CANNBot 开发进阶：TileLang-Ascend 算子开发实操 | 基于 TileLang-Ascend 的算子开发实操 | 第 1 课（与第 2 课平行，任选其一） | [04_tilelang_operator.pdf](./slides/04_tilelang_operator.pdf) |
+
+### 🟡 中级课程：CANNBot算子开发进阶
+
+| 序号 | 主题 | 主要内容 | 前置 | 课件 |
+| :---: | :--- | :--- | :--- | :--- |
 | 5 | CANNBot 进阶开发：自动生成 Vector 算子之 RegBase | 自动生成 Vector 算子，RegBase 机制详解 | 第 2 课（需先理解 Ascend C 手动开发流程，才能理解自动生成原理） | [05_vector_regbase.pdf](./slides/05_vector_regbase.pdf) |
 | 6 | CANNBot 进阶开发：Vector 算子之排序性能优化 | Vector 算子排序性能优化方法 | 第 5 课 | [06_vector_sort_opt.pdf](./slides/06_vector_sort_opt.pdf) |
 | 7 | CANNBot 支持生成单指令多线程算子 | 单指令多线程算子的生成 | 第 2 课 | [07_multi_thread_operator.pdf](./slides/07_multi_thread_operator.pdf) |
