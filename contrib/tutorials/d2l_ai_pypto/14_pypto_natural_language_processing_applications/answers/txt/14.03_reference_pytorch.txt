@@ -1,0 +1,253 @@
+本节的解答思路参考了 《动手学深度学习》习题解答（https://datawhalechina.github.io/d2l-ai-solutions-manual/#/ch15/ch15）。
+
+练习14.3.1
+调整超参数，并比较14.2_sentiment_analysis_rnn（../14.02_sentiment_analysis_rnn.ipynb）中用于情感分析的架构和本节中用于情感分析的架构，例如在分类精度和计算效率方面。
+
+解答：
+
+- 在分类精度方面，对于相同的epoch，本节使用的卷积神经网络测试精度好于14.2节中所用的循环神经网络；
+- 在计算效率方面，对于相同的epoch，本节使用的卷积神经网络的训练速度快于14.2节中用的循环神经网络（本环境下约 7500 examples/sec，远高于循环神经网络的约 780 examples/sec）。
+
+| 架构 | learning rate | epoch | result |
+|:-----|:--------------|:------|:-------|
+| RNN  | 0.01          | 5     | loss 0.302, train acc 0.870, test acc 0.849 |
+| CNN  | 0.001         | 5     | loss 0.063, train acc 0.980, test acc 0.857 |
+| RNN  | 0.01          | 10    | loss 0.162, train acc 0.939, test acc 0.839 |
+| CNN  | 0.001         | 10    | loss 0.013, train acc 0.996, test acc 0.863 |
+| RNN  | 0.01          | 20    | loss 0.135, train acc 0.947, test acc 0.835 |
+| CNN  | 0.001         | 20    | loss 0.003, train acc 0.999, test acc 0.863 |
+
+（RNN 结果取自 14.2 节练习中相同超参数的实验，CNN 结果为本 notebook 实际运行输出。）
+
+batch_size = 64
+train_iter, test_iter, vocab = load_data_imdb(batch_size)
+
+# 定义模型，下面的类中实现textCNN模型。
+class TextCNN(nn.Module):
+    def __init__(self, vocab_size, embed_size, kernel_sizes, num_channels,
+                 **kwargs):
+        super(TextCNN, self).__init__(**kwargs)
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        # 这个嵌入层不需要训练
+        self.constant_embedding = nn.Embedding(vocab_size, embed_size)
+        self.dropout = nn.Dropout(0.5)
+        self.decoder = nn.Linear(sum(num_channels), 2)
+        # 最大时间汇聚层没有参数，因此可以共享此实例
+        self.pool = nn.AdaptiveAvgPool1d(1)
+        self.relu = nn.ReLU()
+        # 创建多个一维卷积层
+        self.convs = nn.ModuleList()
+        for c, k in zip(num_channels, kernel_sizes):
+            self.convs.append(nn.Conv1d(2 * embed_size, c, k))
+
+    def forward(self, inputs):
+        # 沿着向量维度将两个嵌入层连结起来，
+        # 每个嵌入层的输出形状都是（批量大小，词元数量，词元向量维度）连结起来
+        embeddings = torch.cat((
+            self.embedding(inputs), self.constant_embedding(inputs)), dim=2)
+        # 根据一维卷积层的输入格式，重新排列张量，以便通道作为第2维
+        embeddings = embeddings.permute(0, 2, 1)
+        # 每个一维卷积层在最大时间汇聚层合并后，获得的张量形状是（批量大小，通道数，1）
+        # 删除最后一个维度并沿通道维度连结
+        encoding = torch.cat([
+            torch.squeeze(self.relu(self.pool(conv(embeddings))), dim=-1)
+            for conv in self.convs], dim=1)
+        outputs = self.decoder(self.dropout(encoding))
+        return outputs
+
+# 创建一个textCNN实例
+embed_size, kernel_sizes, nums_channels = 100, [3, 4, 5], [100, 100, 100]
+devices = try_all_gpus()
+net = TextCNN(len(vocab), embed_size, kernel_sizes, nums_channels)
+
+def init_weights(m):
+    if type(m) in (nn.Linear, nn.Conv1d):
+        nn.init.xavier_uniform_(m.weight)
+
+net.apply(init_weights);
+
+# 加载预训练词向量
+glove_embedding = TokenEmbedding('glove.6b.100d')
+embeds = glove_embedding[vocab.idx_to_token]
+net.embedding.weight.data.copy_(embeds)
+net.constant_embedding.weight.data.copy_(embeds)
+net.constant_embedding.weight.requires_grad = False
+
+# 训练和评估模型
+lr, num_epochs = 0.001, 5
+trainer = torch.optim.Adam(net.parameters(), lr=lr)
+loss = nn.CrossEntropyLoss(reduction="none")
+train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, devices)
+
+# 创建一个textCNN实例
+embed_size, kernel_sizes, nums_channels = 100, [3, 4, 5], [100, 100, 100]
+devices = try_all_gpus()
+net = TextCNN(len(vocab), embed_size, kernel_sizes, nums_channels)
+
+def init_weights(m):
+    if type(m) in (nn.Linear, nn.Conv1d):
+        nn.init.xavier_uniform_(m.weight)
+
+net.apply(init_weights);
+
+# 加载预训练词向量
+glove_embedding = TokenEmbedding('glove.6b.100d')
+embeds = glove_embedding[vocab.idx_to_token]
+net.embedding.weight.data.copy_(embeds)
+net.constant_embedding.weight.data.copy_(embeds)
+net.constant_embedding.weight.requires_grad = False
+
+# 训练和评估模型
+lr, num_epochs = 0.001, 10
+trainer = torch.optim.Adam(net.parameters(), lr=lr)
+loss = nn.CrossEntropyLoss(reduction="none")
+train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, devices)
+
+# 创建一个textCNN实例
+embed_size, kernel_sizes, nums_channels = 100, [3, 4, 5], [100, 100, 100]
+devices = try_all_gpus()
+net = TextCNN(len(vocab), embed_size, kernel_sizes, nums_channels)
+
+def init_weights(m):
+    if type(m) in (nn.Linear, nn.Conv1d):
+        nn.init.xavier_uniform_(m.weight)
+
+net.apply(init_weights);
+
+# 加载预训练词向量
+glove_embedding = TokenEmbedding('glove.6b.100d')
+embeds = glove_embedding[vocab.idx_to_token]
+net.embedding.weight.data.copy_(embeds)
+net.constant_embedding.weight.data.copy_(embeds)
+net.constant_embedding.weight.requires_grad = False
+
+# 训练和评估模型
+lr, num_epochs = 0.001, 20
+trainer = torch.optim.Adam(net.parameters(), lr=lr)
+loss = nn.CrossEntropyLoss(reduction="none")
+train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, devices)
+
+练习14.3.2
+请试着用14.2_sentiment_analysis_rnn（../14.02_sentiment_analysis_rnn.ipynb）练习中介绍的方法进一步提高模型的分类精度。
+
+解答：
+
+综上可知，使用 `spaCy` 词元化，提高了情感分类精度
+
+1. 使用原始参数，卷积神经网络模型训练存在过拟合现象（`train` 和 `test` 数据集表现不一致）。
+2. 降低学习率对模型进行训练，能够提升 `test acc` 精度。
+3. 增加预训练词向量的 `Embedding` 维数，增加 `test acc` 精度不明显（对维数不敏感）。
+4. 增加预训练词向量的 `Embedding` 维数，降低了计算效率（见下方训练曲线中的 `examples/sec`）。
+
+下表实验结果引自《动手学深度学习》习题解答手册（GPU 环境，spaCy 词元化的用法见 14.2 节练习 14.2.3），数值随运行环境会有差异，仅供趋势参考：
+
+| tokenize | GloVe dimension | learning rate | epoch | result |
+|:---------|:----------------|:--------------|:------|:-------|
+| default  | 100             | 0.01          | 5     | loss 0.031, train acc 0.989, test acc 0.857 |
+| default  | 300             | 0.01          | 5     | loss 0.046, train acc 0.984, test acc 0.857 |
+| default  | 100             | 0.01          | 10    | loss 0.022, train acc 0.993, test acc 0.850 |
+| default  | 100             | 0.001         | 5     | loss 0.075, train acc 0.976, test acc 0.870 |
+| default  | 100             | 0.001         | 10    | loss 0.008, train acc 0.998, test acc 0.866 |
+| spaCy    | 100             | 0.01          | 5     | loss 0.054, train acc 0.982, test acc 0.854 |
+| spaCy    | 100             | 0.001         | 5     | loss 0.113, train acc 0.961, test acc 0.877 |
+
+[图][图][图][图][图][图][图]
+
+练习14.3.3
+在输入表示中添加位置编码。它是否提高了分类的精度？
+
+解答：
+
+textCNN 的一维卷积只关注局部的 n 元语法窗口，词嵌入本身也不包含词元的绝对位置信息，因此可以参考 10.6节自注意力和位置编码（../10_pypto_attention_mechanisms/10.06_self_attention_and_positional_encoding.ipynb） 中的 `PositionalEncoding`，在词嵌入之后、卷积之前加入位置编码：对两个嵌入层（`embedding` 和 `constant_embedding`）的输出分别加上 sin/cos 位置编码 `P`，再连结送入一维卷积层，其余结构保持不变。
+
+下方代码使用与 14.3.1 基线完全相同的超参数（`lr=0.001`，5 个 epoch）进行对比实验，结果如下：
+
+| 实现 | 输入表示 | loss | train acc | test acc |
+|:-----|:---------|:-----|:----------|:---------|
+| PyTorch | 词嵌入（基线）                 | 0.063 | 0.980 | 0.857 |
+| PyTorch | 词嵌入 + 位置编码              | 0.158 | 0.944 | 0.873 |
+| PyPTO   | 词嵌入（基线，通道数 104）     | 0.067 | 0.979 | 0.873 |
+| PyPTO   | 词嵌入 + 位置编码（通道数 104）| 0.159 | 0.944 | 0.884 |
+
+可以看到，加入位置编码后两种实现的测试精度分别从 0.857 提高到 0.873、从 0.873 提高到 0.884，同时训练集精度有所下降（过拟合程度减轻）。因此在本实验设置下，在输入表示中加入位置编码提高了分类精度。
+
+batch_size = 64
+train_iter, test_iter, vocab = load_data_imdb(batch_size)
+
+# 位置编码（参考 10.6 节 PositionalEncoding 的实现）
+class PositionalEncoding(nn.Module):
+    def __init__(self, num_hiddens, dropout=0.0, max_len=1000):
+        super(PositionalEncoding, self).__init__()
+        self.dropout = nn.Dropout(dropout)
+        # P的形状：（1，最大序列长度，num_hiddens）
+        self.register_buffer('P', torch.zeros((1, max_len, num_hiddens)))
+        X = torch.arange(max_len, dtype=torch.float32).reshape(
+            -1, 1) / torch.pow(
+                10000, torch.arange(0, num_hiddens, 2,
+                                     dtype=torch.float32) / num_hiddens)
+        self.P[:, :, 0::2] = torch.sin(X)
+        self.P[:, :, 1::2] = torch.cos(X)
+
+    def forward(self, X):
+        X = X + self.P[:, :X.shape[1], :]
+        return self.dropout(X)
+
+
+# 在textCNN的输入表示中加入位置编码
+class TextCNN_PE(nn.Module):
+    def __init__(self, vocab_size, embed_size, kernel_sizes, num_channels,
+                 **kwargs):
+        super(TextCNN_PE, self).__init__(**kwargs)
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        # 这个嵌入层不需要训练
+        self.constant_embedding = nn.Embedding(vocab_size, embed_size)
+        # 两个嵌入层的输出分别加上位置编码后再连结
+        self.pos_encoding = PositionalEncoding(embed_size)
+        self.dropout = nn.Dropout(0.5)
+        self.decoder = nn.Linear(sum(num_channels), 2)
+        # 最大时间汇聚层没有参数，因此可以共享此实例
+        self.pool = nn.AdaptiveAvgPool1d(1)
+        self.relu = nn.ReLU()
+        # 创建多个一维卷积层
+        self.convs = nn.ModuleList()
+        for c, k in zip(num_channels, kernel_sizes):
+            self.convs.append(nn.Conv1d(2 * embed_size, c, k))
+
+    def forward(self, inputs):
+        # 词元嵌入加上位置编码后，沿向量维度将两个嵌入层连结起来
+        embeddings = torch.cat((
+            self.pos_encoding(self.embedding(inputs)),
+            self.pos_encoding(self.constant_embedding(inputs))), dim=2)
+        # 根据一维卷积层的输入格式，重新排列张量，以便通道作为第2维
+        embeddings = embeddings.permute(0, 2, 1)
+        # 每个一维卷积层在最大时间汇聚层合并后，获得的张量形状是（批量大小，通道数，1）
+        # 删除最后一个维度并沿通道维度连结
+        encoding = torch.cat([
+            torch.squeeze(self.relu(self.pool(conv(embeddings))), dim=-1)
+            for conv in self.convs], dim=1)
+        outputs = self.decoder(self.dropout(encoding))
+        return outputs
+
+# 创建一个加入位置编码的textCNN实例，超参数与14.3.1基线一致（lr=0.001，5个epoch）
+embed_size, kernel_sizes, nums_channels = 100, [3, 4, 5], [100, 100, 100]
+devices = try_all_gpus()
+net = TextCNN_PE(len(vocab), embed_size, kernel_sizes, nums_channels)
+
+def init_weights(m):
+    if type(m) in (nn.Linear, nn.Conv1d):
+        nn.init.xavier_uniform_(m.weight)
+
+net.apply(init_weights);
+
+# 加载预训练词向量
+glove_embedding = TokenEmbedding('glove.6b.100d')
+embeds = glove_embedding[vocab.idx_to_token]
+net.embedding.weight.data.copy_(embeds)
+net.constant_embedding.weight.data.copy_(embeds)
+net.constant_embedding.weight.requires_grad = False
+
+# 训练和评估模型
+lr, num_epochs = 0.001, 5
+trainer = torch.optim.Adam(net.parameters(), lr=lr)
+loss = nn.CrossEntropyLoss(reduction="none")
+train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, devices)

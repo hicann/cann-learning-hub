@@ -1,0 +1,130 @@
+本节的解答思路参考了 《动手学深度学习》习题解答（https://datawhalechina.github.io/d2l-ai-solutions-manual/#/ch15/ch15）。
+
+练习14.7.1
+如果您的计算资源允许，请微调一个更大的预训练BERT模型，该模型与原始的BERT基础模型一样大。修改`load_pretrained_model`函数中的参数设置：将“bert.small”替换为“bert.base”，将`num_hiddens=256`、`ffn_num_hiddens=512`、`num_heads=4`和`num_layers=2`的值分别增加到768、3072、12和12。通过增加微调迭代轮数（可能还会调优其他超参数），你可以获得高于0.86的测试精度吗？
+
+解答：
+
+def load_pretrained_model(pretrained_model, num_hiddens, ffn_num_hiddens,
+                          num_heads, num_layers, dropout, max_len):
+    data_dir = download_extract(pretrained_model)
+    # 定义空词表以加载预定义词表
+    vocab = Vocab()
+    vocab.idx_to_token = json.load(open(os.path.join(data_dir, 'vocab.json')))
+    vocab.token_to_idx = {token: idx for idx, token in
+                          enumerate(vocab.idx_to_token)}
+    bert = BERTModel(len(vocab), num_hiddens=num_hiddens, norm_shape=[768],
+                     ffn_num_input=768, ffn_num_hiddens=ffn_num_hiddens,
+                     num_heads=num_heads, num_layers=num_layers,
+                     dropout=dropout, max_len=max_len,
+                     key_size=768, query_size=768, value_size=768,
+                     hid_in_features=768, mlm_in_features=768,
+                     nsp_in_features=768)
+    # 加载预训练BERT参数
+    bert.load_state_dict(torch.load(os.path.join(data_dir, 'pretrained.params')))
+    return bert, vocab
+
+devices = try_all_gpus()
+bert, vocab = load_pretrained_model('bert.base', num_hiddens=768,
+                                    ffn_num_hiddens=3072, num_heads=12,
+                                    num_layers=12, dropout=0.1, max_len=512)
+
+# 微调BERT的数据集
+class SNLIBERTDataset(torch.utils.data.Dataset):
+    def __init__(self, dataset, max_len, vocab=None):
+        all_premise_hypothesis_tokens = [[
+            p_tokens, h_tokens] for p_tokens, h_tokens in zip(
+            *[tokenize([s.lower() for s in sentences])
+              for sentences in dataset[:2]])]
+
+        self.labels = torch.tensor(dataset[2])
+        self.vocab = vocab
+        self.max_len = max_len
+        (self.all_token_ids, self.all_segments,
+         self.valid_lens) = self._preprocess(all_premise_hypothesis_tokens)
+        print('read ' + str(len(self.all_token_ids)) + ' examples')
+
+    def _preprocess(self, all_premise_hypothesis_tokens):
+        pool = multiprocessing.Pool(4)  # 使用4个进程
+        out = pool.map(self._mp_worker, all_premise_hypothesis_tokens)
+        all_token_ids = [
+            token_ids for token_ids, segments, valid_len in out]
+        all_segments = [segments for token_ids, segments, valid_len in out]
+        valid_lens = [valid_len for token_ids, segments, valid_len in out]
+        return (torch.tensor(all_token_ids, dtype=torch.long),
+                torch.tensor(all_segments, dtype=torch.long),
+                torch.tensor(valid_lens))
+
+    def _mp_worker(self, premise_hypothesis_tokens):
+        p_tokens, h_tokens = premise_hypothesis_tokens
+        self._truncate_pair_of_tokens(p_tokens, h_tokens)
+        tokens, segments = get_tokens_and_segments(p_tokens, h_tokens)
+        token_ids = self.vocab[tokens] + [self.vocab['<pad>']] \
+                             * (self.max_len - len(tokens))
+        segments = segments + [0] * (self.max_len - len(segments))
+        valid_len = len(tokens)
+        return token_ids, segments, valid_len
+
+    def _truncate_pair_of_tokens(self, p_tokens, h_tokens):
+        # 为BERT输入中的'<CLS>'、'<SEP>'和'<SEP>'词元保留位置
+        while len(p_tokens) + len(h_tokens) > self.max_len - 3:
+            if len(p_tokens) > len(h_tokens):
+                p_tokens.pop()
+            else:
+                h_tokens.pop()
+
+    def __getitem__(self, idx):
+        return (self.all_token_ids[idx], self.all_segments[idx],
+                self.valid_lens[idx]), self.labels[idx]
+
+    def __len__(self):
+        return len(self.all_token_ids)
+
+注意：这里可以根据显存的大小来设置 `batch_size`，下面示例代码中 `batch_size = 64`。
+
+# 如果出现显存不足错误，请减少“batch_size”。在原始的BERT模型中，max_len=512
+batch_size, max_len, num_workers = 64, 128, get_dataloader_workers()
+data_dir = download_extract('SNLI')
+train_set = SNLIBERTDataset(read_snli(data_dir, True), max_len, vocab)
+test_set = SNLIBERTDataset(read_snli(data_dir, False), max_len, vocab)
+train_iter = torch.utils.data.DataLoader(train_set, batch_size, shuffle=True,
+                                   num_workers=num_workers)
+test_iter = torch.utils.data.DataLoader(test_set, batch_size,
+                                  num_workers=num_workers)
+
+# 微调BERT
+class BERTClassifier(nn.Module):
+    def __init__(self, bert):
+        super(BERTClassifier, self).__init__()
+        self.encoder = bert.encoder
+        self.hidden = bert.hidden
+        self.output = nn.Linear(768, 3)  # 注意修改全连接层的输入维度，与num_hiddens一致
+
+    def forward(self, inputs):
+        tokens_X, segments_X, valid_lens_x = inputs
+        encoded_X = self.encoder(tokens_X, segments_X, valid_lens_x)
+        return self.output(self.hidden(encoded_X[:, 0, :]))
+
+net = BERTClassifier(bert)
+lr, num_epochs = 1e-4, 5
+trainer = torch.optim.Adam(net.parameters(), lr=lr)
+loss = nn.CrossEntropyLoss(reduction="none")
+train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, devices)
+
+说明
+- 本题的代码是在kaggle上面运行的，GPU资源：GUP T4 × 2，运行时间9h左右。
+- 测试集精度为0.853，相比于书中0.785的测试精度提高了不少。
+- 关于获得更高的测试精度，可以增加 `num_epochs` 的值，由于笔者计算资源的限制，读者朋友可以自行尝试。
+
+练习14.7.2
+如何根据一对序列的长度比值截断它们？将此对截断方法与`SNLIBERTDataset`类中使用的方法进行比较。它们的利弊是什么？
+
+解答：
+
+当两个序列的长度比例差别大的时候，我们需要根据一些准则对它们进行截断，以使它们的长度能够适应模型的输入要求。一种常见的截断方法是将较长的序列切成若干个段，并分别截取一段与另一段相同长度的子序列，这通常称为分段和截断。但是，如何分割这个长序列并如何选择对应长度的子序列，需要考虑多种因素，例如输入模型的最大长度、固定的截断长度，以及序列本身的结构等。一些常见的截断方式包括：
+
+1. 从两个序列中选取一定数量的token，仅保留这些token，将其余部分截断。
+2. 基于最大长度将序列截断。这个截断方式比较直接，可以确保所有的序列都不超过一定的长度。
+3. 在截断较长序列时，可以采用滑动截断的方式，将较长的序列分成多个重叠的部分，将其视为一系列类似序列进行处理和输入。
+
+对于SNLIBERTDataset等数据集类，通常采用方法2进行截断，即在确定最大长度后对序列进行截断。由于这个方法直接，容易实现，因此是常用的截断方式之一。截断后，将被截断的序列填充后再输入到模型中。在使用截断方法时，我们需要考虑其利弊以及适用场景。截断的主要优点是避免长序列对模型的消耗进行限制，可以提高训练速度和利用GPU存储容量；而缺点是可能会丢失在原始序列中包含的重要上下文信息。因此，截断的最佳方法取决于数据集的属性和任务的需要，需要适当的权衡和选择。

@@ -1,0 +1,36 @@
+本节的解答思路参考了 《动手学深度学习》习题解答（https://datawhalechina.github.io/d2l-ai-solutions-manual/#/ch15/ch15）。
+
+练习14.1.1
+我们可以修改本节中的哪些超参数来加速训练情感分析模型？
+
+解答：
+
+我们可以修改本节中序列长度来加速训练情感分析模型，即减小每个评论的长度，从而减小每一个批量的大小，加速训练情感分析模型。
+
+练习14.1.2
+请实现一个函数来将Amazon reviews（https://snap.stanford.edu/data/web-Amazon.html）的数据集加载到数据迭代器中进行情感分析。
+
+解答：
+
+以下是一个示例函数，用于加载Amazon reviews数据集并将其转换为可用于情感分类的数据迭代器。这个函数假设数据集以tsv格式存储，每一行都是一个评论文本和相应的情感标签，以制表符分隔。
+
+注：上例假设数据已整理为 `text` 和 `label` 两列的 TSV 文件。真实的 Amazon reviews（https://snap.stanford.edu/data/web-Amazon.html）（SNAP 版本）是逐行“字段名: 字段值”的文本格式，需要先解析出评论文本与 1~5 分的打分，再按规则映射为情感标签（如评分 ≥4 记为正面、≤2 记为负面、3 分中性可丢弃），整理成上述 TSV 格式后，即可用 `load_amazon_reviews` 加载。
+
+class AmazonReviewDataset(Dataset):
+    def __init__(self, file_path):
+        self.data = pd.read_csv(file_path, sep='\t')
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, idx):
+        text = self.data.iloc[idx]['text']
+        label = self.data.iloc[idx]['label']
+        return text, label
+
+def load_amazon_reviews(file_path, batch_size):
+    dataset = AmazonReviewDataset(file_path)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    return dataloader
+
+使用时，只需将`load_amazon_reviews`函数的参数设置为数据集文件路径和所需的批量大小即可。
