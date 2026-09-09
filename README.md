@@ -292,7 +292,7 @@
 <tr><th width="16%">技术领域</th><th width="28%">初级课程</th><th width="28%">中级课程</th><th width="28%">高级课程</th></tr>
 <tr>
 <td><b>⚙️ 算子开发</b></td>
-<td><a href="./tutorials/ascendc_operator_development_light">Kernel 直调版</a> · <a href="./tutorials/pyasc_operator_development">PyASC 入门</a> · <a href="./tutorials/pypto_development">PyPTO 入门</a><br/><sub>算子基础概念、编程范式、PyASC 函数开发、PyPTO Tensor 编程</sub></td>
+<td><a href="./tutorials/ascendc_operator_development_light">Kernel 直调版</a> · <a href="./tutorials/pyasc_operator_development">PyASC 入门</a> · <a href="./tutorials/pypto_development">PyPTO 算子开发系列</a><br/><sub>算子基础概念、编程范式、PyASC 函数开发、PyPTO Tensor 编程、AI Coding Agent 算子开发</sub></td>
 <td><a href="./tutorials/ascendc_operator_development">算子工程版</a> · Conv 算子实战 🚧 · Vector 算子实战 🚧<br/><sub>Vector/Cube/融合算子开发、工程化流程、卷积与矢量算子实战</sub></td>
 <td><a href="./tutorials/MC2_fused_operator_development">MC2 融合算子实战</a> · AscendC V2 高阶 🚧 · MoE/FA 算子实战 🚧<br/><sub>Matmul/Conv/通算融合、aclnn/aclGraph 工程化</sub></td>
 </tr>

@@ -34,6 +34,7 @@ Transformer 组合，帮助开发者建立使用 PyPTO
 5. 理解 vec / cube tile shapes，以及 shape、slice、transpose 等基础操作
 6. 看懂归一化、FFN、动态 shape、Attention 等中高级模块的 PyPTO 实现
 7. 可以看懂计算图和泳道图
+8. 学会使用 AI Coding Agent（OpenCode）完成算子开发：组织任务定义、驱动 Agent 生成算子与测试，并在真实 Ascend NPU 上完成精度验收
 
 ## 软硬件配套说明
 
@@ -134,6 +135,29 @@ Notebook 列表：
 | `04.04_dynamic_shape_and_controlflow.ipynb` | 动态 Shape 与控制流 |
 | `04.05_attention_and_transformer.ipynb` | Attention 与 Transformer 组合 |
 | `04.06_chapter_practice.ipynb` | 章节实践 |
+
+### 第五章：基于 AI Coding Agent 的 PyPTO 算子开发
+
+目录：`05_ai_agent_operator_development`
+
+目标：
+
+- 把数学定义、输入输出、支持范围和精度标准组织为 Agent 可执行任务
+- 通过 OpenCode 运行 PyPTO 算子开发工作流并识别关键产物
+- 在真实 Ascend NPU 上独立重跑生成测试，依据逐输出 all-close 和退出码验收
+- 区分必做的正确性验证与正确性通过后的可选性能优化
+
+Notebook 列表：
+
+| Notebook | 说明 |
+| --- | --- |
+| `05.01_chapter_intro.ipynb` | 章节介绍：认识 PyPTO 算子开发 Agent |
+| `05.02_agent_architecture_and_usage.ipynb` | PyPTO Agent 架构与使用方法（团队架构、支撑体系、OpenCode 操作与独立验收） |
+| `05.03_chapter_practice.ipynb` | 章节实践：使用 OpenCode 开发行 Softmax 算子并完成真实 NPU 验收 |
+
+前置要求：已完成前四章。课程环境需装好 OpenCode、PyPTO、torch_npu 与
+Ascend NPU；PyPTO Agent 工程（技能库与编排器）需按 05.02 的部署步骤
+（`git clone pypto-gym` 后执行 `init.sh`）准备，教材中已给出完整指引。
 
 
 ## 反馈与建议
