@@ -252,47 +252,70 @@ git checkout test
 
 #### 7.1.2 在 CANNLab 环境中打开
 
-按照本指南第 3 节创建并进入 CANNLab 云开发环境，通过 WebIDE 在左侧资源管理器中双击课程 `.ipynb` 文件即可打开 Notebook。
+按照本指南第 3 节创建并进入 CANNLab 云开发环境，通过 WebIDE 或 VSCode 打开 CANNLab 环境后，在左侧资源管理器中双击课程 `.ipynb` 文件即可打开 Notebook。
 
-### 7.2 逐 cell 执行验证
+### 7.2 通过 WebIDE 连接环境
 
-#### 7.2.1 注册 Jupyter 内核
+**step1:**
 
-在终端中依次执行以下命令，注册 Python 3.11.4 (CANN) 内核：
+通过 WebIDE 进入环境，默认打开 cann-learning-hub 代码仓，在左侧资源管理器中双击任意课程 `.ipynb`文件，选择内核，在弹窗中点击 Jupyter，根据“从 Jupyter 中选择内核”弹窗信息记住当前 WebIDE 环境的所有 kernel 路径。例如图所见，当前环境的 kernel 位于
+- /bin/python2(Python 2.7.18)
+- /usr/bin/python2(Python 2.7.18)
+- /usr/local/bin/python(Python 3.11.4)
+- /bin/python3(Python 3.8.10)
+- /usr/bin/python3(Python 3.8.10)
 
-```bash
-# 安装 ipykernel（如已安装会提示 already satisfied，忽略即可）
-/opt/buildtools/Python-3.11.4/bin/python3.11 -m pip install ipykernel
-# 注册内核
-/opt/buildtools/Python-3.11.4/bin/python3.11 -m ipykernel install --user \
-  --name cann_py311 \
-  --display-name "Python 3.11.4 (CANN)"
-```
+<img src="./images/CANNLab_course_development_guide/webide_select_kernel_1.png">
+<img src="./images/CANNLab_course_development_guide/webide_select_kernel_2.png">
 
-#### 7.2.2 设置环境变量自动加载
+**step2:**
 
-创建 `usercustomize.py`，让 Python 启动时自动设置 CANN 环境变量：
+打开 WebIDE 的远程设置文件`settings.json`，配置 `python.defaultInterpreterPath` 和 `jupyter.kernels.excludePythonEnvironments`。
 
-```bash
-# 获取 CANN 路径
-CANN_PATH=$(echo $ASCEND_TOOLKIT_HOME)
-mkdir -p ~/.local/lib/python3.11/site-packages
-cat > ~/.local/lib/python3.11/site-packages/usercustomize.py << EOF
-import os
-os.environ.setdefault('ASCEND_OPP_PATH', '${CANN_PATH}/opp')
-os.environ.setdefault('ASCEND_TOOLKIT_HOME', '${CANN_PATH}')
-os.environ.setdefault('ASCEND_HOME_PATH', '${CANN_PATH}')
-os.environ.setdefault('ASCEND_AICPU_PATH', '${CANN_PATH}')
-EOF
-```
+- `python.defaultInterpreterPath`：`/usr/local/bin/python`，如果不确定这个值，可以在终端执行 `which python` 进行确认。
+- `jupyter.kernels.excludePythonEnvironments`：**step1** 中除了 `which python` 外其他所有 kernel 地址。
 
-#### 7.2.3 关机重新开机并执行验证
+<img src="./images/CANNLab_course_development_guide/webide_settings_1.png">
+<img src="./images/CANNLab_course_development_guide/webide_settings_2.png">
+<img src="./images/CANNLab_course_development_guide/webide_settings_3.png">
+<img src="./images/CANNLab_course_development_guide/webide_settings_4.png">
 
-完成上述配置后，**关机并重新开机**，使内核与环境变量配置生效。开机后通过 WebIDE 重新进入环境，打开每个 `.ipynb` 文件，在右上角 **选择内核**，选择 **Python 3.11.4 (CANN)**：
+配置完成后，关闭 `settings.json`，刷新 WebIDE 页面（浏览器F5刷新）。
 
-<img src="./images/CANNLab_course_development_guide/kernel1.png">
+完成上述配置后，打开每个 `.ipynb` 文件，在右上角 **选择内核** 的位置，均已默认选择 **Python 3.11.4**。
 
-<img src="./images/CANNLab_course_development_guide/kernel2.png">
+### 7.3 通过 VSCode 连接环境
+
+**step1:**
+
+通过 VSCode 进入环境，默认打开 cann-learning-hub 代码仓，在左侧资源管理器中双击任意课程 `.ipynb`文件，选择内核，在弹窗中点击 Python Environments，根据“Select a Python Environment”弹窗信息记住当前 VSCode 环境的所有 kernel 路径。由于 WebIDE 和VSCode 是两个独立的集成开发环境，各自探查到的 kernel 路径并不完全一致。例如图所见，当前 VSCode 环境的 kernel 位于
+- /bin/python2(Python 2.7.18)
+- /usr/bin/python2(Python 2.7.18)
+- /usr/local/bin/python(Python 3.11.4)
+- /opt/buildtools/Python-3.11.4/bin/python3(Python 3.11.4)
+- /bin/python3(Python 3.8.10)
+- /usr/bin/python3(Python 3.8.10)
+
+<img src="./images/CANNLab_course_development_guide/vscode_select_kernel_1.png">
+<img src="./images/CANNLab_course_development_guide/vscode_select_kernel_2.png">
+
+**step2:**
+
+打开 VSCode 的远程设置文件`settings.json`，配置 `python.defaultInterpreterPath` 和 `jupyter.kernels.excludePythonEnvironments`。
+- `python.defaultInterpreterPath`：`/usr/local/bin/python`，如果不确定这个值，可以在终端执行 `which python` 进行确认。
+- `jupyter.kernels.excludePythonEnvironments`：**step1** 中除了 `which python` 外其他所有 kernel 地址。
+
+<img src="./images/CANNLab_course_development_guide/vscode_settings_1.png">
+<img src="./images/CANNLab_course_development_guide/vscode_settings_2.png">
+<img src="./images/CANNLab_course_development_guide/vscode_settings_3.png">
+
+配置完成后，关闭 `settings.json`，快捷键 `Ctrl+Shift+P` 调出命令框，选择执行 `Developer:Reload Window` 重启 VSCode。
+
+<img src="./images/CANNLab_course_development_guide/vscode_reload_window.png">
+
+完成上述操作后，打开每个 `.ipynb` 文件，在右上角 **选择内核** 的位置，均已默认选择 **Python 3.11.4**。
+
+### 7.4 逐 cell 执行验证
 
 内核选择完成后，从第一个 code cell 开始依次点击运行按钮，确认：
 
@@ -306,7 +329,7 @@ EOF
 
 <img src="./images/CANNLab_course_development_guide/run_code_cell_success.png">
 
-### 7.3 验证记录
+### 7.5 验证记录
 
 在 PR 描述中需要说明：
 
@@ -314,7 +337,7 @@ EOF
 - 运行环境（如 CANNLab 云开发环境，模板及规格）。
 - 验证结果（所有 Notebook 运行通过 / 存在的已知问题）。
 
-### 7.4 多硬件验证
+### 7.6 多硬件验证
 
 若课程同时支持多种硬件，需在每种硬件对应的体验环境中分别完成运行验证：
 
