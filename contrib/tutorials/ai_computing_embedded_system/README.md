@@ -34,7 +34,6 @@
 
 ## 已验证的在线体验环境
 
-- gitcode 在线体验 Notebook
 - CANNLab 云开发环境
   - NPU 镜像模板：`cann_9.0.0_py3.11-A2-arm`
   - 规格：`1*NPU 910B3 16vCPUs 32GiB`
