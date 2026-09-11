@@ -41,11 +41,9 @@
 | 镜像模板 | `cann_9.0.0-py3.11-A3-arm-20260829` |
 | Notebook 内核 | `Python 3.11.4 (CANN)`，kernelspec 为 `python3` |
 | CANNLab 指南 | [CANNLab 环境体验指南](../../../../docs/CANNLab_env_experience_guide.md) |
-| GitCode 在线 Notebook | - |
 
 ## 实验环境说明
 
 - CANNLab A3 镜像提供的 `bisheng` 是 CANN 异构编译器；鲲鹏毕昇 Host 编译器是独立软件包，安装后通过 `clang`/`clang++` 使用，二者不能互相替代。
 - 鲲鹏毕昇 Host 编译器的下载、完整性校验和安装步骤以[官方安装指南](https://www.hikunpeng.com/document/detail/zh/kunpengdevps/compilation/ug-bisheng/kunpengbisheng_06_0005.html)为准。配置完成后执行 `hash -r`，再用 `clang -v` 与 `clang++ -v` 验证。
 - 使用 `$ASCEND_TOOLKIT_HOME`、`$ASCEND_HOME_PATH` 等环境变量定位 CANN，不假定固定安装路径。
-- 在线体验链接由仓库维护人员配置，当前记为 `-`。

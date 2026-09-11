@@ -41,11 +41,9 @@
 | 镜像模板 | `cann_9.0.0-py3.11-A3-arm-20260829` |
 | Notebook 内核 | `Python 3.11.4 (CANN)`，kernelspec 为 `python3` |
 | CANNLab 指南 | [CANNLab 环境体验指南](../../../../docs/CANNLab_env_experience_guide.md) |
-| GitCode 在线 Notebook | - |
 
 ## 实验环境说明
 
 - CPU 实验需要鲲鹏毕昇 Host 编译器 `clang++`、CMake 与 OpenMP；本轮已在 CANNLab A3（Ascend910_9362）Host CPU 上实测通过；历史实验记录还包含 16 核/16 进程服务器数据，历史实验记录使用的 CANN 版本为 CANN 9.0.0。
 - 使用 `$ASCEND_TOOLKIT_HOME`、`$ASCEND_HOME_PATH` 等环境变量定位实际安装，不假定固定路径。
 - Notebook 为教学重组内容，本地开发阶段保持未执行状态；实现、构建方式与参考结果来自对应原实验工程的 README、源码、脚本、CSV 与历史运行记录，不将历史日志或静态检查写成当前机器真机 PASS。参考耗时会随硬件、编译器版本与系统负载变化，学习时应关注正确性与变化趋势。
-- 在线体验链接由仓库维护人员配置，当前记为 `-`。

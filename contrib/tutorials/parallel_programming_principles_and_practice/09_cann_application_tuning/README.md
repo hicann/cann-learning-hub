@@ -81,4 +81,3 @@ MuduoXinyu 章节按 02.01 → 02.02 → 02.03 学习。实验需显式准备干
 - CANNLab 镜像模板：`cann_9.0.0-py3.11-A3-arm-20260829`；
 - Notebook 内核：`Python 3.11.4 (CANN)`，kernelspec 为 `python3`；
 - CANNLab 使用方法：[CANNLab 环境体验指南](../../../../docs/CANNLab_env_experience_guide.md)；
-- GitCode 在线 Notebook：`-`。

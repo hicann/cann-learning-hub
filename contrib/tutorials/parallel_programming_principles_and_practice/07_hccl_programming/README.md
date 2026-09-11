@@ -41,7 +41,6 @@
 | 镜像模板 | `cann_9.0.0-py3.11-A3-arm-20260829` |
 | Notebook 内核 | `Python 3.11.4 (CANN)`，kernelspec 为 `python3` |
 | CANNLab 指南 | [CANNLab 环境体验指南](../../../../docs/CANNLab_env_experience_guide.md) |
-| GitCode 在线 Notebook | - |
 
 ## 实验环境说明
 
@@ -49,4 +48,3 @@
 - 当前执行边界：world1（单 rank 通信域）路径已建立；HCCL 2/4/8 多卡场景尚未完成真机验证，不得声称多 NPU 扩展性已通过。
 - 使用 `$ASCEND_TOOLKIT_HOME`、`$ASCEND_HOME_PATH` 等环境变量定位实际安装，不假定固定路径。
 - Notebook 为教学重组内容，本地开发阶段保持未执行状态；实现、构建方式与参考结果来自对应原实验工程的 README、源码、脚本、CSV 与历史运行记录，不将历史日志或静态检查写成当前机器真机 PASS。本课程不解释为完整 AI Core SpMV 性能实验。
-- 在线体验链接由仓库维护人员配置，当前记为 `-`。
