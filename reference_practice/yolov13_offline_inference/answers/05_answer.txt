@@ -1,0 +1,6 @@
+# 章节练习参考答案
+
+1. ONNX 模型需要通过 ATC 转换为 OM，`--soc_version` 应与运行设备匹配，输入 Shape 应与模型导出 Shape 一致。
+2. 预处理顺序为 letterbox 缩放、RGB 转换、归一化、HWC 转 CHW 和增加 batch 维度，最后保存为 FP32 BIN 文件。
+3. 推理结果需要按置信度过滤，并对同一类别的候选框执行 NMS；绘制到原图前需要根据缩放比例和 padding 反算坐标。
+4. 多流调优时只改变 `--multi_stream_parallel_mode`，固定模型、输入、`soc_version`、预热次数和正式推理次数，以成功正式推理的平均 `aclmdlExecute` 时延作为比较指标。
