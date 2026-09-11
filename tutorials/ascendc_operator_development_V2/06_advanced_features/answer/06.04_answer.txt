@@ -1,0 +1,11 @@
+1. 错。SuperKernel 不改变各子 Kernel 的计算语义，主要通过合并连续任务的调度和启动过程减少开销。
+
+2. 错。ACLGraph 模式下使能 SuperKernel 时，需要同时设置 static_kernel_compile=True 和 super_kernel_optimize=True。
+
+3. A。static_kernel_compile=True 用于开启静态 Kernel 编译，super_kernel_optimize=True 用于开启 SuperKernel 融合优化。
+
+4. B。使用相同 scope_name 的 super_kernel_scope_begin/end 标定期望参与融合的连续算子范围；最终是否融合仍由融合规则和算子支持情况决定。
+
+5. C。自定义算子能够被 ACLGraph 捕获，只说明其能够入图；要在 SuperKernel 内部作为子函数调用，还需要实现 __sk__ 子函数并通过 SK_BIND 绑定。
+
+6. A、B、C。op_summary_*.csv 记录设备侧任务的开始时间和执行时长；连续任务区间的设备侧耗时可按“末任务开始时间 - 首任务开始时间 + 末任务执行时长”计算；融合后的任务可在 OP Type 中显示为 SuperKernel。Host MSTX Range 总耗时不能直接替代指定层的设备侧耗时。
