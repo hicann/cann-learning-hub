@@ -55,14 +55,22 @@ TorchAir 需匹配对应版本的PyTorch、TorchNPU、CANN固件与Python 环境
 | 7.0.0           | 2.3.1.post6  | v2.3.1-7.0.0    | 2.3.1      | 8.1.RC1     | Python3.8.x / Python3.9.x / Python3.10.x / Python3.11.x  |
 | 7.0.0           | 2.1.0.post12 | v2.1.0-7.0.0    | 2.1.0      | 8.1.RC1     | Python3.8.x / Python3.9.x / Python3.10.x / Python3.11.x  |
 
+## 软硬件配套说明
+
+| 项目 | 要求 |
+| --- | --- |
+| 支持硬件 | Atlas A2 训练/推理系列产品、Atlas A3 训练/推理系列产品 |
+| CANN 版本 | 9.1.0 及以上 |
+| Python | 3.11 |
+| PyTorch / torch_npu | 2.10.0 及以上 |
+
 ## 在线体验环境
 
 本教程支持以下在线体验环境：
 
 | 体验环境                            | 镜像模板 / 版本                  | Python 内核      | 说明                                                                                                                                          |
 | ------------------------------- | -------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| cann-learning-hub 在线体验 notebook | cann\_9.0.0\_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行                                                                                                              |
-| CANNLab 云开发环境                   | cann\_9.0.0\_py3.11-A2-arm | Python 3.11.4  | 参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab%5Fenv%5Fexperience%5Fguide.md)创建CANNLab环境运行notebook |
+| CANNLab 云开发环境                   | cann\_9.0.0\_py3.11-A2-arm | Python 3.11.4  | 参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab%5Fenv%5Fexperience%5Fguide.md)创建CANNLab环境运行notebook。**创建环境后需先将 CANN 包升级至 9.1.0** |
 
 > **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy%5F03%5F0001.html)。
 
@@ -76,23 +84,23 @@ TorchAir 需匹配对应版本的PyTorch、TorchNPU、CANN固件与Python 环境
 #### 第一章节 前置背景
 本小节为前置的理论介绍， 开发者通过对`npugraph_ex` 原理与基础概念、`torch.compile`机制的学习了解，建立底层理论体系，全面理解昇腾专属图模式后端的设计逻辑与核心加速机制。
 
-| Notebook             | Link    | 状态 |
-|:------------------------|:--------| :--- |
-| **1.1 章节介绍**           | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.01_chapter_intro.ipynb)    | ✅ 已发布 |
-| **1.2 torch.compile原理介绍** | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.02_torch_compile_intro.ipynb)   | ✅ 已发布 |
-| **1.3 NPUGraph原理介绍**     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.03_npugraph_intro.ipynb) | ✅ 已发布 |
-| **1.4 npugraph_ex基础概念** | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.04_npugraph_ex_basic_concepts.ipynb) | ✅ 已发布 |
-| **1.5 章节练习**           | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/01_basic_concepts/01.05_chapter_practice.ipynb) | ✅ 已发布 |
+| Notebook             | 状态 |
+|:------------------------| :--- |
+| **1.1 章节介绍**           | ✅ 已发布 |
+| **1.2 torch.compile原理介绍** | ✅ 已发布 |
+| **1.3 NPUGraph原理介绍**     | ✅ 已发布 |
+| **1.4 npugraph_ex基础概念** | ✅ 已发布 |
+| **1.5 章节练习**           | ✅ 已发布 |
 
 
 #### 第二章节 快速上手
 本小节为开发者提供一套完整的实操案例，从零演示如何校验昇腾运行环境、构建测试模型、启用`npugraph_ex`后端进行图编译的全流程，有助于开发者直观感受 `npugraph_ex`捕获（ Capture）和回放（Replay）机制带来的推理加速成效，从而快速掌握TorchAir 图模式的基础使用方法。
 
-| Notebook    | Link | 状态 |
-|:---------------| :--- | :--- |
-| **2.1 章节介绍**   | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/02_quick_start/02.01_chapter_intro.ipynb)     | ✅ 已发布 |
-| **2.2 上手案例** | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/02_quick_start/02.02_quick_start.ipynb)   | ✅ 已发布 |
-| **2.3 章节练习**   | [ 在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/TorchAir_development&scanFilePath=tutorials/TorchAir_development/02_quick_start/02.03_chapter_practice.ipynb)     | ✅ 已发布 |
+| Notebook    | 状态 |
+|:---------------| :--- |
+| **2.1 章节介绍**   | ✅ 已发布 |
+| **2.2 上手案例** | ✅ 已发布 |
+| **2.3 章节练习**   | ✅ 已发布 |
 
 ---
 
@@ -100,36 +108,36 @@ TorchAir 需匹配对应版本的PyTorch、TorchNPU、CANN固件与Python 环境
 
 #### 第三章节 基础功能
 本小节为`npugraph_ex`常用的基础功能介绍，涉及 Host 侧与 Device 侧的异构内存优化、跨硬件流水线调度及算子硬件特化刷新等，帮助开发者了解 npugraph_ex 的内存分配机制与优化策略。
-| Notebook        | Link | 状态   |
-|:------------------| :--- |:-------|
-| **3.1 章节介绍**      |   在线体验   | ✅ 已发布 |
-| **3.2 基础功能介绍**    | 在线体验   | ✅ 已发布 |
-| **3.3 原地算子优化**    | 在线体验   | ✅ 已发布 |
-| **3.4 内存复用**     | 在线体验   | ✅ 已发布|
-| **3.5 FX pass 优化** | 在线体验   | ✅ 已发布|
-| **3.6 章节练习**      | 在线体验   | ✅ 已发布 |
+| Notebook        | 状态   |
+|:------------------|:-------|
+| **3.1 章节介绍**      | ✅ 已发布 |
+| **3.2 基础功能介绍**    | ✅ 已发布 |
+| **3.3 原地算子优化**    | ✅ 已发布 |
+| **3.4 内存复用**     | ✅ 已发布|
+| **3.5 FX pass 优化** | ✅ 已发布|
+| **3.6 章节练习**      | ✅ 已发布 |
 
 #### 第四章节 深度优化
 本章节为`npugraph_ex`高阶功能的介绍，涉及编译产物持久化、芯片底层计算核资源的精细化调配及异构算子的生成与调度策略，针对大模型推理中的高并发、长序列等特殊场景优化效果明显。
-| Notebook                      | Link | 状态 |
-|:--------------------------------| :--- | :--- |
-| **4.1 章节介绍**                    | 在线体验   | ✅ 已发布 |
-| **4.2 模型编译缓存功能**                | 在线体验   | ✅ 已发布|
-| **4.3 多流表达功能**                  | 在线体验   | ✅ 已发布|
-| **4.4 AI-Core 和 Vector-Core 限核功能** | 在线体验   | ✅ 已发布 |
-|**4.5 静态 Kernel 编译功能**            |在线体验   | ✅ 已发布 |
-| **4.6 SuperKernel功能**           | 在线体验   | ✅ 已发布 |
-| **4.7 章节练习**                    | 在线体验   | ✅ 已发布|
+| Notebook                      | 状态 |
+|:--------------------------------| :--- |
+| **4.1 章节介绍**                    | ✅ 已发布 |
+| **4.2 模型编译缓存功能**                | ✅ 已发布|
+| **4.3 多流表达功能**                  | ✅ 已发布|
+| **4.4 AI-Core 和 Vector-Core 限核功能** | ✅ 已发布 |
+|**4.5 静态 Kernel 编译功能**            | ✅ 已发布 |
+| **4.6 SuperKernel功能**           | ✅ 已发布 |
+| **4.7 章节练习**                    | ✅ 已发布|
 
 
 ### 第三部分 `npugraph_ex` 实践与问题定位篇
 #### 第五章节 实践与问题定位
 本章节为`npugraph_ex`常用 DFX功能的介绍，涉及图编译期中间表征（IR）保存、芯片运行时算子数据溢出监测等，针对模型编译失败、精度异常等故障场景定位效果明显。
-| Notebook             | Link | 状态 |
-|:-----------------------| :--- | :--- |
-| **5.1 章节介绍**          | 在线体验建设中 | 🚧 开发中 |
-| **5.2 图编译Debug信息保存功能** | 在线体验建设中 | 🚧 开发中 |
-| **5.3 算子Data-Dump功能**  | 在线体验建设中 | 🚧 开发中 |
-| **5.4 多流并发死锁检测功能**     | 在线体验建设中 | 🚧 开发中 |
-| **5.5 常见问题的定位方法**      | 在线体验建设中 | 🚧 开发中|
-| **5.6 章节练习**        | 在线体验建设中 | 🚧 开发中 |
+| Notebook             | 状态 |
+|:-----------------------| :--- |
+| **5.1 章节介绍**          | 🚧 开发中 |
+| **5.2 图编译Debug信息保存功能** | 🚧 开发中 |
+| **5.3 算子Data-Dump功能**  | 🚧 开发中 |
+| **5.4 多流并发死锁检测功能**     | 🚧 开发中 |
+| **5.5 常见问题的定位方法**      | 🚧 开发中|
+| **5.6 章节练习**        | 🚧 开发中 |
