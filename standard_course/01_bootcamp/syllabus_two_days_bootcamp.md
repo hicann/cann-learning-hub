@@ -42,12 +42,12 @@
 
 | 时段 | 讲次 | 主题 | 教材PPT | 实践(cann-learning-hub) | 实践（cann-judge) |
 |------|------|------|------|------|------------|
-| **D1 上午** | 第 1 讲 | 昇腾 AI 产业生态与 CANN 架构基础 |1h, [PPT](./two_days_course/01_artificial_intelligence_basics_light.pptx) | 待补充链接 | 待补充链接   |
-| **D1 上午** | 第 2 讲 | 基于 CANN 部署和推理大模型 | 1h, [PPT](./two_days_course/02_llm_deployment_and_inference_with_cann_1h.pptx)  | 待补充链接 | 待补充链接 | |
-| **D1 下午** | 第 3 讲 | 大模型推理优化与最佳实践 | 2h, [PPT](./two_days_course/03_llm_training_and_inference_optimization_overview_with_cann_2h.pptx) | 待补充链接 | 待补充链接 |  |
-| **D2 上午** | 第 4 讲 | Ascend C 矢量算子开发 | 2h, [PPT](./two_days_course/04_a2a3_ascend_c_simd_vector_operator_development_2h.pptx) |  待补充链接 | 待补充链接   |
-| **D2 下午** | 第 5 讲 | 算子接入 PyTorch ＋ CANNBot 智能开发 | 1h, [PPT1](./two_days_course/05_a2a3_ascend_c_operator_pytorch_single_operator_call_0.5h.pptx)、[PPT2](./two_days_course/05_cannbot_highlights_open_source_community_edition_0.5h.pptx) |  待补充链接 | 待补充链接  |
-| **D2 下午** | 第 6 讲 | 结业作业辅导与展示 | — |待补充链接 | 待补充链接  |
+| **D1 上午** | 第 1 讲 | 昇腾 AI 产业生态与 CANN 架构基础 |1h, [PPT](./two_days_course/01_artificial_intelligence_basics_light.pptx) | [人工智能基础](../../quick_start/cann_basics)  | — |
+| **D1 上午** | 第 2 讲 | 基于 CANN 部署和推理大模型 | 1h, [PPT](./two_days_course/02_llm_deployment_and_inference_with_cann_1h.pptx)  | [Qwen3-1.7B 推理优化实践](../../tutorials/llm_inference/qwen3_1.7B) | — |
+| **D1 下午** | 第 3 讲 | 大模型推理优化与最佳实践 | 2h, [PPT](./two_days_course/03_llm_training_and_inference_optimization_overview_with_cann_2h.pptx) | [Qwen3-1.7B 推理优化实践](../../tutorials/llm_inference/qwen3_1.7B) | — |
+| **D2 上午** | 第 4 讲 | Ascend C 矢量算子开发 | 2h, [PPT](./two_days_course/04_a2a3_ascend_c_simd_vector_operator_development_2h.pptx) |  [算子开发系列](../../tutorials/ascendc_operator_development_light) | [CANNJudge 刷题](https://cannjudge.cn) |
+| **D2 下午** | 第 5 讲 | 算子接入 PyTorch ＋ CANNBot 智能开发 | 1h, [PPT1](./two_days_course/05_a2a3_ascend_c_operator_pytorch_single_operator_call_0.5h.pptx)、[PPT2](./two_days_course/05_cannbot_highlights_open_source_community_edition_0.5h.pptx) |[PyTorch框架下Kernel直调](../../tutorials/ascendc_operator_development_light/02_AscendC_basic)| |
+| **D2 下午** | 第 6 讲 | 结业作业辅导与展示 | — | — |[AddRmsNorm算子开发](https://cannjudge.cn/public/vector/addrmsnorm) |
 
 ---
 
