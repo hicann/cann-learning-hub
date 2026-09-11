@@ -1,199 +1,100 @@
 # CANNJudge 算子提交 Skill
 
-帮助用户完成 CANNJudge 算子竞赛的完整流程。
+支持邮箱/手机号与密码登录（含图形验证码）、会话复用，以及传统算子和 `npu_kernel_dev` 核函数工程的下载、提交、查询。
 
-## 功能
+## 快速开始
 
-- ✅ RSA 加密安全登录（禁止明文密码）
-- ✅ 获取题目信息
-- ✅ 下载工程模板
-- ✅ 提交算子实现
-- ✅ 查询提交结果
-- ✅ 查看排行榜
+新登录前，Agent 先询问登录方式：**Agent 对话输入账号密码、Linux/本地终端隐藏输入、RSA 密文**。已有有效会话直接复用，已选择方式不重复询问。
 
-## 安全登录机制
+选择 Agent 对话方式后提供账号密码，Agent 用运行时变量调用 `client.login(account, password)` 并 `client.save_session()`；不回显密码、不写入脚本或日志。对话输入不隐藏，可改选终端方式。
 
-**禁止在对话中直接输入明文密码！** 使用 RSA 非对称加密保护密码。
-
-### 首次设置
+**Linux / SSH终端**：使用 `bash /path/to/cannjudge-submit/login.sh`，账号和密码在终端输入，密码隐藏。默认直接调用登录接口，不需要图片或二维码。
 
 ```bash
-# 1. 在服务器上生成 RSA 密钥对（一次性）
-python3 generate_key.py
-# → 生成 private.pem（留在服务器）+ public.pem（拷贝到 PC）
-
-# 2. 将 public.pem 拷贝到个人 PC
-scp server:~/path/to/public.pem ./
-
-# 3. 在 PC 上加密密码
-python3 encrypt_password.py --public-key public.pem
-# → 输出 RSA 密文，将密文提供给 CANNBot
+python3 -m pip install requests
+python3 cannjudge_cli.py login
+python3 cannjudge_cli.py login --account "your@email.com" --login-type email
 ```
 
-### 日常使用
+`--email` 是 `--account` 的兼容别名。仅在明确需要验证码时添加 `--captcha`；SVG 原样保存在 Agent 当前工作目录。
+详细步骤见 [Linux登录说明](references/linux-login.md)。Windows会话不能复制到Linux使用。
+会话保存在 `~/.cannjudge/session.json`，Windows DPAPI加密，POSIX权限600，仅保存用户ID/Cookie/登录时间。
+不保存密码，不从密码环境变量自动登录。`logout`清除本机会话；`--session-file PATH`（子命令前）可隔离账号。
 
-将密文提供给 CANNBot 即可登录，密文可复用（私钥不变时）。
-
-## 使用方法
-
-### 方式 1: 使用命令行工具
+## 下载、开发与提交
 
 ```bash
-# 推荐：密文登录
-python cannjudge_cli.py login --email "your@email.com" --ciphertext "RSA密文"
-
-# 不推荐：明文登录（仅调试用）
-python cannjudge_cli.py login --email "your@email.com" --password "明文密码"
-
-# 下载工程
-python cannjudge_cli.py download --problem-id "题目ID" --output "./output"
-
-# 提交代码
-python cannjudge_cli.py submit --problem-id "题目ID" --project-dir "./output/project"
-
-# 查询结果
-python cannjudge_cli.py query --submission-id "提交ID"
-
-# 查看排行榜
-python cannjudge_cli.py rank --problem-id "题目ID"
+python3 cannjudge_cli.py info --problem-url "https://cannjudge.cn/hc_cann_codelabs/cann/add"
+python3 cannjudge_cli.py download --problem-url "https://cannjudge.cn/hc_cann_codelabs/cann/add" --output ./add-work
+# 完成可编辑源码后预检
+python3 cannjudge_cli.py submit --problem-url "https://cannjudge.cn/hc_cann_codelabs/cann/add" --project-dir ./add-work/project --dry-run
+# 提交，不重复确认已授权的操作
+python3 cannjudge_cli.py submit --problem-url "https://cannjudge.cn/hc_cann_codelabs/cann/add" --project-dir ./add-work/project --no-wait
+python3 cannjudge_cli.py query --submission-id ID
+python3 cannjudge_cli.py rank --problem-id ID
 ```
 
-### 方式 2: 在代码中直接使用
+所有题目选项也支持 `--problem-id ID`。完整链接会保留小组/比赛作用域，避免同名题冲突。
+默认 `--project-type auto` 依据网站的 `code_template` 分流；可显式指定 `npu_kernel_dev` 或 `registry`。
+下载器保留完整ZIP和工程文件，并生成不含凭据的模板清单；现有工程不会被覆盖。
+
+- 核函数工程：读取在线模板的 editable 文件，以及根目录新增的合法 `.asc`/`.h`，以 `files` 数组提交。
+- 传统工程：读取 `op_kernel/*_tiling.h`、可选 `tiling_key_*.h`、`op_host/*.cpp`、`op_kernel/*.cpp`，使用原有四字段提交。匹配多个文件会停止，避免误选。
+- `--dry-run` 显示拟提交文件大小与SHA-256，不发送源码到提交接口。
+- 只读模板被修改、源码缺失、题目绑定不一致或路径越界会停止。
+
+详细核函数接口约束见 [kernel-project.md](references/kernel-project.md)。
+
+## SDK
 
 ```python
-from cannjudge_cli import CANNJudgeClient
+from cannjudge_cli import CANNJudgeClient, print_submission_result
 
 client = CANNJudgeClient()
-
-# 推荐：密文登录
-user_info = client.login_with_ciphertext(
-    email="email@example.com",
-    ciphertext="RSA密文",
-    private_key_path="private.pem"
-)
-
-# 不推荐：明文登录
-# user_info = client.login("email@example.com", "明文密码")
-
-# 获取题目信息
-problem = client.get_problem("题目ID")
-
-# 下载工程
-extract_dir = client.download_package("题目ID", "./output")
-
-# 提交代码
-submission_id = client.submit(
-    problem_id="题目ID",
-    tiling_h="...",
-    tiling_key_h="...",
-    host_cpp="...",
-    kernel_cpp="..."
-)
-
-# 等待结果
-result = client.wait_for_result(submission_id)
-
-# 查看排行榜
-rankings = client.get_rankings("题目ID")
+if not client.load_session():
+    raise RuntimeError("请先在自己的终端运行 cannjudge_cli.py login")
+problem = client.resolve_problem("https://cannjudge.cn/hc_cann_codelabs/cann/add")
+folder = client.download_package(problem['_id'], './fresh-output', include_metadata=True)
+# 完成 folder 中可编辑源码，再执行：
+payload = client.prepare_submission(problem['_id'], folder)
+submission_id = client.submit_payload(payload)
+print_submission_result(client.wait_for_result(submission_id))
+client.save_session()
 ```
 
-## API 接口说明
+旧SDK `submit(problem_id, tiling_h, tiling_key_h, host_cpp, kernel_cpp)` 保留。
+`login_interactive(account)` 用于用户自己的交互终端；登录后SDK显式 `save_session()`。
+现有系统可调用 `login(account, password)`，不要输出密码或完整响应。
 
-### 登录
-```
-POST /api/users/login
-Body: {"email": "...", "password": "..."}
-返回: {"_id": "用户ID", "nickname": "...", ...}
-```
+## API
 
-### 获取题目
-```
-GET /api/problems/{problemId}
-返回: {"_id": "...", "name": "...", "desc": "...", ...}
-```
+| 操作 | 接口 |
+|---|---|
+| 验证码 | `GET /api/users/captcha` → captchaId、image（服务端原始SVG，本地原样保存） |
+| 登录 | `POST /api/users/login`，account/loginType/password（captchaId/captchaCode 为可选配套字段） |
+| 题目 | `GET /api/problems/{id}` |
+| 按名查题 | `GET /api/problems/name/{name}?contestId=...` |
+| 模板清单 | `GET /api/problems/{id}/template?userId=...` |
+| 下载ZIP | `GET /api/problems/{id}/package?userId=...` |
+| 提交 | `POST /api/submissions/submit`，problemId/userId/files 或原四字段 |
+| 查询 | `GET /api/submissions/{id}` |
+| 最新排行 | `GET /api/submissions/problem/{id}/latest` |
 
-### 下载工程
-```
-GET /api/problems/{problemId}/package?userId={userId}
-返回: Zip 文件
-```
+成功响应含 `data.submissionId`。当前平台成功终态 `Pass`，兼容 `Accepted`，每个测试点读取 testcase_status、precision_ratio、time、msg。
+时间展示平台原值，不臆测单位。默认等待120秒；`--max-wait` 可调整，`--no-wait` 后使用提交ID继续查询。
+网络超时或没有提交ID时，先查询已有提交记录，不自动重复POST。401清理会话；403先检查题目/小组权限。
 
-### 提交代码
-```
-POST /api/submissions/submit
-Body: {
-  "problemId": "...",
-  "userId": "...",
-  "tiling_h": "...",
-  "tiling_key_h": "...",
-  "host_cpp": "...",
-  "kernel_cpp": "..."
-}
-返回: {"code": 0, "data": {"submissionId": "..."}}
-```
+## RSA 兼容方式
 
-### 查询结果
-```
-GET /api/submissions/{submissionId}
-返回: {"status": "...", "result": [...], ...}
+见 [rsa-login.md](references/rsa-login.md)。`login_with_ciphertext` 接受与 `login` 相同的关键字登录选项。
+CLI已有验证码可使用 `--captcha-id` 和 `--captcha-code`，由用户读取验证码；普通密码登录默认不带验证码。
+`--password` 仅保留兼容，会提醒命令历史暴露风险；不建议用户使用。
+
+## 验证
+
+```bash
+python3 -m pytest tests -q
 ```
 
-### 排行榜
-```
-GET /api/submissions/problem/{problemId}/latest
-返回: [用户提交列表]
-```
-
-## 提交结果说明
-
-### 状态
-- `Running`: 正在执行
-- `Accepted`: 全部通过
-- `Wrong Answer`: 部分失败
-- `Compile Error`: 编译失败
-- `Runtime Error`: 运行时错误
-
-### 测试用例结果
-- `testcase_status`: 测试用例状态
-- `precision_ratio`: 精度比例 (1.0 = 完全匹配)
-- `time`: 执行时间 (毫秒)
-
-## 注意事项
-
-1. **密码安全**: 禁止在对话中直接输入明文密码，使用 RSA 加密密文
-2. **私钥保护**: private.pem 仅保留在服务器，绝不外传
-3. **Cookie**: 登录后会自动管理 Cookie
-4. **轮询**: 查询结果时默认 3 秒间隔
-5. **超时**: 默认最长等待 120 秒
-
-## 工程模板结构
-
-```
-code/
-├── CMakeLists.txt
-├── op_host/
-│   ├── CMakeLists.txt
-│   └── {op_name}.cpp
-└── op_kernel/
-    ├── CMakeLists.txt
-    ├── {op_name}_tiling.h
-    ├── tiling_key_{op_name}.h
-    └── {op_name}.cpp
-```
-
-## 相关资源
-
-- CANNJudge 网站: https://cannjudge.cn
-- CANN 文档: https://www.hiascend.com/document
-
-## 文件结构
-
-```
-cannjudge-submit/
-├── SKILL.md              # 技能详细说明文档
-├── README.md             # 使用说明
-├── cannjudge_cli.py      # 命令行工具（支持 RSA 密文登录）
-├── generate_key.py       # RSA 密钥对生成脚本（服务器端运行）
-├── encrypt_password.py   # RSA 密码加密脚本（PC 端运行）
-└── example.py            # 使用示例
-```
+覆盖密码隐藏输入、会话持久化/失效、邮箱/手机号验证码协议、传统工程兼容、核函数多文件提交、只读保护、路径安全、题目作用域和Pass终态。
+真实端到端验证：上述Add题核函数工程，提交 `6aa27abe2d3dd2c5ae243b01`，平台 `Pass`，15/15 测试点通过（2026-09-10）。
