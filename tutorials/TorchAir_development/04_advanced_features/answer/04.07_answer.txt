@@ -1,0 +1,82 @@
+======================================================================
+4.7 npugraph_ex 深度优化章节练习答案
+======================================================================
+1. （判断题）cache_compile 可以在 CANN 升级后无条件复用旧缓存。
+   答案：错误 (False)
+   解析：模型编译缓存与 CANN 版本、硬件型号、计算图和相关编译选项有关。CANN 升级后不保证旧缓存兼容，应清理旧缓存并重新生成。
+
+2. （判断题）多流使用 Tensor 时，必要时应通过 record_stream 延长其生命周期。
+   答案：正确 (True)
+   解析：当 Tensor 在创建它的 Stream 之外继续被使用时，record_stream 可防止缓存分配器过早回收其底层内存，从而避免异步执行期间出现非法复用。
+
+3. （判断题）limit_core_num 配置的是 Stream 级最大核数，不保证每个算子一定使用该数量。
+   答案：正确 (True)
+   解析：limit_core_num 设置的是指定 Stream 上算子的用核上限。算子实际使用的核数还取决于算子实现、输入规模和硬件资源，可通过 Profiling 中的 Block Num 查看。
+
+4. （判断题）SuperKernel 可以不依赖静态 Kernel 编译单独开启。
+   答案：错误 (False)
+   解析：SuperKernel 依赖静态 Kernel 编译能力，使用时必须同时设置 static_kernel_compile=True 和 super_kernel_optimize=True。
+
+5. （判断题）静态 Kernel 编译产物目录需要运行用户具有读、写和执行权限。
+   答案：正确 (True)
+   解析：静态 Kernel 编译需要在工作目录中创建、读取并执行相关产物，因此运行用户必须具备读、写和执行权限。
+
+6. （单选题）哪个接口用于模型编译缓存？
+   答案：B（npugraph_ex.inference.cache_compile）
+   解析：模型编译缓存通过 torch.npu.npugraph_ex.inference.cache_compile 封装待缓存的推理函数，无需再对该函数调用 torch.compile。
+
+7. （单选题）多流之间控制依赖关系的直接机制是？
+   答案：A（Event 的 record/wait）
+   解析：Event.record 用于记录某个 Stream 的执行进度，Event.wait 使目标 Stream 等待该事件完成，从而显式表达跨流依赖关系。
+
+8. （单选题）查看 AI Core 算子实际核数时重点看哪个字段？
+   答案：B（Block Num）
+   解析：Profiling 数据中的 Block Num 反映算子实际使用的核数。配置 limit_core_num 后，应通过该字段确认控核是否生效。
+
+9. （单选题）开启 SuperKernel 时必须同时开启什么？
+   答案：B（static_kernel_compile）
+   解析：SuperKernel 的生成和执行依赖静态 Kernel 编译产物，因此必须同时开启 static_kernel_compile。
+
+10. （单选题）当 cache_dir 使用相对路径时，缓存文件路径相对于哪里解析？
+    答案：B（work_dir）
+    解析：相对 cache_dir 会基于 cache_compile 的 work_dir 解析；未显式指定时，应结合脚本运行目录确认实际缓存位置。
+
+11. （单选题）limit_core_num 的 stream 参数为 None 时，控核作用于？
+    答案：A（当前进入 with 语句块时的 Stream）
+    解析：stream=None 表示使用进入 limit_core_num 上下文时的当前 Stream，而不是对进程中的所有 Stream 全局生效。
+
+12. （单选题）设置 disable_static_kernel_compile_cache=True 后，系统将如何处理静态 Kernel？
+    答案：B（每次重新编译）
+    解析：该选项会禁用静态 Kernel 编译缓存，使每次执行都重新编译；它仅在 static_kernel_compile=True 时生效。
+
+13. （单选题）使用 super_kernel_scope_begin/end 标定范围后，正确的理解是？
+    答案：B（标定候选范围，实际是否融合仍由系统按依赖关系判断）
+    解析：scope 接口用于标记 SuperKernel 候选范围，并不保证范围内所有算子都能融合；最终结果受算子支持度、数据依赖和编译条件约束。
+
+14. （多选题）哪些情况可能造成模型编译缓存失效或不兼容？
+    答案：ABCD
+    解析：计算图重新编译、CANN 版本变化、生成与加载缓存的脚本不一致都可能使缓存失效。npugraph_ex 不支持随机数生成算子的 aclgraph Capture，RNG 依赖逻辑也不应直接作为可稳定复用的缓存图处理。
+
+15. （多选题）关于多流表达，正确的说法有哪些？
+    答案：ABD
+    解析：多流可用于计算—计算或计算—通信并行；存在数据依赖时必须使用 Event 等机制同步；是否获得收益应结合 Profiler 时间线和端到端耗时判断，增加 Stream 数量并不保证加速。
+
+16. （多选题）静态 Kernel 缓存命中时，哪些条件通常需要保持一致？
+    答案：ABC
+    解析：缓存匹配通常依赖 CANN 版本、硬件型号、算子 Shape、Format、数据类型以及确定性计算和 SuperKernel 等相关编译选项。Python 注释不会改变计算图，不是缓存匹配条件。
+
+17. （多选题）关于限核功能，正确的说法有哪些？
+    答案：ABC
+    解析：限核主要用于 micro batch 等多流并行场景；非 Ascend C 算子暂不支持控核，通信类算子仅支持 AI Vector 控核。并发修改同一 Stream 的控核配置可能产生竞争，不属于无风险用法。
+
+18. （多选题）使用 SuperKernel 进行调试与评估时，正确的做法有哪些？
+    答案：ABC
+    解析：可使用 debug_op_exec_trace 等调试选项辅助定界，并通过 Profiling 确认融合和性能表现，同时与未融合版本做精度对比。调试选项可能引入额外开销，不应长期在生产环境全部开启。
+
+19. （实验题）使用 cache_compile 为 prompt 和 decode 两个固定 Shape 推理场景创建缓存，并比较首次生成与二次命中的耗时。
+    参考思路：将两个场景分别封装为未被其他装饰器修饰的方法，用 cache_compile 创建缓存函数；固定脚本、CANN、硬件和输入条件，分别记录首次生成与重启内核后二次命中的端到端耗时，并保存缓存目录和命中日志作为证据。
+    参考代码：参见 04.07_answer.ipynb 中的“实验 19 代码示例”。
+
+20. （实验题）实现两个无数据依赖计算分支的单流基线和多流版本，并评估限核后的收益。
+    参考思路：先建立单流正确性基线，再为两个分支创建独立 Stream，使用 Event 表达依赖并通过 record_stream 管理 Tensor 生命周期；逐项尝试 limit_core_num，通过 Profiler 观察时间线重叠和 Block Num，并在排除编译与预热后比较稳定耗时及 Eager 精度。
+    参考代码：参见 04.07_answer.ipynb 中的“实验 20 代码示例”。

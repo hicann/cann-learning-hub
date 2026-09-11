@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="360" viewBox="0 0 1100 360">
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#667085"/></marker><style>.t{font:700 25px Arial,"Microsoft YaHei";fill:#101828}.h{font:600 18px Arial,"Microsoft YaHei";fill:#344054}.p{font:15px Arial,"Microsoft YaHei";fill:#475467}.b{rx:14;stroke-width:2}.a{stroke:#667085;stroke-width:2.5;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="1100" height="360" rx="18" fill="#f8fafc"/><text x="550" y="43" text-anchor="middle" class="t">FX Pass 在编译流程中的位置</text>
+  <rect x="35" y="125" width="165" height="105" class="b" fill="#eef4ff" stroke="#6172f3"/><text x="117" y="165" text-anchor="middle" class="h">Python 模型</text><text x="117" y="197" text-anchor="middle" class="p">torch.compile</text>
+  <path d="M200 177 H250" class="a"/><rect x="255" y="125" width="165" height="105" class="b" fill="#f4f3ff" stroke="#7a5af8"/><text x="337" y="165" text-anchor="middle" class="h">Dynamo</text><text x="337" y="197" text-anchor="middle" class="p">生成 FX Graph</text>
+  <path d="M420 177 H470" class="a"/><rect x="475" y="95" width="205" height="165" class="b" fill="#fff4ed" stroke="#f79009"/><text x="577" y="135" text-anchor="middle" class="h">FX Pass</text><text x="577" y="170" text-anchor="middle" class="p">模式融合</text><text x="577" y="198" text-anchor="middle" class="p">原地化</text><text x="577" y="226" text-anchor="middle" class="p">冗余算子消除</text>
+  <path d="M680 177 H730" class="a"/><rect x="735" y="125" width="165" height="105" class="b" fill="#ecfdf3" stroke="#12b76a"/><text x="817" y="165" text-anchor="middle" class="h">NPUGraph</text><text x="817" y="197" text-anchor="middle" class="p">Capture</text>
+  <path d="M900 177 H950" class="a"/><rect x="955" y="125" width="110" height="105" class="b" fill="#e0f2fe" stroke="#0ba5ec"/><text x="1010" y="165" text-anchor="middle" class="h">执行</text><text x="1010" y="197" text-anchor="middle" class="p">Replay</text>
+  <text x="577" y="307" text-anchor="middle" class="p">验证闭环：对比 FX 图 → 校验精度 → Profiling 分析性能</text>
+</svg>

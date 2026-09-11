@@ -1,0 +1,38 @@
+======================================================================
+3.6 npugraph_ex 基础功能章节练习答案
+======================================================================
+1. （判断题）input_inplace_pass 会删除所有 Python copy_ 操作。
+   答案：错误 (False)
+   解析：input_inplace_pass 只会识别并优化当前 TorchAir 版本明确支持的输入原地算子模式，不会无条件删除图中的所有 copy_ 操作。
+
+2. （判断题）clone_output=True 可以避免 Replay 覆盖被长期持有的输出。
+   答案：正确 (True)
+   解析：开启 clone_output 后，后端会为非别名输出创建独立副本，避免后续 Replay 复用输出内存时覆盖先前保存的结果；别名输出不在该选项的克隆范围内。
+
+3. （判断题）use_graph_pool 和 reuse_graph_pool_in_same_fx 的复用范围完全相同。
+   答案：错误 (False)
+   解析：use_graph_pool 用于显式指定多张 NPUGraph 共享的图内存池；reuse_graph_pool_in_same_fx 面向同一 FX Graph 因不同 Shape 产生的多张 NPUGraph。开启 use_graph_pool 后，reuse_graph_pool_in_same_fx 会自动关闭。
+
+4. （判断题）FX Pass 修改后必须重新验证数值和性能。
+   答案：正确 (True)
+   解析：FX Pass 会改变计算图结构。即使替换前后数学语义设计为等价，也仍需验证图结构、输出精度和稳定区间性能，避免融合规则或 Shape 条件引入错误。
+
+5. （单选题）恢复支持场景中的输入原地更新使用哪个配置？
+   答案：B（input_inplace_pass）
+   解析：input_inplace_pass 用于将受支持的“非原地算子 + copy_”组合恢复为模型输入的原地更新；inplace_pass 主要优化模型中间节点，两者作用范围不同。
+
+6. （单选题）大输入开启 clone_input=True 可能带来什么代价？
+   答案：A（额外输入拷贝和显存占用）
+   解析：clone_input 会将用户输入复制到 NPUGraph 使用的固定地址。输入规模较大时，额外的数据搬运会增加耗时，并占用更多 NPU 显存。
+
+7. （单选题）pattern_fusion_pass 的主要作用是什么？
+   答案：B（将匹配的 FX 子图替换为融合算子）
+   解析：pattern_fusion_pass 会在 FX Graph 中匹配内置或用户注册的模式，并用等价的融合实现替换原子图，从而减少算子调度或数据搬运开销。
+
+8. （多选题）哪些做法有助于验证 FX Pass 生效？
+   答案：ABC
+   解析：应通过 Debug Dump 对比优化前后的 FX 图，通过 torch.testing.assert_close 与 Eager 结果做精度对比，并使用 Profiler 检查算子、数据搬运、内存和稳定性能。首次执行包含编译与 Capture，不能单独用于判断 Pass 收益。
+
+实验题：比较 clone_output=False 和 clone_output=True，保存第一次输出并在第二次 Replay 后比较结果；记录两种配置的数值、内存和耗时差异。
+   参考思路：使用相同模型、输入 Shape 和随机种子分别编译两组模型；第一次执行后克隆输出快照，再使用不同输入触发第二次 Replay，比较旧输出是否变化。性能统计应排除首次编译和预热，并与 Eager 结果做精度对比。
+   参考代码：参见 03.06_answer.ipynb 中的“实验题参考代码”。

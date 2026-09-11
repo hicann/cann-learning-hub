@@ -1,0 +1,43 @@
+======================================================================
+4.5 静态 Kernel 编译功能 章节练习答案
+======================================================================
+
+1. （单选题）静态 Kernel 编译最适合哪类模型或输入场景？
+   答案：B
+   解析：静态 Kernel 编译适用于固定 Shape 或可枚举的少量 Shape 场景。
+
+2. （单选题）开启静态 Kernel 编译的 options 参数是？
+   答案：A
+   解析：通过 torch.compile 的 options.static_kernel_compile=True 开启静态 Kernel 编译。
+
+3. （单选题）在 `static_kernel_compile=True` 时，设置 `disable_static_kernel_compile_cache=False` 的含义是？
+   答案：B
+   解析：static_kernel_compile=True 时，disable_static_kernel_compile_cache=False 表示允许命中并复用缓存。
+
+4. （单选题）多卡场景使用静态 Kernel 编译前，必须配置哪个环境变量？
+   答案：B
+   解析：多卡场景必须设置 LOCAL_WORLD_SIZE，并确保同一节点各进程取值一致。
+
+5. （单选题）以下哪项会导致静态 Kernel 缓存不命中？
+   答案：A
+   解析：CANN、硬件、算子属性或相关编译选项变化都会造成缓存不命中。
+
+6. （单选题）当 Profiler 的 `record_op_args=True` 且 `skip_first=0` 时，对静态 Kernel 编译的影响是？
+   答案：B
+   解析：指定的 Profiler 算子信息统计组合不支持与静态 Kernel 编译同时使用。
+
+7. （多选题）静态 Kernel 编译可能带来的收益包括哪些？
+   答案：ABC
+   解析：应选择 A（在编译阶段完成部分 Shape 推导和标量计算）、B（根据确定的 Shape 做针对性优化）、C（减少部分运行时同步与 Scalar 操作开销）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
+
+8. （多选题）静态 Kernel 缓存命中需要哪些条件保持一致？
+   答案：ABC
+   解析：应选择 A（CANN 版本和硬件型号）、B（参与编译算子的属性，如 Shape、Format、数据类型）、C（确定性计算和 `super_kernel_optimize` 等相关选项）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
+
+9. （多选题）多卡场景使用静态 Kernel 编译时，正确的做法有哪些？
+   答案：ABC
+   解析：应选择 A（配置 LOCAL_WORLD_SIZE 为单节点并行进程数）、B（保证每个节点的 LOCAL_WORLD_SIZE 值一致）、C（注意安装静态 kernel run 包会更新公共算子库文件）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。
+
+10. （多选题）关于静态 Kernel 编译产物和缓存，正确的说法有哪些？
+   答案：ABC
+   解析：应选择 A（默认产物目录包含 `static_kernel_compile_outputs`）、B（缓存目录中会记录 CANN 版本与设备相关的匹配关系）、C（可设置 `disable_static_kernel_compile_cache=True` 强制每次重新编译）。这些做法符合本功能的使用约束与验证原则；未选项不能作为正确结论。

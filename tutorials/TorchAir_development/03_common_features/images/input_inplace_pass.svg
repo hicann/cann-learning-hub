@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="440" viewBox="0 0 1000 440">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#667085"/></marker>
+    <style>.title{font:700 25px Arial,"Microsoft YaHei";fill:#101828}.label{font:600 19px Arial,"Microsoft YaHei";fill:#344054}.text{font:16px Arial,"Microsoft YaHei";fill:#475467}.box{rx:14;stroke-width:2}.arrow{stroke:#667085;stroke-width:2.5;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1000" height="440" rx="18" fill="#f8fafc"/>
+  <text x="500" y="42" text-anchor="middle" class="title">input_inplace_pass 优化前后对比</text>
+  <text x="42" y="92" class="label">优化前：Functionalize 转换</text>
+  <rect x="45" y="120" width="190" height="82" class="box" fill="#eef4ff" stroke="#6172f3"/><text x="140" y="153" text-anchor="middle" class="label">模型输入</text><text x="140" y="180" text-anchor="middle" class="text">KV Cache</text>
+  <path d="M235 161 H315" class="arrow"/>
+  <rect x="320" y="120" width="220" height="82" class="box" fill="#fff4ed" stroke="#f79009"/><text x="430" y="153" text-anchor="middle" class="label">非原地算子</text><text x="430" y="180" text-anchor="middle" class="text">生成临时 Tensor</text>
+  <path d="M540 161 H620" class="arrow"/>
+  <rect x="625" y="120" width="150" height="82" class="box" fill="#fff1f3" stroke="#f04438"/><text x="700" y="153" text-anchor="middle" class="label">copy_</text><text x="700" y="180" text-anchor="middle" class="text">额外搬运</text>
+  <path d="M775 161 H855" class="arrow"/>
+  <rect x="860" y="120" width="100" height="82" class="box" fill="#ecfdf3" stroke="#12b76a"/><text x="910" y="168" text-anchor="middle" class="label">输出</text>
+  <text x="42" y="270" class="label">优化后：恢复受支持的输入原地更新</text>
+  <rect x="45" y="300" width="190" height="82" class="box" fill="#eef4ff" stroke="#6172f3"/><text x="140" y="333" text-anchor="middle" class="label">模型输入</text><text x="140" y="360" text-anchor="middle" class="text">KV Cache</text>
+  <path d="M235 341 H430" class="arrow"/>
+  <rect x="435" y="300" width="260" height="82" class="box" fill="#ecfdf3" stroke="#12b76a"/><text x="565" y="333" text-anchor="middle" class="label">输入原地算子</text><text x="565" y="360" text-anchor="middle" class="text">直接更新输入内存</text>
+  <path d="M695 341 H855" class="arrow"/>
+  <rect x="860" y="300" width="100" height="82" class="box" fill="#ecfdf3" stroke="#12b76a"/><text x="910" y="348" text-anchor="middle" class="label">输出</text>
+</svg>
