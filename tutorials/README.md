@@ -8,7 +8,7 @@
 | Ascend C 算子开发系列教程 | 面向昇腾 NPU 的高性能算子开发全流程教程，包含 Tiling 模板化编程、算子调试、性能优化等核心内容 | [ascendc_operator_development](./ascendc_operator_development) | ✅ 已发布 |
 | Ascend C 算子开发系列教程（Kernel 直调版） | 面向昇腾 NPU 的 Ascend C 算子开发教程，包含算子核函数、Tiling 计算、矩阵算子、CV 融合算子、调试调优等核心内容 | [ascendc_operator_development_light](./ascendc_operator_development_light) | ✅ 已发布 |
 | PyASC 算子开发系列教程 | Ascend C 姊妹篇，基于 Python 原生语法开发昇腾算子，涵盖 pyasc 概述、核函数开发基础、Vector/Matmul 算子开发与调试调优 | [pyasc_operator_development](./pyasc_operator_development) | ✅ 已发布 |
-| PyPTO 算子开发系列教程 | 基于 PyPTO Tensor 编程范式开发昇腾算子，涵盖 CANN/芯片认知、MPMD 编程范式、elementwise/matmul/reduction 基础实践与 Attention/Transformer 中高级实践 | [pypto_development](./pypto_development) | ✅ 已发布 |
+| PyPTO 算子开发系列教程 | 基于 PyPTO Tensor 编程范式开发昇腾算子，涵盖 CANN/芯片认知、MPMD 编程范式、elementwise/matmul/reduction 基础实践、Attention/Transformer 中高级实践与 AI Coding Agent 算子开发 | [pypto_development](./pypto_development) | ✅ 已发布 |
 | MC2融合算子开发教程 | MC2融合算子开发教程，详细介绍 MC2 融合算子的概念、开发流程和实践 | [MC2_fused_operator_development](./MC2_fused_operator_development) | ✅ 已发布 |
 | Conv 算子开发实战教程 | 面向昇腾 NPU 的 Conv 算子开发实战教程，覆盖卷积算子开发核心概念与实践 | [conv_operator_development](./conv_operator_development) | ✅ 已发布 |
 | HIXL 应用开发系列教程 | 基于昇腾单边通信库的应用开发教程，包含核心API介绍、传输模式选择、问题定位、性能分析等核心内容 | [hixl_development](./hixl_development) | ✅ 已发布 |

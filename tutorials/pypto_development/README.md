@@ -1,21 +1,22 @@
 # PyPTO 算子开发系列教程
 
 本教程面向希望基于 PyPTO 学习昇腾 NPU 算子开发的开发者，围绕
-CANN、芯片基础、PyPTO 编程范式、初级算子实践与中高级算子实践，
-提供一套由浅入深的 Notebook 教程。
+CANN、芯片基础、PyPTO 编程范式、初级算子实践、中高级算子实践与
+AI Coding Agent 算子开发，提供一套由浅入深的 Notebook 教程。
 
 课程内容覆盖从整体认知建立，到 Hello World 跑通、API 与计算图理解，
 再到 elementwise、matmul、reduction、tiling / shape / slice /
 transpose 等基础实践，并进一步进入归一化、FFN、动态 shape、Attention、
-Transformer 组合，帮助开发者建立使用 PyPTO
+Transformer 组合，最后介绍如何借助 AI Coding Agent（OpenCode）完成
+算子开发与验收，帮助开发者建立使用 PyPTO
 进行算子开发的系统化学习路径。
 
 教程按章节划分，每个章节包含以下内容：
 
-- Notebooks：课程知识讲解、示例代码、练习或章节实践
-- Answer：章节练习与实践的答案占位目录
-- Images：章节配图占位目录
-- Src：不便直接写入 Notebook 的源码占位目录
+- Notebook（.ipynb 文件）：课程知识讲解、示例代码、练习或章节实践，直接存放于章节目录下
+- answer：章节练习与实践的答案目录
+- images：章节配图目录
+- src：不便直接写入 Notebook 的源码目录
 
 ## 适用对象
 
@@ -41,7 +42,7 @@ Transformer 组合，帮助开发者建立使用 PyPTO
 - 硬件：Atlas A2 训练/推理系列产品、Atlas A3 训练/推理系列产品
 - 软件：CANN 9.0.0
 - Python： 3.11 
-- 工具：Jupyter Lab / Notebook
+- 工具：Jupyter Lab / Notebook、OpenCode（第五章使用）
 
 ## 在线体验环境
 
