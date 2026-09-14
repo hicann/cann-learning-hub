@@ -39,23 +39,121 @@
 | Python         | 3.11                                                     |
 
 ## 已验证的在线体验环境
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
 
-| 体验环境          | 镜像模板 / 版本                  | Python 内核         | 说明                  |
-| ------------- | -------------------------- | ----------------- | ------------------- |
-| CANNLab 云开发环境 | CANN 9.0.0，Python 3.11，ARM | Python 3.11（CANN） | 按各章节 README 的环境说明运行 |
-
-环境创建方法参见 [CANNLab 环境体验指南](../../../docs/CANNLab_env_experience_guide.md)。
-
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)，选择对应CANN版本文档。
 ## 课程章节目录
 
-| 顺序  | 章节  | 主题               | 实验数 | 参考时长     | 算力侧 | 章节入口                          |
-| --- | --- | ---------------- | ---:| -------- | --- | ----------------------------- |
-| 02  | 第二章 | 并行软硬件架构          | 1   | 40～60 分钟 | CPU | [02_arch](./02_arch/)         |
-| 03  | 第三章 | ARM NEON SIMD 编程 | 7   | 约 4～5 小时 | CPU | [03_simd](./03_simd/)         |
-| 04  | 第四章 | Pthreads 多线程编程   | 10  | 约 4～6 小时 | CPU | [04_pthread](./04_pthread/)   |
-| 05  | 第五章 | OpenMP 共享内存编程    | 9   | 约 5～7 小时 | CPU | [05_openmp](./05_openmp/)     |
-| 06  | 第六章 | Ascend C 算子开发    | 7   | 约 5～7 小时 | NPU | [06_ascendc](./06_ascendc/)   |
-| 07  | 第七章 | AscendCL 应用开发    | 7   | 约 5～6 小时 | NPU | [07_ascendcl](./07_ascendcl/) |
+### 第二章：并行软硬件架构
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 02.01 综合实训 · 存储层次实测与访存优化 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/02_arch/02.01_arch_perf.ipynb) | ✅ 已发布 |
+
+### 第三章：ARM NEON SIMD 编程
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 03.01 AXPY 向量数乘累加 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/03_simd/03.01_axpy.ipynb) | ✅ 已发布 |
+| 03.02 矩阵-向量乘 GEMV | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/03_simd/03.02_gemv.ipynb) | ✅ 已发布 |
+| 03.03 RGB → BGR 通道重排 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/03_simd/03.03_rgb2bgr.ipynb) | ✅ 已发布 |
+| 03.04 白平衡 Gray World | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/03_simd/03.04_whitebalance.ipynb) | ✅ 已发布 |
+| 03.05 RGB → Gray 灰度转换 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/03_simd/03.05_rgb2gray.ipynb) | ✅ 已发布 |
+| 03.06 YUV420 → RGB 综合案例 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/03_simd/03.06_yuv2rgb.ipynb) | ✅ 已发布 |
+| 03.07 综合实训 · 通用矩阵乘法 GEMM | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/03_simd/03.07_gemm.ipynb) | ✅ 已发布 |
+
+### 第四章：Pthreads 多线程编程
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 04.01 Hello World：Fork-Join 与非确定性 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.01_helloworld.ipynb) | ✅ 已发布 |
+| 04.02 矩阵向量乘法：数据分解与线程传参 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.02_gemv.ipynb) | ✅ 已发布 |
+| 04.03 π 估算：数据竞争与锁粒度 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.03_pi.ipynb) | ✅ 已发布 |
+| 04.04 哲学家就餐：死锁、活锁与资源分级 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.04_philosophers.ipynb) | ✅ 已发布 |
+| 04.05 消息传递：四种同步策略的递进 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.05_sendmsg.ipynb) | ✅ 已发布 |
+| 04.06 生产者-消费者：有界缓冲区的四种实现 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.06_prodcons.ipynb) | ✅ 已发布 |
+| 04.07 向量归一化与屏障 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.07_normalize.ipynb) | ✅ 已发布 |
+| 04.08 并发链表：读多写少场景的锁策略 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.08_linkedlist.ipynb) | ✅ 已发布 |
+| 04.09 伪共享：当正确的程序依然很慢 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.09_falsesharing.ipynb) | ✅ 已发布 |
+| 04.10 综合实训 · 基于 Pthreads 的线程池及其应用 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/04_pthread/04.10_threadpool.ipynb) | ✅ 已发布 |
+
+### 第五章：OpenMP 共享内存编程
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 05.01 Hello World 与 Fork-Join 模型 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/05_openmp/05.01_hello.ipynb) | ✅ 已发布 |
+| 05.02 梯形积分法 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/05_openmp/05.02_trapezoid.ipynb) | ✅ 已发布 |
+| 05.03 Fibonacci 与 Leibniz 级数 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/05_openmp/05.03_dependency.ipynb) | ✅ 已发布 |
+| 05.04 三角形负载：循环调度与负载均衡 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/05_openmp/05.04_schedule.ipynb) | ✅ 已发布 |
+| 05.05 奇偶换位排序 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/05_openmp/05.05_oddeven_sort.ipynb) | ✅ 已发布 |
+| 05.06 直方图统计 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/05_openmp/05.06_histogram.ipynb) | ✅ 已发布 |
+| 05.07 矩阵向量乘法：嵌套循环并行与 SIMD 协同 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/05_openmp/05.07_gemv_simd.ipynb) | ✅ 已发布 |
+| 05.08 递归归并排序：task 构造与任务并行 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/05_openmp/05.08_task_mergesort.ipynb) | ✅ 已发布 |
+| 05.09 综合实训 · OpenMP × NEON 协同优化矩阵乘法 GEMM | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/05_openmp/05.09_omp_gemm.ipynb) | ✅ 已发布 |
+
+### 第六章：Ascend C 算子开发
+
+| Notebook | Link | 状态 |
+| --- | --- | --- |
+| 06.01 Ascend C HelloWorld | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/06_ascendc/06.01_hello_world.ipynb) | ✅ 已发布 |
+| 06.02 向量加法 Add | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/06_ascendc/06.02_vector_add.ipynb) | ✅ 已发布 |
+| 06.03 规约算子 ReduceSum | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/06_ascendc/06.03_reduce_sum.ipynb) | ✅ 已发布 |
+| 06.04 激活函数 Sigmoid | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/06_ascendc/06.04_sigmoid.ipynb) | ✅ 已发布 |
+| 06.05 融合算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/06_ascendc/06.05_fusion.ipynb) | ✅ 已发布 |
+| 06.06 矩阵乘法 MatMul | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/06_ascendc/06.06_matmul.ipynb) | ✅ 已发布 |
+| 06.07 Softmax | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend&scanFilePath=contrib/tutorials/parallel_computing_practices_on_kunpeng_ascend/06_ascendc/06.07_softmax.ipynb) | ✅ 已发布 |
+
+### 第七章：AscendCL 应用开发
+
+<table>
+  <thead>
+    <tr>
+      <th>Notebook</th>
+      <th>状态</th>
+      <th>在线体验</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>07.01 应用框架与运行时资源</td>
+      <td>✅ 已发布</td>
+      <td rowspan="7">
+        在CANNLab中运行（
+        <a href="https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md">
+          CANNLab运行教程指导书
+        </a>
+        ）
+      </td>
+    </tr>
+    <tr>
+      <td>07.02 Host 与 Device 的内存和数据传输</td>
+      <td>✅ 已发布</td>
+    </tr>
+    <tr>
+      <td>07.03 Stream 与任务级并行</td>
+      <td>✅ 已发布</td>
+    </tr>
+    <tr>
+      <td>07.04 同步管理与性能度量</td>
+      <td>✅ 已发布</td>
+    </tr>
+    <tr>
+      <td>07.05 单算子调用：aclnn 两段式接口</td>
+      <td>✅ 已发布</td>
+    </tr>
+    <tr>
+      <td>07.06 模型推理：从 ATC 到 aclmdl</td>
+      <td>✅ 已发布</td>
+    </tr>
+    <tr>
+      <td>07.07 综合实训：检测算法推理部署</td>
+      <td>✅ 已发布</td>
+    </tr>
+  </tbody>
+</table>
 
 > 第一章"并行计算概论"为纯理论章节（并行的概念与层次、Amdahl 与 Gustafson 定律、Roofline 模型、PCAM 方法论），不设配套实验，故本仓库不含 `01_` 目录。
 

@@ -54,6 +54,7 @@ contrib/tutorials/
 | 北京师范大学 | [并行编程原理与实践](./parallel_programming_principles_and_practice) | 2026.09 | ✅ 已发布 |
 | 哈尔滨工业大学 | [PyAsc 编译原理课程](./pyasc_compiler_development) | 2026.09 | ✅ 已发布 |
 | 东南大学 | [面向国产智算平台的智能计算系统（Qwen 算子开发）](./qwen_ops) | 2026.09 | ✅ 已发布 |
+| 深圳职业技术大学 | [并行计算：基于鲲鹏与昇腾的实践](./parallel_computing_practices_on_kunpeng_ascend) | 2026.09 | ✅ 已迁移 |
 
 ## 课程列表
 
@@ -75,6 +76,7 @@ contrib/tutorials/
 | 并行编程原理与实践 | 围绕国产昇腾平台的并行编程实践，覆盖毕昇工具链、OpenMP、MPI、AscendCL、Ascend C、HCCL 与集群作业部署 | [parallel_programming_principles_and_practice](./parallel_programming_principles_and_practice) | ✅ 已发布 |
 | PyAsc 编译原理课程 | 以 PyAsc 开源编译框架为载体的编译原理课程，覆盖 Python 前端、MLIR（ASC-IR）到 Ascend C 代码生成的完整编译链路 | [pyasc_compiler_development](./pyasc_compiler_development) | ✅ 已发布 |
 | 面向国产智算平台的智能计算系统（Qwen 算子开发） | 围绕 Qwen2.5 五类核心算子（RMSNorm、RoPE、SwiGLU、GEMM、GQA）的 Ascend C 开发与优化实验，并统一接入 Qwen2.5-0.5B 模型验证 | [qwen_ops](./qwen_ops) | ✅ 已发布 |
+| 并行计算：基于鲲鹏与昇腾的实践 | 基于鲲鹏通用算力与昇腾智算算力，覆盖 ARM NEON SIMD、Pthreads、OpenMP、Ascend C 与 AscendCL 的并行计算和异构开发实践 | [parallel_computing_practices_on_kunpeng_ascend](./parallel_computing_practices_on_kunpeng_ascend) | ✅ 已迁移 |
 
 ---
 

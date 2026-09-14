@@ -30,17 +30,13 @@
 
 扩展任务参考实现：[answer/transpose_ext_ref.c](./answer/transpose_ext_ref.c)
 
-## 课程支持的硬件产品与已验证的在线体验环境
+## 已验证的在线体验环境
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
 
-| 项目                  | 说明                                                                 |
-| ------------------- | ------------------------------------------------------------------ |
-| 支持硬件                | 任意真实处理器均可运行，推荐鲲鹏等 AArch64 平台，本章是 CPU 实验                            |
-| 硬件要求                | **必须在真实硬件上运行**。在指令级模拟器（如 QEMU 用户态）中缓存层次被完全绕过，所测时间数据不具备物理意义         |
-| 编译器                 | GCC（仅依赖标准 C 库，对处理器架构无特殊要求）                                         |
-| CANNLab 环境          | CANN 9.0.0，Python 3.11，ARM                                         |
-| Notebook 内核         | Python 3（ipykernel）                                                |
-| CANNLab 指南          | [CANNLab 环境体验指南](../../../../docs/CANNLab_env_experience_guide.md) |
-| GitCode 在线 Notebook | -                                                                  |
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)，选择对应CANN版本文档。
 
 ## 实验环境说明
 

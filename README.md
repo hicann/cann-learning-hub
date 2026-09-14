@@ -577,12 +577,25 @@
 │   ├── operator                       # 算子
 │   ├── inference                      # 推理
 │   └── training                       # 训练
-├── contrib                            # 社区贡献
-│   └── tutorials                      # 外部贡献教程
-│       ├── torch-rechub               # Torch-RecHub 推荐系统实战教程
-│       ├── swanlab_examples           # SwanLab 共建微调案例（MNIST/医学/数学等）
-│       ├── swan_llm_course            # SwanLab 共建：LLM 微调实战
-│       └── data_structure_for_hpc     # HPC 数据结构
+├── contrib                                      # 社区贡献
+│   └── tutorials                                # 外部贡献教程
+│       ├── ai_computing_embedded_system         # AI 计算嵌入式系统
+│       ├── ai_security_nuist                    # AI 安全实践教程
+│       ├── ascend_ai_lab                        # 昇腾 AI 实验
+│       ├── ascend_multimodal_practice           # 昇腾多模态实践
+│       ├── computer_composition_and_architecture # 计算机组成与体系结构
+│       ├── data_structure_for_hpc               # HPC 数据结构
+│       ├── data_structures_compute              # 数据结构与计算
+│       ├── machine_learning_system              # 机器学习系统
+│       ├── nearlink_sdr_sim                     # 星闪通信链路仿真
+│       ├── operator_development_and_application  # 算子开发与应用
+│       ├── parallel_computing_practices_on_kunpeng_ascend # 并行计算：基于鲲鹏与昇腾的实践
+│       ├── parallel_programming_principles_and_practice # 并行程序设计原理与实践
+│       ├── pyasc_compiler_development           # PyAsc 编译器开发
+│       ├── qwen_ops                             # Qwen 算子实践
+│       ├── swan_llm_course                      # SwanLab 共建：LLM 微调实战
+│       ├── swanlab_examples                     # SwanLab 共建微调案例
+│       └── torch-rechub                         # Torch-RecHub 推荐系统实战教程
 ├── skills                             # CANNBot 技能
 │   ├── ascendc-ops-project           # 自定义算子工程生成
 │   └── cannjudge-submit              # CANNJudge 竞赛提交

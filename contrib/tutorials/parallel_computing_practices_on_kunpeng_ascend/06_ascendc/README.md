@@ -39,17 +39,13 @@
 
 > 实验之间存在严格依赖：后续实验的编译、运行与调试流程均建立在实验一之上，三段流水范式在实验二建立，请按序完成。
 
-## 课程支持的硬件产品与已验证的在线体验环境
+## 已验证的在线体验环境
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
 
-| 项目                  | 说明                                                                   |
-| ------------------- | -------------------------------------------------------------------- |
-| 支持硬件                | **Atlas A2 / A3 训练推理系列产品**                                           |
-| CANN 版本             | **9.0.0 及以上**                                                        |
-| 编译器                 | `bisheng`（毕昇编译器）；Host 侧代码与 Device 侧核函数同处一个 `.asc` 文件，由一条命令编译成一个可执行程序 |
-| CANNLab 环境          | CANN 9.0.0，Python 3.11，ARM；建议在 CANNLab 云开发环境中运行                      |
-| Notebook 内核         | Python 3（ipykernel）                                                  |
-| CANNLab 指南          | [CANNLab 环境体验指南](../../../../docs/CANNLab_env_experience_guide.md)   |
-| GitCode 在线 Notebook | -                                                                    |
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)，选择对应CANN版本文档。     
 
 ## 实验环境说明
 
