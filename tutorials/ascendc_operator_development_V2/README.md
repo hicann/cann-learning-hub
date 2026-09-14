@@ -128,3 +128,5 @@
 | [7.5 SIMT 编程算子开发高阶教程](07_advanced_operator_practice/07.05_simt_transpose.ipynb) | 🚧 开发中 |
 | [7.6 SIMD 与 SIMT 混合编程算子开发高阶教程](07_advanced_operator_practice/07.06_simd_simt_transpose.ipynb) | 🚧 开发中 |
 | [7.7 SIMT 章节实践](07_advanced_operator_practice/07.07_simt_simd_practice.ipynb) | 🚧 开发中 |
+| [7.8 Tensor API MxFP4 高性能矩阵算子开发](07_advanced_operator_practice/07.08_tensor_api_mxfp4_matmul.ipynb) | 🚧 开发中 |
+| [7.9 Tensor API BatchMatmul 实践](07_advanced_operator_practice/07.09_tensor_api_batch_matmul.ipynb) | 🚧 开发中 |
