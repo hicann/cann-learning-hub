@@ -39,9 +39,9 @@
 
 ### 2.6 SIMD 矩阵算子示例（Tensor 编程）
 - 绑定 `matmul_tensor_api` 样例：静态 Tensor API、多核 Matmul
-- MakeTensor + Slice 分核分块逻辑
-- Copy（GM2L1 / L12L0A/B / L0C2GM）自动 NZ/ZN 布局转换
-- Mmad 矩阵乘加
+- make_tensor + slice 分核分块逻辑
+- copy（copy_gm_to_l1 / copy_l1_to_l0a/b / copy_l0c_to_gm）自动 NZ/ZN 布局转换
+- mmad 矩阵乘加
 - 编译选项 `-DCMAKE_ASC_ARCHITECTURES=dav-3510`、sim 仿真模式
 - 兼容性：仅 950
 

@@ -10,7 +10,7 @@ template <
     int32_t baseM, int32_t baseN, int32_t baseK>
 __cube__ __global__ void TensorMmadSingleCoreKernel(__gm__ half *x, __gm__ half *y, __gm__ half *z)
 {
-    using namespace AscendC::Te;
+    using namespace asc::te;
     static_assert(M == singleM && N == singleN && K == singleK);
     static_assert(singleM % baseM == 0 && singleN % baseN == 0 && singleK % baseK == 0);
 
@@ -18,9 +18,9 @@ __cube__ __global__ void TensorMmadSingleCoreKernel(__gm__ half *x, __gm__ half 
     constexpr uint32_t nLoop = singleN / baseN;
     constexpr uint32_t kLoop = singleK / baseK;
 
-    auto gmATensor = MakeTensor(MakeMemPtr(x), MakeFrameLayout<NDLayoutPtn>(M, K));
-    auto gmBTensor = MakeTensor(MakeMemPtr(y), MakeFrameLayout<DNLayoutPtn>(K, N));
-    auto gmCTensor = MakeTensor(MakeMemPtr(z), MakeFrameLayout<NDLayoutPtn>(M, N));
+    auto gmATensor = make_tensor(make_mem_ptr(x), make_frame_layout<nd_layout_ptn>(M, K));
+    auto gmBTensor = make_tensor(make_mem_ptr(y), make_frame_layout<dn_layout_ptn>(K, N));
+    auto gmCTensor = make_tensor(make_mem_ptr(z), make_frame_layout<nd_layout_ptn>(M, N));
 
     __cbuf__ half l1ABuf[baseM * baseK];
     __cbuf__ half l1BBuf[baseK * baseN];
@@ -28,61 +28,61 @@ __cube__ __global__ void TensorMmadSingleCoreKernel(__gm__ half *x, __gm__ half 
     __cb__ half l0BBuf[baseK * baseN];
     __cc__ float l0CBuf[baseM * baseN];
 
-    auto copyGM2L1Atom = MakeCopy(CopyGM2L1{}, CopyGM2L1TraitDefault{});
-    auto copyL12L0AAtom = MakeCopy(CopyL12L0A{}, CopyL12L0ATraitDefault{});
-    auto copyL12L0BAtom = MakeCopy(CopyL12L0B{}, CopyL12L0BTraitDefault{});
-    auto copyL0C2GMAtom = MakeCopy(CopyL0C2GM{}, CopyL0C2GMTraitDefault{});
-    auto mmadAtom = MakeMmad(MmadOperation{}, MmadTraitDefault{});
+    auto copyGM2L1Atom = make_copy(copy_gm_to_l1{}, gm_to_l1_trait_default{});
+    auto copyL12L0AAtom = make_copy(copy_l1_to_l0a{}, l1_to_l0a_trait_default{});
+    auto copyL12L0BAtom = make_copy(copy_l1_to_l0b{}, l1_to_l0b_trait_default{});
+    auto copyL0C2GMAtom = make_copy(copy_l0c_to_gm{}, l0c_to_gm_trait_default{});
+    auto mmadAtom = make_mmad(mmad_operation{}, mmad_trait_default{});
 
-    auto l1ATensor = MakeTensor(MakeMemPtr(l1ABuf), MakeFrameLayout<NZLayoutPtn, half>(baseM, baseK));
-    auto l1BTensor = MakeTensor(MakeMemPtr(l1BBuf), MakeFrameLayout<ZNLayoutPtn, half>(baseK, baseN));
-    auto l0ATensor = MakeTensor(MakeMemPtr(l0ABuf), MakeFrameLayout<NZLayoutPtn, half>(baseM, baseK));
-    auto l0BTensor = MakeTensor(MakeMemPtr(l0BBuf), MakeFrameLayout<ZNLayoutPtn, half>(baseK, baseN));
-    auto l0CTensor = MakeTensor(MakeMemPtr(l0CBuf), MakeFrameLayout<NZLayoutPtn>(baseM, baseN));
+    auto l1ATensor = make_tensor(make_mem_ptr(l1ABuf), make_frame_layout<nz_layout_ptn, half>(baseM, baseK));
+    auto l1BTensor = make_tensor(make_mem_ptr(l1BBuf), make_frame_layout<zn_layout_ptn, half>(baseK, baseN));
+    auto l0ATensor = make_tensor(make_mem_ptr(l0ABuf), make_frame_layout<nz_layout_ptn, half>(baseM, baseK));
+    auto l0BTensor = make_tensor(make_mem_ptr(l0BBuf), make_frame_layout<zn_layout_ptn, half>(baseK, baseN));
+    auto l0CTensor = make_tensor(make_mem_ptr(l0CBuf), make_frame_layout<nz_layout_ptn>(baseM, baseN));
 
-    constexpr uint32_t L1_EVENT_ID = 0;
-    constexpr uint32_t L0_EVENT_ID = 1;
-    constexpr uint32_t L0C_EVENT_ID = 2;
-    AscendC::SetFlag<AscendC::HardEvent::MTE1_MTE2>(L1_EVENT_ID);
-    AscendC::SetFlag<AscendC::HardEvent::M_MTE1>(L0_EVENT_ID);
-    AscendC::SetFlag<AscendC::HardEvent::FIX_M>(L0C_EVENT_ID);
+    constexpr event_t L1_EVENT_ID = EVENT_ID0;
+    constexpr event_t L0_EVENT_ID = EVENT_ID1;
+    constexpr event_t L0C_EVENT_ID = EVENT_ID2;
+    asc_sync_notify(PIPE_MTE1, PIPE_MTE2, L1_EVENT_ID);
+    asc_sync_notify(PIPE_M, PIPE_MTE1, L0_EVENT_ID);
+    asc_sync_notify(PIPE_FIX, PIPE_M, L0C_EVENT_ID);
 
     for (uint32_t mi = 0; mi < mLoop; ++mi) {
         for (uint32_t ni = 0; ni < nLoop; ++ni) {
             for (uint32_t ki = 0; ki < kLoop; ++ki) {
-                AscendC::WaitFlag<AscendC::HardEvent::MTE1_MTE2>(L1_EVENT_ID);
-                Copy(copyGM2L1Atom, l1ATensor, gmATensor.Slice(MakeCoord(mi * baseM, ki * baseK), MakeShape(baseM, baseK)));
-                Copy(copyGM2L1Atom, l1BTensor, gmBTensor.Slice(MakeCoord(ki * baseK, ni * baseN), MakeShape(baseK, baseN)));
-                AscendC::SetFlag<AscendC::HardEvent::MTE2_MTE1>(L1_EVENT_ID);
-                AscendC::WaitFlag<AscendC::HardEvent::MTE2_MTE1>(L1_EVENT_ID);
+                asc_sync_wait(PIPE_MTE1, PIPE_MTE2, L1_EVENT_ID);
+                copy(copyGM2L1Atom, l1ATensor, gmATensor.slice(make_coord(mi * baseM, ki * baseK), make_shape(baseM, baseK)));
+                copy(copyGM2L1Atom, l1BTensor, gmBTensor.slice(make_coord(ki * baseK, ni * baseN), make_shape(baseK, baseN)));
+                asc_sync_notify(PIPE_MTE2, PIPE_MTE1, L1_EVENT_ID);
+                asc_sync_wait(PIPE_MTE2, PIPE_MTE1, L1_EVENT_ID);
 
-                AscendC::WaitFlag<AscendC::HardEvent::M_MTE1>(L0_EVENT_ID);
-                Copy(copyL12L0AAtom, l0ATensor, l1ATensor);
-                Copy(copyL12L0BAtom, l0BTensor, l1BTensor);
-                AscendC::SetFlag<AscendC::HardEvent::MTE1_MTE2>(L1_EVENT_ID);
-                AscendC::SetFlag<AscendC::HardEvent::MTE1_M>(L0_EVENT_ID);
-                AscendC::WaitFlag<AscendC::HardEvent::MTE1_M>(L0_EVENT_ID);
+                asc_sync_wait(PIPE_M, PIPE_MTE1, L0_EVENT_ID);
+                copy(copyL12L0AAtom, l0ATensor, l1ATensor);
+                copy(copyL12L0BAtom, l0BTensor, l1BTensor);
+                asc_sync_notify(PIPE_MTE1, PIPE_MTE2, L1_EVENT_ID);
+                asc_sync_notify(PIPE_MTE1, PIPE_M, L0_EVENT_ID);
+                asc_sync_wait(PIPE_MTE1, PIPE_M, L0_EVENT_ID);
 
                 if (ki == 0) {
-                    AscendC::WaitFlag<AscendC::HardEvent::FIX_M>(L0C_EVENT_ID);
+                    asc_sync_wait(PIPE_FIX, PIPE_M, L0C_EVENT_ID);
                 }
-                MmadParams params{baseM, baseN, baseK, 0, (ki == 0)};
-                Mmad(mmadAtom.with(params), l0CTensor, l0ATensor, l0BTensor);
+                mmad_params params{baseM, baseN, baseK, unit_flag_mode::disable, (ki == 0)};
+                mmad(mmadAtom.with(params), l0CTensor, l0ATensor, l0BTensor);
                 if (ki + 1 == kLoop) {
-                    AscendC::SetFlag<AscendC::HardEvent::M_FIX>(L0C_EVENT_ID);
+                    asc_sync_notify(PIPE_M, PIPE_FIX, L0C_EVENT_ID);
                 }
-                AscendC::SetFlag<AscendC::HardEvent::M_MTE1>(L0_EVENT_ID);
+                asc_sync_notify(PIPE_M, PIPE_MTE1, L0_EVENT_ID);
             }
 
-            AscendC::WaitFlag<AscendC::HardEvent::M_FIX>(L0C_EVENT_ID);
-            Copy(copyL0C2GMAtom, gmCTensor.Slice(MakeCoord(mi * baseM, ni * baseN), MakeShape(baseM, baseN)), l0CTensor);
-            AscendC::SetFlag<AscendC::HardEvent::FIX_M>(L0C_EVENT_ID);
+            asc_sync_wait(PIPE_M, PIPE_FIX, L0C_EVENT_ID);
+            copy(copyL0C2GMAtom, gmCTensor.slice(make_coord(mi * baseM, ni * baseN), make_shape(baseM, baseN)), l0CTensor);
+            asc_sync_notify(PIPE_FIX, PIPE_M, L0C_EVENT_ID);
         }
     }
 
-    AscendC::WaitFlag<AscendC::HardEvent::MTE1_MTE2>(L1_EVENT_ID);
-    AscendC::WaitFlag<AscendC::HardEvent::M_MTE1>(L0_EVENT_ID);
-    AscendC::WaitFlag<AscendC::HardEvent::FIX_M>(L0C_EVENT_ID);
+    asc_sync_wait(PIPE_MTE1, PIPE_MTE2, L1_EVENT_ID);
+    asc_sync_wait(PIPE_M, PIPE_MTE1, L0_EVENT_ID);
+    asc_sync_wait(PIPE_FIX, PIPE_M, L0C_EVENT_ID);
 }
 
 #endif
