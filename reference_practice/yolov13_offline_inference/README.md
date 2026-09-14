@@ -10,16 +10,28 @@
 
 > **注意：**
 > - 本案例只提供代码和课程资料，不包含模型权重、OM 模型和测试图片。请按 Notebook 或下方步骤自行下载。
-> - 本案例需要已安装 CANN Toolkit、OPP 算子包和可用的昇腾设备。请先设置 `ASCEND_HOME_PATH`，再执行 `source "$ASCEND_HOME_PATH/set_env.sh"`；如果 CANN Lab 使用非默认仓库目录，还可以设置 `GITCODE_REPO_ROOT`。
+> - 本案例需要已安装 CANN Toolkit、OPP 算子包和可用的昇腾设备。请先设置 `ASCEND_HOME_PATH`，再执行 `source "$ASCEND_HOME_PATH/set_env.sh"`；如果 CANNLab 使用非默认仓库目录，还可以设置 `GITCODE_REPO_ROOT`。
 > - 示例验证以静态 Shape `1x3x640x640` 为例，`soc_version` 必须替换为实际设备型号。
 
-## CANN 版本要求
+## 软硬件配套说明
 
-| 课程内容 | 最低版本 | 说明 |
-|--|--|--|
-| 1. 章节介绍、2. 环境准备与模型转换、3. ACL 离线推理、5. 章节练习 | CANN 8.5.0+ | 完成模型导出、ATC 编译、ACL 推理和练习；实际可用的 `soc_version` 及算子支持以设备和 Toolkit 为准 |
-| 4. 结果可视化 | CANN 8.5.0+ | 图片后处理和 Notebook 内可视化不依赖多流增强 |
-| 4. 多流候选 OM 编译与性能调优 | CANN 9.2.0+ | 使用 `--multi_stream_parallel_mode`；低于 9.2.0 时 Notebook 会打印不支持并跳过相关 ATC 和测量 Cell |
+| 项目 | 要求 |
+| --- | --- |
+| 支持硬件 | Atlas A2 系列产品（已验证） |
+| CANN 版本 | 第 1、2、3、5 章和第 4 章结果可视化：9.0.0 及以上；第 4 章多流候选 OM 编译与性能调优：9.2.0 及以上 |
+| Python | 3.11 |
+| 运行环境 | Linux，已安装 CANN Toolkit 和 OPP 算子包；第 2～4 章需要可用的昇腾 NPU |
+
+第 4 章的图片后处理可以在 CANN 9.0.0 及以上版本运行。`--multi_stream_parallel_mode` 属于 CANN 9.2.0 及以上版本支持的能力；低于该版本时，Notebook 会打印不支持提示并跳过多流编译和性能测试。
+
+## 在线体验环境
+
+本案例支持以下在线体验环境：
+
+| 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
+| --- | --- | --- | --- |
+| cann-learning-hub 在线体验 notebook | 平台预置环境 | Python 3.11 | 可直接打开 Notebook 在线学习和运行；第 4 章多流部分需要环境中的 CANN 版本不低于 9.2.0 |
+| CANNLab 云开发环境 | `cann_9.0.0 py3.11-A2-arm` 或更高版本 | Python 3.11 | 参考 [CANNLab 环境体验指南](../../docs/CANNLab_env_experience_guide.md) 创建环境；运行第 4 章多流部分时，请使用 CANN 9.2.0 及以上版本 |
 
 ## Notebooks
 

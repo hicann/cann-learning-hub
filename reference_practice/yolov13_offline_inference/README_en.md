@@ -39,29 +39,45 @@ Workflow:
 
     ```
     source "$ASCEND_HOME_PATH/set_env.sh"
+    ```
 
 Set `ASCEND_HOME_PATH` to the installed CANN Toolkit directory before sourcing `set_env.sh`. Set `GITCODE_REPO_ROOT` if the repository is mounted at a custom path; otherwise the notebooks use `/mnt/workspace/gitCode/cann/cann-learning-hub` as the CANN Lab default.
-    ```
 
-    Or for non-standard paths:
+## Software and Hardware Compatibility
 
-    ```
-    source "$ASCEND_HOME_PATH/set_env.sh"
-    ```
+| Item | Requirement |
+|--|--|
+| Supported hardware | Atlas A2 series products (validated) |
+| CANN version | Chapters 1, 2, 3, 5 and result visualization in Chapter 4: 9.0.0 or later; multi-stream OM compilation and performance tuning in Chapter 4: 9.2.0 or later |
+| Python | 3.11 |
+| Runtime | Linux with CANN Toolkit and OPP installed; Chapters 2 to 4 require an Ascend NPU |
 
-## CANN Version Requirements
+Result visualization in Chapter 4 works with CANN 9.0.0 or later. The `--multi_stream_parallel_mode` option requires CANN 9.2.0 or later. On older versions, the Notebook prints an unsupported message and skips multi-stream compilation and performance measurement.
 
-| Course content | Minimum version | Notes |
-|--|--|--|
-| 1. Chapter introduction, 2. Model preparation, 3. ACL offline inference, 5. Chapter practice | CANN 8.5.0+ | Covers model export, ATC compilation, ACL inference, and exercises. Actual `soc_version` and operator support depend on the device and Toolkit. |
-| 4. Result visualization | CANN 8.5.0+ | Image post-processing and inline Notebook display do not require multi-stream enhancement. |
-| 4. Multi-stream OM compilation and performance tuning | CANN 9.2.0+ | Uses `--multi_stream_parallel_mode`. On older versions, the Notebook prints an unsupported message and skips the related ATC and measurement cells. |
+## Online Experience Environments
+
+This case supports both of the following environments:
+
+| Environment | Image / version | Python kernel | Notes |
+|--|--|--|--|
+| cann-learning-hub online Notebook | Platform-provided environment | Python 3.11 | Open the corresponding Notebook in the repository to read and run it. Chapter 4 multi-stream cells require CANN 9.2.0 or later. |
+| CANNLab cloud development environment | `cann_9.0.0 py3.11-A2-arm` or later | Python 3.11 | Follow the [CANNLab environment guide](../../docs/CANNLab_env_experience_guide.md). Use CANN 9.2.0 or later for Chapter 4 multi-stream cells. |
+
+## Notebooks
+
+| Notebook | Content |
+|--|--|
+| [1. Chapter introduction](./01_chapter_intro.ipynb) | Learning objectives and workflow |
+| [2. Model preparation and conversion](./02_model_prepare.ipynb) | Prepare YOLOv13, export ONNX, and generate OM with ATC |
+| [3. ACL offline inference](./03_acl_offline_inference.ipynb) | Build and run the ACL C++ inference program |
+| [4. Result processing and performance tuning](./04_result_and_tuning.ipynb) | Post-processing, visualization, and multi-stream tuning |
+| [5. Chapter practice](./05_chapter_practice.ipynb) | Exercises for model conversion, inference, and tuning |
 
 ## Implementation Steps
 
 1. Log in to the development environment as the running user.
 
-2. Download the code and navigate to the sample directory. "Sample directory" below refers to `examples/acl/5_sample_yolov13`.
+2. Download the code and navigate to the sample directory. "Sample directory" below refers to `reference_practice/yolov13_offline_inference`.
 
 3. Prepare the YOLOv13 model.
 
