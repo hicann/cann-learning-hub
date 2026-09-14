@@ -77,21 +77,21 @@
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 3.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
-| 3.2 Vector算子计算模型与典型场景 | 在线体验建设中 | 🚧 开发中 |
-| 3.3 向量数据访问与并行切分 | 在线体验建设中 | 🚧 开发中 |
-| 3.4 Vector算子实现、编译与验证流程 | 在线体验建设中 | 🚧 开发中 |
-| 3.5 章节实践 | 在线体验建设中 | 🚧 开发中 |
+| 3.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/03_vector_operator_development/03.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 3.2 Vector算子计算模型与典型场景 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/03_vector_operator_development/03.02_vector_compute_model.ipynb) | ✅ 已发布 |
+| 3.3 向量数据访问与并行切分 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/03_vector_operator_development/03.03_vector_data_access_and_tiling.ipynb) | ✅ 已发布 |
+| 3.4 Vector算子的设计、实现、编译与验证 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/03_vector_operator_development/03.04_implementation_and_verification.ipynb) | ✅ 已发布 |
+| 3.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/03_vector_operator_development/03.05_chapter_practice.ipynb) | ✅ 已发布 |
 
 #### 第四章：Matmul高阶API算子开发
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 4.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
-| 4.2 基础Matmul实现 | 在线体验建设中 | 🚧 开发中 |
-| 4.3 高阶Matmul API | 在线体验建设中 | 🚧 开发中 |
-| 4.4 Cube Only与MIX模式Matmul开发 | 在线体验建设中 | 🚧 开发中 |
-| 4.5 章节实践 | 在线体验建设中 | 🚧 开发中 |
+| 4.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/04_matmul_operator_development/04.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 4.2 基础Matmul实现 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/04_matmul_operator_development/04.02_matmul_basics_and_basic_api.ipynb) | ✅ 已发布 |
+| 4.3 高阶Matmul API | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/04_matmul_operator_development/04.03_advanced_matmul_api.ipynb) | ✅ 已发布 |
+| 4.4 Cube Only与MIX模式Matmul开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/04_matmul_operator_development/04.04_cube_only_and_mix_mode_matmul.ipynb) | ✅ 已发布 |
+| 4.5 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/04_matmul_operator_development/04.05_chapter_practice.ipynb) | ✅ 已发布 |
 
 
 ### pyasc算子开发系列（高级）
