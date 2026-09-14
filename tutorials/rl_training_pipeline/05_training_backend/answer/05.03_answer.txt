@@ -1,0 +1,9 @@
+1. 对。Ref 不更新参数，但仍参与 KL 约束所需的 log-prob 计算，因此需要后端完成分片前向。
+
+2. 错。同步对象是更新后的 Actor 权重；冻结的 Ref 只参与前向计算，不同步到 vLLM。
+
+3. A。`get_per_tensor_param()` 按参数提供 TorchTitan FSDP2 状态，是训练端权重同步接口的一部分。
+
+4. A、B、C。名称形状映射、分片物化和 `update_weights()` 共同决定新 Actor 权重能否进入 rollout；字典内容不属于状态同步。
+
+5. A、B、C。从初始化日志、Ref 前向和 Actor 更新可以看出 TorchTitan Engine 已经进入实际计算；只有代码目录并不能说明 engine 已经运行。

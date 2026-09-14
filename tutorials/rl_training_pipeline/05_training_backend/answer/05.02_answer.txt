@@ -1,0 +1,9 @@
+1. 对。模型、数据、奖励和 GRPO 决定了训练任务，切换 Actor/Ref 的执行引擎不会改动这些内容。
+
+2. 对。vLLM 需要可用的完整参数；同步路径必须正确处理 DTensor 分片，避免只传递单个 rank 的局部状态。
+
+3. A。`model_engine=torchtitan` 明确选择 TorchTitan Engine，其余配置分别属于 rollout、算法或设备。
+
+4. A、B、C。Actor 的训练状态和 Ref 的前向计算属于训练后端职责，Wordle 奖励规则位于后端边界外。
+
+5. A、B、D。权重同步让生成端及时使用最新 Actor，并连接更新与下一轮采样；它不负责计算 GRPO 优势。

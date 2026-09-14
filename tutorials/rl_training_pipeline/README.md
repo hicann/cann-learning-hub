@@ -88,18 +88,18 @@
 
 | Notebook | 内容 | 状态 |
 |---|---|---|
-| 05.01 章节介绍 | 学习目标、前置条件与后端切换范围 | 🚧 建设中 |
-| 05.02 训练后端切换原理 | 配置映射、模块调用链和 Actor 到 vLLM 的权重同步 | 🚧 建设中 |
-| 05.03 章节练习 | 后端职责、调用链和权重同步练习 | 🚧 建设中 |
+| [05.01 章节介绍](05_training_backend/05.01_chapter_intro.ipynb) | 学习目标、前置条件与后端切换范围 | ✅ 已发布 |
+| [05.02 训练后端切换原理](05_training_backend/05.02_backend_switch_principles.ipynb) | 配置映射、模块调用链和 Actor 到 vLLM 的权重同步 | ✅ 已发布 |
+| [05.03 章节练习](05_training_backend/05.03_chapter_practice.ipynb) | 后端职责、调用链和权重同步练习 | ✅ 已发布 |
 
 #### 第 6 章：TorchTitan-NPU 核心特性
 
 | Notebook | 内容 | 状态 |
 |---|---|---|
-| 06.01 章节介绍 | TorchTitan 与 TorchTitan-NPU 的定位 | 🚧 建设中 |
-| 06.02 FSDP2 与可组合并行 | DeviceMesh、两卡 FSDP2 与 CP 长序列扩展 | 🚧 建设中 |
-| 06.03 Wordle 训练使用的 TorchTitan-NPU 特性 | offload、TND 变长注意力、NPU converter 和权重同步 | 🚧 建设中 |
-| 06.04 章节练习 | FSDP2、TND、内存策略、NPU converter 和序列长度预算练习 | 🚧 建设中 |
+| [06.01 章节介绍](06_torchtitan_npu_features/06.01_chapter_intro.ipynb) | TorchTitan 与 TorchTitan-NPU 的定位 | ✅ 已发布 |
+| [06.02 FSDP2 与可组合并行](06_torchtitan_npu_features/06.02_fsdp2_and_parallelism.ipynb) | DeviceMesh、两卡 FSDP2 与 CP 长序列扩展 | ✅ 已发布 |
+| [06.03 Wordle 训练使用的 TorchTitan-NPU 特性](06_torchtitan_npu_features/06.03_features_used_in_wordle.ipynb) | offload、TND 变长注意力、NPU converter 和权重同步 | ✅ 已发布 |
+| [06.04 章节练习](06_torchtitan_npu_features/06.04_chapter_practice.ipynb) | FSDP2、TND、内存策略、NPU converter 和序列长度预算练习 | ✅ 已发布 |
 
 #### 第 7 章：Wordle 训练后端切换实践
 
@@ -107,19 +107,19 @@
 
 | Notebook | 内容 | 状态 |
 |---|---|---|
-| 07.01 章节介绍 | 实践目标、训练资源和运行要求 | 🚧 建设中 |
-| 07.02 准备运行环境与训练资产 | 安装独立后端环境，并准备 SFT 模型与 Wordle parquet | 🚧 建设中 |
-| 07.03 确认训练配置 | 使用 DRY_RUN 核对 TorchTitan、FSDP2、TND 和原有 RL 配置 | 🚧 建设中 |
-| 07.04 运行三步训练 | 以 FSDP2 + TND 连续完成 3 个训练 step | 🚧 建设中 |
-| 07.05 章节练习 | 环境、配置和三步训练练习 | 🚧 建设中 |
+| [07.01 章节介绍](07_torchtitan_wordle_training/07.01_chapter_intro.ipynb) | 实践目标、训练资源和运行要求 | ✅ 已发布 |
+| [07.02 准备运行环境与训练资产](07_torchtitan_wordle_training/07.02_prepare_backend.ipynb) | 安装独立后端环境，并准备 SFT 模型与 Wordle parquet | ✅ 已发布 |
+| [07.03 确认训练配置](07_torchtitan_wordle_training/07.03_confirm_configuration.ipynb) | 使用 DRY_RUN 核对 TorchTitan、FSDP2、TND 和原有 RL 配置 | ✅ 已发布 |
+| [07.04 运行三步训练](07_torchtitan_wordle_training/07.04_run_three_steps.ipynb) | 以 FSDP2 + TND 连续完成 3 个训练 step | ✅ 已发布 |
+| [07.05 章节练习](07_torchtitan_wordle_training/07.05_chapter_practice.ipynb) | 环境、配置和三步训练练习 | ✅ 已发布 |
 
 #### 第 8 章：训练后端切换总结
 
 | Notebook | 内容 | 状态 |
 |---|---|---|
-| 08.01 章节介绍 | 学习目标和内容安排 | 🚧 建设中 |
-| 08.02 后端切换总结 | 切换步骤、常见问题和性能指标 | 🚧 建设中 |
-| 08.03 综合练习 | 配置、特性和实践综合练习 | 🚧 建设中 |
+| [08.01 章节介绍](08_validation_and_troubleshooting/08.01_chapter_intro.ipynb) | 学习目标和内容安排 | ✅ 已发布 |
+| [08.02 后端切换总结](08_validation_and_troubleshooting/08.02_switch_summary.ipynb) | 切换步骤、常见问题和性能指标 | ✅ 已发布 |
+| [08.03 综合练习](08_validation_and_troubleshooting/08.03_chapter_practice.ipynb) | 配置、特性和实践综合练习 | ✅ 已发布 |
 
 ## 参考
 
