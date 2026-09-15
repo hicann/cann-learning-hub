@@ -9,12 +9,14 @@
 
 | 算子 | 前向 PyPTO API | 反向 PyPTO API | tiling |
 |------|---------------|----------------|--------|
-| matmul | pypto.matmul | pypto.matmul (transpose variants) | cube [16,16] x3 |
+| matmul | pypto.matmul | pypto.matmul (transpose variants) | cube [32,32] x3 |
 | bias_add | pypto.add (broadcast) | sum over batch dim | vec (128,128) |
 | add | pypto.add (same shape) | identity | vec (128,128) |
-| tanh | pypto.exp/div/sub | (1-y²)*grad | vec (128,128) |
+| tanh | pypto.tanh (v0.2.1+ 原生) | (1-y²)*grad | vec (128,64) |
 | relu | pypto.maximum | pypto.where | vec (128,128) |
-| softmax+CE | pypto.softmax + gather/log | softmax - one_hot | vec (8, aligned) |
+| softmax+CE | pypto.softmax + gather/log | softmax - one_hot | vec (rows 自适应, aligned) |
+| linear 融合 | pypto.matmul + add | matmul_bwd + sum | cube+vec (0.2.1+) |
+| rnn_hidden 融合 | tanh(add(add(a,b),bias)) | 两路梯度 + sum | vec (128,64) (0.2.1+) |
 
 每个算子采用工厂函数模式：
 1. 定义 @pypto.frontend.jit 内核 (fwd + bwd)
@@ -24,14 +26,26 @@
 
 导出清单：
 - PyPTOMatmul / PyPTOBiasAdd / PyPTOAdd / PyPTOTanh / PyPTOReLUOp
+- PyPTOLinearFused / PyPTORNNHidden（融合算子，0.2.1+ 启用）
 - PyPTOReLU / PyPTOLinear (nn.Module 封装)
 - loss_fn (softmax + cross-entropy 损失入口)
 """
+
+import importlib.metadata
 
 import pypto
 import torch
 from torch import nn
 from torch.nn import functional as F
+
+try:
+    _PYPTO_VERSION = tuple(
+        int(x) for x in importlib.metadata.version("pypto").split(".")[:3])
+except Exception:
+    _PYPTO_VERSION = (0, 2, 0)
+# pypto 0.2.1+ 提供原生 pypto.tanh，且 matmul+bias 融合路径数值稳定
+# （0.2.0 下该融合存在调用序列相关的数值不稳定，见第 10 章 KNOWN_ISSUES）
+_PYPTO_GE_021 = _PYPTO_VERSION >= (0, 2, 1)
 
 
 # ---------------------------------------------------------------------------
@@ -44,7 +58,8 @@ def matmul_fwd_kernel(
     b: pypto.Tensor([], pypto.DT_FP32),
     c: pypto.Tensor([], pypto.DT_FP32),
 ):
-    pypto.set_cube_tile_shapes([16, 16], [16, 16], [16, 16])
+    # cube tile 16→32/64（第 4 章实测：tile 过小导致切分次数过多，-45%）
+    pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
     c.move(pypto.matmul(a, b, pypto.DT_FP32))
 
 
@@ -56,7 +71,7 @@ def matmul_bwd_kernel(
     grad_a: pypto.Tensor([], pypto.DT_FP32),
     grad_b: pypto.Tensor([], pypto.DT_FP32),
 ):
-    pypto.set_cube_tile_shapes([16, 16], [16, 16], [16, 16])
+    pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
     grad_a.move(
         pypto.matmul(grad_c, b, pypto.DT_FP32, b_trans=True))
     grad_b.move(
@@ -89,6 +104,133 @@ def make_pypto_matmul(fwd_kernel, bwd_kernel):
             return grad_a, grad_b
 
     return PyPTOMatmulImpl
+
+
+# ---------------------------------------------------------------------------
+# linear 融合版：c = matmul(a, w) + bias，单 kernel（少一次 kernel 启动）。
+#    实测 (640,512)x(512,512) 从分两次的 0.32ms 降到 0.14ms（约 2.3x）。
+#    注意：pypto 0.2.0 下该融合存在调用序列相关的数值不稳定
+#    （详见第 10 章 KNOWN_ISSUES 问题 D），仅在 0.2.1+ 启用。
+#    反向复用 matmul_bwd_kernel + bias_add_bwd_kernel。
+# ---------------------------------------------------------------------------
+
+@pypto.frontend.jit(runtime_options={"run_mode": pypto.RunMode.NPU})
+def linear_fwd_kernel(
+    a: pypto.Tensor([], pypto.DT_FP32),
+    w: pypto.Tensor([], pypto.DT_FP32),
+    bias: pypto.Tensor([], pypto.DT_FP32),
+    c: pypto.Tensor([], pypto.DT_FP32),
+):
+    pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
+    pypto.set_vec_tile_shapes(64, 128)
+    c.move(pypto.add(pypto.matmul(a, w, pypto.DT_FP32), bias))
+
+
+def make_pypto_linear_fused(fwd_kernel, matmul_bwd, bias_bwd):
+    """创建融合 matmul+bias 的线性层算子（y = x @ W + b）。"""
+
+    class PyPTOLinearFusedImpl(torch.autograd.Function):
+        @staticmethod
+        def forward(ctx, x, weight, bias):
+            ctx.save_for_backward(x, weight)
+            c = torch.empty(x.shape[0], weight.shape[1],
+                            device=x.device, dtype=x.dtype)
+            fwd_kernel(x, weight, bias, c)
+            return c
+
+        @staticmethod
+        def backward(ctx, grad_c):
+            x, weight = ctx.saved_tensors
+            need_x = ctx.needs_input_grad[0]
+            need_w = ctx.needs_input_grad[1]
+            need_b = ctx.needs_input_grad[2]
+            grad_x = torch.empty_like(x) if need_x else None
+            grad_w = torch.empty_like(weight) if need_w else None
+            if need_x or need_w:
+                tmp_x = grad_x if need_x else torch.empty_like(x)
+                tmp_w = grad_w if need_w else torch.empty_like(weight)
+                matmul_bwd(x.contiguous(), weight.contiguous(),
+                           grad_c.contiguous(), tmp_x, tmp_w)
+            grad_b = None
+            if need_b:
+                grad_b = torch.empty(weight.shape[1], device=x.device,
+                                     dtype=x.dtype)
+                bias_bwd(grad_c.contiguous(), grad_c.contiguous(), grad_b)
+            return grad_x, grad_w, grad_b
+
+    return PyPTOLinearFusedImpl
+
+
+# ---------------------------------------------------------------------------
+# rnn_hidden 融合版：c = tanh(a + b + bias)，单 kernel（替代 add+bias_add+tanh
+#    三次启动）。反向：grad_a = grad_b = grad_c·(1-y²)（逐元素），
+#    grad_bias = sum 行归约。
+#    依赖 pypto.tanh（0.2.1+），仅在 0.2.1+ 启用融合路径。
+# ---------------------------------------------------------------------------
+
+@pypto.frontend.jit(runtime_options={"run_mode": pypto.RunMode.NPU})
+def rnn_hidden_fwd_kernel(
+    a: pypto.Tensor([], pypto.DT_FP32),
+    b: pypto.Tensor([], pypto.DT_FP32),
+    bias: pypto.Tensor([], pypto.DT_FP32),
+    c: pypto.Tensor([], pypto.DT_FP32),
+):
+    # pypto.tanh 内部临时 workspace 约 4 倍 tile 数据量，行 tile 收窄为 64
+    pypto.set_vec_tile_shapes(128, 64)
+    summed = pypto.add(a, b)
+    biased = pypto.add(summed, bias)
+    c.move(pypto.tanh(biased))
+
+
+@pypto.frontend.jit(runtime_options={"run_mode": pypto.RunMode.NPU})
+def rnn_hidden_bwd_kernel(
+    y: pypto.Tensor([], pypto.DT_FP32),
+    grad_c: pypto.Tensor([], pypto.DT_FP32),
+    grad_a: pypto.Tensor([], pypto.DT_FP32),
+    grad_b: pypto.Tensor([], pypto.DT_FP32),
+    grad_bias: pypto.Tensor([], pypto.DT_FP32),
+):
+    pypto.set_vec_tile_shapes(128, 64)
+    # move 会消费中间张量（move 后原 tensor 为 nullptr），
+    # 三个输出各计算一份 dy = grad_c·(1-y²)，避免复用
+    one_minus_y2 = pypto.neg(pypto.sub(pypto.mul(y, y), 1.0))
+    grad_a.move(pypto.mul(grad_c, one_minus_y2))
+    one_minus_y2_2 = pypto.neg(pypto.sub(pypto.mul(y, y), 1.0))
+    grad_b.move(pypto.mul(grad_c, one_minus_y2_2))
+    one_minus_y2_3 = pypto.neg(pypto.sub(pypto.mul(y, y), 1.0))
+    grad_bias.move(pypto.sum(pypto.mul(grad_c, one_minus_y2_3), 0))
+
+
+def make_pypto_rnn_hidden(fwd_kernel, bwd_kernel):
+    """创建 RNN 隐层融合算子：c = tanh(a + b + bias)。"""
+
+    class PyPTORNNHiddenImpl(torch.autograd.Function):
+        @staticmethod
+        def forward(ctx, a, b, bias):
+            c = torch.empty_like(a)
+            fwd_kernel(a, b, bias, c)
+            ctx.save_for_backward(c)
+            return c
+
+        @staticmethod
+        def backward(ctx, grad_c):
+            (c,) = ctx.saved_tensors
+            need_a = ctx.needs_input_grad[0]
+            need_b = ctx.needs_input_grad[1]
+            need_bias = ctx.needs_input_grad[2]
+            grad_a = torch.empty_like(c) if need_a else None
+            grad_b = torch.empty_like(c) if need_b else None
+            grad_bias = torch.empty(c.shape[1], device=c.device,
+                                    dtype=c.dtype) if need_bias else None
+            tmp_a = grad_a if need_a else torch.empty_like(c)
+            tmp_b = grad_b if need_b else torch.empty_like(c)
+            tmp_bias = grad_bias if need_bias else torch.empty(
+                c.shape[1], device=c.device, dtype=c.dtype)
+            bwd_kernel(c.contiguous(), grad_c.contiguous(),
+                       tmp_a, tmp_b, tmp_bias)
+            return grad_a, grad_b, grad_bias
+
+    return PyPTORNNHiddenImpl
 
 
 # ---------------------------------------------------------------------------
@@ -177,7 +319,7 @@ def make_pypto_add(fwd_kernel):
 
 
 # ---------------------------------------------------------------------------
-# tanh：tanh(x) = 2·sigmoid(2x) - 1
+# tanh：原生 pypto.tanh（v0.2.1+），早期版本用 2·sigmoid(2x)-1 组合
 # ---------------------------------------------------------------------------
 
 @pypto.frontend.jit(runtime_options={"run_mode": pypto.RunMode.NPU})
@@ -185,11 +327,10 @@ def tanh_fwd_kernel(
     a: pypto.Tensor([], pypto.DT_FP32),
     b: pypto.Tensor([], pypto.DT_FP32),
 ):
-    pypto.set_vec_tile_shapes(128, 128)
-    two_a = pypto.mul(a, 2.0)
-    s = pypto.sigmoid(two_a)
-    two_s = pypto.mul(s, 2.0)
-    b.move(pypto.sub(two_s, 1.0))
+    # pypto.tanh 内部临时 workspace 约 4 倍 tile 数据量，
+    # 行 tile 收窄为 64 控制 UB 占用（同第 4 章实测结论）
+    pypto.set_vec_tile_shapes(128, 64)
+    b.move(pypto.tanh(a))
 
 
 @pypto.frontend.jit(runtime_options={"run_mode": pypto.RunMode.NPU})
@@ -198,7 +339,7 @@ def tanh_bwd_kernel(
     grad_b: pypto.Tensor([], pypto.DT_FP32),
     grad_a: pypto.Tensor([], pypto.DT_FP32),
 ):
-    pypto.set_vec_tile_shapes(128, 128)
+    pypto.set_vec_tile_shapes(128, 64)
     b_sq = pypto.mul(b, b)
     one_minus_b2 = pypto.neg(pypto.sub(b_sq, 1.0))
     grad_a.move(pypto.mul(grad_b, one_minus_b2))
@@ -281,21 +422,13 @@ def softmax_fwd_kernel(
     y: pypto.Tensor([], pypto.DT_FP32),
     num_classes: int,
 ):
-    pypto.set_vec_tile_shapes(8, ((num_classes + 7) // 8) * 8)
+    # 行 tile 8→128（第 4/10 章实测 4.9x）；UB 护栏（0.2.0/0.2.1 实测）：
+    # softmax 内部 DIV 约需 2×rows×cols×4B，
+    # cols ≤ 160 → 128 行，cols ≤ 320 → 64 行，否则退回 8 行
+    cols = ((num_classes + 7) // 8) * 8
+    rows = 128 if cols <= 160 else (64 if cols <= 320 else 8)
+    pypto.set_vec_tile_shapes(rows, cols)
     y.move(pypto.softmax(x, dim=-1))
-
-
-@pypto.frontend.jit(runtime_options={"run_mode": pypto.RunMode.NPU})
-def softmax_bwd_kernel(
-    y: pypto.Tensor([], pypto.DT_FP32),
-    grad_y: pypto.Tensor([], pypto.DT_FP32),
-    grad_x: pypto.Tensor([], pypto.DT_FP32),
-    num_classes: int,
-):
-    pypto.set_vec_tile_shapes(8, ((num_classes + 7) // 8) * 8)
-    diag = pypto.mul(y, grad_y)
-    s = pypto.sum(diag, 1, True)
-    grad_x.move(pypto.sub(diag, pypto.mul(y, s)))
 
 
 @pypto.frontend.jit(runtime_options={"run_mode": pypto.RunMode.NPU})
@@ -305,25 +438,12 @@ def cross_entropy_fwd_kernel(
     out: pypto.Tensor([], pypto.DT_FP32),
     num_classes: int,
 ):
-    pypto.set_vec_tile_shapes(8, ((num_classes + 7) // 8) * 8)
+    cols = ((num_classes + 7) // 8) * 8
+    rows = 128 if cols <= 160 else (64 if cols <= 320 else 8)
+    pypto.set_vec_tile_shapes(rows, cols)
     gathered = pypto.gather(y_hat, 1, pypto.reshape(indices, (-1, 1)))
     gathered = pypto.reshape(gathered, (-1,))
     out.move(pypto.neg(pypto.log(pypto.maximum(gathered, 1e-12))))
-
-
-@pypto.frontend.jit(runtime_options={"run_mode": pypto.RunMode.NPU})
-def cross_entropy_bwd_kernel(
-    y_hat: pypto.Tensor([], pypto.DT_FP32),
-    indices: pypto.Tensor([], pypto.DT_INT32),
-    grad_out: pypto.Tensor([], pypto.DT_FP32),
-    grad_y_hat: pypto.Tensor([], pypto.DT_FP32),
-    num_classes: int,
-):
-    pypto.set_vec_tile_shapes(8, ((num_classes + 7) // 8) * 8)
-    one_hot_vec = pypto.one_hot(indices, ((num_classes + 7) // 8) * 8)
-    one_hot_vec = pypto.cast(one_hot_vec, pypto.DT_FP32)
-    neg_grad = pypto.mul(pypto.reshape(grad_out, (-1, 1)), one_hot_vec)
-    grad_y_hat.move(pypto.div(neg_grad, y_hat))
 
 
 class PyPTOSoftmaxCrossEntropyLossFunction(torch.autograd.Function):
@@ -365,6 +485,11 @@ PyPTOAdd = make_pypto_add(add_fwd_kernel)
 PyPTOTanh = make_pypto_tanh(tanh_fwd_kernel, tanh_bwd_kernel)
 PyPTOReLUOp = make_pypto_relu(relu_fwd_kernel, relu_bwd_kernel)
 PyPTOSoftmaxCrossEntropyLoss = PyPTOSoftmaxCrossEntropyLossFunction
+# 融合算子（0.2.1+ 启用：原生 tanh + 数值稳定；0.2.0 回退分解路径）
+PyPTOLinearFused = make_pypto_linear_fused(
+    linear_fwd_kernel, matmul_bwd_kernel, bias_add_bwd_kernel)
+PyPTORNNHidden = make_pypto_rnn_hidden(
+    rnn_hidden_fwd_kernel, rnn_hidden_bwd_kernel)
 
 
 # =========================================================================
@@ -384,6 +509,9 @@ class PyPTOLinear(nn.Module):
             self.register_parameter('bias', None)
 
     def forward(self, x):
+        if _PYPTO_GE_021:
+            # 融合路径：matmul+bias 单 kernel（少一次启动，第 10 章实测约 2.3x）
+            return PyPTOLinearFused.apply(x, self.weight, self.bias)
         y = PyPTOMatmul.apply(x, self.weight)
         if self.bias is not None:
             y = PyPTOBiasAdd.apply(y, self.bias)
@@ -437,11 +565,19 @@ class PyPTORNN(nn.Module):
 
         outputs = []
         for t in range(X.shape[0]):
-            xw = PyPTOMatmul.apply(X[t], self.W_xh)
-            hw = PyPTOMatmul.apply(h_flat, self.W_hh)
-            summed = PyPTOAdd.apply(xw, hw)
-            biased = PyPTOBiasAdd.apply(summed, self.b_h)
-            h_flat = PyPTOTanh.apply(biased)
+            if _PYPTO_GE_021:
+                # 融合路径（0.2.1+，原生 pypto.tanh）：
+                # matmul×2 + tanh(add(add(xw, hw), b_h)) = 每步 3 次启动
+                xw = PyPTOMatmul.apply(X[t], self.W_xh)
+                hw = PyPTOMatmul.apply(h_flat, self.W_hh)
+                h_flat = PyPTORNNHidden.apply(xw, hw, self.b_h)
+            else:
+                # 0.2.0 分解路径：matmul×2 + add + bias_add + tanh = 每步 5 次启动
+                xw = PyPTOMatmul.apply(X[t], self.W_xh)
+                hw = PyPTOMatmul.apply(h_flat, self.W_hh)
+                summed = PyPTOAdd.apply(xw, hw)
+                biased = PyPTOBiasAdd.apply(summed, self.b_h)
+                h_flat = PyPTOTanh.apply(biased)
             outputs.append(h_flat)
 
         Y = torch.stack(outputs, dim=0)
@@ -471,6 +607,7 @@ def loss_fn(logits, y, num_classes=10):
 __all__ = [
     "PyPTOMatmul", "PyPTOBiasAdd", "PyPTOAdd",
     "PyPTOTanh", "PyPTOReLUOp", "PyPTOSoftmaxCrossEntropyLoss",
+    "PyPTOLinearFused", "PyPTORNNHidden",
     "PyPTOLinear", "PyPTOReLU", "PyPTORNN",
     "loss_fn",
 ]

@@ -11,19 +11,19 @@
 
 import torch
 from torch import nn
-from d2l import torch as d2l
+from src.utils import RNNModel, evaluate_loss, load_array, load_data_time_machine, plot, train_ch8, try_gpu
 
 batch_size, num_steps = 32, 35
-train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
 
 num_hiddens = 256
 rnn_layer = nn.RNN(len(vocab), num_hiddens)
 
-device = d2l.try_gpu()
-net = d2l.RNNModel(rnn_layer, vocab_size=len(vocab))
+device = try_gpu()
+net = RNNModel(rnn_layer, vocab_size=len(vocab))
 net = net.to(device)
 num_epochs, lr = 500, 10
-d2l.train_ch8(net, train_iter, vocab, lr, num_epochs, device)
+train_ch8(net, train_iter, vocab, lr, num_epochs, device)
 
 # 输出:
 # perplexity 62334304447965890753852937863168.0, 111439.5 tokens/sec
@@ -44,29 +44,29 @@ d2l.train_ch8(net, train_iter, vocab, lr, num_epochs, device)
 
 import torch
 from torch import nn
-from d2l import torch as d2l
+from src.utils import RNNModel, evaluate_loss, load_array, load_data_time_machine, plot, train_ch8, try_gpu
 
 batch_size, num_steps = 32, 100
-train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
 
-device = d2l.try_gpu()
+device = try_gpu()
 
 # num_layers=1
 rnn_layer_1 = nn.RNN(len(vocab), 256, num_layers=1)
-net_1 = d2l.RNNModel(rnn_layer_1, len(vocab)).to(device)
-d2l.train_ch8(net_1, train_iter, vocab, 1.0, 500, device)
+net_1 = RNNModel(rnn_layer_1, len(vocab)).to(device)
+train_ch8(net_1, train_iter, vocab, 1.0, 500, device)
 # 输出: perplexity 1.2, 564185.0 tokens/sec
 
 # num_layers=3
 rnn_layer_3 = nn.RNN(len(vocab), 256, num_layers=3)
-net_3 = d2l.RNNModel(rnn_layer_3, len(vocab)).to(device)
-d2l.train_ch8(net_3, train_iter, vocab, 1.0, 500, device)
+net_3 = RNNModel(rnn_layer_3, len(vocab)).to(device)
+train_ch8(net_3, train_iter, vocab, 1.0, 500, device)
 # 输出: perplexity 1.0, 188061.7 tokens/sec
 
 # num_layers=20
 rnn_layer_20 = nn.RNN(len(vocab), 256, num_layers=20)
-net_20 = d2l.RNNModel(rnn_layer_20, len(vocab)).to(device)
-d2l.train_ch8(net_20, train_iter, vocab, 1.0, 500, device)
+net_20 = RNNModel(rnn_layer_20, len(vocab)).to(device)
+train_ch8(net_20, train_iter, vocab, 1.0, 500, device)
 # 输出: perplexity 17.4, 29693.7 tokens/sec
 
 ---
@@ -82,7 +82,7 @@ d2l.train_ch8(net_20, train_iter, vocab, 1.0, 500, device)
 
 import torch
 from torch import nn
-from d2l import torch as d2l
+from src.utils import RNNModel, evaluate_loss, load_array, load_data_time_machine, plot, train_ch8, try_gpu
 
 # 数据生成
 T = 1000
@@ -96,7 +96,7 @@ for i in range(tau):
 labels = x[tau:].reshape((-1, 1))
 
 batch_size, n_train = 16, 600
-train_iter = d2l.load_array((features[:n_train], labels[:n_train]),
+train_iter = load_array((features[:n_train], labels[:n_train]),
                              batch_size, is_train=True)
 
 # 构建 RNN 自回归模型
@@ -111,12 +111,12 @@ class RNNAutoRegressive(nn.Module):
     def forward(self, X):
         # X: (batch_size, tau), 在第1维增加 seq_len 维度
         out, _ = self.rnn(X.unsqueeze(0))
-        return self.linear(out)
+        return self.linear(out.reshape((-1, out.shape[-1])))
 
 loss = nn.MSELoss(reduction='none')
 
 lr = 0.01
-device = d2l.try_gpu()
+device = try_gpu()
 net = RNNAutoRegressive().to(device)
 trainer = torch.optim.Adam(net.parameters(), lr)
 
@@ -128,7 +128,7 @@ for epoch in range(epochs):
         l = loss(net(X), y)
         l.sum().backward()
         trainer.step()
-    print(f'epoch {epoch + 1}, loss: {d2l.evaluate_loss(net, train_iter, loss):f}')
+    print(f'epoch {epoch + 1}, loss: {evaluate_loss(net, train_iter, loss):f}')
 
 # 输出: epoch 1, loss: 0.1340
 # 输出: epoch 2, loss: 0.1181
@@ -140,6 +140,6 @@ for epoch in range(epochs):
 features_device = features.to(device)
 onestep_preds = net(features_device).cpu()
 
-d2l.plot([time, time[tau:]],
+plot([time, time[tau:]],
          [x.detach().numpy(), onestep_preds.squeeze(1).detach().numpy()], 'time',
          'x', legend=['data', '1-step preds'], xlim=[1, 1000], figsize=(6, 3))

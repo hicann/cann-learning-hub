@@ -26,6 +26,7 @@ import zipfile
 
 import torch
 from torch import nn
+from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset
 import matplotlib.pyplot as plt
 from IPython import display
@@ -368,10 +369,10 @@ def set_axes(axes, xlabel, ylabel, xlim, ylim, xscale, yscale, legend):
 
 
 def use_svg_display():
-    """使用 SVG 格式在 notebook 中显示图形。"""
+    """使用 PNG 格式在 notebook 中显示图形。"""
     try:
         import matplotlib_inline
-        matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
+        matplotlib_inline.backend_inline.set_matplotlib_formats("png")
     except (ImportError, AttributeError):
         pass
 
@@ -453,8 +454,14 @@ def plot(X, Y=None, xlabel=None, ylabel=None, legend=None, xlim=None,
         if isinstance(X, (list, tuple)) and isinstance(Y, (list, tuple)):
             for x_i, y_i in zip(X, Y):
                 axes.plot(x_i, y_i)
+        elif isinstance(Y, list):
+            # 多条曲线共用同一个 X：必须逐条 plot(X, y_i)，
+            # 不能 plot(X, *Y) —— matplotlib 会把第 2 个及以后的 Y 当作"无 X 的曲线"
+            # 按索引 0..N-1 绘制，导致曲线只出现在 x 轴最左端。
+            for y_i in Y:
+                axes.plot(X, y_i)
         else:
-            axes.plot(X, *Y) if isinstance(Y, list) else axes.plot(X, Y)
+            axes.plot(X, Y)
     else:
         if isinstance(X, (list, tuple)):
             if len(X) > 0 and isinstance(X[0], (list, tuple, np.ndarray)):
@@ -528,6 +535,41 @@ def _accuracy(y_hat, y):
         y_hat = y_hat.argmax(axis=1)
     cmp = y_hat.type(y.dtype) == y
     return float(cmp.type(y.dtype).sum())
+
+# =========================================================================
+# RNN 模型封装
+# =========================================================================
+
+
+class RNNModel(nn.Module):
+    """RNN 模型（替代原 d2l.RNNModel，d2l 1.x 已移除该 API）。
+
+    基于任意 nn.RNN 隐层构造语言模型：one-hot 输入 → rnn_layer 递推 →
+    输出投影为词表大小 logits。
+    """
+
+    def __init__(self, rnn_layer, vocab_size, **kwargs):
+        super().__init__(**kwargs)
+        self.rnn = rnn_layer
+        self.vocab_size = vocab_size
+        self.num_hiddens = self.rnn.hidden_size
+        if not self.rnn.bidirectional:
+            self.num_directions = 1
+            self.linear = nn.Linear(self.num_hiddens, self.vocab_size)
+        else:
+            self.num_directions = 2
+            self.linear = nn.Linear(self.num_hiddens * 2, self.vocab_size)
+
+    def forward(self, inputs, state):
+        X = F.one_hot(inputs.T.long(), self.vocab_size)
+        X = X.to(torch.float32)
+        Y, state = self.rnn(X, state)
+        output = self.linear(Y.reshape((-1, Y.shape[-1])))
+        return output, state
+
+    def begin_state(self, device, batch_size=1):
+        return torch.zeros((self.num_directions * self.rnn.num_layers,
+                            batch_size, self.num_hiddens), device=device)
 
 # =========================================================================
 # RNN 预测

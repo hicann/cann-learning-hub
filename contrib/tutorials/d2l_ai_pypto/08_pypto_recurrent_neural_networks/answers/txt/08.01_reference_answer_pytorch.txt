@@ -13,7 +13,7 @@ n_train=600 决定了训练样本数量为600个。
 
 import torch
 from torch import nn
-from d2l import torch as d2l
+from src.utils import evaluate_loss, load_array, plot
 
 T = 1000
 time = torch.arange(1, T + 1, dtype=torch.float32)
@@ -26,7 +26,7 @@ for i in range(tau):
 labels = x[tau:].reshape((-1, 1))
 
 batch_size, n_train = 16, 600
-train_iter = d2l.load_array((features[:n_train], labels[:n_train]),
+train_iter = load_array((features[:n_train], labels[:n_train]),
                             batch_size, is_train=True)
 
 # 通过改变 tau 值可以包含更多历史观测结果
@@ -67,13 +67,13 @@ def train(net, train_iter, loss, epochs, lr):
             l = loss(net(X), y)
             l.sum().backward()
             trainer.step()
-        print(f'epoch {epoch + 1}, loss: {d2l.evaluate_loss(net, train_iter, loss):f}')
+        print(f'epoch {epoch + 1}, loss: {evaluate_loss(net, train_iter, loss):f}')
 
 net = get_net()
 train(net, train_iter, loss, 5, 0.01)
 
 onestep_preds = net(features)
-d2l.plot([time, time[tau:]],
+plot([time, time[tau:]],
          [x.detach().numpy(), onestep_preds.detach().numpy()], 'time',
          'x', legend=['data', '1-step preds'], xlim=[1, 1000], figsize=(6, 3))
 

@@ -35,9 +35,7 @@ def rnn_forward_pypto(inputs, state, params):
     for X in inputs:
         XW = PyPTOMatmul.apply(X, W_xh)
         HW = PyPTOMatmul.apply(H, W_hh)
-        summed = PyPTOAdd.apply(XW, HW)
-        biased = PyPTOBiasAdd.apply(summed, b_h)
-        H = PyPTOReLUOp.apply(biased)
+        H = PyPTOTanh.apply(PyPTOBiasAdd.apply(PyPTOAdd.apply(XW, HW), b_h))
         Y = PyPTOBiasAdd.apply(PyPTOMatmul.apply(H, W_hq), b_q)
         outputs.append(Y)
     return torch.cat(outputs, dim=0), (H,)

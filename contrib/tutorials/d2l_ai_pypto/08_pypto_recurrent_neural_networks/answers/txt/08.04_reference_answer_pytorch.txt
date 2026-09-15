@@ -21,11 +21,11 @@
 
 import torch
 import torch.nn as nn
-from d2l import torch as d2l
+from src.utils import load_data_time_machine, try_gpu
 from torch.nn import functional as F
 
 batch_size, num_steps = 32, 35
-train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+train_iter, vocab = load_data_time_machine(batch_size, num_steps)
 
 X = torch.arange(10).reshape((2, 5))
 print(f'X 经过 one_hot 后的形状: {F.one_hot(X.T, 28).shape}')
@@ -76,10 +76,10 @@ class RNNModelScratch:
         return self.init_state(batch_size, self.num_hiddens, device)
 
 num_hiddens = 256
-net = RNNModelScratch(len(vocab), num_hiddens, d2l.try_gpu(),
+net = RNNModelScratch(len(vocab), num_hiddens, try_gpu(),
                        get_params, init_rnn_state, rnn)
-state = net.begin_state(X.shape[0], d2l.try_gpu())
-Y, new_state = net(X.to(d2l.try_gpu()), state)
+state = net.begin_state(X.shape[0], try_gpu())
+Y, new_state = net(X.to(try_gpu()), state)
 print(f'隐状态形状: {new_state[0].shape}')
 # 输出: torch.Size([2, 256])
 
