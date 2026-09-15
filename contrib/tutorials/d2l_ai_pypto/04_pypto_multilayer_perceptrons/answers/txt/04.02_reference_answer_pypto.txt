@@ -155,7 +155,7 @@ import matplotlib.pyplot as plt
 num_epochs = 20
 listlr = [1.0, 0.1, 0.01, 0.001]
 train_iter, test_iter = load_data_fashion_mnist(256, resize=None)
-plt.figure(figsize=(10, 10))
+curves = []
 for lr in listlr:
     net = build_mlp([784, 256, 10])
     updater = torch.optim.SGD(net.parameters(), lr=lr)
@@ -165,7 +165,7 @@ for lr in listlr:
         test_acc = evaluate_accuracy_npu(net, test_iter)
         epoch_loss.append(train_metrics[0])
     train_loss, train_acc = train_metrics
-    plt.plot(range(1, num_epochs + 1), epoch_loss, label=f'lr={lr}')
+    curves.append((f'lr={lr}', epoch_loss))
 # 指数衰减策略
 net = build_mlp([784, 256, 10])
 optimizer_ExpLR = torch.optim.SGD(net.parameters(), lr=0.1)
@@ -176,14 +176,11 @@ for epoch in range(num_epochs):
     scheduler_ExpLR.step()
     test_acc = evaluate_accuracy_npu(net, test_iter)
     epoch_loss.append(train_metrics[0])
-plt.plot(range(1, num_epochs + 1), epoch_loss, label='adjust the learning rate based on the number of epochs')
-plt.xlim(1, num_epochs)
-plt.xticks(list(range(1, num_epochs + 1)))
-plt.xlabel('epoch')
-plt.ylabel('loss')
-plt.grid()
-plt.legend()
-plt.show()
+curves.append(('adjust the learning rate based on the number of epochs', epoch_loss))
+
+# 绘制训练曲线（与主 notebook 一致的 d2l 风格）
+plot(torch.arange(1, num_epochs + 1), [l for _, l in curves], 'epoch', 'loss',
+     legend=[lab for lab, _ in curves], xlim=[1, num_epochs], figsize=(6, 3))
 ```
 
 ### 练习4.2.4

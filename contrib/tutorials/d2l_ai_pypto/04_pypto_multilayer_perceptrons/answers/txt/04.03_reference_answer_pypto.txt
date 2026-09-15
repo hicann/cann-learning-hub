@@ -146,9 +146,8 @@ print(f'max result: num_hiddens={resultmax[0]},lr={resultmax[1]:.6f},test_acc={r
 
 ReLU 效果最好，Tanh 次之，Sigmoid 最差训练损失最后超过了 0.5。
 
-import matplotlib.pyplot as plt
-
 train_iter, test_iter = load_data_fashion_mnist(256, resize=None)
+curves = []
 for ac in ['ReLU', 'Sigmoid', 'Tanh']:
     print(ac, flush=True)
     net = build_mlp(256, ac)
@@ -160,14 +159,11 @@ for ac in ['ReLU', 'Sigmoid', 'Tanh']:
         loss_list.append(train_metrics[0])
         train_acc_list.append(train_metrics[1])
         test_acc_list.append(test_acc)
-    plt.plot(range(1, 11), test_acc_list, label=ac)
+    curves.append((ac, test_acc_list))
 
-plt.xlabel('epoch')
-plt.ylabel('test acc')
-plt.title('Different activation functions (num_hiddens=256)')
-plt.legend()
-plt.grid()
-plt.show()
+# 绘制训练曲线（与主 notebook 一致的 d2l 风格）
+plot(torch.arange(1, 11), [acc for _, acc in curves], 'epoch', 'test acc',
+     legend=[ac for ac, _ in curves], xlim=[1, 10], figsize=(6, 3))
 
 ---
 
@@ -204,11 +200,8 @@ for name, init_fn in init_methods.items():
     results[name] = (loss_list, acc_list)
     print(f'{name}: train_loss={train_metrics[0]:.4f} train_acc={train_metrics[1]:.4f} test_acc={test_acc:.4f}', flush=True)
 
-for name, (loss_list, acc_list) in results.items():
-    plt.plot(range(1, 11), acc_list, label=name)
-plt.xlabel('epoch')
-plt.ylabel('test acc')
-plt.title('Different weight initializations (ReLU, num_hiddens=256)')
-plt.legend()
-plt.grid()
-plt.show()
+curves = [(name, acc_list) for name, (loss_list, acc_list) in results.items()]
+
+# 绘制训练曲线（与主 notebook 一致的 d2l 风格）
+plot(torch.arange(1, 11), [acc for _, acc in curves], 'epoch', 'test acc',
+     legend=[name for name, _ in curves], xlim=[1, 10], figsize=(6, 3))

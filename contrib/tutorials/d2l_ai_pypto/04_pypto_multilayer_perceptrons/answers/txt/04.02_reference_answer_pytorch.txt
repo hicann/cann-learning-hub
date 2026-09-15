@@ -6,7 +6,7 @@
 
 解答：
 
-在230到360范围内取不同整数值作为num_hiddens进行实验，得到的训练和测试精度基本一致，因此num_hiddens取256即可，能保证在其他参数不变时取得较好的结果。
+在实验的 [128, 256, 512] 三种取值中，num_hiddens=256 在本超参数设置下效果最好。
 
 以下使用torch编程进行实验：
 
@@ -25,7 +25,7 @@ def initweight4_2_1(num_inputs=784, num_outputs=10, num_hiddens=256):
 showtrain=0 # showtrain=1 可以展示训练过程的情况
 num_inputs=784
 num_outputs=10
-num_hiddenslist=list(range(230,370,10))
+num_hiddenslist=[128,256,512]
 animatornum_hiddens=d2l.Animator(xlabel='num_hiddens',ylabel='Y',xlim=[num_hiddenslist[0],num_hiddenslist[-1]], ylim=[0.8, 0.9],
 legend=[ 'train acc', 'test acc'])
 for num_hiddens in num_hiddenslist:
@@ -54,7 +54,9 @@ for num_hiddens in num_hiddenslist:
     assert train_acc <= 1 and train_acc > 0.7, train_acc
     assert test_acc <= 1 and test_acc > 0.7, test_acc
 
-# 输出：num_hiddens=300, train_loss=0.3826211281458537, train_acc=0.8655666666666667, test_acc=0.85
+# 输出：num_hiddens=128, train_loss=0.3914715494791667, train_acc=0.86175, test_acc=0.8492
+# 输出：num_hiddens=256, train_loss=0.38418323567708335, train_acc=0.8649833333333333, test_acc=0.8497
+# 输出：num_hiddens=512, train_loss=0.3784591471354167, train_acc=0.8677666666666667, test_acc=0.8381
 
 ---
 
@@ -130,7 +132,7 @@ listlr = [1.0, 0.1, 0.01, 0.001]
 train_iter, test_iter = d2l.load_data_fashion_mnist(256, resize=None)
 num_epochs = 20
 loss = nn.CrossEntropyLoss(reduction='none')
-d2l.plt.figure(figsize=(10, 10))
+curves = []
 for lr in listlr:
     num_inputs = 784; num_outputs = 10; num_hiddens = 256
     W1, b1, W2, b2, params = initweight4_2_1()  # initweight4_2_1定义见4.2.1
@@ -150,7 +152,7 @@ for lr in listlr:
 
         epoch_loss.append(train_metrics[0])
         train_loss, train_acc = train_metrics
-    d2l.plt.plot(range(1, num_epochs + 1), epoch_loss, label=(f'lr={lr}'))
+    curves.append((f'lr={lr}', epoch_loss))
 
 补充说明：关于学习率的动态调整算法，可参考pytorch官方文档：https://pytorch.org/docs/stable/optim.html
 下面以指数衰减策略为例调整学习率。
@@ -174,15 +176,10 @@ for epoch in range(num_epochs):
 
     epoch_loss.append(train_metrics[0])
     train_loss, train_acc = train_metrics
-    d2l.plt.plot(range(1, num_epochs + 1), epoch_loss, label='按轮数动态调整学习率')
+    curves.append(('按轮数动态调整学习率', epoch_loss))
 
-d2l.plt.xlim(1, num_epochs)
-d2l.plt.xticks(list(range(1, num_epochs + 1)))
-d2l.plt.xlabel('epoch')
-d2l.plt.ylabel('loss')
-d2l.plt.grid();
-d2l.plt.legend();
-d2l.plt.show();
+d2l.plot(torch.arange(1, num_epochs + 1), [l for _, l in curves], 'epoch', 'loss',
+         legend=[lab for lab, _ in curves], xlim=[1, num_epochs], figsize=(6, 3))
 
 ---
 

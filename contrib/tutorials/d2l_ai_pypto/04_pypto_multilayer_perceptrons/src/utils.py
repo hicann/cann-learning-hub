@@ -278,17 +278,46 @@ def plot(X, Y=None, xlabel=None, ylabel=None, legend=None, xlim=None,
     axes.cla()
     if Y is not None:
         if isinstance(Y, (list, tuple)):
-            Y = [y.detach().cpu().numpy() if torch.is_tensor(y) else y for y in Y]
+            Y = [y.detach().cpu().numpy() if torch.is_tensor(y) else y
+                 for y in Y]
         elif torch.is_tensor(Y):
             Y = Y.detach().cpu().numpy()
-        if torch.is_tensor(X):
+        if isinstance(X, (list, tuple)):
+            X = [x.detach().cpu().numpy() if torch.is_tensor(x) else x
+                 for x in X]
+        elif torch.is_tensor(X):
             X = X.detach().cpu().numpy()
-        axes.plot(X, *Y) if isinstance(Y, list) else axes.plot(X, Y)
+        if isinstance(X, (list, tuple)) and isinstance(Y, (list, tuple)):
+            for x_i, y_i in zip(X, Y):
+                axes.plot(x_i, y_i)
+        elif isinstance(Y, list):
+            # 多条曲线共用同一个 X：必须逐条 plot(X, y_i)，
+            # 不能 plot(X, *Y) —— matplotlib 会把第 2 个及以后的 Y 当作"无 X 的曲线"
+            # 按索引 0..N-1 绘制，导致曲线只出现在 x 轴最左端（如 test 曲线到 epoch 20 消失）。
+            for y_i in Y:
+                axes.plot(X, y_i)
+        else:
+            axes.plot(X, Y)
     else:
-        if torch.is_tensor(X):
-            X = X.detach().cpu().numpy()
-        axes.plot(X)
+        if isinstance(X, (list, tuple)):
+            if len(X) > 0 and isinstance(X[0], (list, tuple, np.ndarray)):
+                for x_i in X:
+                    if torch.is_tensor(x_i):
+                        x_i = x_i.detach().cpu().numpy()
+                    axes.plot(x_i)
+            elif torch.is_tensor(X[0]) if len(X) > 0 else False:
+                X = [x_i.detach().cpu().numpy() if torch.is_tensor(x_i) else x_i
+                     for x_i in X]
+                for x_i in X:
+                    axes.plot(x_i)
+            else:
+                axes.plot(list(X))
+        else:
+            if torch.is_tensor(X):
+                X = X.detach().cpu().numpy()
+            axes.plot(X)
     _set_axes(axes)
+    plt.show()
 
 # ── 从零实现辅助函数 ─────────────────────────────────────────────────────
 

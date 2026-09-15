@@ -228,9 +228,9 @@ d2l.plt.ylabel("var");
 同时使用暂退法和权重衰减的结果好于只使用暂退法或者只使用权重衰减。暂退法和权重衰减使用不同的方式防止模型过拟合，同时使用有累加的效果。下表是某次实验的结果。由于训练存在随机性，实际结果可能会有所不同。
 
 method                   λ        dropout1  dropout2  train loss  train_acc  test acc
-dropout                  —        0.2       0.5       0.3475      0.8727     0.8491
-dropout and weight decay  0.0001  0.2       0.5       0.3523      0.8707     0.8538
-weight decay              0.0001  —         —         0.3224      0.8797     0.8008
+dropout                  —        0.2       0.5       0.3457      0.8731     0.8533
+dropout and weight decay  0.0001  0.2       0.5       0.3490      0.8718     0.8471
+weight decay              0.0001  —         —         0.3112      0.8831     0.8489
 
 # 导入见4.6.1
 # 只用暂退法
@@ -242,7 +242,7 @@ train_loss1+=train_losslist1[-1][-1][-1]/10.0
 train_acc1+=train_acclist1[-1][-1][-1]/10.0
 test_acc1+=test_acclist1[-1][-1][-1]/10.0
         print("only dropout train loss {:.4f} train acc {:.4f} test acc {:.4f} ".format(train_loss1,train_acc1,test_acc1))
-# 输出：only dropout train loss 0.3475 train acc 0.8727 test acc 0.8491
+# 输出：only dropout train loss 0.3457 train acc 0.8731 test acc 0.8533
 
 # 暂退法加权重衰减
 train_loss2,train_acc2,test_acc2=0.,0.,0.
@@ -253,17 +253,17 @@ train_loss2+=train_losslist2[-1][-1][-1]/10.0
 train_acc2+=train_acclist2[-1][-1][-1]/10.0
 test_acc2+=test_acclist2[-1][-1][-1]/10.0
 print("dropout and weight decay train loss {:.4f} train acc {:.4f} test acc {:.4f} ".format(train_loss2,train_acc2,test_acc2))
-# 输出：dropout and weight decay train loss 0.3523 train acc 0.8707 test acc 0.8538
+# 输出：dropout and weight decay train loss 0.3490 train acc 0.8718 test acc 0.8471
 
 # 导入见4.6.1
 # 仅有权重衰减
 train_losslist3,train_acclist3,test_acclist3=changedropout(dropout1list=[0],dropout2list=[0],wd=1e-4,ylim=[0,1],figsize=(7, 5))
 print("weight decay train loss {:.4f} train acc {:.4f} test acc {:.4f} ".format(train_losslist3[-1][-1][-1],train_acclist3[-1][-1][-1],test_acclist3[-1][-1][-1]))
-# 输出：weight decay train loss 0.3224 train acc 0.8797 test acc 0.8008
+# 输出：weight decay train loss 0.3112 train acc 0.8831 test acc 0.8489
 
 ---
 
-练习4.6.7
+练习4.6.6
 
 如果我们将暂退法应用到权重矩阵的各个权重，而不是激活值，会发生什么？
 
@@ -319,7 +319,7 @@ train_loss, train_acc = train_metrics
 
 ---
 
-练习4.6.8
+练习4.6.7
 
 开发另一种用于在每一层注入随机噪声的技术，该技术不同于标准的暂退法技术。尝试开发一种在Fashion-MNIST数据集（对于固定架构）上性能优于暂退法的方法。
 

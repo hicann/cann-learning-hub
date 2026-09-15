@@ -24,7 +24,7 @@ def matmul_fwd_kernel(
     b: pypto.Tensor([], pypto.DT_FP32),
     c: pypto.Tensor([], pypto.DT_FP32),
 ):
-    pypto.set_cube_tile_shapes([16, 16], [16, 16], [16, 16])
+    pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
     c.move(pypto.matmul(a, b, pypto.DT_FP32))
 
 
@@ -36,7 +36,7 @@ def matmul_bwd_kernel(
     grad_a: pypto.Tensor([], pypto.DT_FP32),
     grad_b: pypto.Tensor([], pypto.DT_FP32),
 ):
-    pypto.set_cube_tile_shapes([16, 16], [16, 16], [16, 16])
+    pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
     grad_a.move(pypto.matmul(grad_c, b, pypto.DT_FP32, b_trans=True))
     grad_b.move(pypto.matmul(a, grad_c, pypto.DT_FP32, a_trans=True))
 
@@ -88,13 +88,25 @@ def relu_bwd_kernel(
 # ---------------------------------------------------------------------------
 # softmax：前向 out = softmax(x, dim=-1)
 #           反向 grad_x = y * (grad_out - sum(grad_out * y, dim=-1, keepdim=True))
+# tile 策略（与第 10 章一致，实测行 tile 8→128 提速约 4.9x）：
+#   尾轴对齐到 8 的倍数（32B 对齐约束），行数按列宽自适应：
+#   cols ≤ 160 → 128 行，cols ≤ 320 → 64 行，否则退回 8 行（UB 保护）。
 # ---------------------------------------------------------------------------
+def _softmax_vec_tile_shapes(num_classes: int):
+    """按类数推导 softmax/交叉熵的 vec tile（行 tile 自适应，尾轴 8 对齐）。"""
+    cols = ((num_classes + 7) // 8) * 8
+    rows = 128 if cols <= 160 else (64 if cols <= 320 else 8)
+    return rows, cols
+
+
 @pypto.frontend.jit(runtime_options={"run_mode": pypto.RunMode.NPU})
 def softmax_forward_kernel(
     x: pypto.Tensor([], pypto.DT_FP32),
     out: pypto.Tensor([], pypto.DT_FP32),
+    num_classes: int,
 ):
-    pypto.set_vec_tile_shapes(16, 16)
+    rows, cols = _softmax_vec_tile_shapes(num_classes)
+    pypto.set_vec_tile_shapes(rows, cols)
     out.move(pypto.softmax(x, dim=-1))
 
 
@@ -103,8 +115,10 @@ def softmax_backward_kernel(
     grad_out: pypto.Tensor([], pypto.DT_FP32),
     y: pypto.Tensor([], pypto.DT_FP32),
     grad_x: pypto.Tensor([], pypto.DT_FP32),
+    num_classes: int,
 ):
-    pypto.set_vec_tile_shapes(16, 16)
+    rows, cols = _softmax_vec_tile_shapes(num_classes)
+    pypto.set_vec_tile_shapes(rows, cols)
     grad_x.move(y * (grad_out - pypto.sum(grad_out * y, dim=-1, keepdim=True)))
 
 
@@ -120,7 +134,8 @@ def cross_entropy_forward_kernel(
     num_classes: int,
 ):
     y_2d = pypto.reshape(y_1d, [-1, 1])
-    pypto.set_vec_tile_shapes(8, ((num_classes + 7) // 8) * 8)
+    rows, cols = _softmax_vec_tile_shapes(num_classes)
+    pypto.set_vec_tile_shapes(rows, cols)
     selected = pypto.gather(y_hat, -1, y_2d)
     # 裁剪到一个极小正数，避免 softmax 下溢出 0 时 log(0) = -inf 传播为 NaN 梯度
     out.move(pypto.neg(pypto.log(pypto.maximum(selected, 1e-12))))
@@ -135,12 +150,13 @@ def cross_entropy_backward_kernel(
     num_classes: int,
 ):
     y_2d = pypto.reshape(y_1d, [-1, 1])
-    pypto.set_vec_tile_shapes(8, ((num_classes + 7) // 8) * 8)
+    rows, cols = _softmax_vec_tile_shapes(num_classes)
+    pypto.set_vec_tile_shapes(rows, cols)
     selected = pypto.gather(y_hat, -1, y_2d)
     # one_hot 要求 tile 末维严格等于 num_classes（TiledOneHot 约束），不可对齐到 8/16 的倍数
-    pypto.set_vec_tile_shapes(8, num_classes)
+    pypto.set_vec_tile_shapes(rows, num_classes)
     one_hot_y = pypto.cast(pypto.one_hot(y_1d, num_classes), pypto.DT_FP32)
-    pypto.set_vec_tile_shapes(8, 8)
+    pypto.set_vec_tile_shapes(rows, cols)
     grad_y_hat.move(-(grad_out / selected) * one_hot_y)
 
 
@@ -200,7 +216,8 @@ def make_pypto_relu(fwd, bwd):
         def backward(ctx, grad_out):
             (y,) = ctx.saved_tensors
             grad_in = torch.empty_like(y)
-            bwd(y, grad_out, grad_in)
+            # autograd 传入的 grad 可能非连续（如经 view 传播的梯度），kernel 要求连续
+            bwd(y, grad_out.contiguous(), grad_in)
             return grad_in
 
     return Impl
@@ -215,7 +232,7 @@ class PyPTOSoftmaxCrossEntropyLossFunction(torch.autograd.Function):
         x_c = x.contiguous()
         # softmax
         softmax_out = torch.empty_like(x_c)
-        softmax_forward_kernel(x_c, softmax_out)
+        softmax_forward_kernel(x_c, softmax_out, num_classes)
         # cross_entropy on softmax output
         y_i32_1d = y.to(torch.int32).contiguous()
         ce_out = torch.empty((x.shape[0], 1), dtype=x.dtype, device=x.device)
@@ -236,7 +253,7 @@ class PyPTOSoftmaxCrossEntropyLossFunction(torch.autograd.Function):
         )
         # gradient of softmax w.r.t. x
         grad_x = torch.empty_like(softmax_out)
-        softmax_backward_kernel(grad_ce.contiguous(), softmax_out, grad_x)
+        softmax_backward_kernel(grad_ce.contiguous(), softmax_out, grad_x, num_classes)
         return grad_x, None, None
 
 
