@@ -8,8 +8,8 @@
  * See LICENSE in the root of the software repository for the full text of the License.
  */
 
-#ifndef ASCENDC_07_02_GELU_UNROLL_PRACTICE_H
-#define ASCENDC_07_02_GELU_UNROLL_PRACTICE_H
+#ifndef ASCENDC_07_04_GELU_UNROLL_PRACTICE_H
+#define ASCENDC_07_04_GELU_UNROLL_PRACTICE_H
 
 // 双路展开使用两组 RegTensor 交错执行 GELU 算术链。
 __simd_vf__ inline void GeluVf(__ubuf__ float* xAddr, __ubuf__ float* yAddr, uint32_t n)
@@ -62,4 +62,4 @@ __simd_vf__ inline void GeluVf(__ubuf__ float* xAddr, __ubuf__ float* yAddr, uin
     }
 }
 
-#endif // ASCENDC_07_02_GELU_UNROLL_PRACTICE_H
+#endif // ASCENDC_07_04_GELU_UNROLL_PRACTICE_H
