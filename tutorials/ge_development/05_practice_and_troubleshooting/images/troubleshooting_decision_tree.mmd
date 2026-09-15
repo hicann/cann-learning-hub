@@ -1,0 +1,36 @@
+flowchart TB
+    A["出现问题（现象）"]
+    B["调日志级别 + 看 plog 首个 ERROR<br/>ASCEND_GLOBAL_LOG_LEVEL=1"]
+    C["编译期失败<br/>看错误码 E1xxx GE / E2xxx FE<br/>DUMP_GE_GRAPH 导出图"]
+    D["运行时失败<br/>看错误码 E1xxx运行 / EExxxx RTS"]
+    C1["算子不支持/未注册"]
+    C2["InferShape 失败<br/>(对比 AfterInfershape)"]
+    C3["属性校验失败<br/>(看 attrs)"]
+    D1["加载失败：soc/内存/版本"]
+    D2["输入输出 size/shape/dtype 不匹配"]
+    D3["OOM：搜 mem_stats / DEV_PROC_MEM"]
+    D4["stream 超时 (EE1002)"]
+    D5["AI Core Error → msaicerr"]
+    D6["卡住 → asys 实时堆栈"]
+    D7["精度不对 → 数据 dump 逐算子定位"]
+    E["修正构图/配置"]
+    F["修正 buffer/输入/资源/环境"]
+    G["复跑验证；性能不达标用<br/>msprof 看算子级耗时"]
+    H["信息不足/需技术支持：<br/>asys 一键收集，附错误码与首报错日志"]
+
+    A --> B
+    B --> C
+    B --> D
+    C --> C1 --> E
+    C --> C2 --> E
+    C --> C3 --> E
+    D --> D1 --> F
+    D --> D2 --> F
+    D --> D3 --> F
+    D --> D4 --> F
+    D --> D5 --> F
+    D --> D6 --> F
+    D --> D7 --> F
+    E --> G
+    F --> G
+    G --> H

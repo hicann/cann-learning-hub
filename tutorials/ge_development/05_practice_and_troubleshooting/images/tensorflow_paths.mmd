@@ -1,0 +1,20 @@
+flowchart TB
+    subgraph A["① 在线路径（框架驱动）"]
+        A1["TF 训练/推理脚本<br/>(tf.Session / tf.function)"]
+        A2["TF Adapter"]
+        A3["AscendIR"]
+        A4["GE 编译执行<br/>(在线，运行时驱动)"]
+        A1 --> A2 --> A3 --> A4
+    end
+    subgraph B["② 离线路径（模型解析）"]
+        B1["model.pb<br/>(已导出的 GraphDef)"]
+        B2["aclgrphParseTensorFlow<br/>(Parser 解析)"]
+        B3["AscendIR Graph<br/>(进程内 ge::Graph)"]
+        B4["GE Build API<br/>(aclgrphBuildInitialize /<br/>aclgrphBuildModel / aclgrphSaveModel)"]
+        B5["ATC CLI<br/>(重新读取 .pb，--framework=3)"]
+        B6["OM"]
+        B7["ACL 部署"]
+        B1 --> B2 --> B3 --> B4 --> B6
+        B1 --> B5 --> B6
+        B6 --> B7
+    end

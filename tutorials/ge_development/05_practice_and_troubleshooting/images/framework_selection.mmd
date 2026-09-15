@@ -1,0 +1,13 @@
+flowchart TB
+    A["你的模型来自哪里？"]
+    B["PyTorch → 优先 TorchAir<br/>(torch.compile + NPU backend)"]
+    C["TensorFlow"]
+    D["仍在框架内训练/在线推理<br/>→ TF Adapter（在线路径）"]
+    E["已导出 .pb，需离线部署<br/>→ Parser + GE Build API 或 ATC CLI（二选一）→ OM → ACL"]
+    F["无框架 / 需精细控制图结构<br/>→ GE 手工构图（op:: / ES 极简 / Parser）"]
+
+    A --> B
+    A --> C
+    C --> D
+    C --> E
+    A --> F

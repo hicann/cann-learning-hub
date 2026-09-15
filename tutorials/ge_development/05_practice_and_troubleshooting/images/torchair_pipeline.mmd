@@ -1,0 +1,13 @@
+flowchart LR
+    A["model.forward(x, y)<br/>torch.compile 触发"]
+    B["TorchDynamo"]
+    C["FX Graph<br/>(aten IR)"]
+    D["AscendIR 计算图<br/>aten 算子映射为 GE 算子"]
+    E["GE 编译 + 执行<br/>优化/融合/内存/流/下沉"]
+    F["AI Core/CPU<br/>返回结果"]
+
+    A --> B
+    B --> |字节码分析/图捕获| C
+    C --> |"NPU backend — TorchAir"| D
+    D --> |"GeSession 在线编译执行"| E
+    E --> F
