@@ -15,7 +15,7 @@
 
 在学习本教程之前，建议先完成以下前置学习：
 
-- 阅读 [cann-learning-hub 快速入门](https://gitcode.com/cann/cann-learning-hub/quick_start) 中的 `cann_basics` 章节，了解 AI 基础概念、NPU 硬件架构与 CANN 软件栈
+- 阅读 [cann-learning-hub 快速入门](https://gitcode.com/cann/cann-learning-hub/tree/master/quick_start) 中的 `cann_basics` 章节，了解 AI 基础概念、NPU 硬件架构与 CANN 软件栈
 - 掌握 C/C++ 编程基础
 - 了解并行编程基本概念
 
