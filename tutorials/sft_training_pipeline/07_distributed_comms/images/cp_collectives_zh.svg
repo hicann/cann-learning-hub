@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740" role="img" aria-labelledby="title desc">
+  <title id="title">Ulysses CP 的 sequence 与 head 布局交换</title>
+  <desc id="desc">attention 之前，两张卡分别持有半条序列和全部注意力头。all-to-all 后，每张卡持有完整序列和一半注意力头，可独立计算这些头的 attention。attention 之后执行逆向 all-to-all，恢复半条序列和全部头的布局。格子颜色表示 token 原先来自哪段序列。</desc>
+  <defs>
+    <marker id="arrow-forward" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#0f8b8d"/>
+    </marker>
+    <marker id="arrow-return" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#d97706"/>
+    </marker>
+    <style>
+      text { font-family: Inter, "Noto Sans SC", "Microsoft YaHei", sans-serif; fill: #172033; }
+      .title { font-size: 30px; font-weight: 750; }
+      .subtitle { font-size: 17px; fill: #526076; }
+      .stage { font-size: 21px; font-weight: 750; }
+      .rank { font-size: 17px; font-weight: 750; }
+      .label { font-size: 16px; font-weight: 700; }
+      .body { font-size: 15px; }
+      .small { font-size: 13px; fill: #526076; }
+      .mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 14px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="740" fill="#f8fafc"/>
+  <text x="48" y="50" class="title">Ulysses CP：attention 外按 sequence 切，attention 内按 heads 切</text>
+  <text x="48" y="80" class="subtitle">两卡 Qwen3 GQA 示例 · all-to-all 改变数据所有权和切分轴，不做 SUM。</text>
+
+  <!-- Stage containers -->
+  <rect x="40" y="112" width="420" height="500" rx="20" fill="#ffffff" stroke="#d8e0ea" stroke-width="2"/>
+  <rect x="740" y="112" width="420" height="500" rx="20" fill="#ffffff" stroke="#d8e0ea" stroke-width="2"/>
+  <text x="250" y="150" text-anchor="middle" class="stage">A2A 前 · sequence 分片</text>
+  <text x="250" y="176" text-anchor="middle" class="small">每个 rank：本地 S/2 × 全部 Q/K/V heads</text>
+  <text x="950" y="150" text-anchor="middle" class="stage">A2A 后 · head 分片</text>
+  <text x="950" y="176" text-anchor="middle" class="small">每个 rank：完整 S × 本地 Q/K/V heads</text>
+
+  <!-- Before: rank 0 -->
+  <rect x="64" y="198" width="372" height="142" rx="14" fill="#f8fbff" stroke="#2563eb" stroke-width="2"/>
+  <circle cx="88" cy="224" r="8" fill="#2563eb"/>
+  <text x="106" y="230" class="rank" fill="#2563eb">Rank 0</text>
+  <text x="86" y="258" class="body">token 0–2047</text>
+  <text x="86" y="282" class="small">Q: 16 heads</text>
+  <text x="86" y="303" class="small">K/V: 8 heads</text>
+  <g aria-label="Rank 0 的本地序列与全部头">
+    <rect x="236" y="218" width="176" height="88" rx="6" fill="#ffffff" stroke="#8795a8" stroke-width="1.5"/>
+    <rect x="240" y="222" width="40" height="38" fill="#9fc4ff"/>
+    <rect x="282" y="222" width="40" height="38" fill="#9fc4ff"/>
+    <rect x="324" y="222" width="40" height="38" fill="#9fc4ff"/>
+    <rect x="366" y="222" width="40" height="38" fill="#9fc4ff"/>
+    <rect x="240" y="264" width="40" height="38" fill="#76a9f6"/>
+    <rect x="282" y="264" width="40" height="38" fill="#76a9f6"/>
+    <rect x="324" y="264" width="40" height="38" fill="#76a9f6"/>
+    <rect x="366" y="264" width="40" height="38" fill="#76a9f6"/>
+    <text x="323" y="326" text-anchor="middle" class="small">全部 heads →</text>
+  </g>
+
+  <!-- Before: rank 1 -->
+  <rect x="64" y="368" width="372" height="142" rx="14" fill="#fbf9ff" stroke="#7c3aed" stroke-width="2"/>
+  <circle cx="88" cy="394" r="8" fill="#7c3aed"/>
+  <text x="106" y="400" class="rank" fill="#7c3aed">Rank 1</text>
+  <text x="86" y="428" class="body">token 2048–4095</text>
+  <text x="86" y="452" class="small">Q: 16 heads</text>
+  <text x="86" y="473" class="small">K/V: 8 heads</text>
+  <g aria-label="Rank 1 的本地序列与全部头">
+    <rect x="236" y="388" width="176" height="88" rx="6" fill="#ffffff" stroke="#8795a8" stroke-width="1.5"/>
+    <rect x="240" y="392" width="40" height="38" fill="#c7a8ff"/>
+    <rect x="282" y="392" width="40" height="38" fill="#c7a8ff"/>
+    <rect x="324" y="392" width="40" height="38" fill="#c7a8ff"/>
+    <rect x="366" y="392" width="40" height="38" fill="#c7a8ff"/>
+    <rect x="240" y="434" width="40" height="38" fill="#a77be9"/>
+    <rect x="282" y="434" width="40" height="38" fill="#a77be9"/>
+    <rect x="324" y="434" width="40" height="38" fill="#a77be9"/>
+    <rect x="366" y="434" width="40" height="38" fill="#a77be9"/>
+    <text x="323" y="496" text-anchor="middle" class="small">全部 heads →</text>
+  </g>
+
+  <!-- Central all-to-all -->
+  <rect x="500" y="266" width="200" height="126" rx="18" fill="#e8f7f5" stroke="#0f8b8d" stroke-width="2.5"/>
+  <text x="600" y="301" text-anchor="middle" class="label">all-to-all</text>
+  <text x="600" y="328" text-anchor="middle" class="body">沿 head 切开</text>
+  <text x="600" y="351" text-anchor="middle" class="body">沿 sequence 拼接</text>
+  <rect x="538" y="362" width="124" height="22" rx="11" fill="#cceeea"/>
+  <text x="600" y="378" text-anchor="middle" class="small">只重排 · 不求和</text>
+  <path d="M460 329 L500 329" fill="none" stroke="#0f8b8d" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-forward)"/>
+  <path d="M700 329 L740 329" fill="none" stroke="#0f8b8d" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-forward)"/>
+
+  <!-- After: rank 0 -->
+  <rect x="764" y="198" width="372" height="142" rx="14" fill="#f8fbff" stroke="#2563eb" stroke-width="2"/>
+  <circle cx="788" cy="224" r="8" fill="#2563eb"/>
+  <text x="806" y="230" class="rank" fill="#2563eb">Rank 0</text>
+  <text x="786" y="258" class="body">完整 token 0–4095</text>
+  <text x="786" y="282" class="small">Q heads 0–7</text>
+  <text x="786" y="303" class="small">K/V heads 0–3</text>
+  <g aria-label="Rank 0 获得完整序列和前一半注意力头">
+    <rect x="952" y="210" width="152" height="106" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+    <rect x="956" y="214" width="70" height="22" fill="#9fc4ff"/>
+    <rect x="1028" y="214" width="70" height="22" fill="#9fc4ff"/>
+    <rect x="956" y="238" width="70" height="22" fill="#76a9f6"/>
+    <rect x="1028" y="238" width="70" height="22" fill="#76a9f6"/>
+    <rect x="956" y="262" width="70" height="22" fill="#c7a8ff"/>
+    <rect x="1028" y="262" width="70" height="22" fill="#c7a8ff"/>
+    <rect x="956" y="286" width="70" height="22" fill="#a77be9"/>
+    <rect x="1028" y="286" width="70" height="22" fill="#a77be9"/>
+  </g>
+
+  <!-- After: rank 1 -->
+  <rect x="764" y="368" width="372" height="142" rx="14" fill="#fbf9ff" stroke="#7c3aed" stroke-width="2"/>
+  <circle cx="788" cy="394" r="8" fill="#7c3aed"/>
+  <text x="806" y="400" class="rank" fill="#7c3aed">Rank 1</text>
+  <text x="786" y="428" class="body">完整 token 0–4095</text>
+  <text x="786" y="452" class="small">Q heads 8–15</text>
+  <text x="786" y="473" class="small">K/V heads 4–7</text>
+  <g aria-label="Rank 1 获得完整序列和后一半注意力头">
+    <rect x="952" y="380" width="152" height="106" rx="6" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+    <rect x="956" y="384" width="70" height="22" fill="#9fc4ff"/>
+    <rect x="1028" y="384" width="70" height="22" fill="#9fc4ff"/>
+    <rect x="956" y="408" width="70" height="22" fill="#76a9f6"/>
+    <rect x="1028" y="408" width="70" height="22" fill="#76a9f6"/>
+    <rect x="956" y="432" width="70" height="22" fill="#c7a8ff"/>
+    <rect x="1028" y="432" width="70" height="22" fill="#c7a8ff"/>
+    <rect x="956" y="456" width="70" height="22" fill="#a77be9"/>
+    <rect x="1028" y="456" width="70" height="22" fill="#a77be9"/>
+  </g>
+
+  <!-- Attention and reverse transformation -->
+  <rect x="764" y="536" width="372" height="50" rx="14" fill="#e8f7f5"/>
+  <text x="950" y="567" text-anchor="middle" class="body">每个 rank 对“完整 sequence × 本地 heads”执行 attention</text>
+  <rect x="64" y="536" width="372" height="50" rx="14" fill="#f1f5f9"/>
+  <text x="250" y="567" text-anchor="middle" class="body">attention 外继续保持“本地 sequence × 全部 heads”</text>
+
+  <path d="M740 635 L460 635" fill="none" stroke="#d97706" stroke-width="3" stroke-dasharray="9 7" stroke-linecap="round" marker-end="url(#arrow-return)"/>
+  <text x="600" y="624" text-anchor="middle" class="label" fill="#b45309">attention 后：逆向 all-to-all，恢复 sequence 分片</text>
+
+  <!-- Legend -->
+  <rect x="170" y="674" width="860" height="42" rx="16" fill="#ffffff" stroke="#d8e0ea" stroke-width="2"/>
+  <rect x="198" y="686" width="24" height="18" rx="4" fill="#76a9f6"/>
+  <text x="232" y="700" class="small">来自 rank 0 原始 sequence</text>
+  <rect x="460" y="686" width="24" height="18" rx="4" fill="#a77be9"/>
+  <text x="494" y="700" class="small">来自 rank 1 原始 sequence</text>
+  <text x="780" y="700" class="small">格子填色表示 token 来源；蓝/紫外框表示当前持有者</text>
+</svg>

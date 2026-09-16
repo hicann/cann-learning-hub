@@ -1,0 +1,338 @@
+{
+ "setup": {
+  "ranks": 2,
+  "parallelism": "dp_shard=2, cp=1, tp=1, pp=1",
+  "local_batch_size": 2,
+  "global_batch_size": 4,
+  "gradient_accumulation_steps": 1,
+  "seq_len": 4096,
+  "steps": 10,
+  "dataset": "assets/data/wordle (willcb/V3-wordle, greedy packed positions)",
+  "checkpoint": "assets/hf/Qwen3-1.7B (initial-load-in-hf, load-only)",
+  "profiler": "torchtitan_npu.override.common.profiler.cann profile_ranks=[0], profile_with_memory=true",
+  "profiled_step": 4,
+  "profiled_step_note": "profile_freq=4, warmup=3, active=1, repeat=1, skip_first=1",
+  "trace_paths": {
+   "eager_packed": "outputs/profile_traces/06_eager_packed",
+   "packed_varlen": "outputs/profile_traces/06_packed_varlen"
+  }
+ },
+ "routes": {
+  "eager_packed": {
+   "config": "sft_qwen3_1_7b_wordle",
+   "attention": "FlexAttention (eager BlockMask)",
+   "trace": "06_eager_packed",
+   "kernel_names": [
+    "FlexAttentionAutogradOp",
+    "FlexAttentionAutogradOpBackward"
+   ],
+   "steps": [
+    {
+     "step": 1,
+     "loss": 1.33367,
+     "grad_norm": 62.8181,
+     "memory_gib": 26.48,
+     "memory_pct": 43.21,
+     "tps": 771,
+     "tflops": 10.13,
+     "mfu": 3.25
+    },
+    {
+     "step": 2,
+     "loss": 1.35399,
+     "grad_norm": 50.811,
+     "memory_gib": 33.43,
+     "memory_pct": 54.56,
+     "tps": 1490,
+     "tflops": 19.58,
+     "mfu": 6.28
+    },
+    {
+     "step": 3,
+     "loss": 1.26666,
+     "grad_norm": 52.5267,
+     "memory_gib": 33.43,
+     "memory_pct": 54.56,
+     "tps": 1748,
+     "tflops": 22.97,
+     "mfu": 7.36
+    },
+    {
+     "step": 4,
+     "loss": 1.17762,
+     "grad_norm": 48.9246,
+     "memory_gib": 33.43,
+     "memory_pct": 54.56,
+     "tps": 1748,
+     "tflops": 22.97,
+     "mfu": 7.36
+    },
+    {
+     "step": 5,
+     "loss": 0.99621,
+     "grad_norm": 23.359,
+     "memory_gib": 33.43,
+     "memory_pct": 54.56,
+     "tps": 1748,
+     "tflops": 22.97,
+     "mfu": 7.36
+    },
+    {
+     "step": 6,
+     "loss": 1.03675,
+     "grad_norm": 21.5326,
+     "memory_gib": 33.43,
+     "memory_pct": 54.56,
+     "tps": 876,
+     "tflops": 11.51,
+     "mfu": 3.69
+    },
+    {
+     "step": 7,
+     "loss": 0.86872,
+     "grad_norm": 7.7319,
+     "memory_gib": 33.43,
+     "memory_pct": 54.56,
+     "tps": 1769,
+     "tflops": 23.25,
+     "mfu": 7.45
+    },
+    {
+     "step": 8,
+     "loss": 0.78794,
+     "grad_norm": 5.3301,
+     "memory_gib": 33.43,
+     "memory_pct": 54.56,
+     "tps": 1770,
+     "tflops": 23.26,
+     "mfu": 7.46
+    },
+    {
+     "step": 9,
+     "loss": 0.6821,
+     "grad_norm": 4.2687,
+     "memory_gib": 33.43,
+     "memory_pct": 54.56,
+     "tps": 1766,
+     "tflops": 23.21,
+     "mfu": 7.44
+    },
+    {
+     "step": 10,
+     "loss": 0.6629,
+     "grad_norm": 4.2319,
+     "memory_gib": 33.43,
+     "memory_pct": 54.56,
+     "tps": 1773,
+     "tflops": 23.31,
+     "mfu": 7.47
+    }
+   ],
+   "steady_steps_7_10": {
+    "tps_per_device": 1769.5,
+    "step_time_s": 4.6296,
+    "memory_gib": 33.43,
+    "mfu_pct": 7.455,
+    "loss": 0.7504,
+    "grad_norm": 5.3906
+   },
+   "attention_host_ms_in_profiled_step": 3533.98,
+   "attention_ops": {
+    "FlexAttentionAutogradOp": {
+     "count": 56,
+     "host_total_us": 1218193.3799999994,
+     "device_total_us": 0.0
+    },
+    "FlexAttentionAutogradOpBackward": {
+     "count": 28,
+     "host_total_us": 2315790.8999999994,
+     "device_total_us": 0.0
+    }
+   }
+  },
+  "packed_varlen": {
+   "config": "sft_qwen3_1_7b_wordle_tnd",
+   "attention": "AscVarlenAttention -> CANN FA v3 (TND, sparse_mode=7)",
+   "trace": "06_packed_varlen",
+   "kernel_names": [
+    "npu::npu_fusion_attention_v3",
+    "npu::npu_fusion_attention_grad_v3",
+    "aclnnFlashAttentionVarLenScore",
+    "aclnnFlashAttentionUnpaddingScoreGrad"
+   ],
+   "steps": [
+    {
+     "step": 1,
+     "loss": 1.33249,
+     "grad_norm": 62.7382,
+     "memory_gib": 15.43,
+     "memory_pct": 25.19,
+     "tps": 1269,
+     "tflops": 16.67,
+     "mfu": 5.34
+    },
+    {
+     "step": 2,
+     "loss": 1.35386,
+     "grad_norm": 50.9707,
+     "memory_gib": 21.78,
+     "memory_pct": 35.55,
+     "tps": 3662,
+     "tflops": 48.13,
+     "mfu": 15.43
+    },
+    {
+     "step": 3,
+     "loss": 1.2642,
+     "grad_norm": 52.3536,
+     "memory_gib": 21.78,
+     "memory_pct": 35.55,
+     "tps": 5793,
+     "tflops": 76.14,
+     "mfu": 24.4
+    },
+    {
+     "step": 4,
+     "loss": 1.17913,
+     "grad_norm": 48.8506,
+     "memory_gib": 21.78,
+     "memory_pct": 35.55,
+     "tps": 5778,
+     "tflops": 75.93,
+     "mfu": 24.34
+    },
+    {
+     "step": 5,
+     "loss": 0.99629,
+     "grad_norm": 23.4951,
+     "memory_gib": 21.78,
+     "memory_pct": 35.55,
+     "tps": 5713,
+     "tflops": 75.08,
+     "mfu": 24.06
+    },
+    {
+     "step": 6,
+     "loss": 1.03615,
+     "grad_norm": 21.529,
+     "memory_gib": 21.78,
+     "memory_pct": 35.55,
+     "tps": 1349,
+     "tflops": 17.73,
+     "mfu": 5.68
+    },
+    {
+     "step": 7,
+     "loss": 0.86893,
+     "grad_norm": 7.8272,
+     "memory_gib": 21.78,
+     "memory_pct": 35.55,
+     "tps": 5863,
+     "tflops": 77.05,
+     "mfu": 24.7
+    },
+    {
+     "step": 8,
+     "loss": 0.78824,
+     "grad_norm": 5.3018,
+     "memory_gib": 21.78,
+     "memory_pct": 35.55,
+     "tps": 5794,
+     "tflops": 76.14,
+     "mfu": 24.4
+    },
+    {
+     "step": 9,
+     "loss": 0.68219,
+     "grad_norm": 4.2231,
+     "memory_gib": 21.78,
+     "memory_pct": 35.55,
+     "tps": 5772,
+     "tflops": 75.86,
+     "mfu": 24.31
+    },
+    {
+     "step": 10,
+     "loss": 0.66194,
+     "grad_norm": 4.2235,
+     "memory_gib": 21.78,
+     "memory_pct": 35.55,
+     "tps": 5789,
+     "tflops": 76.08,
+     "mfu": 24.39
+    }
+   ],
+   "steady_steps_7_10": {
+    "tps_per_device": 5804.5,
+    "step_time_s": 1.4113,
+    "memory_gib": 21.78,
+    "mfu_pct": 24.45,
+    "loss": 0.7503,
+    "grad_norm": 5.3939
+   },
+   "attention_host_ms_in_profiled_step": 34.27,
+   "attention_ops": {
+    "npu::npu_fusion_attention_v3": {
+     "count": 112,
+     "host_total_us": 27898.339999999982,
+     "device_total_us": 0.0
+    },
+    "aclnnFlashAttentionVarLenScore": {
+     "count": 56,
+     "host_total_us": 904.8899999999999,
+     "device_total_us": 0.0
+    },
+    "npu::npu_fusion_attention_grad_v3": {
+     "count": 28,
+     "host_total_us": 5174.08,
+     "device_total_us": 0.0
+    },
+    "aclnnFlashAttentionUnpaddingScoreGrad": {
+     "count": 28,
+     "host_total_us": 296.49000000000007,
+     "device_total_us": 0.0
+    }
+   }
+  }
+ },
+ "comparison": {
+  "step_time_s": {
+   "eager_packed": 4.6296,
+   "packed_varlen": 1.4113,
+   "speedup": 3.28
+  },
+  "tps_per_device": {
+   "eager_packed": 1769.5,
+   "packed_varlen": 5804.5,
+   "change_pct": 228.0
+  },
+  "memory_gib": {
+   "eager_packed": 33.43,
+   "packed_varlen": 21.78,
+   "delta_gib": 11.65,
+   "change_pct": -34.8
+  },
+  "attention_host_ms": {
+   "eager_packed": 3533.98,
+   "packed_varlen": 34.27,
+   "ratio": 103.1
+  },
+  "loss_abs_delta": {
+   "per_step": {
+    "1": 0.00118,
+    "2": 0.00013,
+    "3": 0.00246,
+    "4": 0.00151,
+    "5": 8e-05,
+    "6": 0.0006,
+    "7": 0.00021,
+    "8": 0.0003,
+    "9": 9e-05,
+    "10": 0.00096
+   },
+   "max_steps_3_10": 0.00246,
+   "step10": 0.00096
+  },
+  "environment_note": "Device/AI-core counters are unavailable on driver 25.5.5, so Device Duration columns are 0; attention cost is compared through host totals of the attention operators inside the profiled step."
+ }
+}

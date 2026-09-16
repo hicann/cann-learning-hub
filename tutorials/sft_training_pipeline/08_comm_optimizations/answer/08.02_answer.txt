@@ -1,0 +1,7 @@
+08.02 参考答案
+（说明）本节描述的 VarLen+CP 路线属于旧版本实现；当前版本 TND+CP 不可运行，本节仅作机制与量级参考，请勿据此认为已支持。
+
+1. √。VarLen+CP 的两个 rank 必须保留同一份全局隔离区间信息。
+2. B。pre AllToAll 后的 Q 形状是 [2,8192,8,128]。
+3. √。把 packed sequence 扩到 8192 只是扩大装箱空间，不等于保证物理 step 更快。
+4. A、B、C。correctness gate 要看 resolved config、全局边界一致性和实际 kernel/loss。

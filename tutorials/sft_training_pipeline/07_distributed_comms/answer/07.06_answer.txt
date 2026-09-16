@@ -1,0 +1,20 @@
+07.06 参考答案
+
+1. √。独立 demo 隔离了某种 collective 的形状、payload 和 latency，但没有包含完整训练中的计算、调用顺序、等待与 overlap。
+2. A。本章使用十进制 MB，即 1,000,000 bytes，和 profiler CSV 的 Transit Size(MB) 口径对齐。
+3. ×。collective 要等所有参与 rank；应保存各 rank 时间，并用同一 iteration 的慢 rank 表示该次完成延迟。
+4. A、B、C。逐 rank 原始样本支持复算统计，payload 与时间支持复算带宽；最快一次不能代表稳定结果。
+5. √。FSDP 的常态存储是分片的，但 unit 计算窗口需要临时恢复完整参数，所以不能说任何时刻都只有 1/N 参数。
+6. B。reduce-scatter 先对完整梯度贡献做规约，再把结果切分并给每个 rank 留下本地梯度分片。
+7. B。两卡时每个 rank 常态持有一半，即 50.336 MB；all-gather 从对端取得另一半，临时拼成 100.672 MB 完整参数。
+8. √。独立 median 的和忽略了真实调用顺序、rank skew、等待和 overlap，只是一个零 overlap 教学估算，不是严格上界或 step time。
+9. ×。经典 TP 是 all-reduce 基线；当前 TorchTitan 默认 TP+SP 还会因 Shard(sequence)、Replicate 和 Partial 布局转换产生 all-gather/reduce-scatter，必须看 resolved config 与 trace。
+10. √。逻辑输入/输出可以仍是同一 activation tensor，但 ring 模型下每 rank 的发送比例 2(p-1)/p 会随 degree 改变。
+11. A。sequence parallel 会在 sequence shard 与复制/部分和布局之间重分布，常见 collective 是 all-gather 和 reduce-scatter。
+12. ×。异步收益依赖 workload、shape、world size、硬件、软件和 overlap 条件；没有这些上下文不能给出固定百分比。
+13. √。Ulysses pre/post all-to-all 交换 sequence/head 维的数据所有权；它不像 all-reduce 那样做数值求和。
+14. B。pre AllToAll 把本地 sequence、全部 heads 的 [2,2048,16,128] 换成全局 sequence、本地 heads 的 [2,4096,8,128]。
+15. √。TP+SP 可在部分 activation 上切 sequence；CP 的区别是为完整长上下文 Attention 分摊 sequence/head 工作。
+16. ×。CP 的价值包括支持更长上下文，但 AllToAll、布局变换、padding 组成和 kernel shape 都会影响实际速度，不能普遍断言更快。
+17. ×。Overlap 只尝试隐藏通信时间，不改变 collective 的 payload；暴露时间、通信量和 collective latency 必须分开报告。
+18. A、B、C。并行方案必须同时满足内存、配置/路径和真实关键路径证据；理论通信量最小不等于端到端最好。

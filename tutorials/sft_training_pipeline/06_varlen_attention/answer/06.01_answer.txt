@@ -1,0 +1,6 @@
+06.01 参考答案
+
+1. ×。第 6 章不只是换一个 Attention kernel，数据如何表达边界同样决定正确性。
+2. A。先看 packing 和 positions，再看边界 metadata、Attention 语义、kernel/trace，最后看端到端指标。
+3. ×。相同容器位置数不代表原始样本数和 supervised token 数相同。
+4. A、B、C。CPU 或离线环境可以做契约检查和理论 pair 计算，真实 kernel 与训练 step 时间需要 NPU。

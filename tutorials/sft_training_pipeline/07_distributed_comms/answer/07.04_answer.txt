@@ -1,0 +1,6 @@
+07.04 参考答案
+
+1. √。Ulysses CP 的 all-to-all 主要交换 sequence/head 数据归属，不做 SUM 规约。
+2. B。pre AllToAll 后的逻辑 shape 是 [2,4096,8,128]。
+3. √。启用 sequence parallel 后，TP 也可能在部分 activation layout 上切 sequence。
+4. ×。CP 支持更长上下文，但不代表在任何 workload 下都必然更快。

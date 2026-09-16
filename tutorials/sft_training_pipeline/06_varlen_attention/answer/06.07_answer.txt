@@ -1,0 +1,19 @@
+06.07 参考答案
+
+1. ×。VarLen kernel 只执行收到的边界；若 DataLoader 或 trainer 生成了错误 metadata，kernel 仍会按错误区间计算。
+2. A。先确认数据如何表达边界，再确认 trainer 和 Attention backend 如何消费边界，之后才用 trace 和端到端指标验证执行与收益。
+3. ×。IGNORE_INDEX 只决定该位置是否贡献 loss；hidden state 仍可成为其他 token 的 K/V。
+4. ×。EOS 表示消息结束，多轮样本内部可能出现多个 EOS；packed sample 的可靠起点由 positions 重新从 0 开始表达。
+5. A。普通 causal mask 只限制未来 token，后装入的样本仍能读取同一 container 中更早样本的 hidden states。
+6. B。trainer 查找位置编号重新从 0 开始的位置，据此恢复隔离区间并构造累计长度。
+7. A、B、C。positions、labels 和 padding 分别承担边界、loss 与容器补齐职责；labels 不会直接构造 Attention 边界。
+8. √。真实样本各占一个区间，末尾 padding 若存在也可单独占一个区间，所以区间数不能直接当作 raw sample 数。
+9. √。原生 TPS 的分子是定长 container slots；padding 比例和每步装入的样本长度不同，会改变业务有效吞吐。
+10. A。这三个分子分别反映样本装箱、有效输入和训练监督量，可以揭示相同 slot 数背后的 workload 差异。
+11. √。若每个 optimizer step 消耗的监督量不同，按 step 对齐的短程 validation loss 不是公平的收敛比较。
+12. √。Dense mask 修复了可见性语义，但 kernel 是否跳过遮蔽区域取决于具体实现，不能由 mask 图形直接推出。
+13. B。当前 NPU VarLen 路线使用 TND layout、actual_seq 累计长度和 sparse_mode=7 表达分段 causal 计算。
+14. √。pair ratio 没有包含 tiling、launch、layout、backward、其他模型层和通信开销，因此不是 wall-time speedup。
+15. √。Trace 回答实际跑了什么；稳定速度应由关闭 profiler、同步并重复运行的 wall-time 统计给出。
+16. ×。VarLen 只减少 Attention 中不需要的 pair；padding token 仍可能经过 embedding、投影、MLP、Norm 等其他计算。
+17. A、B、C。正确边界、真实设备路径和多种端到端指标缺一不可；理论 pair speedup 只能作为解释线索。

@@ -1,0 +1,6 @@
+06.05 参考答案
+
+1. B。最新版本的 `get_attention_config()` 只提供 `flex` / `flex_flash` 与 `varlen`，`sdpa` 对语言模型已不再接受。
+2. √。文档起点就是 `positions == 0` 的位置；padding 也从 0 开始编号，因此单独构成最后一个区间，并出现在 `cu_seqlens` 中。
+3. B。TND 布局配合 `actual_seq_qlen` / `actual_seq_kvlen` 分段长度与 `sparse_mode=7`；`atten_mask` 提供分段内的上三角掩码。
+4. A、B、C。`window_size` 由 `derive()` 从上游 Config 复制，不需要手工设置。

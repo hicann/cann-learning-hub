@@ -1,0 +1,7 @@
+05.03 参考答案
+
+1. C。score 矩阵大小是 1 × 16 × 4096² 个 BF16 元素，约 512 MiB。
+2. ×。只看 S=4096 的峰值显存，不能证明所有 S 都遵循同一种渐近规律。
+3. ×。单一 4096 长度的 VarLen 不保证比 dense BSND 更快，具体要看 kernel 和额外开销。
+4. B。在计时区间前后加 synchronize，才能避免异步工作污染 wall-time。
+5. B。理论 pair speedup 不等于 wall-time speedup，后者还受 tile、launch、layout 和带宽开销影响。

@@ -1,0 +1,6 @@
+07.03 参考答案
+
+1. ×。经典 Megatron-style TP 的账本不能直接当作当前 TorchTitan TP+SP 的实际通信账本。
+2. A。sequence parallel 下常见的是 Shard(sequence) 与 Replicate/Partial 之间的 all-gather 或 reduce-scatter 转换。
+3. √。TP degree 改变时，逻辑 all-reduce 张量形状可以不变，但理想交换比例会变化。
+4. ×。Async TP 的收益依赖 workload、shape、world size、硬件和软件条件，不是固定 8%。

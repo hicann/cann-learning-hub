@@ -1,0 +1,6 @@
+05.05 参考答案
+
+1. ×。只启用 override 而不让 model spec 选择 Varlen contract，Decoder 不会生成正确的 VarlenMetadata。
+2. A。当前 VarLen 配置要让 model registry 选择 Varlen backend，并启用 `asc` override 选择 AscVarlenAttention。
+3. √。trace 只能证明算子执行了；要证明边界正确，还要看 DataLoader 的样本起点和 cu_seq。
+4. A、B、C。验证全链路要看数据层、配置层和调用执行层，不能只看 loss。

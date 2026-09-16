@@ -1,8 +1,8 @@
 1. √
-解析：目标 `npu::npu_rms_norm` 事件证明 fused 路径被调用，CSV 的 API 与 device-op 统计用于交叉核对实际执行记录。
+解析：目标 `npu::npu_rms_norm` 事件证明 fused 路径被调用；`operator_memory.csv` 中直接结果申请模式由 7 次降为 2 次（逻辑字节 288.062→32.031 MiB），从 storage 侧交叉核验融合生效。详见本节结论（cell `1e731cbd`）第 1–2 节。
 
 2. √
-解析：模块数量属于模型结构，应从当前模型和 converter 的实际匹配结果统计；profiler 调用次数还会受到反向和重计算影响。
+解析：模块数量属于模型结构，应从当前 model spec 和 override 的实际匹配结果统计；profiler 调用次数还会受到反向和重计算影响。
 
 3. A
-解析：稳定阶段 step 7–10 的平均单步耗时从 1.6870 s 降至 1.4463 s，变化约为 -14.3%；-76.4% 对应 RMSNorm 路径的平均 device time，+16.6% 对应 TPS 提升。
+解析：稳定阶段 step 7–10 的平均单步耗时从 1.6870 s 降至 1.4463 s，变化约为 -14.3%；+16.6% 对应 TPS 提升。-76.4% 是早期采集的 RMSNorm 路径 device time 降幅，当前导出不含 device 侧 kernel 数据、无法复现，且它不是 step 耗时变化。

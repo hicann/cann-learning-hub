@@ -1,0 +1,6 @@
+07.02 参考答案
+
+1. √。FSDP 长期分片保存状态，但计算某个 unit 时会临时 all-gather 完整参数。
+2. B。反向阶段用 reduce-scatter 规约梯度并留下本地分片。
+3. √。独立 all-gather 和 reduce-scatter 的 median 相加只是零 overlap 教学估算，不是最坏情况上界。
+4. A、B、C。可信的 FSDP collective 结果要有逐 rank 时间、分布统计和可复算 payload/bandwidth。

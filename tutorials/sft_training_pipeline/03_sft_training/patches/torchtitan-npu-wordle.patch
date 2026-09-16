@@ -1,0 +1,553 @@
+diff --git a/torchtitan_npu/models/qwen3/__init__.py b/torchtitan_npu/models/qwen3/__init__.py
+new file mode 100644
+index 0000000..6f015a9
+--- /dev/null
++++ b/torchtitan_npu/models/qwen3/__init__.py
+@@ -0,0 +1,34 @@
++# Copyright (c) 2026 Huawei Technologies Co., Ltd. All rights reserved.
++# Copyright (c) Meta Platforms, Inc. and affiliates.
++#
++# This source code is licensed under the BSD-style license found in the
++# LICENSE file in the root directory of this source tree.
++
++from dataclasses import replace
++
++from torchtitan.models.qwen3 import (
++    Qwen3StateDictAdapter,
++)
++from torchtitan.models.qwen3 import (
++    model_registry as _upstream_model_registry,
++)
++
++from torchtitan_npu.models.qwen3.parallelize import parallelize_qwen3
++
++
++def model_registry(flavor: str, attn_backend: str = "flex"):
++    """NPU Qwen3 registry: upstream backend selection plus NPU hooks.
++
++    ``attn_backend`` mirrors the upstream signature (``flex`` / ``flex_flash`` /
++    ``varlen``); the TND recipe passes ``varlen`` and then activates the
++    AscendC override that replaces the inner attention.
++    """
++    spec = _upstream_model_registry(flavor, attn_backend=attn_backend)
++    # ``ModelSpec`` gained/removed optional fields across torchtitan releases;
++    # replacing only the two hooks keeps this adapter compatible with the
++    # current clone while preserving every upstream field.
++    return replace(
++        spec,
++        parallelize_fn=parallelize_qwen3,
++        state_dict_adapter=Qwen3StateDictAdapter,
++    )
+diff --git a/torchtitan_npu/models/qwen3/config_registry.py b/torchtitan_npu/models/qwen3/config_registry.py
+new file mode 100644
+index 0000000..f28d59b
+--- /dev/null
++++ b/torchtitan_npu/models/qwen3/config_registry.py
+@@ -0,0 +1,77 @@
++# Copyright (c) 2026 Huawei Technologies Co., Ltd. All rights reserved.
++# Copyright (c) Meta Platforms, Inc. and affiliates.
++#
++# This source code is licensed under the BSD-style license found in the
++# LICENSE file in the root directory of this source tree.
++
++"""Qwen3 Wordle SFT recipe for the current torchtitan configuration API."""
++
++from torchtitan.components.optimizer import default_adamw
++from torchtitan.hf_datasets.text_datasets import ChatDataLoader
++from torchtitan.models.qwen3.config_registry import qwen3_1_7b
++from torchtitan.trainer import Trainer
++
++from torchtitan_npu.models.qwen3 import model_registry
++
++
++def _process_wordle_sample(sample: dict) -> list[dict]:
++    """Convert a Wordle record into the multi-turn chat message list."""
++    if "messages" in sample:
++        messages = list(sample["messages"])
++    elif "prompt" in sample and "completion" in sample:
++        messages = list(sample["prompt"]) + list(sample["completion"])
++    else:
++        raise KeyError(
++            "Wordle sample must have 'messages' or 'prompt'+'completion'. "
++            f"Got keys: {list(sample)}"
++        )
++    for message in messages:
++        if isinstance(message.get("content"), list):
++            message["content"] = "\n".join(str(item) for item in message["content"])
++    return messages
++
++
++def sft_qwen3_1_7b_wordle() -> Trainer.Config:
++    """Train Qwen3-1.7B on the multi-turn Wordle chat dataset."""
++    config = qwen3_1_7b()
++    # The config registry is loaded from this module, so explicitly replace
++    # the upstream model spec with the NPU registry.  This is what wires the
++    # current clone's parallelize_qwen3 (including Ulysses CP) into training.
++    config.model_spec = model_registry("1.7B")
++    config.dataloader = ChatDataLoader.Config(
++        dataset_path="willcb/V3-wordle",
++        load_dataset_kwargs={"split": "train"},
++        sample_processor=_process_wordle_sample,
++        infinite=True,
++    )
++    config.optimizer = default_adamw(lr=1e-5, weight_decay=0.0)
++    config.training.local_batch_size = 2
++    config.training.global_batch_size = 64
++    config.training.seq_len = 1024
++    config.training.max_norm = 1.0
++    config.training.steps = 20
++    config.checkpoint.folder = "checkpoint_wordle_sft"
++    config.checkpoint.initial_load_in_hf = True
++    # Leave initial_load_path unset: the trainer resolves HF weights from
++    # config.hf_assets_path (which the CLI may override).
++    config.checkpoint.initial_load_path = None
++    return config
++
++
++def sft_qwen3_1_7b_wordle_tnd() -> Trainer.Config:
++    """Wordle SFT with per-document varlen attention on CANN FA v3.
++
++    Same data, optimizer and checkpoint settings as
++    :func:`sft_qwen3_1_7b_wordle`; only two things change:
++
++    - the model spec selects the upstream varlen contract, so the trainer
++      builds ``VarlenMetadata`` from the packed ``positions``;
++    - ``override.imports`` activates ``AscVarlenAttention``, which runs the
++      same per-document segmentation as a TND fused kernel.
++    """
++    config = sft_qwen3_1_7b_wordle()
++    config.model_spec = model_registry("1.7B", attn_backend="varlen")
++    config.override.imports.append(
++        "torchtitan_npu.override.qwen3.varlen_attention.asc"
++    )
++    return config
+diff --git a/torchtitan_npu/models/qwen3/parallelize.py b/torchtitan_npu/models/qwen3/parallelize.py
+new file mode 100644
+index 0000000..b397e20
+--- /dev/null
++++ b/torchtitan_npu/models/qwen3/parallelize.py
+@@ -0,0 +1,78 @@
++# Copyright (c) 2026 Huawei Technologies Co., Ltd. All rights reserved.
++# Copyright (c) Meta Platforms, Inc. and affiliates.
++#
++# This source code is licensed under the BSD-style license found in the
++# LICENSE file in the root directory of this source tree.
++
++"""Qwen3 parallelization with the NPU Ulysses CP hook."""
++
++import torchtitan.models.qwen3.parallelize as _upstream
++from torchtitan.config import CompileConfig, ParallelismConfig, TrainingConfig
++from torchtitan.distributed import ParallelDims
++from torchtitan.distributed.activation_checkpoint import ActivationCheckpointingConfig
++from torchtitan.models.common.attention import ScaledDotProductAttention
++from torchtitan.models.qwen3 import Qwen3Model
++
++from .ulysses import apply_ulysses_cp
++
++
++def parallelize_qwen3(
++    model: Qwen3Model,
++    *,
++    parallel_dims: ParallelDims,
++    training: TrainingConfig,
++    parallelism: ParallelismConfig,
++    compile_config: CompileConfig,
++    ac_config: ActivationCheckpointingConfig,
++    dump_folder: str,
++    skip_dp: bool = False,
++):
++    """Use upstream Qwen3 setup with Ulysses CP where applicable."""
++    if parallel_dims.cp_enabled:
++        cp_degree = parallel_dims.cp
++        layers = list(model.layers.values())
++        if not layers:
++            raise ValueError("Qwen3 model has no decoder layers; cannot enable Ulysses CP")
++        attention_modules = [layer.attention.inner_attention for layer in layers]
++        n_heads = layers[0].attention.n_heads
++        if n_heads % cp_degree != 0:
++            raise ValueError(
++                f"Ulysses CP requires n_heads={n_heads} divisible by cp_degree={cp_degree}"
++            )
++        # The current torchtitan Qwen3 recipe uses FlexAttention.  Its native
++        # CP wrapper correctly all-gathers K/V while retaining the sharded
++        # query mask.  Use the NPU Ulysses exchange for SDPA modules (the
++        # backend for which this patch is needed), and retain native CP for
++        # FlexAttention/other current backends.
++        use_ulysses = all(
++            isinstance(module, ScaledDotProductAttention)
++            for module in attention_modules
++        )
++        if use_ulysses:
++            apply_ulysses_cp(attention_modules, parallel_dims.get_mesh("cp"))
++            upstream_cp = _upstream.apply_cp_to_forward
++            _upstream.apply_cp_to_forward = lambda _modules, _mesh: None
++            try:
++                return _upstream.parallelize_qwen3(
++                    model=model,
++                    parallel_dims=parallel_dims,
++                    training=training,
++                    parallelism=parallelism,
++                    compile_config=compile_config,
++                    ac_config=ac_config,
++                    dump_folder=dump_folder,
++                    skip_dp=skip_dp,
++                )
++            finally:
++                _upstream.apply_cp_to_forward = upstream_cp
++
++    return _upstream.parallelize_qwen3(
++        model=model,
++        parallel_dims=parallel_dims,
++        training=training,
++        parallelism=parallelism,
++        compile_config=compile_config,
++        ac_config=ac_config,
++        dump_folder=dump_folder,
++        skip_dp=skip_dp,
++    )
+diff --git a/torchtitan_npu/models/qwen3/ulysses.py b/torchtitan_npu/models/qwen3/ulysses.py
+new file mode 100644
+index 0000000..d2187bd
+--- /dev/null
++++ b/torchtitan_npu/models/qwen3/ulysses.py
+@@ -0,0 +1,86 @@
++# Copyright (c) 2026 Huawei Technologies Co., Ltd. All rights reserved.
++#
++# This source code is licensed under the BSD-style license found in the
++# LICENSE file in the root directory of this source tree.
++
++"""Ulysses context parallelism for the current torchtitan Qwen3 attention API.
++
++Qwen3 attention receives tensors in ``(batch, sequence, heads, head_dim)``
++layout. Each rank starts with a sequence shard; Ulysses exchanges head
++shards for sequence shards before attention and reverses that exchange after
++attention. Hooks are installed before torchtitan's model parallelizer runs.
++"""
++
++from functools import partial
++from typing import Any
++
++import torch
++import torch.distributed as dist
++from torch.distributed.device_mesh import DeviceMesh
++from torchtitan.models.common.attention import ScaledDotProductAttention
++
++
++class _AllToAll(torch.autograd.Function):
++    """Differentiable all-to-all with independently selected dimensions."""
++
++    @staticmethod
++    def forward(ctx, tensor: torch.Tensor, mesh: DeviceMesh, scatter_dim: int, gather_dim: int):
++        ctx.mesh = mesh
++        ctx.scatter_dim = scatter_dim
++        ctx.gather_dim = gather_dim
++        world_size = mesh.size()
++        if tensor.size(scatter_dim) % world_size != 0:
++            raise ValueError(
++                f"Ulysses all-to-all requires dimension {scatter_dim} size "
++                f"{tensor.size(scatter_dim)} divisible by CP degree {world_size}"
++            )
++        chunks = [chunk.contiguous() for chunk in tensor.chunk(world_size, dim=scatter_dim)]
++        outputs = [torch.empty_like(chunks[0]) for _ in range(world_size)]
++        dist.all_to_all(outputs, chunks, group=mesh.get_group())
++        return torch.cat(outputs, dim=gather_dim)
++
++    @staticmethod
++    def backward(ctx, grad_output: torch.Tensor):
++        world_size = ctx.mesh.size()
++        if grad_output.size(ctx.gather_dim) % world_size != 0:
++            raise ValueError(
++                f"Ulysses all-to-all requires dimension {ctx.gather_dim} size "
++                f"{grad_output.size(ctx.gather_dim)} divisible by CP degree {world_size}"
++            )
++        chunks = [chunk.contiguous() for chunk in grad_output.chunk(world_size, dim=ctx.gather_dim)]
++        outputs = [torch.empty_like(chunks[0]) for _ in range(world_size)]
++        dist.all_to_all(outputs, chunks, group=ctx.mesh.get_group())
++        return torch.cat(outputs, dim=ctx.scatter_dim), None, None, None
++
++
++def _all_to_all(tensor: torch.Tensor, mesh: DeviceMesh, scatter_dim: int, gather_dim: int) -> torch.Tensor:
++    return _AllToAll.apply(tensor, mesh, scatter_dim, gather_dim)
++
++
++def _pre_hook(module: torch.nn.Module, args: tuple[Any, ...], kwargs: dict[str, Any], mesh: DeviceMesh):
++    if len(args) < 3:
++        raise TypeError("Qwen3 attention expects q, k, and v as its first three arguments")
++    q, k, v = args[:3]
++    q = _all_to_all(q, mesh, scatter_dim=2, gather_dim=1)
++    k = _all_to_all(k, mesh, scatter_dim=2, gather_dim=1)
++    v = _all_to_all(v, mesh, scatter_dim=2, gather_dim=1)
++    return (q, k, v, *args[3:]), kwargs
++
++
++def _post_hook(module: torch.nn.Module, args: tuple[Any, ...], output: torch.Tensor, mesh: DeviceMesh):
++    return _all_to_all(output, mesh, scatter_dim=1, gather_dim=2)
++
++
++def apply_ulysses_cp(attention_modules: list[torch.nn.Module], cp_mesh: DeviceMesh) -> None:
++    """Install Ulysses pre/post all-to-all hooks on Qwen3 SDPA modules."""
++    if not attention_modules:
++        raise ValueError("Cannot apply Ulysses CP to an empty attention module list")
++    if not all(isinstance(module, ScaledDotProductAttention) for module in attention_modules):
++        kinds = sorted({type(module).__name__ for module in attention_modules})
++        raise TypeError(f"Qwen3 Ulysses CP expects ScaledDotProductAttention, got {kinds}")
++    for module in attention_modules:
++        if getattr(module, "_torchtitan_npu_ulysses_cp", False):
++            continue
++        module.register_forward_pre_hook(partial(_pre_hook, mesh=cp_mesh), with_kwargs=True)
++        module.register_forward_hook(partial(_post_hook, mesh=cp_mesh))
++        module._torchtitan_npu_ulysses_cp = True
+diff --git a/torchtitan_npu/override/qwen3/varlen_attention.py b/torchtitan_npu/override/qwen3/varlen_attention.py
+new file mode 100644
+index 0000000..02cb641
+--- /dev/null
++++ b/torchtitan_npu/override/qwen3/varlen_attention.py
+@@ -0,0 +1,89 @@
++# Copyright (c) 2026 Huawei Technologies Co., Ltd. All rights reserved.
++#
++# This source code is licensed under the BSD-style license found in the
++# LICENSE file in the root directory of this source tree.
++
++"""Override: run Qwen3 varlen attention on CANN FA v3 (TND layout).
++
++``AscVarlenAttention`` keeps the upstream ``VarlenAttention`` contract — the
++trainer still builds ``VarlenMetadata`` from the per-document positions — and
++replaces only the computation: BSND is flattened to TND and the per-document
++cumulative lengths become ``actual_seq_qlen`` / ``actual_seq_kvlen``.
++"""
++
++from dataclasses import dataclass
++
++import torch
++from torchtitan.config import derive, override
++from torchtitan.models.common.attention import VarlenAttention
++
++_MASK_SIZE = 2048
++_SPARSE_MODE_VARLEN = 7  # per-document causal (varlen) in CANN FA v3
++
++
++class AscVarlenAttention(VarlenAttention):
++    @dataclass(kw_only=True, slots=True)
++    class Config(VarlenAttention.Config):
++        pass
++
++    def _causal_mask_for(self, query: torch.Tensor) -> torch.Tensor:
++        mask = getattr(self, "_causal_mask", None)
++        if mask is None or mask.device != query.device:
++            self._causal_mask = mask = torch.triu(
++                torch.ones(_MASK_SIZE, _MASK_SIZE, dtype=torch.bool, device=query.device),
++                diagonal=1,
++            )
++        return mask
++
++    def forward(
++        self,
++        q_BLNH: torch.Tensor,
++        k_BLNH: torch.Tensor,
++        v_BLNH: torch.Tensor,
++        *,
++        attention_masks,
++        scale: float | None = None,
++        enable_gqa: bool = False,
++        **kwargs,
++    ) -> torch.Tensor:
++        del enable_gqa, kwargs  # GQA head counts are carried by the K/V shapes.
++        batch, length, heads, head_dim = q_BLNH.shape
++        dtype = q_BLNH.dtype
++
++        # BSND -> TND; FA v3 consumes bf16/fp16 only.
++        query, key, value = (
++            tensor.reshape(batch * length, tensor.size(2), head_dim).to(torch.bfloat16)
++            for tensor in (q_BLNH, k_BLNH, v_BLNH)
++        )
++
++        # FA v3 takes the per-document cumulative lengths on CPU, without the
++        # leading 0.
++        actual_seq = attention_masks.cu_seq_q.to(torch.int64).cpu()[1:]
++
++        output = torch.ops.npu.npu_fusion_attention_v3(
++            query=query,
++            key=key,
++            value=value,
++            head_num=heads,
++            input_layout="TND",
++            atten_mask=self._causal_mask_for(query),
++            scale=head_dim**-0.5 if scale is None else scale,
++            keep_prob=1.0,
++            pre_tockens=length,
++            next_tockens=0,
++            actual_seq_qlen=actual_seq,
++            actual_seq_kvlen=actual_seq,
++            sparse_mode=_SPARSE_MODE_VARLEN,
++        )[0]
++
++        return output.view(batch, length, heads, head_dim).to(dtype)
++
++
++@override(
++    target=VarlenAttention.Config,
++    fqns=["model_spec.model.layers.*.attention.inner_attention"],
++    exact=True,
++    description="Use CANN TND attention for Qwen3 varlen layers",
++)
++def asc(cfg: VarlenAttention.Config) -> AscVarlenAttention.Config:
++    return derive(cfg, AscVarlenAttention.Config)
+diff --git a/torchtitan_npu/patches/torchtitan/__init__.py b/torchtitan_npu/patches/torchtitan/__init__.py
+index 11f8beb..bd09a27 100644
+--- a/torchtitan_npu/patches/torchtitan/__init__.py
++++ b/torchtitan_npu/patches/torchtitan/__init__.py
+@@ -3,7 +3,7 @@
+ # This source code is licensed under the BSD-style license found in the
+ # LICENSE file in the root directory of this source tree.
+ 
+-from . import trainer  # noqa: F401
++from . import multiturn_chat, trainer  # noqa: F401
+ from .components import metrics, validate  # noqa: F401
+ from .distributed import context_parallel, full_dtensor, parallel_dims  # noqa: F401
+ from .distributed.flex_shard import distributed_muon  # noqa: F401
+diff --git a/torchtitan_npu/patches/torchtitan/multiturn_chat.py b/torchtitan_npu/patches/torchtitan/multiturn_chat.py
+new file mode 100644
+index 0000000..c5a335a
+--- /dev/null
++++ b/torchtitan_npu/patches/torchtitan/multiturn_chat.py
+@@ -0,0 +1,140 @@
++# Copyright (c) 2026 Huawei Technologies Co., Ltd. All rights reserved.
++#
++# This source code is licensed under the BSD-style license found in the
++# LICENSE file in the root directory of this source tree.
++
++# Derived from torchtitan,
++# https://github.com/pytorch/torchtitan/blob/main/torchtitan/hf_datasets/text_datasets.py#L302-L315
++# Copyright (c) Meta Platforms, Inc. and affiliates.
++# All rights reserved.
++
++"""Monkey-patch ChatDataset for multi-turn conversation support.
++
++Upstream torchtitan's ChatDataset validates exactly 2 messages ([user, assistant]).
++Wordle dataset have more than 2 messages ([system, user, assistant, user, assistant, ...]).
++
++This module monkey-patches ChatDataset._tokenize_sample to support multi-turn
++messages. It also provides _patched_validate, a relaxed message validator called
++directly by _patched_tokenize for messages with >2 turns.
++
++"""
++
++from torchtitan.components.loss import IGNORE_INDEX
++from torchtitan.hf_datasets import text_datasets
++from torchtitan.tools.logging import logger as _logger
++
++# pyrefly: ignore [protected-access]
++_ORIG_TOKENIZE = text_datasets.ChatDataset._tokenize_sample
++
++
++# pyrefly: ignore [invalid-decorator]
++@staticmethod
++def _patched_validate(messages: list[dict]) -> None:
++    """Relax single-turn restriction to allow multi-turn conversations.
++
++    Keeps upstream's role-ordering rules but drops the ``len(messages) == 2``
++    hard-cap so that multi-turn [user, assistant, user, assistant, ...] is
++    accepted.
++    """
++    for i, msg in enumerate(messages):
++        if msg["role"] not in ("user", "assistant", "system", "tool"):
++            raise ValueError(f"Unknown role '{msg['role']}' at index {i}")
++
++    if len(messages) < 2:
++        raise ValueError(f"Expected at least 2 messages, got {len(messages)}")
++
++    # For the 2-message case, keep upstream's strict checks so existing
++    # single-turn tests continue to pass.
++    if len(messages) == 2:
++        if messages[0]["role"] != "user":
++            raise ValueError(f"First message must be 'user', got '{messages[0]['role']}'")
++        if messages[1]["role"] != "assistant":
++            raise ValueError(f"Second message must be 'assistant', got '{messages[1]['role']}'")
++    else:
++        # Multi-turn: allow [system, user, assistant, ...]
++        if messages[0]["role"] not in ("user", "system"):
++            raise ValueError(f"First message must be 'user' or 'system', got '{messages[0]['role']}'")
++
++
++def _patched_tokenize(self, sample: dict) -> tuple[list[int], list[int]] | None:
++    """Multi-turn-aware tokenization: mask non-assistant spans in label_ids."""
++    messages = self._sample_processor(sample)  # pyrefly: ignore [protected-access]
++
++    if len(messages) == 2:
++        # Original _tokenize_sample calls _validate_messages internally;
++        # it now points to _patched_validate which enforces role rules
++        # while still rejecting 2-message format errors.
++        return _ORIG_TOKENIZE(self, sample)
++
++    # Multi-turn path — _ORIG_TOKENIZE would reject >2 messages, so we
++    # handle validation and tokenization ourselves.
++    _patched_validate(messages)
++
++    # Two-step tokenization: render the template to a string, then encode
++    # it ourselves.  We can't use apply_chat_template(tokenize=True) because
++    # Qwen3's tokenizer config has add_bos_token=False — internal tokenization
++    # would skip BOS, and we wouldn't see the raw token list to scan for
++    # assistant spans below.
++    #
++    # Also, Qwen3's template appends "\n" after every <|im_end|>, including the
++    # last one, so we rstrip it.
++    full_text = self._tokenizer.apply_chat_template(messages, tokenize=False).rstrip(
++        "\n"
++    )  # pyrefly: ignore [protected-access]
++
++    # The conditional EOS-append below is a no-op for Qwen3, but a safety
++    # net for tokenizers where the template terminator ≠ eos).
++    full_tokens = self._tokenizer.encode(  # pyrefly: ignore [protected-access]
++        full_text, add_bos=True, add_eos=False
++    )
++    if full_tokens[-1] != self._eos_id:  # pyrefly: ignore [protected-access]
++        full_tokens.append(self._eos_id)  # pyrefly: ignore [protected-access]
++
++    if len(full_tokens) - 1 > self.seq_len:
++        _logger.debug(f"Dropping sample {self._sample_idx}: tokens exceeds seq_len {self.seq_len}")
++        return None
++
++    input_ids = full_tokens[:-1]
++    label_ids = full_tokens[1:]
++    eos_id = self._eos_id  # pyrefly: ignore [protected-access]
++
++    # Build is_assistant on full_tokens (not input_ids) so that <|im_end|>
++    # (which may be the last token, stripped from input_ids) is included.
++    # label_ids[i] = full_tokens[i+1], so we mask by checking
++    # is_assistant_full[i+1].
++    is_assistant_full = [0] * len(full_tokens)
++
++    im_end_id = eos_id  # Qwen3's <|im_end|> is eos
++    assistant_header = self._tokenizer.encode(
++        "<|im_start|>assistant\n", add_bos=False, add_eos=False
++    )  # pyrefly: ignore [protected-access]
++    assistant_header_len = len(assistant_header)
++    pos = 0
++    while pos < len(full_tokens):
++        if (
++            pos + assistant_header_len <= len(full_tokens)
++            and full_tokens[pos : pos + assistant_header_len] == assistant_header
++        ):
++            resp_start = pos + assistant_header_len
++            resp_end = resp_start
++            while resp_end < len(full_tokens) and full_tokens[resp_end] != im_end_id:
++                resp_end += 1
++            # Mark assistant content + closing <|im_end|> (inclusive).
++            # The model must learn to emit <|im_end|> to stop generation.
++            for p in range(resp_start, min(resp_end + 1, len(full_tokens))):
++                is_assistant_full[p] = 1
++            pos = resp_end + 1
++        else:
++            pos += 1
++
++    # label_ids[i] = full_tokens[i+1]; keep if that token is assistant content.
++    for i, _ in enumerate(label_ids):
++        if not is_assistant_full[i + 1]:
++            label_ids[i] = IGNORE_INDEX
++
++    return input_ids, label_ids
++
++
++# Apply patches
++text_datasets.ChatDataset._tokenize_sample = _patched_tokenize  # pyrefly: ignore [protected-access]
++_logger.info("[Patch] Multi-turn ChatDataset enabled")

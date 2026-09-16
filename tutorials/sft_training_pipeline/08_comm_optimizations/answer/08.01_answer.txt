@@ -1,0 +1,6 @@
+08.01 参考答案
+
+1. √。CP 不是独立数据副本。
+2. ×。固定模型状态、非 sequence-shaped activation 与通信 buffer 不会等比缩小。
+3. A。唯一自变量是 CP 与配套 shard 拓扑，workload 固定为 S=16,384。
+4. A、B、C。理论、实测容量与通信关键路径共同形成结论；历史 raw sample/s 不是 CP 常数。

@@ -1,0 +1,17 @@
+1. √。16,384 只是容器位置数；padding、样本长度和 assistant mask 不同会改变 raw sample、non-padding token 与 supervised token，必须分别归一化。
+2. ×。CP ranks 共同处理同一批上下文，不是独立数据副本；global batch 只乘数据并行副本和梯度累积，不乘 CP degree。
+3. A。本章比较 VarLen+FSDP 4096 与 VarLen+CP 8192，两者每个 microbatch 都覆盖 16,384 个容器位置，但 workload 构成仍需单独核对。
+4. A、B、C。配置/输入证明比较对象，trace 证明实际路径，多种吞吐分子防止 padding 或 label 比例误导；单个最快 kernel 不能代表 step。
+5. ×。CP 两个 rank 必须保留同一份全局区间边界；各自在交换后从 0 重建会让跨 rank 的隔离区间失配。
+6. √。8192 是全局 packed sequence；CP=2 会切 sequence/head 工作。应同时区分全局张量、每 rank 本地输入和交换后的 TND layout。
+7. B。pre AllToAll 将 `[2,4096,16,128]` 的本地 sequence/全部 heads 换成 `[2,8192,8,128]` 的全局 sequence/本地 heads。
+8. A、B、C。类名只能证明 Python 对象存在；还需双 rank 全局边界一致、实际 TND kernel/参数和有限 loss 才能通过 correctness gate。
+9. ×。collective event 可能跨 rank 重叠，elapsed 也可能包含等待；直接求和会重复计算并脱离端到端关键路径。
+10. ×。HCCS、SIO、SDMA 可能是同一 collective 的不同链路层表示；全部相加会重复计算 payload，应先按 collective/rank/call 配对。
+11. C。`step_trace_time.csv` 提供 Stage、Computing、Communication 及未重叠通信等 step 级时间字段。
+12. A、B、C。raw sample 数不是 profiler step CSV 的字段，需要从相同 DataLoader/workload 重放获得。
+13. ×。`IGNORE_INDEX` 只屏蔽 loss；padding 位置仍会经过 embedding、QKV、MLP、Norm 等计算。VarLen attention 是否跳过某些 attention pair 是另一层机制。
+14. ×。旧 trace 的分段语义与当前实现不同，kernel shape、工作量和耗时都不可直接代表修复后路线，必须重采并核对区间数。
+15. B。当前主路径看位置编号何时重新从 0 开始；真实样本和末尾 padding 各自形成隔离区间。EOS 是消息结束符，不是 packed sample 的可靠边界。
+16. A、B、C。区间数先保证 correctness，多种分子保证 workload 可比，双 rank 关键路径和 AllToAll 才能解释 CP 成本；单个 attention kernel 不足以排名。
+17. A、B、C。`64 / (2 × dp=1) = 32` 次梯度累积；每个 microbatch 有 `2 × 8192 = 16,384` 个容器位置，所以 optimizer step 是 `32 × 16,384 = 524,288`。单个 microbatch trace 不能直接当作完整 optimizer step 时间，因此 D 错。

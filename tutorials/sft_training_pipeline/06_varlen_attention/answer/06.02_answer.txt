@@ -1,0 +1,6 @@
+06.02 参考答案
+
+1. ×。IGNORE_INDEX 只管 loss，不会阻止其他 token 读取它的 K/V。
+2. ×。多轮聊天中的 EOS 不足以可靠表示 packed sample 边界。
+3. A。普通 causal mask 允许后面的样本读取同一 container 中更早样本的 hidden states。
+4. D。Greedy packing 加 TND VarLen Attention 才能同时表达正确语义并跳过跨样本 pair。

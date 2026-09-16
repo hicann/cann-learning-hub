@@ -1,0 +1,7 @@
+08.04 参考答案
+
+1. √。两条路线同数据、同训练参数、同为 2 张 NPU，只切换并行策略；实测 FSDP2 的稳态 tps 中位数明显更高（本 notebook 实测约 2.7 倍），峰值显存则高约 15%，即 TP2 用显存换吞吐并不划算。
+
+2. A、B、C。A/B/C 都能由 train.log（双 rank 逐 step 指标）与 trace_view.json（ProfilerStep#4 的 Hccl 次数与 Dequeue@Hccl 时长）复算；D 错：本轮 profiler 只产出算子级 trace_view.json，既没有 step_trace_time.csv 的 Communication(Not Overlapped)，也没有设备侧 kernel 时间线，不能据此断言通信暴露在关键路径上。
+
+3. 因为本环境 CANN 25.5.5 的在线解析（enable_online_parse=True）只输出算子级 trace_view.json：没有 step_trace_time.csv，也没有设备侧 kernel 事件，所以 Stage 与 Communication(Not Overlapped) 算不出来。补采集需要把 profiler 数据导出后由 MindStudio Insight 生成 step trace（或把 profiler_level 提高到能落设备事件的级别），并作为独立实验与本节 timing 结果分开采集，避免 profiler 开销混入真实时间。

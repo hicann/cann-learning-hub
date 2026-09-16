@@ -1,0 +1,8 @@
+05.02 参考答案
+
+1. ×。F.scaled_dot_product_attention 只是入口，实际命中哪个 kernel 取决于 shape、mask、dtype、backend 和版本。
+2. ×。FlashAttention 主要优化 IO 和常数项，不改变 attention 的 O(S^2) 计算复杂度。
+3. C。逻辑 score 矩阵由 Q heads 和序列长度决定，GQA 只缩小 K/V 侧。
+4. ×。IGNORE_INDEX 只屏蔽 loss，不会阻止跨文档 attention。
+5. C。TND + actual_seq + sparse_mode=7 是 NPU VarLen 的关键组合。
+6. C。结构化稀疏定义可跳过的 pair，FlashAttention 负责保留 pair 的高效执行与 IO；实现上两者可以叠加。

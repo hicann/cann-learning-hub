@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">TP 中列切分、行切分与 all-reduce</title>
+  <desc id="desc">两条 rank 流程展示同一个输入经过列切分上投影后得到不同输出列的 Shard，无需通信；再经过行切分下投影得到同一输出坐标的 Partial，必须 all-reduce 求和并复制给两张卡。</desc>
+  <defs>
+    <marker id="arrow-local" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#526076"/>
+    </marker>
+    <marker id="arrow-sum" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#d97706"/>
+    </marker>
+    <style>
+      text { font-family: Inter, "Noto Sans SC", "Microsoft YaHei", sans-serif; fill: #172033; }
+      .title { font-size: 30px; font-weight: 750; }
+      .subtitle { font-size: 17px; fill: #526076; }
+      .stage { font-size: 17px; font-weight: 700; }
+      .lane { font-size: 18px; font-weight: 750; }
+      .label { font-size: 16px; font-weight: 700; }
+      .body { font-size: 15px; }
+      .small { font-size: 13px; fill: #526076; }
+      .mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 16px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <text x="48" y="50" class="title">TP：不同输出列可分开保存，同一输出的部分和必须汇合</text>
+  <text x="48" y="80" class="subtitle">Qwen3 MLP · 两个 rank 共同完成同一次矩阵乘法；横向读取每条 rank 的本地计算。</text>
+
+  <rect x="40" y="108" width="1120" height="52" rx="14" fill="#ffffff" stroke="#d8e0ea" stroke-width="2"/>
+  <rect x="55" y="121" width="470" height="26" rx="13" fill="#e8f7f5"/>
+  <text x="290" y="140" text-anchor="middle" class="body">列切分：Y₀、Y₁ 是不同列 → 保持 Shard</text>
+  <rect x="555" y="121" width="590" height="26" rx="13" fill="#fff4df"/>
+  <text x="850" y="140" text-anchor="middle" class="body">行切分：Z₀、Z₁ 是同一输出的部分和 → all-reduce SUM</text>
+
+  <text x="151" y="190" text-anchor="middle" class="stage">输入：Replicate</text>
+  <text x="430" y="190" text-anchor="middle" class="stage">列切分输出：Shard</text>
+  <text x="730" y="190" text-anchor="middle" class="stage">行切分输出：Partial</text>
+  <text x="1050" y="190" text-anchor="middle" class="stage">规约后：Replicate</text>
+
+  <!-- Rank 0 lane -->
+  <rect x="40" y="210" width="1120" height="170" rx="18" fill="#ffffff" stroke="#c7d9f5" stroke-width="2"/>
+  <rect x="40" y="210" width="12" height="170" rx="6" fill="#2563eb"/>
+  <text x="74" y="239" class="lane" fill="#2563eb">Rank 0</text>
+
+  <rect x="74" y="260" width="154" height="82" rx="12" fill="#f1f5f9" stroke="#8795a8" stroke-width="2"/>
+  <text x="151" y="291" text-anchor="middle" class="mono">X</text>
+  <text x="151" y="318" text-anchor="middle" class="small">完整输入</text>
+
+  <rect x="320" y="250" width="220" height="102" rx="13" fill="#e9f2ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="430" y="281" text-anchor="middle" class="mono">Y₀ = X · Wup₀</text>
+  <text x="430" y="307" text-anchor="middle" class="body">中间维的前一半列</text>
+  <rect x="373" y="321" width="114" height="22" rx="11" fill="#cfe1ff"/>
+  <text x="430" y="337" text-anchor="middle" class="small">无需通信</text>
+
+  <rect x="620" y="250" width="220" height="102" rx="13" fill="#fff8e8" stroke="#d97706" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="730" y="281" text-anchor="middle" class="mono">Z₀ = Y₀ · Wdown₀</text>
+  <text x="730" y="307" text-anchor="middle" class="body">完整输出的一部分贡献</text>
+  <rect x="674" y="321" width="112" height="22" rx="11" fill="#ffe5b7"/>
+  <text x="730" y="337" text-anchor="middle" class="small">Partial</text>
+
+  <rect x="970" y="250" width="170" height="102" rx="13" fill="#e8f7f5" stroke="#0f8b8d" stroke-width="2"/>
+  <text x="1055" y="286" text-anchor="middle" class="mono">Z = Z₀ + Z₁</text>
+  <text x="1055" y="313" text-anchor="middle" class="body">Rank 0 得到完整输出</text>
+  <text x="1055" y="337" text-anchor="middle" class="small">与 Rank 1 相同</text>
+
+  <!-- Rank 1 lane -->
+  <rect x="40" y="400" width="1120" height="170" rx="18" fill="#ffffff" stroke="#ded3fb" stroke-width="2"/>
+  <rect x="40" y="400" width="12" height="170" rx="6" fill="#7c3aed"/>
+  <text x="74" y="429" class="lane" fill="#7c3aed">Rank 1</text>
+
+  <rect x="74" y="450" width="154" height="82" rx="12" fill="#f1f5f9" stroke="#8795a8" stroke-width="2"/>
+  <text x="151" y="481" text-anchor="middle" class="mono">X</text>
+  <text x="151" y="508" text-anchor="middle" class="small">同一个完整输入</text>
+
+  <rect x="320" y="440" width="220" height="102" rx="13" fill="#f2edff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="430" y="471" text-anchor="middle" class="mono">Y₁ = X · Wup₁</text>
+  <text x="430" y="497" text-anchor="middle" class="body">中间维的后一半列</text>
+  <rect x="373" y="511" width="114" height="22" rx="11" fill="#e2d6ff"/>
+  <text x="430" y="527" text-anchor="middle" class="small">无需通信</text>
+
+  <rect x="620" y="440" width="220" height="102" rx="13" fill="#fff8e8" stroke="#d97706" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="730" y="471" text-anchor="middle" class="mono">Z₁ = Y₁ · Wdown₁</text>
+  <text x="730" y="497" text-anchor="middle" class="body">完整输出的另一部分贡献</text>
+  <rect x="674" y="511" width="112" height="22" rx="11" fill="#ffe5b7"/>
+  <text x="730" y="527" text-anchor="middle" class="small">Partial</text>
+
+  <rect x="970" y="440" width="170" height="102" rx="13" fill="#e8f7f5" stroke="#0f8b8d" stroke-width="2"/>
+  <text x="1055" y="476" text-anchor="middle" class="mono">Z = Z₀ + Z₁</text>
+  <text x="1055" y="503" text-anchor="middle" class="body">Rank 1 得到完整输出</text>
+  <text x="1055" y="527" text-anchor="middle" class="small">与 Rank 0 相同</text>
+
+  <!-- Local compute arrows -->
+  <path d="M228 301 L320 301" fill="none" stroke="#526076" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-local)"/>
+  <text x="269" y="286" text-anchor="middle" class="small">Wup₀</text>
+  <path d="M540 301 L620 301" fill="none" stroke="#526076" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-local)"/>
+  <text x="575" y="286" text-anchor="middle" class="small">Wdown₀</text>
+  <path d="M228 491 L320 491" fill="none" stroke="#526076" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-local)"/>
+  <text x="269" y="476" text-anchor="middle" class="small">Wup₁</text>
+  <path d="M540 491 L620 491" fill="none" stroke="#526076" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-local)"/>
+  <text x="575" y="476" text-anchor="middle" class="small">Wdown₁</text>
+
+  <!-- All-reduce convergence -->
+  <circle cx="900" cy="396" r="46" fill="#fff4df" stroke="#d97706" stroke-width="3"/>
+  <text x="900" y="388" text-anchor="middle" class="label">all-reduce</text>
+  <text x="900" y="414" text-anchor="middle" class="label" fill="#b45309">SUM</text>
+  <path d="M840 301 L875 354" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sum)"/>
+  <path d="M840 491 L875 438" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sum)"/>
+  <path d="M925 354 L970 301" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sum)"/>
+  <path d="M925 438 L970 491" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sum)"/>
+
+  <rect x="176" y="610" width="848" height="66" rx="18" fill="#ffffff" stroke="#d8e0ea" stroke-width="2"/>
+  <text x="600" y="638" text-anchor="middle" class="label">判断规则</text>
+  <text x="600" y="661" text-anchor="middle" class="body">不同坐标的分片是 Shard，可继续本地计算；同一坐标的部分和是 Partial，必须先 SUM。</text>
+</svg>
