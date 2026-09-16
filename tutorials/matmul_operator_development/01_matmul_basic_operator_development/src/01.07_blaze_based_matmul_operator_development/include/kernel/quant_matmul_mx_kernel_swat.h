@@ -150,25 +150,25 @@ __aicore__ inline void QuantMatmulMxKernelSwat<QBMM_MX_KERNEL_NO_FULL_LOAD_FUN_T
     auto layoutB = MakeLayoutB{}(params.problemShape.k, params.problemShape.n);
     auto layoutScaleB = MakeLayoutScaleB{}(kScaleSize, params.problemShape.n);
     auto layoutC =
-        AscendC::Te::MakeFrameLayout<AscendC::Te::NDExtLayoutPtn>(params.problemShape.m, params.problemShape.n);
+        asc::te::make_frame_layout<asc::te::nd_ext_layout_ptn>(params.problemShape.m, params.problemShape.n);
 
-    auto gmA = AscendC::Te::MakeTensor(AscendC::Te::MakeMemPtr<AscendC::Te::Location::GM>(aGmAddr_), layoutA);
+    auto gmA = asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::gm>(aGmAddr_), layoutA);
     auto gmScaleA =
-        AscendC::Te::MakeTensor(AscendC::Te::MakeMemPtr<AscendC::Te::Location::GM>(scaleAGmAddr_), layoutScaleA);
-    auto gmB = AscendC::Te::MakeTensor(AscendC::Te::MakeMemPtr<AscendC::Te::Location::GM>(bGmAddr_), layoutB);
+        asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::gm>(scaleAGmAddr_), layoutScaleA);
+    auto gmB = asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::gm>(bGmAddr_), layoutB);
     auto gmScaleB =
-        AscendC::Te::MakeTensor(AscendC::Te::MakeMemPtr<AscendC::Te::Location::GM>(scaleBGmAddr_), layoutScaleB);
-    auto gmC = AscendC::Te::MakeTensor(AscendC::Te::MakeMemPtr<AscendC::Te::Location::GM>(cGmAddr_), layoutC);
+        asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::gm>(scaleBGmAddr_), layoutScaleB);
+    auto gmC = asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::gm>(cGmAddr_), layoutC);
 
     BlockCoord blockIdx;
     constexpr int64_t kPos = 0L;
     while (bs.template GetTileIdx<weightNz>(blockIdx)) {
         // The scheduler packs GM origin into M/N and retains logical tile
         // indices in K/B so shape reconstruction still works.
-        int64_t mPos = AscendC::Te::Get<MNK_M>(blockIdx);
-        int64_t nPos = AscendC::Te::Get<MNK_N>(blockIdx);
+        int64_t mPos = asc::te::get<MNK_M>(blockIdx);
+        int64_t nPos = asc::te::get<MNK_N>(blockIdx);
         BlockShape singleShape = bs.template GetBlockShape<weightNz>(blockIdx);
-        if (AscendC::Te::Get<MNK_M>(singleShape) <= 0 || AscendC::Te::Get<MNK_N>(singleShape) <= 0) {
+        if (asc::te::get<MNK_M>(singleShape) <= 0 || asc::te::get<MNK_N>(singleShape) <= 0) {
             // Tail splitting can create empty logical slices; ignore them and
             // stop the current block once no useful work remains.
             return;
@@ -176,16 +176,16 @@ __aicore__ inline void QuantMatmulMxKernelSwat<QBMM_MX_KERNEL_NO_FULL_LOAD_FUN_T
 
         // `blockIdx` now carries both GM origin and logical tile metadata.
         auto gmBlockA =
-            gmA.Slice(AscendC::Te::MakeCoord(mPos, kPos), AscendC::Te::MakeShape(AscendC::Te::Get<MNK_M>(singleShape), params.problemShape.k));
+            gmA.slice(asc::te::make_coord(mPos, kPos), asc::te::make_shape(asc::te::get<MNK_M>(singleShape), params.problemShape.k));
         auto gmBlockScaleA =
-            gmScaleA.Slice(AscendC::Te::MakeCoord(mPos, kPos), AscendC::Te::MakeShape(AscendC::Te::Get<MNK_M>(singleShape), kScaleSize));
+            gmScaleA.slice(asc::te::make_coord(mPos, kPos), asc::te::make_shape(asc::te::get<MNK_M>(singleShape), kScaleSize));
         auto gmBlockB =
-            gmB.Slice(AscendC::Te::MakeCoord(kPos, nPos), AscendC::Te::MakeShape(params.problemShape.k, AscendC::Te::Get<MNK_N>(singleShape)));
+            gmB.slice(asc::te::make_coord(kPos, nPos), asc::te::make_shape(params.problemShape.k, asc::te::get<MNK_N>(singleShape)));
         auto gmBlockScaleB =
-            gmScaleB.Slice(AscendC::Te::MakeCoord(kPos, nPos), AscendC::Te::MakeShape(kScaleSize, AscendC::Te::Get<MNK_N>(singleShape)));
+            gmScaleB.slice(asc::te::make_coord(kPos, nPos), asc::te::make_shape(kScaleSize, asc::te::get<MNK_N>(singleShape)));
         auto gmBlockC =
-            gmC.Slice(AscendC::Te::MakeCoord(mPos, nPos),
-                AscendC::Te::MakeShape(AscendC::Te::Get<MNK_M>(singleShape), AscendC::Te::Get<MNK_N>(singleShape)));
+            gmC.slice(asc::te::make_coord(mPos, nPos),
+                asc::te::make_shape(asc::te::get<MNK_M>(singleShape), asc::te::get<MNK_N>(singleShape)));
 
         // TODO: 对当前 block 切片 GM Tensor，并调用 mmadOp_ 完成 L1/L0 MMAD 计算
         (void)gmBlockA;

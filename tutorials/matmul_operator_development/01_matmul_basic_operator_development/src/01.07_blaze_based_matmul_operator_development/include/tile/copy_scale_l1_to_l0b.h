@@ -32,14 +32,14 @@ struct CopyL12L0MxScaleB3510 {
         // Nn -> Nn
         uint16_t nStartPosition = CeilDiv(AscendC::Std::get<1>(coord), AscendC::BLOCK_CUBE);
         uint16_t kStartPosition = CeilDiv(AscendC::Std::get<0>(coord), MXFP_DIVISOR_SIZE);
-        auto nStep = AscendC::Std::get<1>(AscendC::Std::get<1>(dst.Layout().Shape()));
-        auto kStep = AscendC::Std::get<1>(AscendC::Std::get<0>(dst.Layout().Shape()));
-        auto srcStride = AscendC::Std::get<1>(AscendC::Std::get<1>(src.Layout().Stride())) >> 5;
+        auto nStep = AscendC::Std::get<1>(AscendC::Std::get<1>(dst.layout().shape()));
+        auto kStep = AscendC::Std::get<1>(AscendC::Std::get<0>(dst.layout().shape()));
+        auto srcStride = AscendC::Std::get<1>(AscendC::Std::get<1>(src.layout().stride())) >> 5;
         auto dstStride = kStep;
         // The intrinsic takes a 16-byte unit address, hence the right shift.
-        uint64_t mxDstAddr = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(dst.Data().Get())) >> 4;
+        uint64_t mxDstAddr = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(dst.data().get())) >> 4;
         asc_copy_l12l0b_mx(
-            mxDstAddr, src.Data().Get(), nStartPosition, kStartPosition, nStep, kStep, srcStride, dstStride);
+            mxDstAddr, src.data().get(), nStartPosition, kStartPosition, nStep, kStep, srcStride, dstStride);
     }
 };
 
@@ -47,7 +47,7 @@ struct CopyL12L0MxScaleB3510 {
 } // namespace Tile
 
 template <>
-struct AscendC::Te::CopyTraits<::Tile::CopyL12L0MxScaleB3510>
-    : public CopyTraits<
+struct asc::te::copy_traits<::Tile::CopyL12L0MxScaleB3510>
+    : public copy_traits<
           ::Tile::CopyL12L0MxScaleB3510, CopyL12L0BTraitDefault, ::Tile::CopyL12L0MxScaleB3510,
           CopyL12L0BTraitDefault> {};

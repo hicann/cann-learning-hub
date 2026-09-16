@@ -5,9 +5,9 @@
 
 using namespace AscendC;
 
-using layoutA = AscendC::Te::NDExtLayoutPtn;
-using layoutB = AscendC::Te::NDExtLayoutPtn;
-using layoutC = AscendC::Te::NDExtLayoutPtn;
+using layoutA = asc::te::nd_ext_layout_ptn;
+using layoutB = asc::te::nd_ext_layout_ptn;
+using layoutC = asc::te::nd_ext_layout_ptn;
 
 extern "C" __global__ __aicore__ void matmul_basic_tutorial(
     GM_ADDR aGM, GM_ADDR bGM, GM_ADDR biasGM, GM_ADDR cGM, GM_ADDR workspaceGM,

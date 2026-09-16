@@ -138,8 +138,8 @@ public:
     {
         // `blockCoord` carries GM coordinates in M/N and keeps the logical
         // tile indices in K/B. Shape reconstruction must therefore read K/B.
-        int64_t mTileIdx = AscendC::Te::Get<MNK_K>(blockCoord);
-        int64_t nTileIdx = AscendC::Te::Get<MNK_B>(blockCoord);
+        int64_t mTileIdx = asc::te::get<MNK_K>(blockCoord);
+        int64_t nTileIdx = asc::te::get<MNK_B>(blockCoord);
         if constexpr (!TransA_) {
             if (mTileIdx >= mBaseNormCnt_) {
                 singleCoreM = mTileIdx < mCnt_ - 1 ? mBaseTailMain_ : mBaseTailLast_;

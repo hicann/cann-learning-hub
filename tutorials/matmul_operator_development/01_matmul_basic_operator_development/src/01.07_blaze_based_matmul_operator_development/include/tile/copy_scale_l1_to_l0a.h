@@ -24,8 +24,8 @@ struct CopyL12L0MxScaleA3510 {
     template <typename Tp, const Tp& traits, typename T, typename U, class Coord>
     __aicore__ inline static void Copy(const T& dst, const U& src, const Coord& coord)
     {
-        using srcType = typename U::elementType;
-        using dstType = typename T::elementType;
+        using srcType = typename U::element_type;
+        using dstType = typename T::element_type;
         static_assert(
             AscendC::Std::is_one_of_v<
                 AscendC::Std::tuple<dstType, srcType>, AscendC::Std::tuple<__ca__ fp8_e8m0_t, __cbuf__ fp8_e8m0_t>>,
@@ -39,14 +39,14 @@ struct CopyL12L0MxScaleA3510 {
         // Zz -> Zz
         uint16_t mStartPosition = CeilDiv(AscendC::Std::get<0>(coord), AscendC::BLOCK_CUBE);
         uint16_t kStartPosition = CeilDiv(AscendC::Std::get<1>(coord), MXFP_DIVISOR_SIZE);
-        auto mStep = AscendC::Std::get<1>(AscendC::Std::get<0>(dst.Layout().Shape()));
-        auto kStep = AscendC::Std::get<1>(AscendC::Std::get<1>(dst.Layout().Shape()));
-        auto srcStride = AscendC::Std::get<1>(AscendC::Std::get<0>(src.Layout().Stride())) >> 5;
+        auto mStep = AscendC::Std::get<1>(AscendC::Std::get<0>(dst.layout().shape()));
+        auto kStep = AscendC::Std::get<1>(AscendC::Std::get<1>(dst.layout().shape()));
+        auto srcStride = AscendC::Std::get<1>(AscendC::Std::get<0>(src.layout().stride())) >> 5;
         auto dstStride = kStep;
         // The intrinsic takes a 16-byte unit address, hence the right shift.
-        uint64_t mxDstAddr = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(dst.Data().Get())) >> 4;
+        uint64_t mxDstAddr = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(dst.data().get())) >> 4;
         asc_copy_l12l0a_mx(
-            mxDstAddr, src.Data().Get(), mStartPosition, kStartPosition, mStep, kStep, srcStride, dstStride);
+            mxDstAddr, src.data().get(), mStartPosition, kStartPosition, mStep, kStep, srcStride, dstStride);
     }
 };
 
@@ -54,7 +54,7 @@ struct CopyL12L0MxScaleA3510 {
 } // namespace Tile
 
 template <>
-struct AscendC::Te::CopyTraits<::Tile::CopyL12L0MxScaleA3510>
-    : public CopyTraits<
+struct asc::te::copy_traits<::Tile::CopyL12L0MxScaleA3510>
+    : public copy_traits<
           ::Tile::CopyL12L0MxScaleA3510, CopyL12L0ATraitDefault, ::Tile::CopyL12L0MxScaleA3510,
           CopyL12L0ATraitDefault> {};

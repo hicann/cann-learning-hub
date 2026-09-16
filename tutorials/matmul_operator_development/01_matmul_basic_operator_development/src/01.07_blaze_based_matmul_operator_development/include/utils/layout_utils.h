@@ -31,28 +31,28 @@ struct Weight4BitNzLayout {
         int64_t k1 = CeilDiv(kSize, C0);
         int64_t n1 = CeilDiv(nSize, Block);
 
-        auto shape = AscendC::Te::MakeShape(
-            AscendC::Te::MakeShape(AscendC::Std::Int<C0>{}, k1),
-            AscendC::Te::MakeShape(AscendC::Std::Int<Block>{}, n1));
-        auto stride = AscendC::Te::MakeStride(
-            AscendC::Te::MakeStride(AscendC::Std::Int<1>{}, n1 * AscendC::Std::Int<Block>{} * AscendC::Std::Int<C0>{}),
-            AscendC::Te::MakeStride(AscendC::Std::Int<C0>{}, AscendC::Std::Int<Block>{} * AscendC::Std::Int<C0>{}));
-        return AscendC::Te::MakeLayout(shape, stride);
+        auto shape = asc::te::make_shape(
+            asc::te::make_shape(AscendC::Std::Int<C0>{}, k1),
+            asc::te::make_shape(AscendC::Std::Int<Block>{}, n1));
+        auto stride = asc::te::make_stride(
+            asc::te::make_stride(AscendC::Std::Int<1>{}, n1 * AscendC::Std::Int<Block>{} * AscendC::Std::Int<C0>{}),
+            asc::te::make_stride(AscendC::Std::Int<C0>{}, AscendC::Std::Int<Block>{} * AscendC::Std::Int<C0>{}));
+        return asc::te::make_layout(shape, stride);
     }
 };
 
-/// If \p T is \c AscendC::Te::FrameLayoutFormat<P, Trait>, yields \p P; otherwise yields \p T.
+/// If \p T is \c asc::te::frame_layout_format<P, Trait>, yields \p P; otherwise yields \p T.
 template <typename T>
 struct LayoutPatternOf {
     using type = T;
 };
 
 template <typename P, typename Trait>
-struct LayoutPatternOf<AscendC::Te::FrameLayoutFormat<P, Trait>> {
+struct LayoutPatternOf<asc::te::frame_layout_format<P, Trait>> {
     using type = P;
 };
 
-/// Strips top-level cv on \p T so \c const FrameLayoutFormat<...> unwraps the same as non-const.
+/// Strips top-level cv on \p T so \c const frame_layout_format<...> unwraps the same as non-const.
 template <typename T>
 using LayoutPatternOf_t = typename LayoutPatternOf<AscendC::Std::remove_cv_t<T>>::type;
 
@@ -62,9 +62,9 @@ constexpr bool GetTransValue()
 {
     using LayoutPattern = LayoutPatternOf_t<Layout>;
     constexpr bool isNonTrans =
-        AscendC::Std::is_one_of_v<LayoutPattern, AscendC::Te::NDExtLayoutPtn, AscendC::Te::NZLayoutPtn>;
+        AscendC::Std::is_one_of_v<LayoutPattern, asc::te::nd_ext_layout_ptn, asc::te::nz_layout_ptn>;
     constexpr bool isTrans =
-        AscendC::Std::is_one_of_v<LayoutPattern, AscendC::Te::DNExtLayoutPtn, AscendC::Te::ZNLayoutPtn>;
+        AscendC::Std::is_one_of_v<LayoutPattern, asc::te::dn_ext_layout_ptn, asc::te::zn_layout_ptn>;
 
     constexpr bool isKnown = isNonTrans || isTrans;
     static_assert(isKnown, "IsTrans is not implemented for this layout pattern");
@@ -83,9 +83,9 @@ constexpr bool GetWeightNzValue()
 {
     using LayoutPattern = LayoutPatternOf_t<Layout>;
     constexpr bool isNonWeightNz =
-        AscendC::Std::is_one_of_v<LayoutPattern, AscendC::Te::NDExtLayoutPtn, AscendC::Te::DNExtLayoutPtn>;
+        AscendC::Std::is_one_of_v<LayoutPattern, asc::te::nd_ext_layout_ptn, asc::te::dn_ext_layout_ptn>;
     constexpr bool isWeightNz =
-        AscendC::Std::is_one_of_v<LayoutPattern, AscendC::Te::NZLayoutPtn, AscendC::Te::ZNLayoutPtn>;
+        AscendC::Std::is_one_of_v<LayoutPattern, asc::te::nz_layout_ptn, asc::te::zn_layout_ptn>;
 
     constexpr bool isKnown = isNonWeightNz || isWeightNz;
     static_assert(isKnown, "IsWeightNz is not implemented for this layout");

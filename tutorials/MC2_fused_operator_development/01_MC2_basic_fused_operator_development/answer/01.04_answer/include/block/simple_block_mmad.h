@@ -13,10 +13,10 @@ constexpr uint8_t FINAL_ACCUMULATION = 3U;
 constexpr uint8_t NON_FINAL_ACCUMULATION = 2U;
 constexpr uint8_t MTE1_MTE2_EVENT_ID_NUM = 2U;
 
-constexpr AscendC::Te::MmadTrait MMAD_TRAIT{0, false, false, true, AscendC::Te::MmadType::NORMAL};
+constexpr asc::te::mmad_trait MMAD_TRAIT{0, false, false, true, asc::te::mmad_type::normal};
 
 struct MmadTraitConfig {
-    using TraitType = AscendC::Te::MmadTrait;
+    using TraitType = asc::te::mmad_trait;
     static constexpr const TraitType value = MMAD_TRAIT;
 };
 
@@ -27,8 +27,8 @@ public:
     using BType = BType_;
     using CType = CType_;
     using BlockShape = AscendC::Shape<int64_t, int64_t, int64_t>;
-    using MakeLayoutAL1 = AscendC::Te::NzLayoutFormat<AType>;
-    using MakeLayoutBL1 = AscendC::Te::ZnLayoutFormat<BType>;
+    using MakeLayoutAL1 = asc::te::frame_layout_format<asc::te::nz_layout_ptn, asc::te::layout_trait_default<AType>>;
+    using MakeLayoutBL1 = asc::te::frame_layout_format<asc::te::zn_layout_ptn, asc::te::layout_trait_default<BType>>;
 
     constexpr static uint64_t HALF_L0_SIZE = L0A_SIZE / L1_BUFFER_NUM / sizeof(AType);
     constexpr static uint64_t HALF_L0C_SIZE = L0C_SIZE / L1_BUFFER_NUM / sizeof(float);
@@ -110,12 +110,12 @@ private:
     {
         AscendC::printf("CopyAInL1: curM=%lu, curGmAKL1=%lu, aL1BufId=%lu, kL1Offset=%lu, l1BufferAOffset=%lu\n",
             curM, curGmAKL1, aL1BufId, kL1Offset, l1BufferAOffset_[aL1BufId]);
-        auto copyGM2L1 = AscendC::Te::MakeCopy(AscendC::Te::CopyGM2L1{});
+        auto copyGM2L1 = asc::te::make_copy(asc::te::copy_gm_to_l1{});
         auto layoutAL1 = MakeLayoutAL1{}(curM, curGmAKL1);
         auto tensorAL1 =
-            AscendC::Te::MakeTensor(AscendC::Te::MakeL1memPtr<AType>(l1BufferAOffset_[aL1BufId]), layoutAL1);
-        auto gmBlockA = gmA(AscendC::Te::MakeCoord(0, kL1Offset), AscendC::Te::MakeShape(curM, curGmAKL1));
-        AscendC::Te::Copy(copyGM2L1, tensorAL1, gmBlockA);
+            asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::l1, AType>(l1BufferAOffset_[aL1BufId]), layoutAL1);
+        auto gmBlockA = gmA(asc::te::make_coord(0, kL1Offset), asc::te::make_shape(curM, curGmAKL1));
+        asc::te::copy(copyGM2L1, tensorAL1, gmBlockA);
     }
 
     template <typename TensorB>
@@ -124,12 +124,12 @@ private:
     {
         AscendC::printf("CopyBInL1: curN=%lu, curGmBKL1=%lu, bL1BufId=%lu, kL1Offset=%lu, l1BufferBOffset=%lu\n",
             curN, curGmBKL1, bL1BufId, kL1Offset, l1BufferBOffset_[bL1BufId]);
-        auto copyGM2L1 = AscendC::Te::MakeCopy(AscendC::Te::CopyGM2L1{});
+        auto copyGM2L1 = asc::te::make_copy(asc::te::copy_gm_to_l1{});
         auto layoutBL1 = MakeLayoutBL1{}(curGmBKL1, curN);
         auto tensorBL1 =
-            AscendC::Te::MakeTensor(AscendC::Te::MakeL1memPtr<BType>(l1BufferBOffset_[bL1BufId]), layoutBL1);
-        auto gmBlockB = gmB(AscendC::Te::MakeCoord(kL1Offset, 0), AscendC::Te::MakeShape(curGmBKL1, curN));
-        AscendC::Te::Copy(copyGM2L1, tensorBL1, gmBlockB);
+            asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::l1, BType>(l1BufferBOffset_[bL1BufId]), layoutBL1);
+        auto gmBlockB = gmB(asc::te::make_coord(kL1Offset, 0), asc::te::make_shape(curGmBKL1, curN));
+        asc::te::copy(copyGM2L1, tensorBL1, gmBlockB);
     }
 
     template <typename TensorL0C, typename TensorAL1, typename TensorBL1>
@@ -140,7 +140,8 @@ private:
         AscendC::printf("IterateK: curM=%lu, curN=%lu, curGmAKL1=%lu, curGmBKL1=%lu, absKStart=%lu, k_=%ld\n",
             curM, curN, curGmAKL1, curGmBKL1, absKStart, k_);
         
-        auto copyL12L0 = AscendC::Te::MakeCopy(AscendC::Te::CopyL12L0{});
+        auto copyL12L0A = asc::te::make_copy(asc::te::copy_l1_to_l0a{});
+        auto copyL12L0B = asc::te::make_copy(asc::te::copy_l1_to_l0b{});
 
         uint64_t minGmKL1 = Min(curGmAKL1, curGmBKL1);
 
@@ -152,33 +153,33 @@ private:
             uint64_t l0Offset = HALF_L0_SIZE * (l0PingPong_ & 0x1);
             AscendC::WaitFlag<AscendC::HardEvent::M_MTE1>(l0PingPong_ & 0x1);
 
-            auto tensorAL0 = AscendC::Te::MakeTensor(
-                AscendC::Te::MakeL0AmemPtr<AType>(l0Offset * sizeof(AType)), AscendC::Te::MakeNzLayout<AType>(curM, curKL0));
+            auto tensorAL0 = asc::te::make_tensor(
+                asc::te::make_mem_ptr<asc::te::location::l0a, AType>(l0Offset * sizeof(AType)), asc::te::make_frame_layout<asc::te::nz_layout_ptn, asc::te::layout_trait_default<AType>>(curM, curKL0));
             auto tensorBlockAL1 = tensorAL1(
-                AscendC::Te::MakeCoord(0, kL0Offset), AscendC::Te::MakeShape(curM, curKL0));
-            AscendC::Te::Copy(copyL12L0, tensorAL0, tensorBlockAL1);
+                asc::te::make_coord(0, kL0Offset), asc::te::make_shape(curM, curKL0));
+            asc::te::copy(copyL12L0A, tensorAL0, tensorBlockAL1);
 
-            auto tensorBL0 = AscendC::Te::MakeTensor(
-                AscendC::Te::MakeL0BmemPtr<BType>(l0Offset * sizeof(BType)), AscendC::Te::MakeZnLayout<BType>(curKL0, curN));
+            auto tensorBL0 = asc::te::make_tensor(
+                asc::te::make_mem_ptr<asc::te::location::l0b, BType>(l0Offset * sizeof(BType)), asc::te::make_frame_layout<asc::te::zn_layout_ptn, asc::te::layout_trait_default<BType>>(curKL0, curN));
             auto tensorBlockBL1 = tensorBL1(
-                AscendC::Te::MakeCoord(kL0Offset, 0), AscendC::Te::MakeShape(curKL0, curN));
-            AscendC::Te::Copy(copyL12L0, tensorBL0, tensorBlockBL1);
+                asc::te::make_coord(kL0Offset, 0), asc::te::make_shape(curKL0, curN));
+            asc::te::copy(copyL12L0B, tensorBL0, tensorBlockBL1);
 
             AscendC::SetFlag<AscendC::HardEvent::MTE1_M>(l0PingPong_ & 0x1);
             AscendC::WaitFlag<AscendC::HardEvent::MTE1_M>(l0PingPong_ & 0x1);
 
-            uint8_t mmadUnitFlag = (absKStart + kL0Offset + baseK_ >= k_) ? FINAL_ACCUMULATION : NON_FINAL_ACCUMULATION;
+            asc::te::unit_flag_mode mmadUnitFlag = (absKStart + kL0Offset + baseK_ >= k_) ? asc::te::unit_flag_mode::enable_update : asc::te::unit_flag_mode::enable_keep;
             bool mmadCmatrixInitVal = (absKStart + kL0Offset == 0);
             
             AscendC::printf("MMAD: curM=%lu, curN=%lu, curKL0=%lu, unitFlag=%u, initC=%d\n",
                 curM, curN, curKL0, mmadUnitFlag, mmadCmatrixInitVal);
             
-            AscendC::Te::MmadParams mmadParams(
+            asc::te::mmad_params mmadParams(
                 static_cast<uint16_t>(curM), static_cast<uint16_t>(curN), static_cast<uint16_t>(curKL0), mmadUnitFlag,
                 mmadCmatrixInitVal);
 
-            AscendC::Te::Mad(
-                AscendC::Te::MmadAtom<AscendC::Te::MmadTraits<AscendC::Te::MmadOperation, MmadTraitConfig>>{},
+            asc::te::mmad(
+                asc::te::mmad_atom<asc::te::mmad_traits<asc::te::mmad_operation, MmadTraitConfig>>{},
                 tensorL0C, tensorAL0, tensorBL0, mmadParams);
 
             AscendC::SetFlag<AscendC::HardEvent::M_MTE1>(l0PingPong_ & 0x1);
@@ -195,8 +196,8 @@ private:
         AscendC::printf("Run: curM=%lu, curN=%lu, k_=%ld, orderAL1BL1=%d\n", curM, curN, k_, orderAL1BL1_);
         
         uint64_t l0cOffset = (l0cPingPong_ & 1) * HALF_L0C_SIZE;
-        auto tensorL0C = AscendC::Te::MakeTensor(
-            AscendC::Te::MakeL0CmemPtr<float>(l0cOffset * sizeof(float)), AscendC::Te::MakeL0CLayout(curM, curN));
+        auto tensorL0C = asc::te::make_tensor(
+            asc::te::make_mem_ptr<asc::te::location::l0c, float>(l0cOffset * sizeof(float)), asc::te::make_frame_layout<asc::te::nz_layout_ptn, AscendC::Std::Int<16>>(curM, curN));
         
         if (orderAL1BL1_) {
             for (uint64_t kOuter = 0; kOuter < k_; kOuter += kAL1_) {
@@ -219,11 +220,11 @@ private:
                     AscendC::printf("Run orderAL1BL1: kInner=%lu, aL1BufId=%lu, bL1BufId=%lu\n", kInner, aL1BufId, bL1BufId);
                     
                     auto layoutAL1 = MakeLayoutAL1{}(curM, curGmAKL1);
-                    auto tensorAL1 = AscendC::Te::MakeTensor(
-                        AscendC::Te::MakeL1memPtr<AType>(l1BufferAOffset_[aL1BufId]), layoutAL1);
+                    auto tensorAL1 = asc::te::make_tensor(
+                        asc::te::make_mem_ptr<asc::te::location::l1, AType>(l1BufferAOffset_[aL1BufId]), layoutAL1);
                     auto layoutBL1 = MakeLayoutBL1{}(curGmBKL1, curN);
-                    auto tensorBL1 = AscendC::Te::MakeTensor(
-                        AscendC::Te::MakeL1memPtr<BType>(l1BufferBOffset_[bL1BufId]), layoutBL1);
+                    auto tensorBL1 = asc::te::make_tensor(
+                        asc::te::make_mem_ptr<asc::te::location::l1, BType>(l1BufferBOffset_[bL1BufId]), layoutBL1);
 
                     IterateK(
                         tensorL0C, tensorAL1, tensorBL1, curM, curN, curGmAKL1, curGmBKL1, aL1BufId, bL1BufId, kInner);
@@ -256,11 +257,11 @@ private:
                     AscendC::printf("Run !orderAL1BL1: kInner=%lu, aL1BufId=%lu, bL1BufId=%lu\n", kInner, aL1BufId, bL1BufId);
                     
                     auto layoutAL1 = MakeLayoutAL1{}(curM, curGmAKL1);
-                    auto tensorAL1 = AscendC::Te::MakeTensor(
-                        AscendC::Te::MakeL1memPtr<AType>(l1BufferAOffset_[aL1BufId]), layoutAL1);
+                    auto tensorAL1 = asc::te::make_tensor(
+                        asc::te::make_mem_ptr<asc::te::location::l1, AType>(l1BufferAOffset_[aL1BufId]), layoutAL1);
                     auto layoutBL1 = MakeLayoutBL1{}(curGmBKL1, curN);
-                    auto tensorBL1 = AscendC::Te::MakeTensor(
-                        AscendC::Te::MakeL1memPtr<BType>(l1BufferBOffset_[bL1BufId]), layoutBL1);
+                    auto tensorBL1 = asc::te::make_tensor(
+                        asc::te::make_mem_ptr<asc::te::location::l1, BType>(l1BufferBOffset_[bL1BufId]), layoutBL1);
 
                     IterateK(
                         tensorL0C, tensorAL1, tensorBL1, curM, curN, curGmAKL1, curGmBKL1, aL1BufId, bL1BufId, kInner);
@@ -276,8 +277,8 @@ private:
         
         AscendC::printf("Fixpipe: l0cPingPong=%lu\n", l0cPingPong_);
         
-        auto copyL0C2GM = AscendC::Te::MakeCopy(AscendC::Te::CopyL0C2GM{});
-        AscendC::Te::Copy(copyL0C2GM, gmC, tensorL0C, AscendC::Te::FixpipeParams{FINAL_ACCUMULATION});
+        auto copyL0C2GM = asc::te::make_copy(asc::te::copy_l0c_to_gm{});
+        asc::te::copy(copyL0C2GM, gmC, tensorL0C, asc::te::l0c_to_gm_params{asc::te::unit_flag_mode::enable_update});
 
         l0cPingPong_++;
     }

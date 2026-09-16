@@ -10,7 +10,7 @@
 namespace MatmulAllGatherImpl {
 
 using namespace AscendC;
-using namespace AscendC::Te;
+using namespace asc::te;
 
 template<typename DataType>
 class MatmulAllGatherOp {
@@ -79,13 +79,13 @@ __aicore__ inline void MatmulAllGatherOp<DataType>::Process()
     int64_t k = static_cast<int64_t>(kDim_);
     
     if ASCEND_IS_AIC {
-        auto layoutA = AscendC::Te::MakeNDLayout<AType>(m, k);
-        auto layoutB = AscendC::Te::MakeNDLayout<BType>(k, n);
-        auto layoutC = AscendC::Te::MakeNDLayout<CType>(m, n);
+        auto layoutA = asc::te::make_frame_layout<asc::te::nd_ext_layout_ptn, asc::te::layout_trait_default<AType>>(m, k);
+        auto layoutB = asc::te::make_frame_layout<asc::te::nd_ext_layout_ptn, asc::te::layout_trait_default<BType>>(k, n);
+        auto layoutC = asc::te::make_frame_layout<asc::te::nd_ext_layout_ptn, asc::te::layout_trait_default<CType>>(m, n);
         
-        auto gmA = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ AType*)aGm_), layoutA);
-        auto gmB = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ BType*)bGm_), layoutB);
-        auto gmC = AscendC::Te::MakeTensor(AscendC::Te::MakeGMmemPtr((__gm__ CType*)mteComm_.localWinDataAddr_), layoutC);
+        auto gmA = asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::gm>((__gm__ AType*)aGm_), layoutA);
+        auto gmB = asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::gm>((__gm__ BType*)bGm_), layoutB);
+        auto gmC = asc::te::make_tensor(asc::te::make_mem_ptr<asc::te::location::gm>((__gm__ CType*)mteComm_.localWinDataAddr_), layoutC);
         
         SimpleBlockScheduler bs(baseM_, baseN_);
         bs.UpdateNextProblem(m, n);
@@ -104,9 +104,9 @@ __aicore__ inline void MatmulAllGatherOp<DataType>::Process()
             int64_t mOffset = Get<MNK_M>(tileCoord) * baseM_;
             int64_t nOffset = Get<MNK_N>(tileCoord) * baseN_;
             
-            auto gmBlockA = gmA(AscendC::Te::MakeCoord(mOffset, 0), AscendC::Te::MakeShape(tileM, k));
-            auto gmBlockB = gmB(AscendC::Te::MakeCoord(0, nOffset), AscendC::Te::MakeShape(k, tileN));
-            auto gmBlockC = gmC(AscendC::Te::MakeCoord(mOffset, nOffset), AscendC::Te::MakeShape(tileM, tileN));
+            auto gmBlockA = gmA(asc::te::make_coord(mOffset, 0), asc::te::make_shape(tileM, k));
+            auto gmBlockB = gmB(asc::te::make_coord(0, nOffset), asc::te::make_shape(k, tileN));
+            auto gmBlockC = gmC(asc::te::make_coord(mOffset, nOffset), asc::te::make_shape(tileM, tileN));
             
             typename BlockMmadType::BlockShape mmadShape{tileM, tileN, k};
             mmadOp_(gmBlockA, gmBlockB, gmBlockC, mmadShape);

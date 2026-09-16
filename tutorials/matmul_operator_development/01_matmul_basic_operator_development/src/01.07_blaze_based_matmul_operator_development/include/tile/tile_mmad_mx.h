@@ -17,18 +17,18 @@
 
 #include "include/tensor_api/tensor.h"
 
-namespace AscendC {
-namespace Te {
+namespace asc {
+namespace te {
 
-constexpr MmadTrait MX_MMAD_TRAIT = MmadTrait{0, false, false, true, MmadType::MX};
+constexpr mmad_trait MX_MMAD_TRAIT = mmad_trait{0, false, false, true, mmad_type::mx};
 struct MmadTraitMX {
-    using TraitType = MmadTrait;
+    using TraitType = mmad_trait;
     static constexpr const TraitType value = MX_MMAD_TRAIT;
 };
 
 template <>
-struct MmadTraits<MmadOperation, MmadTraitMX>
-    : public MmadTraits<MmadOperation, MmadTraitDefault, MmadOpWith, MmadTraitMX> {};
+struct mmad_traits<mmad_operation, MmadTraitMX>
+    : public mmad_traits<mmad_operation, mmad_trait_default, mmad_op_with, MmadTraitMX> {};
 
-} // namespace Te
-} // namespace AscendC
+} // namespace te
+} // namespace asc

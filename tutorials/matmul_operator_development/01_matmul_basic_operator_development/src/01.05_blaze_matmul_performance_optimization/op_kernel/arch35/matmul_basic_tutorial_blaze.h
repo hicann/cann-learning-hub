@@ -30,7 +30,7 @@ __aicore__ inline void MatMulBasicKernel(
     using LayoutC = C_LAYOUT;
     using LayoutBias = LayoutC;
 
-    using ProblemShape = AscendC::Te::Shape<int64_t, int64_t, int64_t, int64_t>;
+    using ProblemShape = asc::te::shape<int64_t, int64_t, int64_t, int64_t>;
 
     using BlockScheduler = Blaze::Gemm::Block::BlockSchedulerMatmulBasic<ProblemShape, FULL_LOAD_MODE>;
 
