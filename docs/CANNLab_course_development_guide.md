@@ -457,6 +457,6 @@ git push origin test
 
 | 文档 | 说明 |
 | --- | --- |
-| [贡献指南](../CONTRIBUTION.md) | 项目整体贡献流程与要求。 |
+| [贡献指南](../CONTRIBUTING.md) | 项目整体贡献流程与要求。 |
 | [新课程上库与上线验收标准](./course_submission_criteria.md) | 课程上线流程、目录结构规范、PR 准入 Checklist、test → master 合并操作指引等。 |
 | [CANNLab 环境体验指南](./CANNLab_env_experience_guide.md) | CANNLab 云开发环境的体验流程（面向学习者）。 |

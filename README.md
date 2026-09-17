@@ -2,7 +2,36 @@
 
 > cann-learning-hub 是CANN （Compute Architecture for Neural Networks）生态的官方开源学习中心仓库，聚焦 NPU 加速计算开发能力培养，汇聚从入门到进阶的全栈学习资源。仓库涵盖 CANN 全栈加速计算的系列示例与最佳实践教程，支持以 Notebook 方式在线 / 离线交互式运行，帮助开发者零门槛上手。我们致力于打造动态、全面的 CANN 知识平台，系统化整理入门指南、高级优化教程、精选算子与模型示例及经过验证的最佳实践方案。通过持续迭代更新，助力开发者快速掌握 CANN 开发技能，高效释放昇腾 NPU 算力，加速 AI 应用的开发与创新。欢迎广大开发者贡献案例、教程、文档及各类学习资源，共建开放共享的 CANN 开发者生态。
 
-本仓已集成代码仓库智能体，点击 [![Zread](https://img.shields.io/badge/Zread-Ask_AI-_.svg?style=flat&color=0052D9&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/hicann/cann-learning-hub) 徽章，开启在线智能代码学习与知识问答体验！
+[![Zread](https://img.shields.io/badge/Zread-Ask_AI-_.svg?style=flat&color=0052D9&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/hicann/cann-learning-hub) 徽章，开启在线智能代码学习与知识问答体验！
+
+---
+
+## 🚀 快速开始
+
+**方式一：在线体验（推荐，零配置）**
+
+打开 [人工智能基础](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/cann_basics&scanFilePath=quick_start/cann_basics/01_ai_basics.ipynb)（第一课），点击「在线体验」即可在浏览器中运行你的第一个 Notebook，无需任何环境配置。
+
+**方式二：CANNLab 云环境**
+
+进入 [CANNLab](https://gitcode.com/org/cann/cannlab) 创建 NPU 云环境（初始 100 小时，积分可兑换时长），clone 本仓后从目录树打开任意教程运行，注意选择 Python 3.11.4 内核。
+
+**方式三：本地部署**
+
+```bash
+git clone https://gitcode.com/cann/cann-learning-hub.git
+cd cann-learning-hub
+```
+
+| 依赖 | 要求 |
+|:---|:---|
+| 硬件 | 昇腾 NPU（Atlas A2/A3 系列等；部分认知类课程无需 NPU） |
+| CANN | 9.0.0 及以上，[下载安装](https://www.hiascend.com/cann/download) |
+| Python | 3.11 |
+
+> 各教程的具体依赖见其目录下的 `requirements.txt`；环境配置详见 [CANNLab 环境体验指南](./docs/CANNLab_env_experience_guide.md)。
+
+> 💡 环境就绪后，进入 [新手入门学习路径](#beginner) 开始系统学习。
 
 ---
 
@@ -15,25 +44,27 @@
 | 🏫 **高校教师** | → [高校教学方案专区](#university) |
 | 🏆 **竞赛备赛** | → [赛事备考专区](#competition) |
 | 🏋️ **想做模型微调** | → [SwanLab 共建案例](#swanlab) |
+| 🌱 **想参与社区贡献** | → [参与贡献](#contributing) |
 | 📝 **想看真实客户实践案例** | → [技术博客](#blogs) |
 
 ---
 
-## 📋 运行方式说明
+## 📋 前置基础（已具备可跳过）
 
-本仓教程支持两种运行方式：
+> 本仓课程默认你已具备以下基础，只需掌握最基本的部分即可，边学边补完全没问题。
 
-| 运行方式 | 说明 |
-| :--- | :--- |
-| **在线体验** | 点击即可直接打开在线运行环境运行，无需额外配置 |
-| **[open in CANNLab](https://gitcode.com/org/cann/cannlab)** | 需先进入 CANNLab 创建环境，clone 本仓后从目录树中找到对应教程打开运行，注意选择内核（如 Python 3.11.4） |
+| 基础 | 需要掌握的内容 | 推荐资源 | 支撑课程 |
+|:---|:---|:---|:---|
+| **Python** | 变量、函数、类、模块，能读懂并运行脚本 | [廖雪峰 Python 教程](https://liaoxuefeng.com/books/python/introduction/index.html) ｜ B站搜索「黑马程序员 Python」 | 全部课程 |
+| **NumPy / PyTorch** | 会创建张量、做矩阵运算，了解 `Tensor` 基本操作 | [NumPy 官方快速入门](https://numpy.org/doc/stable/user/quickstart.html) ｜ [PyTorch 官方教程](https://pytorch.org/tutorials/) ｜ [李沐《动手学深度学习》](https://zh.d2l.ai/) | 01 人工智能基础、04 NPU 实践、推理/训练/推荐主线 |
+| **C / C++** | 指针、函数、编译链接，能读懂 C++ 源码 | [菜鸟教程 C++](https://www.runoob.com/cplusplus/cpp-tutorial.html) ｜ B站搜索「黑马程序员 C++」 | Ascend C 算子开发主线 |
+| **Linux 基础** | 常用命令、环境变量，能在服务器上运行程序 | [韩顺平《一周学会 Linux》](https://www.bilibili.com/video/BV1Sv411r7vd) ｜ [尚硅谷 Linux 教程](https://www.bilibili.com/video/BV1dW411M7xL) | 全部实践课程 |
+| **数学基础** | 矩阵运算、梯度概念 | [宋浩《线性代数》](https://www.bilibili.com/video/BV1d7wAzsE8V) ｜ 备选：[MIT 18.06 线性代数（英文）](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/) | 深度学习、模型训练 |
+| **深度学习概念** | 神经网络、反向传播，知道模型怎么训练和推理 | [吴恩达《深度学习专项》](https://www.bilibili.com/video/BV1FT4y1E74V) ｜ [李沐《动手学深度学习》](https://zh.d2l.ai/) | 01 人工智能基础、推理/训练主线 |
+| **Git** | clone / commit / push / pull，会提交 PR | [廖雪峰 Git 教程](https://liaoxuefeng.com/books/git/introduction/index.html) ｜ [Pro Git 中文版](https://git-scm.com/book/zh/v2) | 全部课程、社区贡献 |
+| **社区贡献** | 了解社区行为准则、CLA 签署、Issue / PR 提交流程 | [CANN 社区贡献指南](https://gitcode.com/cann/community) | 全部课程、社区共建 |
 
----
-
-## 📋 前置基础（已具备可跳过）：
-> - **编程语言**：Python/C/C++
-> - **计算机系统**：计算机组成原理/操作系统基础（进程/线程、内存管理、环境配置等）
-> - **AI 与数学**：深度学习基础（神经网络）+ 线性代数与微积分（矩阵运算、梯度等）
+> 💡 **按需补充**：入门阶段只需 Python + NumPy 即可开始 [新手入门学习路径](#beginner)；后续进入算子开发主线时再补 C/C++，进入大模型主线时再补深度学习与 PyTorch。
 
 <a id="beginner"></a>
 ## 🎓 新手入门学习路径
@@ -293,14 +324,14 @@
 <tr>
 <td><b>⚙️ 算子开发</b></td>
 <td><a href="./tutorials/ascendc_operator_development_light">Kernel 直调版</a> · <a href="./tutorials/pyasc_operator_development">PyASC 入门</a> · <a href="./tutorials/pypto_development">PyPTO 算子开发系列</a><br/><sub>算子基础概念、编程范式、PyASC 函数开发、PyPTO Tensor 编程、AI Coding Agent 算子开发</sub></td>
-<td><a href="./tutorials/ascendc_operator_development">算子工程版</a> · Conv 算子实战 🚧 · Vector 算子实战 🚧<br/><sub>Vector/Cube/融合算子开发、工程化流程、卷积与矢量算子实战</sub></td>
+<td><a href="./tutorials/ascendc_operator_development">算子工程版</a> · <a href="./tutorials/conv_operator_development/01_conv_basic_operator_development">Conv 算子实战</a> · Vector 算子实战 🚧<br/><sub>Vector/Cube/融合算子开发、工程化流程、卷积与矢量算子实战</sub></td>
 <td><a href="./tutorials/MC2_fused_operator_development">MC2 融合算子实战</a> · AscendC V2 高阶 🚧 · MoE/FA 算子实战 🚧<br/><sub>Matmul/Conv/通算融合、aclnn/aclGraph 工程化</sub></td>
 </tr>
 <tr>
 <td><b>🧠 大模型推理</b></td>
-<td><a href="./tutorials/llm_inference">推理系列（初级）</a> · <a href="./quick_start/first_llm_inference/01_qwen3_npu_inference_baseline.ipynb">极简参考实现</a><br/><sub>推理部署、Qwen3-8B 端到端实战</sub></td>
+<td><a href="./tutorials/llm_inference">推理系列（初级）</a> · <a href="./quick_start/first_llm_inference/01_qwen3_npu_inference_baseline.ipynb">极简参考实现</a><br/><sub>推理部署、Qwen3-1.7B/Qwen3-8B 端到端实战</sub></td>
 <td><a href="./tutorials/llm_inference">推理系列（中级）</a><br/><sub>推理优化/量化基础/算子融合/图模式/多卡并行/KV Cache/Profiling</sub></td>
-<td><a href="./reference_practice/model_inference_optimization/sana_video">Sana-Video 最佳实践</a> · 推理系列（高级）🚧<br/><sub>多流/控核/MTP/PD分离/KV Cache Offload/4bit量化</sub></td>
+<td><a href="./reference_practice/model_inference_optimization/sana_video">Sana-Video 最佳实践</a> · <a href="./reference_practice/pytorch_online_inference_operator_optimize">PyTorch 在线推理算子优化</a> · 推理系列（高级）🚧<br/><sub>多流/控核/MTP/PD分离/KV Cache Offload/4bit量化</sub></td>
 </tr>
 <tr>
 <td><b>🏋️ 大模型训练</b></td>
@@ -316,9 +347,9 @@
 </tr>
 <tr>
 <td><b>🔗 图框架</b></td>
-<td><a href="./tutorials/ge_development">GE 图引擎</a> · <a href="./tutorials/TorchAir_development">TorchAir</a> · <a href="./tutorials/autofusion_development">AutoFusion</a><br/><sub>图编译执行、图模式优化、自动融合</sub></td>
-<td>🚧 建设中<br/><sub>图构建/编译配置/自定义算子入图/自定义融合pass/静态&动态shape</sub></td>
-<td>🚧 建设中<br/><sub>自动融合原理/融合策略求解/SuperKernel等</sub></td>
+<td><a href="./tutorials/ge_development">GE 图引擎（快速入门）</a> · <a href="./tutorials/TorchAir_development">TorchAir（快速入门）</a> · <a href="./tutorials/autofusion_development">AutoFusion 基础</a><br/><sub>图编译执行、图模式优化、自动融合</sub></td>
+<td><a href="./tutorials/ge_development/03_graph_compilation">GE 图编译</a> · <a href="./tutorials/ge_development/04_model_execution_optimization">GE 模型执行与优化</a> · <a href="./tutorials/TorchAir_development/README.md">TorchAir 进阶优化</a><br/><sub>图构建/编译配置/自定义算子入图/自定义融合pass/静态&动态shape/内存复用/多流/限核/SuperKernel</sub></td>
+<td>🚧 建设中<br/><sub>AutoFusion 融合原理与实战、GE/TorchAir 实践与问题定位</sub></td>
 </tr>
 <tr>
 <td><b>📡 通信</b></td>
@@ -328,7 +359,7 @@
 </tr>
 <tr>
 <td><b>📱 应用开发</b></td>
-<td>应用开发 🚧<br/><sub>ATC离线模型编译&推理、GE/ATC/模型转换全流程</sub></td>
+<td><a href="./reference_practice/yolov13_offline_inference">YOLOv13 离线推理</a> · 应用开发系列 🚧<br/><sub>ATC离线模型编译&推理、GE/ATC/模型转换全流程</sub></td>
 <td>—</td>
 <td>—</td>
 </tr>
@@ -551,8 +582,9 @@
 │   ├── cann_basics                    # CANN 基础知识
 │   ├── first_custom_operator          # 第一个自定义算子
 │   ├── first_operator_api_call        # 第一个算子 API 调用
-│   └── first_llm_inference            # 第一个大模型推理和优化
-├── tutorials                              # 开发教程
+│   ├── first_llm_inference            # 第一个大模型推理和优化
+│   └── git_basics                     # Git 基础与 GitCode 协作
+├── tutorials                          # 开发教程
 │   ├── ascendc_operator_development       # Ascend C 算子开发
 │   ├── ascendc_operator_development_light # Ascend C 算子开发（Kernel 直调版）
 │   ├── conv_operator_development          # Conv 算子开发实战
@@ -561,18 +593,24 @@
 │   ├── sft_training_pipeline              # 大模型 SFT 训练系列课程
 │   ├── rl_training_pipeline               # 大模型 RL 训练系列课程
 │   ├── ge_development                     # GE 图引擎开发系列教程
-│   ├── TorchAir_development               # TorchAir图模式优化系列教程
+│   ├── TorchAir_development               # TorchAir 图模式优化系列教程
 │   ├── autofusion_development             # AutoFusion 自动融合开发系列教程
 │   ├── hccl_development                   # HCCL 集合通信系列课程
 │   ├── hixl_development                   # HiXL 单边通信应用开发
 │   ├── CANNBot                            # CANNBot 算子生成相关课程
 │   ├── pyasc_operator_development         # PyASC 算子开发（Python 原生语法）
-│   ├── pypto_development                  # PyPTO 算子开发（Tensor 编程范式）
-│   └── ...                                # 待扩展（TileLang 等）
+│   └── pypto_development                  # PyPTO 算子开发（Tensor 编程范式）
+├── standard_course                    # 标准课程体系
+│   ├── 00_atomic_courses              # 原子课程总纲（135 门）
+│   ├── 01_bootcamp                    # 启航营（两天营 / 两周营）
+│   ├── 02_traditional_courses         # 传统学科课程（换芯不换课）
+│   ├── 03_new_courses                 # CANN 新增课程（六门高校学分课）
+│   └── 04_new_books                   # 教材区（双教材）
 ├── reference_practice                 # 参考实践
 │   ├── model_inference_optimization   # 模型推理优化
-│   │   └── sana_video                # Sana-Video 推理优化
-│   └── pytorch_online_inference_operator_optimize  # PyTorch 在线推理算子优化
+│   │   └── sana_video                 # Sana-Video 推理优化
+│   ├── pytorch_online_inference_operator_optimize  # PyTorch 在线推理算子优化
+│   └── yolov13_offline_inference      # YOLOv13 离线推理
 ├── blogs                              # 技术博客
 │   ├── operator                       # 算子
 │   ├── inference                      # 推理
@@ -597,12 +635,13 @@
 │       ├── swanlab_examples                     # SwanLab 共建微调案例
 │       └── torch-rechub                         # Torch-RecHub 推荐系统实战教程
 ├── skills                             # CANNBot 技能
-│   ├── ascendc-ops-project           # 自定义算子工程生成
-│   └── cannjudge-submit              # CANNJudge 竞赛提交
+│   ├── ascendc-ops-project            # 自定义算子工程生成
+│   ├── cannjudge-submit               # CANNJudge 竞赛提交
+│   └── examples                       # 技能示例（as_strided 等）
 ├── docs                               # 文档与指南
 │   ├── CANNLab_env_experience_guide.md    # CANNLab 环境体验指南
 │   ├── CANNLab_course_development_guide.md  # 基于 CANNLab 环境开发与提交课程指南
-│   └── course_submission_criteria.md  # 新课程上库与上线验收标准
+│   ├── course_submission_criteria.md  # 新课程上库与上线验收标准
 └── README.md
 ```
 
@@ -653,6 +692,19 @@
 
 ---
 
+<a id="contributing"></a>
+## 🤝 参与贡献
+
+欢迎贡献教程、文档与案例！参与前请阅读 [贡献指南](CONTRIBUTING.md)，并前往 [cann/community](https://gitcode.com/cann/community) 了解社区行为准则与 CLA 签署流程。
+
+| 渠道 | 入口 |
+|:---|:---|
+| 提问 / 反馈 Bug | [Issues](https://gitcode.com/cann/cann-learning-hub/issues) |
+| 交流讨论 | [Discussions](https://gitcode.com/cann/cann-learning-hub/discussions) |
+| 技术专栏 | [Wiki](https://gitcode.com/cann/cann-learning-hub/wiki) |
+
+---
+
 ## 📝 更新日志
 
 <details>
@@ -688,12 +740,18 @@
 
 ---
 
+## 📄 许可证
+
+本项目遵循 [CANN Open Software License Agreement Version 2.0](./LICENSE) 开源。
+
+---
+
 ## 💬 相关信息
 
 <details>
 <summary>查看相关信息与联系方式</summary>
 
-- [贡献指南](CONTRIBUTION.md)
+- [贡献指南](CONTRIBUTING.md)
 - [安全声明](SECURITY.md)
 - [许可证](LICENSE)
 - [所属SIG](https://gitcode.com/cann/community/tree/master/CANN/sigs/doc)
