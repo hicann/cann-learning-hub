@@ -39,5 +39,4 @@ python src/onsite_demo/scripts/validate_onsite_demo.py
 python src/onsite_demo/scripts/final_preupload_audit.py
 ```
 
-完整命令行彩排说明见 [onsite_demo/README_ONSITE_DEMO.md](./onsite_demo/README_ONSITE_DEMO.md)。
 
