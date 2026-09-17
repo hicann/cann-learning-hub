@@ -10,7 +10,7 @@
 | 3　　| [融合算子替换 —— 把"小车队"合并成"超级大巴"](./03_qwen3_npu_inference_fused_op.ipynb) | 介绍大模型推理融合算子替换的加速方式　　　　　　　　　　 |
 
 ## 环境准备
-1.参考[CANNLab环境准备指导](../../docs/CANNLab_env_experience_guide.md)完成CANNLab环境准备和Python、Jupyter扩展安装
+1. 参考 [CANNLab环境准备指导](../../docs/CANNLab_env_experience_guide.md) 完成 CANNLab 环境准备和 Python、Jupyter 扩展安装
 
 2.在开始之前，请先在终端中安装所需的 Python 依赖包：
 

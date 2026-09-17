@@ -1,5 +1,5 @@
 # 快速上手
-本目录提供昇腾 CANN（Compute Architecture for Neural Networks）核心能力的快速入门指南，帮助开发者以最小成本快速体验 Ascend C 算子开发、算子 API 调用等关键流程。
+本目录提供昇腾 CANN（Compute Architecture for Neural Networks）核心能力的快速入门指南，帮助开发者以最小成本快速体验 CANN 基础知识、Ascend C 算子开发、算子 API 调用、大模型推理及 Git 协作等关键流程。
 
 ## 教程列表
 | 快速上手指南　　　　 | 简介　　　　　　　　　　　　　　　　　　　　　　　 | 在线体验　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 | 状态　　 |
@@ -9,3 +9,4 @@
 | 第一个算子API调用　　| 快速体验调用 CANN 内置算子 API 进行计算　　　　　　| [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/first_operator_api_call&scanFilePath=quick_start/first_operator_api_call/first_operator_api_call.ipynb) | ✅ 已发布 |
 | 第一个大模型推理体验 | 快速体验大模型推理和优化加速　　　　　　　　　　　 | 需要通过CANNLab体验　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　| ✅ 已发布 |
 | Git基础课程　　　　 | 从零入门 Git 与 GitCode 平台 Fork/PR 工作流　　　 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=quick_start/git_basics&scanFilePath=quick_start/git_basics/01_git_intro.ipynb)　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　| ✅ 已发布 |
+ 

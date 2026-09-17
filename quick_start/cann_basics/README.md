@@ -2,7 +2,7 @@
 
 本课程是 CANN 生态的入门通识课，面向零基础初学者，用大量生活化比喻和图文讲解，让你像读故事一样理解 AI、NPU 和 CANN。课程以 Jupyter Notebook 形式提供，支持在线交互式运行。
 
-##  软硬件配套说明
+## 软硬件配套说明
 
 本课程涉及 NPU 设备信息查询、CANN 环境检查以及基于 PyTorch 的 NPU 计算示例，推荐使用以下软硬件环境：
 
@@ -23,7 +23,7 @@
 | CANNLab 云开发环境                   | `cann_9.0.0_py3.11-A2-arm` | Python 3.11.15 | CANNLab 可用于课程代码运行及 NPU 环境实践，具体使用方法可参考 [CANNLab 体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)。    |
 
 **注意**： 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 CANN 安装指南，并选择对应CANN版本的文档。
-##  本地环境体验
+## 本地环境体验
 
 #### 安装 PyTorch 和 torch_npu
 

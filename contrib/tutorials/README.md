@@ -63,7 +63,7 @@ contrib/tutorials/
 | Torch-RecHub 推荐系统实战教程 | 基于 Torch-RecHub 的推荐系统端到端实战教程，覆盖 CTR 精排、序列兴趣建模、召回、多任务学习、实验跟踪与模型导出 | [torch-rechub](./torch-rechub) | ✅ 已迁移 |
 | Swan LLM 大模型实战课程 | 面向高校学生的大语言模型实战课程，覆盖大模型基础理论、SFT/LoRA 微调、强化学习、推理部署及 Ascend C 性能优化 | [swan_llm_course](./swan_llm_course) | 持续建设 |
 | SwanLab 共建训练实战案例 | SwanLab 与 CANN 社区共建的模型训练实践案例，涵盖 MNIST、Qwen2.5 数学解题 LoRA 微调、Qwen3 医学领域 SFT 等场景 | [swanlab_examples](./swanlab_examples) | 持续建设 |
-| 高性能计算数据结构课程 | 基于昇腾 NPU 与 CANN 的高性能计算数据结构实践课程，覆盖基础数据结构、并行计算、分布式计算及 Ascend C 算子开发与优化 | [data_structure_for_hpc](./data_structure_for_hpc) | ✅ 已迁移 |
+| 高性能计算数据结构课程 | 基于昇腾 NPU 与 CANN 的高性能计算数据结构实践课程，覆盖基础数据结构、并行计算、分布式计算及 Ascend C 算子开发与优化 | [data_structure_for_hpc](./data_structure_for_hpc) | ✅ 已发布 |
 | 嵌入式智能计算课程 | 以华为昇腾 AI 芯片为核心平台的嵌入式 AI 全栈开发课程，覆盖系统部署、模型推理与性能分析 | [ai_computing_embedded_system](./ai_computing_embedded_system) | ✅ 已发布 |
 | 《人工智能安全》项目化实践案例 | 围绕人工智能安全主题的项目化实践，覆盖环境配置、智能威胁检测、AI 模型后门攻防与人脸伪造检测 | [ai_security_nuist](./ai_security_nuist) | ✅ 已发布 |
 | 基于昇腾处理器的深度学习实验 | 基于昇腾处理器的深度学习实验课程，覆盖图像分类训练、YOLO 训练调优、边缘端推理、NMS 自定义算子开发与 DeepSeek LoRA 微调评估 | [ascend_ai_lab](./ascend_ai_lab) | ✅ 已发布 |

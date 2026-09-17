@@ -51,12 +51,12 @@
 
 深入理解融合条件判断与策略求解的核心机制
 
-| Notebook         | 链接           | 状态       |
-| ---------------- | -------------- | ---------- |
-| 2.1 章节介绍     | 在线体验建设中 | ⏳ 未发布 |
-| 2.2 融合条件判断 | 在线体验建设中 | ⏳ 未发布 |
-| 2.3 融合策略求解 | 在线体验建设中 | ⏳ 未发布 |
-| 2.4 章节练习     | 在线体验建设中 | ⏳ 未发布 |
+| Notebook         | 链接           | 状态      |
+| ---------------- | -------------- | --------- |
+| 2.1 章节介绍     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 2.2 融合条件判断 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.02_fusion_condition_judgment.ipynb) | ✅ 已发布 |
+| 2.3 融合策略求解 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.03_fusion_strategy_solving.ipynb) | ✅ 已发布 |
+| 2.4 章节练习     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.04_chapter_practice.ipynb) | ✅ 已发布 |
 
 ### 第三章 AutoFuse 项目实践与问题定位
 

@@ -1,15 +1,8 @@
 # PyPTO 算子开发系列教程
 
-本教程面向希望基于 PyPTO 学习昇腾 NPU 算子开发的开发者，围绕
-CANN、芯片基础、PyPTO 编程范式、初级算子实践、中高级算子实践与
-AI Coding Agent 算子开发，提供一套由浅入深的 Notebook 教程。
+本教程面向希望基于 PyPTO 学习昇腾 NPU 算子开发的开发者，围绕CANN、芯片基础、PyPTO 编程范式、初级算子实践、中高级算子实践与AI Coding Agent 算子开发，提供一套由浅入深的 Notebook 教程。
 
-课程内容覆盖从整体认知建立，到 Hello World 跑通、API 与计算图理解，
-再到 elementwise、matmul、reduction、tiling / shape / slice /
-transpose 等基础实践，并进一步进入归一化、FFN、动态 shape、Attention、
-Transformer 组合，最后介绍如何借助 AI Coding Agent（OpenCode）完成
-算子开发与验收，帮助开发者建立使用 PyPTO
-进行算子开发的系统化学习路径。
+课程内容覆盖从整体认知建立，到 Hello World 跑通、API 与计算图理解，再到 elementwise、matmul、reduction、tiling / shape / slice /transpose 等基础实践，并进一步进入归一化、FFN、动态 shape、Attention、Transformer 组合，最后介绍如何借助 AI Coding Agent（OpenCode）完成算子开发与验收，帮助开发者建立使用 PyPTO进行算子开发的系统化学习路径。
 
 教程按章节划分，每个章节包含以下内容：
 
@@ -50,7 +43,7 @@ Transformer 组合，最后介绍如何借助 AI Coding Agent（OpenCode）完�
 
 | 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
 | --- | --- | --- | --- |
-| CANNLab 云开发环境 | cann_9.0.0环境 | Python 3.11 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+| CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
 
 
 > 说明：

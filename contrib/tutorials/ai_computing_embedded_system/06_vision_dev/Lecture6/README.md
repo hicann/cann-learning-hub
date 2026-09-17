@@ -17,4 +17,4 @@
 
 ## 配套课件
 
-- [第6章-智能视觉系统开发.pdf](../../slides/第6章-智能视觉系统开发.pdf)
+- [第6章-智能视觉系统开发.pdf](https://www.qmpan.com/f/w4O2HQ/Chapter6_Intelligent_Vision_System_Development.pdf)
