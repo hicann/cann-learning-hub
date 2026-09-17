@@ -26,14 +26,41 @@ except ImportError:
 def decrypt_password(ciphertext_b64: str, private_key_path: str = "private.pem") -> str:
     """用 RSA 私钥解密密码密文。返回的明文密码仅供内部调用登录 API，禁止输出到对话/日志/文件。"""
     if not HAS_CRYPTO:
-        raise ImportError("需要 pycryptodome 库: pip install pycryptodome")
-    with open(private_key_path, "r") as f:
-        private_key_pem = f.read()
-    rsa_key = RSA.importKey(private_key_pem)
-    cipher = PKCS1_v1_5.new(rsa_key)
-    ciphertext = base64.b64decode(ciphertext_b64)
-    plaintext = cipher.decrypt(ciphertext, sentinel=None)
-    return plaintext.decode()
+        raise ImportError(
+            "需要 pycryptodome 库: pip install pycryptodome"
+        )
+    try:
+        with open(private_key_path, "r") as f:
+            private_key_pem = f.read()
+
+        rsa_key = RSA.importKey(private_key_pem)
+        cipher = PKCS1_v1_5.new(rsa_key)
+
+        ciphertext = base64.b64decode(
+            ciphertext_b64,
+            validate=True
+        )
+
+        plaintext = cipher.decrypt(
+            ciphertext,
+            sentinel=None
+        )
+
+        if plaintext is None:
+            raise ValueError
+
+        return plaintext.decode()
+
+    except (
+        OSError,
+        ValueError,
+        TypeError,
+        IndexError,
+        UnicodeError
+    ):
+        raise ValueError(
+            "RSA 密文无效或与私钥不匹配"
+        ) from None
 
 
 class CANNJudgeClient:
@@ -223,7 +250,15 @@ def main():
     
     if args.command == "login":
         if args.ciphertext:
-            result = client.login_with_ciphertext(args.email, args.ciphertext, args.private_key)
+            try:
+                result = client.login_with_ciphertext(
+                    args.email,
+                    args.ciphertext,
+                    args.private_key
+                )
+            except ValueError as exc:
+                print(f"错误: {exc}")
+                return
         elif args.password:
             result = client.login(args.email, args.password)
         else:
