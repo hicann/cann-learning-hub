@@ -192,14 +192,14 @@ cd cann-learning-hub
 </details>
 
 <details>
-<summary><b>阶段四：SFT/RL 中阶课程 🚧</b></summary>
+<summary><b>阶段四：SFT/RL 中阶课程</b></summary>
 
 **目标**：掌握长序列训练与 RL 后端开发能力
 
 | 序号 | 课程 | 课程内容 | 状态 |
 | :---: | :--- | :--- | :---: |
-| 12 | SFT 训练系列（中阶） | varlen 注意力与上下文并行（CP）融合适配，消除 padding 冗余，提升长序列训练效率 | 🚧 建设中 |
-| 13 | RL 训练系列（中阶）| 基于 torchtitan-npu 的 RL 后端开发，打通 vLLM rollout→Wordle reward→Actor 更新完整链路，完成多后端一致性对比 | 🚧 建设中 |
+| 12 | [SFT 训练系列（中阶）](./tutorials/sft_training_pipeline) | varlen 注意力与上下文并行（CP）融合适配，消除 padding 冗余，提升长序列训练效率 | ✅ 已上线 |
+| 13 | [RL 训练系列（中阶）](./tutorials/rl_training_pipeline) | 基于 torchtitan-npu 的 RL 后端开发，打通 vLLM rollout→Wordle reward→Actor 更新完整链路，完成多后端一致性对比 | ✅ 已上线 |
 
 </details>
 
@@ -323,7 +323,7 @@ cd cann-learning-hub
 <tr><th width="16%">技术领域</th><th width="28%">初级课程</th><th width="28%">中级课程</th><th width="28%">高级课程</th></tr>
 <tr>
 <td><b>⚙️ 算子开发</b></td>
-<td><a href="./tutorials/ascendc_operator_development_light">Kernel 直调版</a> · <a href="./tutorials/pyasc_operator_development">PyASC 入门</a> · <a href="./tutorials/pypto_development">PyPTO 算子开发系列</a><br/><sub>算子基础概念、编程范式、PyASC 函数开发、PyPTO Tensor 编程、AI Coding Agent 算子开发</sub></td>
+<td><a href="./tutorials/ascendc_operator_development_light">Kernel 直调版</a> · <a href="./tutorials/pyasc_operator_development">PyASC 系列教程</a> · <a href="./tutorials/pypto_development">PyPTO 算子开发系列</a><br/><sub>算子基础概念、编程范式、PyASC 函数开发、PyPTO Tensor 编程、AI Coding Agent 算子开发</sub></td>
 <td><a href="./tutorials/ascendc_operator_development">算子工程版</a> · <a href="./tutorials/conv_operator_development/01_conv_basic_operator_development">Conv 算子实战</a> · Vector 算子实战 🚧<br/><sub>Vector/Cube/融合算子开发、工程化流程、卷积与矢量算子实战</sub></td>
 <td><a href="./tutorials/MC2_fused_operator_development">MC2 融合算子实战</a> · AscendC V2 高阶 🚧 · MoE/FA 算子实战 🚧<br/><sub>Matmul/Conv/通算融合、aclnn/aclGraph 工程化</sub></td>
 </tr>
@@ -336,7 +336,7 @@ cd cann-learning-hub
 <tr>
 <td><b>🏋️ 大模型训练</b></td>
 <td><a href="./tutorials/sft_training_pipeline">SFT 训练（初阶）</a> · <a href="./tutorials/rl_training_pipeline">RL 训练（初阶）</a> · <a href="#swanlab">SwanLab 微调案例</a><br/><sub>SFT/RL 基线跑通、医学/多模态/语音微调（可视化）</sub></td>
-<td>SFT 训练（中阶） 🚧 · RL 训练（中阶） 🚧<br/><sub>varlen+CP 融合、RL 后端开发、SwanLab 共建最佳实践</sub></td>
+<td><a href="./tutorials/sft_training_pipeline">SFT 训练（中阶）</a> · <a href="./tutorials/rl_training_pipeline">RL 训练（中阶）</a><br/><sub>varlen+CP 融合、RL 后端开发、SwanLab 共建最佳实践</sub></td>
 <td>SFT/RL 训练（高阶）🚧<br/><sub>计算图优化、显存调优、端到端吞吐</sub></td>
 </tr>
 <tr>
@@ -348,13 +348,13 @@ cd cann-learning-hub
 <tr>
 <td><b>🔗 图框架</b></td>
 <td><a href="./tutorials/ge_development">GE 图引擎（快速入门）</a> · <a href="./tutorials/TorchAir_development">TorchAir（快速入门）</a> · <a href="./tutorials/autofusion_development">AutoFusion 基础</a><br/><sub>图编译执行、图模式优化、自动融合</sub></td>
-<td><a href="./tutorials/ge_development/03_graph_compilation">GE 图编译</a> · <a href="./tutorials/ge_development/04_model_execution_optimization">GE 模型执行与优化</a> · <a href="./tutorials/TorchAir_development/README.md">TorchAir 进阶优化</a><br/><sub>图构建/编译配置/自定义算子入图/自定义融合pass/静态&动态shape/内存复用/多流/限核/SuperKernel</sub></td>
+<td><a href="./tutorials/ge_development">GE 图编译与优化</a> · <a href="./tutorials/TorchAir_development/README.md">TorchAir 进阶优化</a> · <a href="./tutorials/autofusion_development/02_autofusion_principles">AutoFusion 融合原理</a><br/><sub>图构建/编译配置/自定义算子入图/自定义融合pass/静态&动态shape/内存复用/多流/限核/SuperKernel/AutoFusion 融合条件判断与策略求解</sub></td>
 <td>🚧 建设中<br/><sub>AutoFusion 融合原理与实战、GE/TorchAir 实践与问题定位</sub></td>
 </tr>
 <tr>
 <td><b>📡 通信</b></td>
-<td><a href="./tutorials/hixl_development">HiXL 单边通信</a> · <a href="./tutorials/hccl_development">集合通信</a><br/><sub>单边通信基础、集合通信基础</sub></td>
-<td>🚧 建设中<br/><sub>HiXL传输模式、集合通信开发</sub></td>
+<td><a href="./tutorials/hixl_development">HiXL 单边通信</a> · <a href="./tutorials/hccl_development">集合通信</a><br/><sub>单边通信基础、HIXL 核心 API、集合通信基础算子与算法、北极星工具</sub></td>
+<td><a href="./tutorials/hixl_development">HiXL 传输模式与性能优化</a> · <a href="./tutorials/hccl_development">HCCL 算子开发</a><br/><sub>HiXL 传输模式/问题定位/性能分析、HCCL 软件架构与编程模型/AICPU/CCU 引擎算子开发</sub></td>
 <td>🚧 建设中<br/><sub>PD分离与KV Cache传输、多卡推理/训练通信算子开发</sub></td>
 </tr>
 <tr>
@@ -719,6 +719,7 @@ cd cann-learning-hub
 </details>
 
 ## 🔥 Latest News
+- [2026/09] 新增[大模型 RL 训练系列教程](./tutorials/rl_training_pipeline)，使用 verl + GRPO 完成 Qwen3-1.7B Wordle 强化学习训练，涵盖 RL 核心概念、Wordle Agent Loop、训练监控、TorchTitan-NPU 后端、FSDP2、TND 变长注意力与上下文并行。
 - [2026/09] 新增[面向高性能计算的数据结构](./contrib/tutorials/data_structure_for_hpc)课程，围绕数据结构与高性能计算实践，涵盖并行计算、分布式计算、Ascend C 算子开发与性能优化等内容。
 - [2026/08] 新增[PyPTO 算子开发系列教程](./tutorials/pypto_development)，基于 PyPTO Tensor 编程范式开发昇腾算子，涵盖 CANN/芯片认知、MPMD 编程范式、elementwise/matmul/reduction 基础实践与 Attention/Transformer 中高级实践。
 - [2026/08] 新增[PyASC 算子开发系列教程](./tutorials/pyasc_operator_development)，基于 Python 原生语法开发昇腾算子，涵盖 pyasc 概述与环境准备、核函数开发基础，Vector/Matmul 算子开发与调试调优（初阶已上线）。
