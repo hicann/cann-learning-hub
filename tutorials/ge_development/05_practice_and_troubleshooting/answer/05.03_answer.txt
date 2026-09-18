@@ -1,0 +1,15 @@
+05.03 课后练习答案
+
+1. 正确。aclgrphParseTensorFlow 将 TensorFlow 原始模型文件（.pb）解析为 AscendIR Graph，返回类型为 graphStatus，GRAPH_SUCCESS(0) 表示成功，其他值表示失败。
+
+2. 错误。约束说明指出：使用该接口解析得到的 Graph，其 Graph 名中会包含时间戳，因此多次调用该接口 Graph 名会不同。若需固定图名，可用 OUTPUT 配置项指定转图后的计算图名称。
+
+3. B。本题问的是 ATC CLI 路径：model.pb → atc（`--framework=3`，表示 TensorFlow）→ OM → ACL 加载执行。`aclgrphParseTensorFlow` 产出的 `ge::Graph` 保存在调用进程内，不能直接作为后续 `atc --model=model.pb` 的输入；如果要沿 Parser 生成的 Graph 继续编译，应使用 `aclgrphBuildInitialize` → `aclgrphBuildModel` → `aclgrphSaveModel`（再调用 `aclgrphBuildFinalize`）这一组 Build API。A 是 PyTorch 路径；C/D 混淆了 PyTorch 与 ONNX 路径。
+
+4. B。parser_params 是输入参数，为配置参数 map：key 为参数类型、value 为参数值，二者均为 AscendString 格式，用于描述原始模型解析参数；可包含多个配置项。
+
+5. ABCD。INPUT_SHAPE、OUT_NODES、OUTPUT、ENABLE_SCOPE_FUSION_PASSES 都是 Parser 支持的配置参数；其中 ENABLE_SCOPE_FUSION_PASSES 仅 aclgrphParseTensorFlow 支持。
+
+6. B。算子被转成 frameworkop 或报 "it is not supported"，通常是 TensorFlow 框架算子适配插件 so 未加载成功，或算子未注册 TF→GE 的映射关系/未编译进插件 so。CANN 9.0.0 可重点查看 `opp/built-in/framework/tensorflow/libops_all_plugin.so` 的 `Plugin load ... success.` 日志；若是 `IR ... is not registered`，则应转查 `opp/built-in/op_proto/libopsproto.so` 等原型库。可结合 `nm -D` 检查对应 so 的符号表。
+
+7. ABCD。A PyTorch 优先 TorchAir；B 已导出的 `.pb` 可直接用 ATC（`--framework=3`）离线编译，若先用 `aclgrphParseTensorFlow` 得到 Graph，则应接 `aclgrphBuildModel` / `aclgrphSaveModel`，这两条是替代入口；C 需精细控制图结构时用 GE 手工构图；D 三种方式最终都收敛为同一种 AscendIR 图，进入统一的 GE 编译执行流程。均正确。

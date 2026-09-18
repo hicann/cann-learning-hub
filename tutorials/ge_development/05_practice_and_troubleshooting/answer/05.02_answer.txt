@@ -1,0 +1,15 @@
+05.02 课后练习答案
+
+1. 正确。TorchAir（Torch Ascend Intermediate Representation）是 torch_npu 中支持图模式能力的扩展库，对接 PyTorch 的 Dynamo 特性，把捕获到的 FX 图转换为 AscendIR 计算图，再交给 GE 编译执行。
+
+2. 错误。torch.compile 是惰性编译。定义 opt_model 时并不会立即编译，真正的图捕获与编译发生在第一次实际调用 opt_model(...) 时；首次调用通常较慢，后续命中编译缓存。
+
+3. B。正确链路为：PyTorch forward →（TorchDynamo/FX 捕获为 aten IR 的 FX Graph）→（TorchAir 转换为 AscendIR 计算图）→ GE 编译优化并下沉执行。A 顺序颠倒；C 是离线 ATC 路径；D 是 ONNX/Parser 离线路径，均非 TorchAir 链路。
+
+4. B。GE 图模式会将整张图下沉到 Device。后续执行时，Host 只需下发一个「模型执行 Task」即可触发整图，从而减少 Host 与 Device 之间的调度交互。A 描述的是 Eager 逐算子下发；C 错误，图模式有首次编译头开销；D 错误，图模式同样可用于训练。
+
+5. ABCD。四种情况都可能触发 graph break 或回退 Eager：A 依赖张量值的 Python 控制流；B 不支持的算子/自定义 Python 逻辑；C `.item()`/`.numpy()` 触发同步跳出图；D 未声明的数据依赖动态 shape 会导致 recompile 或回退。
+
+6. B。输入 shape 多变且未开启动态 shape 时，可能因 guard/cache 未命中触发重新捕获与编译（recompile），造成编译开销和时延抖动；是否每个新 shape 都重编取决于所用 torch/torch_npu/torchair 版本及其 guard/cache 行为。动态 shape 的具体 API 和分档方式也应以当前版本文档为准。
+
+7. ABCD。A 导入顺序 torch → torch_npu → torchair；B 模型与输入都需在 NPU 设备上；C 先保证跑通（与 Eager 结果一致）再优化性能；D shape 多变时显式开启动态 shape 减少重复编译。均为最佳实践。

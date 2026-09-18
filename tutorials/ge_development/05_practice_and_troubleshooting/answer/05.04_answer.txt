@@ -1,0 +1,19 @@
+05.04 课后练习答案
+
+1. 正确。ASCEND_GLOBAL_LOG_LEVEL 取值 0=DEBUG、1=INFO、2=WARNING、3=ERROR、4=NULL。设为 1（INFO）后会输出比默认级别更详细的日志，通常足以观察排障所需的流程信息。
+
+2. 错误。形如 E*9***（后 4 位 9000~9999，如 E19999）一般表示系统内部错误码，通常需要联系华为技术支持排查；用户类错误码为 0000~8999，才一般可按手册自助处理。
+
+3. B。DUMP_GRAPH_LEVEL=3 表示 dump 最后的生成图（经过 GE 优化、编译后的图）。A 的 DUMP_GE_GRAPH 控制内容粒度（1/2/3）而非编译阶段；C 控制格式；D 是日志级别。
+
+4. C。ge_proto（ge_proto*.txt）为 protobuf 文本格式，信息完整性最好，可转成 JSON 方便定位。readable 可读性最高，onnx 便于 Netron 可视化，但完整性都不如 ge_proto。
+
+5. B。该报错表示用户分配的 output/input buffer 大小与模型 InferShape 推导的大小不一致。应按报错提示的 Expected size 重新分配 buffer，并核对输入 shape/dtype，动态 shape 还需确认输入落在编译范围/档位内。
+
+6. B。"IR for op ... is not registered." / "have no ir factory" 表示算子原型未注册：算子原型 so 未加载成功，或原型未编译进 so。应查 "OpsProtoManager plugin load ... successfully." 日志，并用 nm -D 查对应原型 so 的符号表；若同时出现 frameworkop / "it is not supported"，再单独检查 "Plugin load ... success." 的框架适配插件日志。标准安装按 E10501 检查 ASCEND_OPP_PATH；使用自定义算子包时还需检查 ASCEND_CUSTOM_OPP_PATH，检索日志可用 grep -i "plugin load"。
+
+7. ABCD。A msaicerr 专门分析 AI Core Error，输出 info.txt 分析报告；B asys 一键收集故障信息，卡住场景可用实时堆栈导出；C msprof 做性能分析，采集 API/Host/Device 各层及算子级耗时、FP/BP、AI Core metrics；D Netron 打开 ge_onnx*.pbtxt 可视化看图结构与算子属性。均正确。
+
+8. ABCD。OOM 定位：在 plog 搜 mem_stats 看各组件内存统计；aclrtMallocHost 报错指向 Host 内存 OOM；aclrtMalloc/aclrtMallocPhysical 报错指向 Device 内存 OOM；搜 DEV_PROC_MEM 查 Device 业务进程内存统计。均正确。
+
+9. ABCD。InferShape 定位：dump 含 AfterInfershape 的图对比前后 shape；检查报错算子各输入 shape/dtype/format 是否满足原型约束；动态 shape 核对 INPUT_SHAPE 范围/档位；顺数据流向上找第一个 shape 不对的算子（往往是源头）。均正确。

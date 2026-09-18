@@ -1,0 +1,56 @@
+05.05 实践与问题定位 章节练习答案
+
+一、判断题
+
+1. 正确。TorchAir 是 torch_npu 中支持图模式的扩展库，对接 Dynamo，把捕获的 FX 图（aten IR）转换为 AscendIR，再交 GE 编译执行。
+2. 错误。torch.compile 是惰性编译，定义 opt_model 时不编译，首次实际调用 opt_model(...) 才捕获并编译；首次较慢，后续命中缓存。
+3. 正确。aclgrphParseTensorFlow 将 .pb 解析为 AscendIR Graph，返回 graphStatus，GRAPH_SUCCESS(0) 表示成功。
+4. 错误。解析得到的 Graph 名包含时间戳，多次调用会不同；需固定图名可用 OUTPUT 配置项指定。
+5. 正确。TorchAir / TF Parser / 手工构图最终都收敛为同一种 AscendIR 图，进入统一的 GE 编译执行流程。
+6. 正确。ASCEND_GLOBAL_LOG_LEVEL：0=DEBUG、1=INFO、2=WARNING、3=ERROR、4=NULL。设为 1（INFO）比默认更详细，是常规排障级别。
+7. 错误。形如 E*9***（如 E19999）一般是系统内部错误码，通常需联系技术支持；用户类错误码（可自助解决）为 0000~8999。
+8. 正确。DUMP_GRAPH_LEVEL=3 表示 dump 最后的生成图（编译后的图）；DUMP_GE_GRAPH 则控制内容粒度。
+
+二、单选题
+
+9. B。链路为 PyTorch forward →（Dynamo/FX 捕获为 aten IR 的 FX Graph）→（TorchAir 转 AscendIR）→ GE 编译下沉执行。
+10. B。本题限定使用 ATC CLI：model.pb → ATC（`--framework=3`，表示 TensorFlow）→ OM → ACL。`aclgrphParseTensorFlow` 产出的 `ge::Graph` 保存在调用进程内，不能直接作为 ATC 的输入；如果沿 Parser 路线继续编译，应在程序内调用 `aclgrphBuildInitialize` → `aclgrphBuildModel` → `aclgrphSaveModel`（最后 `aclgrphBuildFinalize`）。
+11. C。ge_proto（ge_proto*.txt）protobuf 文本格式，信息最完整、可转 JSON；readable 可读性最高、onnx 便于 Netron 可视化，但完整性不如 ge_proto。
+12. B。该报错是用户 buffer 大小与模型 InferShape 推导的大小不一致，应按 Expected size 重新分配 buffer 并核对 shape/dtype。
+13. B。"IR for op ... is not registered." 表示算子原型未注册——原型 so 未加载成功或未编译进 so，可用 nm -D 查符号表、并确认算子包路径。
+14. B。输入 shape 多变且未开动态 shape 时，可能因 guard/cache 未命中触发 recompile，造成编译开销和时延抖动；是否每个新 shape 都重编取决于所用 torch/torch_npu/torchair 版本及其 guard/cache 行为，不能一概而论。
+15. B。parser_params 为输入参数 map，key 为参数类型、value 为参数值，均为 AscendString 格式，可包含多个配置项。
+
+三、多选题
+
+16. ABCD。依赖张量值的 Python 控制流、不支持的算子/自定义 Python 逻辑、.item()/.numpy() 触发同步、未声明的数据依赖动态 shape，都可能触发 graph break 或回退 Eager。
+17. ABCD。INPUT_SHAPE、OUT_NODES、OUTPUT、ENABLE_SCOPE_FUSION_PASSES 都是 Parser 支持的配置参数，其中 ENABLE_SCOPE_FUSION_PASSES 仅 TF Parser 支持。
+18. ABCD。msaicerr 分析 AI Core Error 输出 info.txt；asys 一键收集故障信息、卡住可实时导堆栈；msprof 性能分析采集各层及算子级耗时/FP-BP/AI Core metrics；Netron 打开 ge_onnx*.pbtxt 可视化看图。
+19. ABCD。plog 搜 mem_stats 看各组件内存；aclrtMallocHost 报错指向 Host OOM；aclrtMalloc/aclrtMallocPhysical 报错指向 Device OOM；搜 DEV_PROC_MEM 查 Device 业务进程内存。
+20. ABCD。导入顺序 torch → torch_npu → torchair；模型与输入均需在 NPU 设备；先跑通（与 Eager 一致）再优化；shape 多变显式开启动态 shape 减少重复编译。
+
+四、实践题（参考思路，重在完成实践、记录现象并说明定位入口）
+
+21.（TorchAir 实践）参考要点：
+   - 导入顺序：import torch → import torch_npu → import torchair；用 npu_backend = torchair.get_npu_backend()，opt_model = torch.compile(model, backend=npu_backend)；model.npu()、输入 .npu()。
+   - 跑通验证：对同一输入分别跑 Eager 与图模式，比较输出（allclose）一致。
+   - 耗时：首次调用包含图捕获+编译开销（慢），后续命中编译缓存（快）；说明 torch.compile 是惰性编译。
+
+22.（TensorFlow 离线编译实践）两条路线二选一，不能把 Parser API 与 ATC CLI 串成一条调用链：
+   - 编程式路线：准备 `map<AscendString, AscendString>`，例如 `INPUT_SHAPE="input:1,224,224,3"`、`OUT_NODES`、`OUTPUT="my_graph"`，调用 `aclgrphParseTensorFlow("model.pb", parser_params, graph)`；成功后在同一程序内依次调用 `aclgrphBuildInitialize`、`aclgrphBuildModel`、`aclgrphSaveModel`（完成后 `aclgrphBuildFinalize`）生成 `.om`。
+   - ATC CLI 路线：`atc --model=model.pb --framework=3 --output=model --soc_version=Ascend910B1`（`--framework=3` 表示 TensorFlow）。ATC 会独立重新读取 `.pb`；Parser 的 `parser_params` 不会自动传给 ATC，需改用 ATC 的 `--input_shape`、`--out_nodes` 等选项。
+   - CANN 9.0 TensorFlow 适配插件可关注 `Plugin load .../opp/built-in/framework/tensorflow/libops_all_plugin.so success.`；源码日志实际使用大写 `Plugin` 和 `success.`，安装包文件名可能随版本/包形态变化，可用 `grep -i "plugin load"` 检索。最终产物为 `model.om`。
+
+23.（排障演练）先按报错分支定位，不能把框架适配插件与算子原型混为一谈：
+   - `frameworkop` / `it is not supported`：先搜 `grep -i "plugin load"`，确认 CANN 9.0 的 TensorFlow 框架插件（通常为 `opp/built-in/framework/tensorflow/libops_all_plugin.so`）加载成功，再用 `nm -D libops_all_plugin.so | grep <OpType>` 检查框架算子映射符号。
+   - `IR for op ... is not registered` / `have no ir factory`：搜 `OpsProtoManager plugin load ... successfully.`，确认 `opp/built-in/op_proto/libopsproto.so`（或对应原型库）加载成功，再用 `nm -D libopsproto.so | grep <OpType>` 检查原型符号。
+   - 环境变量：标准安装先按 E10501 检查 `ASCEND_OPP_PATH`；使用自定义算子包时还要检查 `ASCEND_CUSTOM_OPP_PATH`，后者用于自定义路径且搜索优先级更高。两个变量都应指向与当前 CANN 版本匹配的算子包。
+
+24.（排障演练）参考步骤：
+   - 确认 buffer 问题：报错明确给出 model expect 与 given 的字节数不一致，属于 buffer 大小不匹配而非数值错误。
+   - 修复：按报错 Expected size（或 aclmdlGetInputSizeByIndex / aclmdlGetOutputSizeByIndex 查询）重新分配输入/输出 buffer，并核对输入 shape/dtype/format。
+   - 动态 shape：还需确认真实输入落在编译时的 shape 范围或命中某个档位（必要时先 aclmdlSetDynamicBatchSize 等设档）。
+
+25.（排障演练）参考思路：
+   - 确认频繁重编译：开启 TorchAir/Dynamo 的日志（或 ASCEND 日志 INFO 级），观察是否每次/多次出现图捕获与编译记录；profiling 看首帧外仍有编译头开销。
+   - 优化（任答两项及以上）：①显式开启动态 shape（mark_dynamic / 动态分档），让可枚举 shape 共用编译产物；②收敛/对齐输入 shape 种类（如 padding 到固定档位）；③避免依赖张量值的控制流与 .item()/.numpy() 造成 graph break；④为高频 shape 预热编译并利用编译缓存。
