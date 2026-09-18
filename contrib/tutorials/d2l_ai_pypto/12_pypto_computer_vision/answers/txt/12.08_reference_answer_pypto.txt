@@ -1,0 +1,112 @@
+说明：本文件为 12.08《区域卷积神经网络（R-CNN）系列》参考答案（PyPTO 版），按章节整理，仅保留 notebook 中的 PyPTO 版代码；
+      纯理论题内容与 PyTorch 版一致，不区分。代码需在参考 '12.08' 的主 notebook 环境下运行（已导入 torch / nn / pypto
+      及 src.* 模块，answers 子目录需先执行 sys.path.insert(0, "..")，设置 TILE_FWK_DEVICE_ID 环境变量并选择 npu 设备）。
+
+══════════════════════════════════════════════
+12.08 区域卷积神经网络（R-CNN）系列 · 参考答案（PyPTO 版）
+══════════════════════════════════════════════
+import os, sys
+sys.path.insert(0, "..")
+os.environ["TILE_FWK_DEVICE_ID"] = "1"
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pypto
+    import torch
+    import torch_npu
+    import torchvision
+    from torch import nn
+    from torch.nn import functional as F
+    from src.D2LFunction import *
+
+import logging
+# pypto 导入会把根 logger 调到 DEBUG，压回 WARNING 避免刷屏
+logging.getLogger().setLevel(logging.WARNING)
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+logging.getLogger("PIL").setLevel(logging.WARNING)
+
+device_id = int(os.environ["TILE_FWK_DEVICE_ID"])
+torch.npu.set_device(device_id)
+device = f"npu:{device_id}"
+
+
+──────────────────────────────────────────────
+【练习 12.8.5】
+──────────────────────────────────────────────
+【题目】
+
+我们能否将目标检测视为回归问题（例如预测边界框和类别的概率）？可以参考YOLO模型的设计。
+
+【解答】
+
+可以。目标检测可以被视为回归问题，其中边界框的坐标和目标的类别可以被预测为连续值。这类方法目前主要分为三个系列：YOLO系列、SSD系列和Anchor Free系列。
+
+YOLO模型将目标检测问题直接视为一个回归问题：它将图像划分为网格，对每个网格预测边界框的坐标和大小（回归坐标与宽高），同时预测每个类别的置信度得分，表示该网格中是否包含该类别的目标。整个检测过程在一次前向传播中完成，无需单独的候选区域生成阶段。
+
+SSD同样属于回归式的单阶段检测器（见 12.7节 (./12.07_ssd.ipynb)），通过预定义的多尺度锚框直接回归偏移量与类别；而Anchor Free系列（如CenterNet）则直接回归目标的中心点、宽高或角点。与本节介绍的两阶段方法（R-CNN系列）相比，回归式方法通常速度更快，但精度上可能稍逊。
+
+
+──────────────────────────────────────────────
+【练习 12.8.6】
+──────────────────────────────────────────────
+【题目】
+
+将单发多框检测与本节介绍的方法进行比较。他们的主要区别是什么？
+
+【解答】
+
+它们的区别主要体现在检测方式、速度和准确性、训练方式三个方面：
+
+1. 检测方式：
+• SSD是单阶段（one-stage）检测方法，将不同尺度和比例的预定义锚框应用于图像的不同位置，直接回归目标的边界框位置和类别信息；
+• R-CNN系列是两阶段（two-stage）检测方法，包括R-CNN、Fast R-CNN、Faster R-CNN和Mask R-CNN等。它们首先在图像中生成候选区域（region proposals），然后对候选区域进行分类和边界框回归。
+
+2. 速度和准确性：
+• SSD在单次前向传播中同时执行分类和边界框回归，速度较快，适用于实时应用；但相对于R-CNN系列，准确性可能稍逊一筹；
+• R-CNN系列相对较慢，但其两阶段设计允许更精细的特征提取和候选区域筛选，准确性通常优于SSD。尤其是Mask R-CNN在实例分割任务上表现出色。
+
+3. 训练方式：
+• SSD使用硬负样本挖掘（Hard Negative Mining）平衡正负样本数量，并使用多尺度特征图检测不同尺度的目标；
+• R-CNN系列训练包括候选区域生成和区域分类/边界框回归两个阶段，通常使用区域建议网络（RPN）生成候选区域，并使用RoI池化（Region of Interest pooling）等技术提取区域特征。
+
+总的来说，SSD适用于需要快速处理速度的实时应用场景，而R-CNN系列更适合对准确性要求较高的任务。
+
+以下使用 torch 编程演示两阶段方法中的RoI池化（与 12.8.2节 (./12.08_rcnn.ipynb) 正文一致）：
+
+» 使用 PyPTO 编程进行验证（R-CNN 两阶段管线中与模型相关的计算可分解为 CNN 特征提取与 检测头回归两个环节；练习 12.8.5 提到的回归式检测（YOLO 等），其"预测边界框偏移"本质上就是一个线性回归头。下面用 PyPTOConv2d（与 12.1/12.11 节同款 im2col + matmul 路线）与 PyPTOLinear 实现这两个环节，并与 torch 逐值对比）：
+
+# PyPTO 验证：CNN 特征提取（候选区域 -> 特征图）
+from src.PyPTOConv2DModule import PyPTOConv2d
+from src.PyPTOLinearFuseModule import PyPTOLinear
+
+torch.manual_seed(0)
+X_roi = torch.rand(1, 3, 16, 16, device=device)      # 模拟一个候选区域
+conv_pt = PyPTOConv2d(3, 8, kernel_size=3, padding=1, bias=True).to(device)
+conv_tc = nn.Conv2d(3, 8, kernel_size=3, padding=1, bias=True).to(device)
+conv_tc.weight.data.copy_(conv_pt.weight.data)
+conv_tc.bias.data.copy_(conv_pt.bias.data)
+with torch.no_grad():
+    f_pt = conv_pt(X_roi)
+    f_tc = conv_tc(X_roi)
+print('PyPTO 卷积（区域特征提取）与 torch 一致:',
+      torch.allclose(f_pt, f_tc, atol=1e-3),
+      '，maxdiff:', f'{(f_pt - f_tc).abs().max().item():.2e}')  # FP32 累加顺序差异
+
+# PyPTO 验证：检测头回归（锚框特征 -> 4 个偏移量）
+feat = torch.rand(4, 128, device=device)
+head_pt = PyPTOLinear(128, 4).to(device)
+head_tc = nn.Linear(128, 4).to(device)
+head_tc.weight.data.copy_(head_pt.weight.data.t())   # PyPTO 权重按 (in, out) 存储
+head_tc.bias.data.copy_(head_pt.bias.data)
+with torch.no_grad():
+    o_pt = head_pt(feat)
+    o_tc = head_tc(feat)
+print('PyPTO 回归头与 torch 一致:', torch.allclose(o_pt, o_tc, atol=1e-5))
+
+可见 R-CNN 与回归式检测中"特征提取 + 边界框回归"两个环节均可由 PyPTO 算子完成，与 12.7 节 SSD 的锚框分配/检测算子（PyPTOAnchor）组合后，可覆盖检测模型的主要计算路径。
+
+可见两阶段方法需要显式的候选区域（RoI）提取与池化，而SSD直接由锚框回归得到结果，无需该过程。
+
+──────────────────────────────────────────────
+【参考答案来源】 datawhalechina.github.io 的 d2l-ai-solutions-manual（参考答案与 PyTorch 代码实现来源）：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/
+──────────────────────────────────────────────

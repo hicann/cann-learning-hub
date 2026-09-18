@@ -1,0 +1,96 @@
+说明：本文件为 12.09《语义分割和数据集》参考答案（PyPTO 版），按章节整理，仅保留 notebook 中的 PyPTO 版代码；
+      纯理论题内容与 PyTorch 版一致，不区分。代码需在参考 '12.09' 的主 notebook 环境下运行（已导入 torch / nn / pypto
+      及 src.* 模块，answers 子目录需先执行 sys.path.insert(0, "..")，设置 TILE_FWK_DEVICE_ID 环境变量并选择 npu 设备）。
+
+══════════════════════════════════════════════
+12.09 语义分割和数据集 · 参考答案（PyPTO 版）
+══════════════════════════════════════════════
+import os, sys
+sys.path.insert(0, "..")
+os.environ["TILE_FWK_DEVICE_ID"] = "1"
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pypto
+    import torch
+    import torch_npu
+    import torchvision
+    from torch import nn
+    from torch.nn import functional as F
+    from src.D2LFunction import *
+
+import logging
+# pypto 导入会把根 logger 调到 DEBUG，压回 WARNING 避免刷屏
+logging.getLogger().setLevel(logging.WARNING)
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+logging.getLogger("PIL").setLevel(logging.WARNING)
+
+device_id = int(os.environ["TILE_FWK_DEVICE_ID"])
+torch.npu.set_device(device_id)
+device = f"npu:{device_id}"
+
+
+──────────────────────────────────────────────
+【练习 12.9.1】
+──────────────────────────────────────────────
+【题目】
+
+如何在自动驾驶和医疗图像诊断中应用语义分割？还能想到其他领域的应用吗？
+
+【解答】
+
+语义分割在自动驾驶和医疗图像诊断中有着广泛的应用，在其他领域也同样适用：
+
+1. 自动驾驶：用于场景理解与障碍物检测。通过将道路、行人、车辆等不同类别分割出来，帮助自动驾驶系统理解驾驶场景并做出决策和规划，例如区分车道线、交通信号灯、行人等。
+2. 医疗图像诊断：用于分割病变区域，例如肿瘤、病变组织或器官，帮助医生分析病变的位置、大小和形状，制定有效的治疗计划。
+3. 其他领域：
+• 视频分析：视频中的对象跟踪、行为分析和场景理解；
+• 农业与环境监测：作物检测、土地利用分类、植被监测；
+• 增强现实与虚拟现实：为实时摄像头或虚拟场景提供空间理解与交互性；
+• 安防：视频监控中的场景精细分析、异常行为识别。
+
+
+──────────────────────────────────────────────
+【练习 12.9.2】
+──────────────────────────────────────────────
+【题目】
+
+回想一下 12.1节 (./12.01_image_augmentation.ipynb)中对数据增强的描述。图像分类中使用的哪种图像增强方法是难以用于语义分割的？
+
+【解答】
+
+随机裁剪（Random Crop）难以直接用于语义分割。
+
+随机裁剪通过在图像中随机选择一个区域进行裁剪，以提高数据多样性和模型泛化能力；但在语义分割中，不仅需要对图像裁剪，还需要对标签（分割掩码）同步裁剪，确保像素级对应关系。随机裁剪可能使图像与标签不对齐，破坏语义分割的准确性。
+
+因此语义分割更倾向于使用能保持像素级对应关系的增强方法，例如随机缩放、随机翻转、弹性变换等；若使用随机裁剪，必须对图像与标签施加完全相同的变换（如 12.9节 (./12.09_semantic_segmentation_and_dataset.ipynb)正文 VOCSegDataset 中 random_crop 对特征图和标签使用同一个随机偏移量那样）。
+
+» 使用 PyPTO 编程进行验证（语义分割模型的骨干以卷积为主，与 12.11 节 FCN 的 resnet18 骨干同款；用 PyPTOConv2d 对一张 VOC 图像做特征提取，与 torch 卷积逐值对比，说明分割模型的底层算子同样可以下沉 PyPTO）：
+
+# PyPTO 验证：VOC 图像上的卷积特征提取（12.11 节 FCN 骨干的同款算子）
+from src.PyPTOConv2DModule import PyPTOConv2d
+
+DATA_HUB['voc2012'] = (DATA_URL + 'VOCtrainval_11-May-2012.tar',
+                       '4e443f8a2eca6b1dac8a6c57641b67dd40621a49')
+voc_dir = download_extract('voc2012', 'VOCdevkit/VOC2012')
+features, _ = read_voc_images(voc_dir, is_train=True)
+voc_img = features[0].float().unsqueeze(0) / 255       # (1,3,H,W) 0~1
+voc_img = voc_img.to(device)
+
+conv_pt = PyPTOConv2d(3, 16, kernel_size=3, padding=1, bias=True).to(device)
+conv_tc = nn.Conv2d(3, 16, kernel_size=3, padding=1, bias=True).to(device)
+conv_tc.weight.data.copy_(conv_pt.weight.data)
+conv_tc.bias.data.copy_(conv_pt.bias.data)
+with torch.no_grad():
+    f_pt = conv_pt(voc_img)
+    f_tc = conv_tc(voc_img)
+print('VOC 图像 PyPTO 卷积特征与 torch 一致:',
+      torch.allclose(f_pt, f_tc, atol=1e-3),
+      '，maxdiff:', f'{(f_pt - f_tc).abs().max().item():.2e}')  # FP32 累加顺序差异
+print('特征图尺寸:', tuple(f_pt.shape))
+
+语义分割（FCN 等）与图像分类共用卷积骨干，其前向/反向均可由 PyPTOConv2d 完成；分割任务特有的转置卷积上采样部分，见 12.11 节练习的 PyPTO 验证。
+
+──────────────────────────────────────────────
+【参考答案来源】 datawhalechina.github.io 的 d2l-ai-solutions-manual（参考答案与 PyTorch 代码实现来源）：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/
+──────────────────────────────────────────────

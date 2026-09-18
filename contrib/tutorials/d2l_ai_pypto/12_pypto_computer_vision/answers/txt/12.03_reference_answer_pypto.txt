@@ -1,0 +1,88 @@
+说明：本文件为 12.03《目标检测和边界框》参考答案（PyPTO 版），按章节整理，仅保留 notebook 中的 PyPTO 版代码；
+      纯理论题内容与 PyTorch 版一致，不区分。代码需在参考 '12.03' 的主 notebook 环境下运行（已导入 torch / nn / pypto
+      及 src.* 模块，answers 子目录需先执行 sys.path.insert(0, "..")，设置 TILE_FWK_DEVICE_ID 环境变量并选择 npu 设备）。
+
+══════════════════════════════════════════════
+12.03 目标检测和边界框 · 参考答案（PyPTO 版）
+══════════════════════════════════════════════
+import os, sys
+sys.path.insert(0, "..")
+os.environ["TILE_FWK_DEVICE_ID"] = "1"
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pypto
+    import torch
+    import torch_npu
+    import torchvision
+    from torch import nn
+    from torch.nn import functional as F
+    from src.D2LFunction import *
+
+import logging
+# pypto 导入会把根 logger 调到 DEBUG，压回 WARNING 避免刷屏
+logging.getLogger().setLevel(logging.WARNING)
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+logging.getLogger("PIL").setLevel(logging.WARNING)
+
+device_id = int(os.environ["TILE_FWK_DEVICE_ID"])
+torch.npu.set_device(device_id)
+device = f"npu:{device_id}"
+
+
+──────────────────────────────────────────────
+【练习 12.3.1】
+──────────────────────────────────────────────
+【题目】
+
+找到另一张图像，然后尝试标记包含该对象的边界框。比较标注边界框和标注类别哪个需要更长的时间？
+
+【解答】
+
+标注边界框需要更长的时间：标注类别只需判断“是什么”，而标注边界框还需要精确定位“在哪”，需要为每个目标逐一调整框的四个角点坐标，工作量更大。下面以 images/cat1.jpg（猫的图片）为例，标记包含该对象的边界框。
+
+可以看到，猫的主要轮廓基本落在标记的边界框内。相比之下，标注“猫”这个类别只需一眼即可完成，而边界框需要反复对比框与物体轮廓是否贴合，因此耗时更长。
+
+
+
+» 使用 PyPTO 编程进行验证（边界框坐标转换走 NPU kernel）：
+
+
+
+from src.PyPTOAnchor import box_corner_to_center, box_center_to_corner
+
+boxes = torch.tensor((cat_bbox,), device=device)
+# 从（左上，右下）转换到（中心，宽，高），再转回
+cc = box_corner_to_center(boxes)
+back = box_center_to_corner(cc)
+print('往返转换一致:', torch.allclose(back, boxes))
+print('中心/宽高表示:', cc)
+
+# 用 PyPTO 往返后的坐标在原图上画边界框（与 torch 版同图对比）
+fig = plt.imshow(img)
+fig.axes.add_patch(bbox_to_rect(back.cpu()[0].tolist(), 'green'));
+
+
+──────────────────────────────────────────────
+【练习 12.3.2】
+──────────────────────────────────────────────
+【题目】
+
+为什么box_corner_to_center和box_center_to_corner的输入参数的最内层维度总是4？
+
+【解答】
+
+box_corner_to_center和box_center_to_corner是在目标检测中广泛使用的边界框坐标转换函数。输入参数的最内层维度总是4，原因在于边界框通常基于矩形框的四个坐标或尺寸信息来定义：
+
+• 对于box_corner_to_center，输入的边界框表示形式基于四个角点坐标：[左上x, 左上y, 右下x, 右下y]；
+• 对于box_center_to_corner，输入的边界框表示形式基于中心点坐标以及边界框的宽和高：[中心x, 中心y, 宽度, 高度]。
+
+无论批量中有多少个边界框（第0维为n），每个边界框都只需要这4个标量即可完整描述，因此最内层维度恒为4。
+
+» 使用 PyPTO 编程进行验证（src/PyPTOAnchor.py 中 kernel 同样要求末维为4，host 端会 pad 到 8 以满足 32 字节对齐）：
+
+
+
+──────────────────────────────────────────────
+【参考答案来源】 datawhalechina.github.io 的 d2l-ai-solutions-manual（参考答案与 PyTorch 代码实现来源）：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/
+──────────────────────────────────────────────

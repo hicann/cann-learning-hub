@@ -1,0 +1,123 @@
+说明：本文件为 12.02《微调》参考答案（PyPTO 版），按章节整理，仅保留 notebook 中的 PyPTO 版代码；
+      纯理论题内容与 PyTorch 版一致，不区分。代码需在参考 '12.02' 的主 notebook 环境下运行（已导入 torch / nn / pypto
+      及 src.* 模块，answers 子目录需先执行 sys.path.insert(0, "..")，设置 TILE_FWK_DEVICE_ID 环境变量并选择 npu 设备）。
+
+══════════════════════════════════════════════
+12.02 微调 · 参考答案（PyPTO 版）
+══════════════════════════════════════════════
+import os, sys
+sys.path.insert(0, "..")
+os.environ["TILE_FWK_DEVICE_ID"] = "1"
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pypto
+    import torch
+    import torch_npu
+    import torchvision
+    from torch import nn
+    from torch.nn import functional as F
+    from src.D2LFunction import *
+
+import logging
+# pypto 导入会把根 logger 调到 DEBUG，压回 WARNING 避免刷屏
+logging.getLogger().setLevel(logging.WARNING)
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+logging.getLogger("PIL").setLevel(logging.WARNING)
+
+device_id = int(os.environ["TILE_FWK_DEVICE_ID"])
+torch.npu.set_device(device_id)
+device = f"npu:{device_id}"
+
+
+──────────────────────────────────────────────
+【练习 12.2.1】
+──────────────────────────────────────────────
+【题目】
+
+继续提高finetune_net的学习率，模型的准确性如何变化？
+
+【解答】
+
+将finetune_net的学习率分别设为5×10^(-5)、5×10^(-4)和5×10^(-3)。对比发现：学习率较大时，训练过程容易震荡甚至发散，模型难以收敛到理想解；学习率较小时效果更好，能迅速收敛并获得较优的精度。
+
+原因在于模型已经在ImageNet上预训练，具备一定的知识，微调时只需较小的学习率即可将知识迁移到新数据集；过大的学习率可能导致参数跳出最优值附近，造成震荡。当然，不同任务需要在收敛速度与稳定性之间权衡。
+
+实验表明：学习率为5×10^(-5)时训练平稳、测试精度最高；增大到5×10^(-4)、5×10^(-3)后训练震荡加剧、测试精度下降甚至发散。
+
+
+──────────────────────────────────────────────
+【练习 12.2.2】
+──────────────────────────────────────────────
+【题目】
+
+在比较实验中进一步调整finetune_net和scratch_net的超参数。它们的准确性还有不同吗？
+
+【解答】
+
+进一步调整finetune_net与scratch_net的超参数，重点探究param_group的影响（输出层FC使用10倍学习率）。在其他超参数相同的情况下：
+
+• 预训练模型 + 微调全部层（param_group=False）：test acc 0.926；
+• 预训练模型 + 输出层10倍学习率（param_group=True）：输出层收敛更快，test acc 0.945，略高于前者；
+• 无预训练（scratch_net）从零训练：精度明显低于微调模型，且对学习率更敏感。
+
+总体而言，使用预训练模型并微调的效果最好，输出层可以使用更大的学习率。
+
+
+──────────────────────────────────────────────
+【练习 12.2.3】
+──────────────────────────────────────────────
+【题目】
+
+将输出层finetune_net之前的参数设置为源模型的参数，在训练期间不要更新它们。模型的准确性如何变化？提示：可以使用以下代码。
+for param in finetune_net.parameters():
+param.requires_grad = False
+
+【解答】
+
+上述代码将finetune_net输出层之前的所有参数（骨干网络）的requires_grad置为False，即冻结这些参数，训练期间不再更新，只微调输出层。这在迁移学习中用于保持源模型已学到的知识，同时让新模型专注于学习目标任务的特征。
+
+由于骨干特征已经非常通用（来自ImageNet预训练），只微调分类头也能获得不错的精度，且训练更快、更不易过拟合；相比微调全部层，精度通常会略有下降，但在数据量较小时是更稳健的选择。
+
+
+──────────────────────────────────────────────
+【练习 12.2.4】
+──────────────────────────────────────────────
+【题目】
+
+事实上，ImageNet数据集中有一个“热狗”类别。我们可以通过以下代码获取其输出层中的相应权重参数，但是我们怎样才能利用这个权重参数？
+weight = pretrained_net.fc.weight
+hotdog_w = torch.split(weight.data, 1, dim=0)[934]
+hotdog_w.shape
+
+【解答】
+
+hotdog_w是预训练resnet18输出层中类别为“热狗”（ImageNet类别索引934）的权重参数，可以将其复用为微调模型输出层第一行（对应“热狗”类别）的权重初始化，代替随机初始化，从而给微调一个更好的起点。具体做法：把输出层替换为2类分类器后，将hotdog_w复制到finetune_net.fc.weight的第一行。
+
+通过复用ImageNet预训练的热狗类别权重，微调模型在“热狗”类别上有了更好的初始化，通常能更快收敛并获得更高精度。
+
+» 使用 PyPTO 编程进行验证（与主 notebook 12.2 节同款：将输出层替换为 PyPTOLinear，其前向/反向均由 PyPTO matmul kernel 实现，在预训练微调与从零训练两种场景各跑一组实验，验证 PyPTO 线性层可无缝嵌入 torch 训练管线）：
+
+# PyPTO 版输出层：与主 notebook 12.2 节同款（fc 替换为 PyPTOLinear）
+from src.PyPTOLinearFuseModule import PyPTOLinear
+
+def get_finetune_net_pypto():
+    finetune_net = torchvision.models.resnet18(pretrained=True)
+    finetune_net.fc = PyPTOLinear(finetune_net.fc.in_features, 2)
+    nn.init.xavier_uniform_(finetune_net.fc.weight)
+    return finetune_net.to(device)
+
+# 预训练微调（PyPTO fc，param_group=True：输出层 10 倍学习率）
+train_fine_tuning(get_finetune_net_pypto(), 5e-5)
+
+# 从零训练（PyPTO fc，param_group=False，与练习 12.2.2 的 torch scratch_net 对照）
+scratch_net_pypto = torchvision.models.resnet18()
+scratch_net_pypto.fc = PyPTOLinear(scratch_net_pypto.fc.in_features, 2)
+nn.init.xavier_uniform_(scratch_net_pypto.fc.weight)
+train_fine_tuning(scratch_net_pypto.to(device), 5e-4, param_group=False)
+
+» 说明：练习 12.2.1–12.2.4 以 torch 验证为主（微调流程与 ImageNet 预训练权重均为 torch 原生）；PyPTO 侧复现主 notebook 的做法，将输出层 fc 替换为 PyPTOLinear（fwd/bwd 均由 PyPTO matmul kernel 实现），在预训练微调与从零训练两种场景各跑一组实验，验证 PyPTO 线性层可无缝嵌入 torch 训练管线。
+
+──────────────────────────────────────────────
+【参考答案来源】 datawhalechina.github.io 的 d2l-ai-solutions-manual（参考答案与 PyTorch 代码实现来源）：https://datawhalechina.github.io/d2l-ai-solutions-manual/#/
+──────────────────────────────────────────────
