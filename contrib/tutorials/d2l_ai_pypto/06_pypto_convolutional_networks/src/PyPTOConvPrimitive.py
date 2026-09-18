@@ -35,10 +35,10 @@ def _pad2d(
     """对 2D 张量 X(H,W) 的 H/W 维度零填充，写入 out。"""
     H = X.shape[0]
     W = X.shape[1]
-    cur = X
+    pypto.set_vec_tile_shapes(8, 8)
+    cur = X.clone()
     cur_h = H
     cur_w = W
-    pypto.set_vec_tile_shapes(8, 8)
     if pad_top > 0:
         zero_t = pypto.zeros(pad_top, cur_w, dtype=pypto.DT_FP32)
         cur = pypto.concat([zero_t, cur], dim=0)
@@ -72,10 +72,10 @@ def _pad4d(
     C = X.shape[1]
     H = X.shape[2]
     W = X.shape[3]
-    cur = X
+    pypto.set_vec_tile_shapes(1, 1, 8, 8)
+    cur = X.clone()
     cur_h = H
     cur_w = W
-    pypto.set_vec_tile_shapes(1, 1, 8, 8)
     if pad_top > 0:
         zero_t = pypto.zeros(N, C, pad_top, cur_w, dtype=pypto.DT_FP32)
         cur = pypto.concat([zero_t, cur], dim=2)
@@ -315,7 +315,7 @@ def corr2d_kernel_strided(
     """支持 stride 和 padding 的互相关 kernel (06.03 版)。"""
     H, W = input.shape[0], input.shape[1]
     pypto.set_vec_tile_shapes(16, 16)
-    cur = input
+    cur = input.clone()
     cur_h, cur_w = H, W
 
     if pad_top > 0 or pad_bottom > 0 or pad_left > 0 or pad_right > 0:
@@ -378,8 +378,8 @@ def corr2d_multi_in_out_1x1(
     """1x1 卷积: 等价于全连接层的矩阵乘法。"""
     c_i, h, w = X.shape
     c_o = K.shape[0]
-    X = pypto.reshape(X, (c_i, h * w))
-    K = pypto.reshape(K, (c_o, c_i))
+    X_2d = pypto.reshape(X, (c_i, h * w))
+    K_2d = pypto.reshape(K, (c_o, c_i))
     pypto.set_cube_tile_shapes([32, 32], [64, 64], [64, 64])
-    out = pypto.matmul(K, X, out_dtype=X.dtype)
+    out = pypto.matmul(K_2d, X_2d, out_dtype=X.dtype)
     Y[:] = pypto.reshape(out, (c_o, h, w))

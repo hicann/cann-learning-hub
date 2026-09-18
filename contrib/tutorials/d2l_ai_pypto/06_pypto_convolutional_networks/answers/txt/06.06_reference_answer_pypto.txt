@@ -163,7 +163,7 @@
         PyPTOConv2d(16, 120, kernel_size=5, bias=True, device=device),
         nn.ReLU(),
         nn.Flatten(),
-        PyPTOLinear(120 * 3 * 3, 120),
+        PyPTOLinear(120, 120),
         nn.Sigmoid(),
         PyPTOLinear(120, 84),
         nn.Sigmoid(),
@@ -198,7 +198,7 @@
         PyPTOConv2d(16, 120, kernel_size=5, bias=True, device=device),
         nn.ReLU(),
         nn.Flatten(),
-        PyPTOLinear(120 * 3 * 3, 120),
+        PyPTOLinear(120, 120),
         nn.Sigmoid(),
         PyPTOLinear(120, 84),
         nn.Sigmoid(),
@@ -217,14 +217,16 @@
 
     使用 PyPTO 编程进行验证:
 
-    以下用 PyPTO 模块构建与上方 torch 一致的网络（学习率调整为 0.1、训练轮数为 50），进行训练。
+    以下用 PyPTO 模块构建与上方 torch 一致的网络（学习率调整为 0.1）进行训练。由于 PyPTO 纯向量卷积实现的单次迭代内核负载较大，长时间训练易触发 AICore 看门狗超时（aicore exception 507015），这里将训练轮数降为 10 以验证正确性；50 轮的训练效果由上方 torch 版本展示。
+
+    from src.D2LFunction import *
 
     from torch import nn
     from src.PyPTOConv2DModule import PyPTOConv2d
     from src.PyPTOPoolModule import PyPTOMaxPool2d
     from src.PyPTOLinearFuseModule import PyPTOLinear
 
-    # 调整学习率和训练轮数: lr 0.9→0.1, epochs 10→50
+    # 调整学习率和训练轮数: lr 0.9→0.1；PyPTO 纯向量实现内核负载大，epochs 降为 10 避免超时
     net = nn.Sequential(
         PyPTOConv2d(1, 10, kernel_size=5, padding=2, bias=True, device=device),
         nn.ReLU(),
@@ -235,7 +237,7 @@
         PyPTOConv2d(16, 120, kernel_size=5, bias=True, device=device),
         nn.ReLU(),
         nn.Flatten(),
-        PyPTOLinear(120 * 3 * 3, 120),
+        PyPTOLinear(120, 120),
         nn.Sigmoid(),
         PyPTOLinear(120, 84),
         nn.Sigmoid(),
@@ -245,7 +247,7 @@
 
     batch_size = 32
     train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
-    lr, num_epochs = 0.1, 50
+    lr, num_epochs = 0.1, 10
     train_ch6(net, train_iter, test_iter, num_epochs, lr, 'npu:0')
 
 
@@ -262,7 +264,7 @@
     from src.PyPTOPoolModule import PyPTOMaxPool2d
     from src.PyPTOLinearFuseModule import PyPTOLinear
 
-    # 使用 6.6.2 改进后的网络结构 (与 torch 版本一致)
+    # 使用 6.6.2 改进后的网络结构 (与 torch 版本一致)；PyPTO 内核负载大，epochs 降为 10 避免超时
     net = nn.Sequential(
         PyPTOConv2d(1, 10, kernel_size=5, padding=2, bias=True, device=device),
         nn.ReLU(),
@@ -273,7 +275,7 @@
         PyPTOConv2d(16, 120, kernel_size=5, bias=True, device=device),
         nn.ReLU(),
         nn.Flatten(),
-        PyPTOLinear(120 * 3 * 3, 120),
+        PyPTOLinear(120, 120),
         nn.Sigmoid(),
         PyPTOLinear(120, 84),
         nn.Sigmoid(),
@@ -283,7 +285,7 @@
 
     batch_size = 32
     train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
-    lr, num_epochs = 0.1, 50
+    lr, num_epochs = 0.1, 10
     train_ch6(net, train_iter, test_iter, num_epochs, lr, 'npu:0')
 
 练习 6.6.4

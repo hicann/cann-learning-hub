@@ -288,6 +288,7 @@ def _conv2d_dx(
     kW: int,
     Hin: int,
     Win: int,
+    t2: int,                                    # dim0 tile 切分 (UB 预算, 需整除 T2)
 ):
     N = dy_pad.shape[0]
     Cout = dy_pad.shape[1]
@@ -301,7 +302,7 @@ def _conv2d_dx(
         for ohc in range(H // ROWS):
             pypto.set_vec_tile_shapes(kH * kW, Cout, ROWS, 32)
             ws = _build_windows(dy_pad, Cout, ROWS, WW_, kH, kW, n_idx, ohc)
-            pypto.set_vec_tile_shapes(T2, 1, 1, 32)
+            pypto.set_vec_tile_shapes(t2, 1, 1, 32)
             for ic in range(Cin):
                 k_ic = pypto.view(k_dx, [T2, 1, 1, WW_], [0, ic, 0, 0])
                 m = pypto.mul(ws, k_ic)  # k_ic 扩展 dim2 (1->ROWS) ✓
@@ -314,7 +315,7 @@ def _conv2d_dx(
                     [(n_idx * Cin + ic) * Hin + ohc * ROWS, 0],
                     dx2,
                 )
-                pypto.set_vec_tile_shapes(T2, 1, 1, 32)
+                pypto.set_vec_tile_shapes(t2, 1, 1, 32)
 
 
 @pypto.frontend.jit(
@@ -328,6 +329,7 @@ def conv2d_dx_kernel(
     kH: int,
     kW: int,
     pad: int,
+    t2: int,
 ):
     N = dy.shape[0]
     Cout = dy.shape[1]
@@ -346,7 +348,7 @@ def conv2d_dx_kernel(
     dy_pad = pypto.zeros(N, Cout, dy_pad_h, dy_pad_w, dtype=pypto.DT_FP32)
     _pad4d_fast(dy, dy_pad, p_h, p_h, p_w, dy_pad_w - Wg - p_w)
 
-    _conv2d_dx(dy_pad, k_dx, dx2, kH, kW, H, W)
+    _conv2d_dx(dy_pad, k_dx, dx2, kH, kW, H, W, t2)
 
 
 # ── dbias ──
@@ -411,6 +413,18 @@ def pick_ct2(T, G, wwin=WW):
     return max(1, min(CT2, max_ct2))
 
 
+def pick_t2(T2, wwin=WW):
+    """选择 dX mul 的 dim0 tile 切分: 大卷积核时 T2=kH*kW*Cout 过大,
+    mul 的 in+out (2*t2*wwin*4) 超 UB, 取 T2 的不超过预算的最大因子
+    (sum(dim0) 跨 tile 归约, 同 dK 的 ROWS 切分, 正确但稍慢)。"""
+    max_t2 = max(1, (_UB_BYTES - 64 * 1024) // (2 * wwin * 4))
+    t2 = T2
+    while t2 > max_t2:
+        spf = next(d for d in range(2, t2 + 1) if t2 % d == 0)
+        t2 //= spf
+    return t2
+
+
 # ── nn.Module (autograd Function, forward/backward 全 PyPTO) ──
 
 
@@ -454,7 +468,8 @@ class PyPTOConv2dAIVFunction(torch.autograd.Function):
         dX = torch.zeros_like(X)
         dX2 = dX.view(N * Cin * H, W)
         K_dx = make_k_dx(K, kH, kW)
-        conv2d_dx_kernel(dY, K_dx, dX2, kH, kW, pad)
+        conv2d_dx_kernel(dY, K_dx, dX2, kH, kW, pad,
+                         pick_t2(kH * kW * Cout))
 
         dK = torch.zeros_like(K)
         dK2 = torch.zeros(Cout, T, device=X.device, dtype=X.dtype)

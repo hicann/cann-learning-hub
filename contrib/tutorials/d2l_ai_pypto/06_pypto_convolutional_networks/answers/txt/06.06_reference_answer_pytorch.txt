@@ -267,6 +267,7 @@
         nn.Conv2d(6, 16, kernel_size=5),
         nn.Sigmoid())
 
+    net = net.to('npu:0')
     batch_size = 256
     train_iter, test_iter = load_data_fashion_mnist(batch_size=batch_size)
     X, y = next(iter(train_iter))
