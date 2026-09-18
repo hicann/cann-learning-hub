@@ -1,0 +1,185 @@
+说明：本文件为 07.06《残差网络（ResNet）》参考答案（PyTorch 版），按章节整理，仅保留 notebook 中的 PyTorch 版代码；
+      纯理论题内容与 PyPTO 版一致，不区分。代码需在参考 '07.06' 的主 notebook 环境下运行（已导入 torch / nn / torchvision
+      及 src.* 模块，answers 子目录需先执行 sys.path.insert(0, "..")，设置 TILE_FWK_DEVICE_ID 环境变量并选择 npu 设备）。
+
+══════════════════════════════════════════════
+残差网络（ResNet） · 参考答案（PyTorch 版）
+══════════════════════════════════════════════
+import os, sys
+sys.path.insert(0, os.path.join(os.getcwd(), ".."))
+os.environ["TILE_FWK_DEVICE_ID"] = "1"
+import numpy as np
+import pypto
+import torch
+import torch_npu
+import torchvision
+from torch import nn
+device_id = int(os.environ["TILE_FWK_DEVICE_ID"])
+torch.npu.set_device(device_id)
+device = f"npu:{device_id}"
+mode = pypto.RunMode.NPU
+from src.PyPTOConv2DModule import PyPTOConv2d
+from src.PyPTOPoolModule import PyPTOMaxPool2d
+from src.PyPTOLinearFuseModule import PyPTOLinear
+from src.D2LFunction import *
+from src.AnswerUtlis import *
+from src import Models
+import torchinfo
+
+
+──────────────────────────────────────────────
+【练习 7.6.1】
+──────────────────────────────────────────────
+【题目】
+
+图7-5中的Inception块与ResNet之间的主要区别是什么？删除Inception中的一些路径会有什么结果？
+
+【解答】
+
+Inception 由多个不同大小的卷积核在同一层并行组成，输出在通道维度拼接；残差块通过跨层直连绕过部分层，缓解深层网络的梯度消失问题。删除 Inception 中一些路径后，它就退化为残差网络的一个特例。
+
+
+──────────────────────────────────────────────
+【练习 7.6.2】
+──────────────────────────────────────────────
+【题目】
+
+参考ResNet论文中的表1来实现不同的ResNet变体。
+
+【解答】
+
+ResNet 论文表1 给出了不同深度/宽度的 ResNet 变体（ResNet-18/34/50/101/152），均由 BasicBlock（浅层）或 Bottleneck（深层）堆叠而成。下面展示 models.py 中对应的 ResNet 系列实现：
+
+
+【图】 ResNet不同变体结构
+
+
+基本块 / Bottleneck 结构如下：
+
+
+【图】 ResNet基本块与Bottleneck结构
+
+
+
+» 以下使用 torch 编程进行验证
+
+import torch.nn.functional as F
+
+def conv3x3(inplanes, out_planes, stride=1):
+    return nn.Conv2d(inplanes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
+
+class BasicBlock(nn.Module):
+    expansion = 1
+    def __init__(self, inplanes, planes, stride=1):
+        super().__init__()
+        self.conv1 = conv3x3(inplanes, planes, stride)
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.conv2 = conv3x3(planes, planes)
+        self.bn2 = nn.BatchNorm2d(planes)
+        self.shortcut = nn.Sequential()
+        if stride != 1 or inplanes != self.expansion * planes:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(inplanes, self.expansion * planes, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(self.expansion * planes))
+    def forward(self, x):
+        identity = x
+        out = self.conv1(x); out = self.bn1(out); out = F.relu(out)
+        out = self.conv2(out); out = self.bn2(out)
+        out += self.shortcut(identity)
+        return F.relu(out)
+
+class Bottleneck(nn.Module):
+    expansion = 4
+    def __init__(self, inplanes, planes, stride=1):
+        super().__init__()
+        self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.conv2 = conv3x3(planes, planes, stride)
+        self.bn2 = nn.BatchNorm2d(planes)
+        self.conv3 = nn.Conv2d(planes, self.expansion * planes, kernel_size=1, bias=False)
+        self.bn3 = nn.BatchNorm2d(self.expansion * planes)
+        self.shortcut = nn.Sequential()
+        if stride != 1 or inplanes != self.expansion * planes:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(inplanes, self.expansion * planes, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(self.expansion * planes))
+    def forward(self, x):
+        identity = x
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = F.relu(self.bn2(self.conv2(out)))
+        out = self.bn3(self.conv3(out))
+        out += self.shortcut(identity)
+        return F.relu(out)
+
+print('ResNet variants defined')
+
+
+──────────────────────────────────────────────
+【练习 7.6.3】
+──────────────────────────────────────────────
+【题目】
+
+对于非常深网络，ResNet 引入了"bottleneck"架构来降低模型复杂度。请尝试去实现它。
+
+【解答】
+
+上一题已经实现了 Bottleneck (使用 1×1 + 3×3 + 1×1 卷积)，减少了参数量与计算量，使深层网络训练可行。
+
+
+──────────────────────────────────────────────
+【练习 7.6.4】
+──────────────────────────────────────────────
+【题目】
+
+在ResNet的后续版本中，作者将"批量规范化层、激活函数、卷积层"架构调整为"批量规范化层、激活函数和卷积层"架构。
+请尝试做这个改进。
+
+【解答】
+
+将 Conv-ReLU-BN 调整为 BN-ReLU-Conv (pre-activation) 形式，使梯度可以直接通过跨层连接，进一步提升深层网络的训练效果。
+
+» 以下使用 torch 编程进行验证
+
+class Residual(nn.Module):
+    def __init__(self, input_channels, num_channels, use_1x1conv=False, strides=1):
+        super().__init__()
+        self.conv1 = nn.Conv2d(input_channels, num_channels, kernel_size=3, padding=1, stride=strides)
+        self.conv2 = nn.Conv2d(num_channels, num_channels, kernel_size=3, padding=1)
+        if use_1x1conv:
+            self.conv3 = nn.Conv2d(input_channels, num_channels, kernel_size=1, stride=strides)
+        else:
+            self.conv3 = None
+        self.bn1 = nn.BatchNorm2d(num_channels)
+        self.bn2 = nn.BatchNorm2d(num_channels)
+    def forward(self, X):
+        Y = F.relu(self.bn1(X))
+        Y = self.conv1(Y)
+        Y = F.relu(self.bn2(Y))
+        Y = self.conv2(Y)
+        if self.conv3:
+            X = self.conv3(X)
+        Y += X
+        return F.relu(Y)
+
+blk = Residual(3, 3)
+X = torch.rand(4, 3, 6, 6)
+print('Residual (pre-activation) output shape:', blk(X).shape)
+
+
+──────────────────────────────────────────────
+【练习 7.6.5】
+──────────────────────────────────────────────
+【题目】
+
+为什么即使函数嵌套了，复杂性也保持简单？
+
+【解答】
+
+函数嵌套是指一个函数调用另一个函数并加和。在嵌套函数下，仍然需要保持复杂性的原因：
+
+1. 更复杂的模型需要更多的计算资源（更长的训练时间、更高的内存需求与能耗）。在资源有限的情况下，过深的网络不切实际；
+2. 过于复杂的模型在训练集上可能得到极低的损失，但在未见数据上存在表现较差的风险，因此在权衡复杂度时需要兼顾泛化能力。
+
+──────────────────────────────────────────────
+【参考答案来源】 datawhalechina.github.io 的 d2l-ai-solutions-manual（参考答案与 PyTorch 代码实现来源）：https://datawhalechina.github.io/d2l-ai-solutions-manual/#
+──────────────────────────────────────────────
