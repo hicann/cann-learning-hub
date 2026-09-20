@@ -1,0 +1,5 @@
+1. √
+解析：虚拟环境用于隔离当前实践所需的 Python 包，能够降低与系统已有 Python 包发生版本冲突的概率。
+
+2. C
+解析：本实践使用两张 NPU，因此 smoke 检查中预期 `torch.npu.device_count()` 返回 2。

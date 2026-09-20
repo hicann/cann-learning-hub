@@ -1,0 +1,8 @@
+1. √
+解析：本 Quickstart 以训练稳定步骤的墙钟均值作为性能判断的主要证据。
+
+2. A
+解析：`AF_ON_FASTER` 表示本次对比中 AF ON 的平均训练耗时更低。
+
+3. A、B、C、D
+解析：`run_compare.sh` 会串行执行 AF OFF/ON 训练，以及 AF OFF/ON profiling，共四次任务。

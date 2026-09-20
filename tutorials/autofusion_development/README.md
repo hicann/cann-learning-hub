@@ -71,3 +71,18 @@
 | 3.5 性能分析方法           | 在线体验建设中 | ⏳ 未发布 |
 | 3.6 问题定位方法           | 在线体验建设中 | ⏳ 未发布 |
 | 3.7 章节练习               | 在线体验建设中 | ⏳ 未发布 |
+
+### 第四章 Qwen3-1.7B SFT 与 AutoFuse 对比实践
+
+基于 Qwen3-1.7B 模型，了解 AutoFuse 开启和关闭时的性能差异
+
+<table>
+<tr><th>Notebook</th><th>链接</th><th>状态</th></tr>
+<tr><td>4.1 章节介绍</td><td rowspan="4" align="center">
+在 CANNLab 中运行<br>
+（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab 环境体验指南</a>）
+</td><td>✅ 已发布</td></tr>
+<tr><td>4.2 环境安装</a></td><td>✅ 已发布</td></tr>
+<tr><td>4.3 训练过程和结果查看</a></td><td>✅ 已发布</td></tr>
+<tr><td>4.4 章节练习</a></td><td>✅ 已发布</td></tr>
+</table>
