@@ -7,8 +7,8 @@
 
 | Notebook | Link | 状态 |
 | --- | --- | --- |
-| 5.1 章节介绍 | 在线体验建设中 | ✅ 已发布 |
-| 5.2 GE 对接 PyTorch | 在线体验建设中 | ✅ 已发布 |
-| 5.3 GE 对接 TensorFlow | 在线体验建设中 | ✅ 已发布 |
-| 5.4 常见问题定位方法 | 在线体验建设中 | ✅ 已发布 |
-| 5.5 章节练习 | 在线体验建设中 | ✅ 已发布 |
+| 5.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/05_practice_and_troubleshooting/05.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 5.2 GE 对接 PyTorch | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/05_practice_and_troubleshooting/05.02_pytorch_integration.ipynb) | ✅ 已发布 |
+| 5.3 GE 对接 TensorFlow | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/05_practice_and_troubleshooting/05.03_tensorflow_integration.ipynb) | ✅ 已发布 |
+| 5.4 常见问题定位方法 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/05_practice_and_troubleshooting/05.04_troubleshooting.ipynb) | ✅ 已发布 |
+| 5.5 章节练习 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ge_development&scanFilePath=tutorials/ge_development/05_practice_and_troubleshooting/05.05_chapter_practice.ipynb) | ✅ 已发布 |

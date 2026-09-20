@@ -349,7 +349,7 @@ cd cann-learning-hub
 <td><b>🔗 图框架</b></td>
 <td><a href="./tutorials/ge_development">GE 图引擎（快速入门）</a> · <a href="./tutorials/TorchAir_development">TorchAir（快速入门）</a> · <a href="./tutorials/autofusion_development">AutoFusion 基础</a><br/><sub>图编译执行、图模式优化、自动融合</sub></td>
 <td><a href="./tutorials/ge_development">GE 图编译与优化</a> · <a href="./tutorials/TorchAir_development/README.md">TorchAir 进阶优化</a> · <a href="./tutorials/autofusion_development/02_autofusion_principles">AutoFusion 融合原理</a><br/><sub>图构建/编译配置/自定义算子入图/自定义融合pass/静态&动态shape/内存复用/多流/限核/SuperKernel/AutoFusion 融合条件判断与策略求解</sub></td>
-<td>🚧 建设中<br/><sub>AutoFusion 融合原理与实战、GE/TorchAir 实践与问题定位</sub></td>
+<td><a href="./tutorials/ge_development/05_practice_and_troubleshooting">GE 实践与问题定位</a> · TorchAir 实践与问题定位 🚧 · AutoFusion 融合原理与实战 🚧<br/><sub>AutoFusion 融合原理与实战、GE/TorchAir 实践与问题定位</sub></td>
 </tr>
 <tr>
 <td><b>📡 通信</b></td>
