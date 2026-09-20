@@ -8,7 +8,7 @@
 解析：FusedGraph 用于表达 AutoFuse 前端识别出的一个融合范围，内部可以包含一个或多个 AscBackend 节点。它不是用户手写的业务模型代码，也不是只表示单个原始算子的运行时调度对象。
 
 4. A
-解析：AutoFuse 包含基于 GE 框架的图模式融合路径，也包含对接 PyTorch Inductor 的生态融合路径。GE 路径更侧重昇腾自研图编译体系中的融合能力，PyTorch Inductor 路径更侧重与 PyTorch 编译生态对接；两条路径都会围绕 Ascend C IR、Schedule、Codegen 等底层能力完成后续表达转换和代码生成。
+解析：AutoFuse 包含基于 GE 框架的图模式融合路径，也包含对接 PyTorch Inductor 的生态融合路径。GE 路径更侧重昇腾自研图编译体系中的融合能力，Inductor 路径更侧重与 PyTorch 编译生态对接；两条路径都会围绕 Ascend C IR、Schedule、Codegen 等底层能力完成后续表达转换和代码生成。
 
 5. A、B、C
 解析：验证 AutoFuse 基础开关是否设置到当前环境，应检查 CANN 环境变量是否加载、`AUTOFUSE_FLAGS` 是否在当前执行环境中设置，以及模型是否经过 ATC 等可触发 GE 图编译的入口。模型推理精度是否满足预期属于精度验证范畴，与开关配置确认不直接相关。

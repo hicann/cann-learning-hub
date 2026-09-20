@@ -1,0 +1,20 @@
+1. B
+解析：TensorFlow 图模式经 GE 图编译路线执行，应在图编译前（导入框架和 `npu_bridge` 前）设置 `AUTOFUSE_FLAGS` 开启 AutoFuse。`inductor_npu_ext` 是 Inductor 路线的使能入口，与 GE 路线无关，无需配置。
+
+2. A
+解析：输入形状固定时 `dynamic=False` 走静态 Shape 编译，编译速度更快；`fullgraph=True` 要求完整图捕获，避免图断裂导致融合范围缩小。两者组合是本课程实践采用的配置。
+
+3. B
+解析：`AUTOFUSE_DFX_FLAGS` 的 `--codegen_compile_debug` 用于保留 AutoFuse 融合算子生成过程的调试信息，配合 `--debug_dir` 可指定融合 Dump 图的保存路径。`TORCH_COMPILE_DEBUG` 是 PyTorch 原生调试变量，保存的是 Inductor 通用编译调试产物（`torch_compile_debug` 目录），不会导出 AutoFuse 后端的融合 Dump 图；`ASCEND_DEVICE_ID` 用于设备选择；`TORCHINDUCTOR_FORCE_DISABLE_CACHES` 用于禁用编译缓存。
+
+4. ×
+解析：出现 `autofused_` 或 `autofuse_` 开头的融合 Kernel 只能说明算子发生了融合。只有当融合 Kernel 的稳态执行时间低于基线场景中对应独立算子的执行时间之和时，才能说明取得了性能收益。
+
+5. A、B、D
+解析：融合验证应结合 Profiling 中的融合 Kernel、融合前后数值一致性以及 Kernel 数量和执行时间对比综合判断。程序执行无报错只说明流程正常，不能证明融合已发生。
+
+6. A、B、C
+解析：性能对比应保持输入、数据类型、预热方式、执行步数和 Profiling 采集范围一致，并区分首次编译与稳态执行。随意切换软件版本会引入额外变量。
+
+7. A、B、C、D
+解析：完整验证链路包括环境、编译、融合和结果四个层级。只有逐层确认，才能区分配置未生效、未进入目标编译路线、未融合、精度异常和性能无收益。

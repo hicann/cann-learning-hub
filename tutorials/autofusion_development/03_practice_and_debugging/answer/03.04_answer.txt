@@ -1,0 +1,11 @@
+1. √
+解析：AutoFuse 环境变量需要在 TensorFlow 和 NPU 插件初始化前生效。本节在执行单元中先通过 export 导出 AUTOFUSE_FLAGS，再启动用例脚本导入 TensorFlow 和 npu_bridge。
+
+2. ×
+解析：用例无报错只能说明计算图能够执行，不能单独证明目标算子已经融合。还需要检查本次运行生成的 Profiling 数据，确认融合 Kernel 和算子执行情况。
+
+3. A、B、C
+解析：未观察到融合 Kernel 时，应检查 AutoFuse 开关的生效时机、Profiling 的采集与导出，以及实际计算图中是否保留目标算子链。Markdown 展示样式不会影响算子融合。
+
+4. A、B、C
+解析：本例通过 NumPy 参考结果、结果形状与最大绝对误差验证数值正确性，并通过 Profiling 检查融合结果。只观察 Python 进程是否退出不能完成这些验证。

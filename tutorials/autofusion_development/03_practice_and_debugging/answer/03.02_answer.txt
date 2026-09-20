@@ -1,0 +1,11 @@
+1. B
+解析：GE 路线需要通过 `AUTOFUSE_FLAGS` 开启 AutoFuse 基础功能。
+
+2. ×
+解析：`AUTOFUSE_DFX_FLAGS` 用于调试和定位，不能替代 GE 路线的功能总开关。GE 路线仍需通过 `AUTOFUSE_FLAGS` 开启 AutoFuse。
+
+3. √
+解析：应在调用 `torch.compile` 前导入 `inductor_npu_ext`，使扩展先完成注册。
+
+4. ×
+解析：程序执行无报错只说明计算结果正常，不等于融合已发生。使能只是必要条件，是否融合取决于算子组合、Shape、融合条件和后端支持范围，需通过 Profiling 或 Dump 图中的融合 Kernel 确认。

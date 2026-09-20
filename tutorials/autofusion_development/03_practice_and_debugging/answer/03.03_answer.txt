@@ -1,0 +1,8 @@
+1. ×
+解析：用例无报错只能说明模型完成执行，不能单独证明 Add 和 Ge 已融合。还需要检查 Profiling 中的实际 NPU 执行与融合记录。
+
+2. A、B
+解析：本例先导入 inductor_npu_ext 注册 NPU 扩展，再通过 torch.compile 编译模型，即可进入 Inductor 路线的 Ascend NPU 编译路径。AUTOFUSE_FLAGS 是 GE 路线的使能入口，对 Inductor 路线不起作用；手工删除 sys.modules 中的 torch 可能留下不一致的进程状态，不属于接入步骤。
+
+3. A、B、C
+解析：应同时检查编译结果与 Eager 参考结果的一致性、输出形状和数据类型，以及 Profiling 中的实际 NPU 执行或融合记录。代码无报错只能说明流程完成，不能单独证明融合成功。

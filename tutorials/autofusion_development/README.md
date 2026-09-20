@@ -13,7 +13,7 @@
 > **注意事项**
 >
 > - AutoFuse 自动融合特性仅支持 Atlas 350 加速卡、Atlas A2 训练/推理系列产品、Atlas A3 训练/推理系列产品。
-> - AutoFuse 的使能方式取决于对接路线。采用 GE 图编译路线时，需在模型图编译前通过环境变量 `AUTOFUSE_FLAGS` 开启自动融合；采用 PyTorch Inductor 对接路线时，当前无需额外配置环境变量，只需在 Python 脚本中导入 `inductor_npu_ext`。使能后，AutoFuse 会在编译阶段自动识别可融合算子模式、生成融合内核并完成相关优化，无需用户手工编写融合代码。
+> - AutoFuse 的使能方式取决于对接路线。采用 GE 图编译路线时，需在模型图编译前通过环境变量 `AUTOFUSE_FLAGS` 开启自动融合；采用 Inductor 对接路线时，当前无需额外配置环境变量，只需在 Python 脚本中导入 `inductor_npu_ext`。使能后，AutoFuse 会在编译阶段自动识别可融合算子模式、生成融合内核并完成相关优化，无需用户手工编写融合代码。
 
 ## 软硬件配套说明
 
@@ -32,7 +32,7 @@
 | cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行                                                                                                  |
 | CANNLab 云开发环境                  | cann_9.0.0_py3.11-A2-arm | Python 3.11.4  | 参考[CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
 
-> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。
+> **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。另外，仅第四章课程执行要用 A3 版本环境。
 
 ## 课程目录
 
@@ -40,37 +40,35 @@
 
 帮助建立 AutoFuse 的整体认知，掌握基础使能方式
 
-| Notebook             | 链接           | 状态      |
-| -------------------- | -------------- | --------- |
-| 1.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.01_chapter_intro.ipynb) | ✅ 已发布 |
+| Notebook             | 链接                                                                                                                                                                                                                                                                              | 状态      |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| 1.1 章节介绍         | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.01_chapter_intro.ipynb)         | ✅ 已发布 |
 | 1.2 AutoFuse简介     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.02_autofuse_introduction.ipynb) | ✅ 已发布 |
-| 1.3 AutoFuse使能基础 |  [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.03_enable_autofusion.ipynb) | ✅ 已发布 |
-| 1.4 章节练习         |  [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.04_chapter_practice.ipynb) | ✅ 已发布 |
+| 1.3 AutoFuse使能基础 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.03_enable_autofusion.ipynb)     | ✅ 已发布 |
+| 1.4 章节练习         | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/01_basic_overview/01.04_chapter_practice.ipynb)      | ✅ 已发布 |
 
 ### 第二章 AutoFuse 自动融合原理
 
 深入理解融合条件判断与策略求解的核心机制
 
-| Notebook         | 链接           | 状态      |
-| ---------------- | -------------- | --------- |
-| 2.1 章节介绍     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.01_chapter_intro.ipynb) | ✅ 已发布 |
+| Notebook         | 链接                                                                                                                                                                                                                                                                                         | 状态      |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| 2.1 章节介绍     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.01_chapter_intro.ipynb)             | ✅ 已发布 |
 | 2.2 融合条件判断 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.02_fusion_condition_judgment.ipynb) | ✅ 已发布 |
-| 2.3 融合策略求解 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.03_fusion_strategy_solving.ipynb) | ✅ 已发布 |
-| 2.4 章节练习     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.04_chapter_practice.ipynb) | ✅ 已发布 |
+| 2.3 融合策略求解 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.03_fusion_strategy_solving.ipynb)   | ✅ 已发布 |
+| 2.4 章节练习     | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/02_autofusion_principles/02.04_chapter_practice.ipynb)          | ✅ 已发布 |
 
 ### 第三章 AutoFuse 项目实践与问题定位
 
 面向实际项目开发，掌握高级配置与问题排查方法
 
-| Notebook                   | 链接           | 状态      |
-| -------------------------- | -------------- | --------- |
-| 3.1 章节介绍               | 在线体验建设中 | ⏳ 未发布 |
-| 3.2 AutoFuse使能进阶       | 在线体验建设中 | ⏳ 未发布 |
-| 3.3 对接PyTorch项目实践    | 在线体验建设中 | ⏳ 未发布 |
-| 3.4 对接TensorFlow项目实践 | 在线体验建设中 | ⏳ 未发布 |
-| 3.5 性能分析方法           | 在线体验建设中 | ⏳ 未发布 |
-| 3.6 问题定位方法           | 在线体验建设中 | ⏳ 未发布 |
-| 3.7 章节练习               | 在线体验建设中 | ⏳ 未发布 |
+| Notebook                   | 链接                                                                                                                                                                                                                                                                                           | 状态      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| 3.1 章节介绍               | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/03_practice_and_debugging/03.01_chapter_intro.ipynb)              | ✅ 已发布 |
+| 3.2 AutoFuse使能进阶       | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/03_practice_and_debugging/03.02_enable_autofusion_advanced.ipynb) | ✅ 已发布 |
+| 3.3 对接PyTorch项目实践    | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/03_practice_and_debugging/03.03_pytorch_project_practice.ipynb)   | ✅ 已发布 |
+| 3.4 对接TensorFlow项目实践 | 在线体验建设中                                                                                                                                                                                                                                                                                 | ⏳ 未发布 |
+| 3.5 章节练习               | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/autofusion_development&scanFilePath=tutorials/autofusion_development/03_practice_and_debugging/03.05_chapter_practice.ipynb)           | ✅ 已发布 |
 
 ### 第四章 Qwen3-1.7B SFT 与 AutoFuse 对比实践
 
@@ -80,9 +78,9 @@
 <tr><th>Notebook</th><th>链接</th><th>状态</th></tr>
 <tr><td>4.1 章节介绍</td><td rowspan="4" align="center">
 在 CANNLab 中运行<br>
-（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab 环境体验指南</a>）
+（<a href="../../docs/CANNLab_env_experience_guide.md">CANNLab 环境体验指南</a>）
 </td><td>✅ 已发布</td></tr>
-<tr><td>4.2 环境安装</a></td><td>✅ 已发布</td></tr>
-<tr><td>4.3 训练过程和结果查看</a></td><td>✅ 已发布</td></tr>
-<tr><td>4.4 章节练习</a></td><td>✅ 已发布</td></tr>
+<tr><td>4.2 环境安装</td><td>✅ 已发布</td></tr>
+<tr><td>4.3 训练过程和结果查看</td><td>✅ 已发布</td></tr>
+<tr><td>4.4 章节练习</td><td>✅ 已发布</td></tr>
 </table>
