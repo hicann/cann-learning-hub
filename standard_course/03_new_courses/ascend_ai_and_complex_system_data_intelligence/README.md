@@ -4,6 +4,6 @@
 
 | 部分 | 目录 | 课时 |
 |------|------|------|
-| 第一部分 大模型训练与推理 | [part1_llm_training_and_inference/](./part1_llm_training_and_inference/) | ≈20 |
-| 第二部分 Ascend C 算子编程实践（必修+选修） | [part2_ascend_c_operator_programming_practice/](./part2_ascend_c_operator_programming_practice/) | ≈12 |
-| 结业大作业 | `final_project.pptx` | 课后 8 |
+| 第一部分 大模型训练与推理（6 讲） | [part1_llm_training_and_inference/](./part1_llm_training_and_inference/) | ≈20 |
+| 第二部分 Ascend C 算子编程实践（必修 3 讲 + 选修） | [part2_ascend_c_operator_programming_practice/](./part2_ascend_c_operator_programming_practice/) | ≈12 |
+| 结业大作业（作业 1/2 任选其一 + 开源贡献） | `final_project.pptx` | 课后 8 |

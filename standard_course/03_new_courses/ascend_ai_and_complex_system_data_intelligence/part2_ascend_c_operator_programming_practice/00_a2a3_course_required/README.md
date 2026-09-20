@@ -1,3 +1,3 @@
-# 必修（8 课时）：算子闭环底线
+# 必修（3 讲）：算子闭环底线
 
-> 导论与矢量编程 → 调试调优 → PyTorch 单算子调用 → 入图（PyTorch-AclGraph-GE）；判题作业 4 见 [../../../syllabus.md](../../../syllabus.md) 第 9–12 周。
+> 矢量算子编程概述 → 调试调优与最佳实践 → PyTorch 单算子调用与入图（PyTorch/AclGraph/GE）；本目录含 4 个 PPT（第 9 讲含单算子调用与入图 2 个子讲）；课后作业见 [../../../syllabus.md](../../../syllabus.md) 3.2 节。
