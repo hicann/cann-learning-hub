@@ -263,6 +263,32 @@ cd cann-learning-hub
 
 </details>
 
+<details>
+<summary><b>阶段五：算子性能优化（进阶）</b></summary>
+
+**目标**：通过典型算子实践，掌握从性能基线、瓶颈分析到分步优化与精度校验的调优流程。
+
+| 类别 | 序号 | 课程 | 课程内容 | 样例链接 |
+| :--- | :---: | :--- | :--- | :--- |
+| Vector 类 | 13 | Vector 算子优化 | 逐元素、归约、归一化与路由算子的 RegBase 改写、融合、多核并行及访存优化 | [GELU](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/gelu_eltwise_regbase_story) / [Softmax](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/softmax_regbase_story) / [RmsNormQuant](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/rms_norm_quant_story) / [KvRmsNormRoPE](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/kv_rms_norm_rope_cache_story) / [MoeInitRouting](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/moe_init_routing_story) |
+| Cube 类 | 14 | 矩阵乘算子优化 | 矩阵乘与分组矩阵乘的 Tiling、数据搬运、尾轮负载均衡及低精度量化 | [MatMul](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/matmul_story) / [Grouped MatMul](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/grouped_matmul_story) |
+| CV 融合类 | 15 | Cube/Vector 融合优化 | 极简 FA 的 CV 核融合优化实践、全量化 FA 实现、注意力残差的模板选择与两阶段流水，以及 KDA 的 Chunkwise 并行 | [FlashAttnLite](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/flash_attn_lite_story) / [FIA](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/full_quant_fused_infer_attention_score_story) / [AttnRes](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/block_attn_res_story) / [Kimi Delta Attention Lite](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/kimi_delta_attn_lite_story) |
+| 通算融合类 | 16 | 通信与计算融合优化 | MoE Token 分发与合并中的通信、计算融合及性能优化 | [MoE Dispatch & Combine](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/moe_dispatch_and_combine_story) |
+| 专题类 | 17 | SIMD VF、SIMT 与 Scalar 优化专题 | SIMD VF 广播、归约与数据变换；SIMT 不规则访存与并行计数；ScalarBound 诊断及标量开销优化 | [SIMD VF](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/simd_vf_story) / [VF 数据变换](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/vf_data_transform_story) / [SIMT Scatter](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/simt_scatter_story) / [SIMT Histogram](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/simt_histogram_story) / [Scalar](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance/scalar_story) |
+
+> 💡 **实践入口**：[cann-samples](https://gitcode.com/cann/cann-samples) 是 CANN 算子实战样例与性能调优知识库，提供算子实现、优化讲解及编译运行与精度校验示例，可从上表或[性能优化样例总览](https://gitcode.com/cann/cann-samples/tree/master/Samples/2_Performance)选择学习内容。
+>
+> **学习方式**：
+>
+> 1. 克隆仓库，按仓库首页的环境部署指南配置 CANN 与依赖。
+> 2. 按所选样例 README 在本地编译执行，完成精度校验并记录性能基线。
+> 3. 结合优化文档阅读源码；有分步版本的样例可逐版对比，理解各项优化的作用。
+> 4. 尝试修改 Tiling、数据搬运或流水安排，重新编译、校验精度并对比性能。
+>
+> 适用芯片、CANN 版本和运行命令以对应样例说明为准。
+
+</details>
+
 ---
 
 <a id="mainline-recsys"></a>
