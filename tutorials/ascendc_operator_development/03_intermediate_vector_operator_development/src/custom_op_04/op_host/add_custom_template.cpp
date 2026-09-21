@@ -111,7 +111,8 @@ public:
         this->SetInferShape(ge::InferShape).SetInferDataType(ge::InferDataType);
         this->AICore()
             .SetTiling(optiling::TilingFunc)
-            .AddConfig("ascend910b");
+            .AddConfig("ascend910b")
+            .AddConfig("ascend910_93");
     }
 };
 OP_ADD(AddCustomTemplate);

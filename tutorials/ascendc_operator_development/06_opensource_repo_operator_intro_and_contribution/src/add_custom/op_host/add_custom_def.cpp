@@ -26,6 +26,7 @@ public:
             .AutoContiguous();
 
         this->AICore().AddConfig("ascend910b");
+        this->AICore().AddConfig("ascend910_93");
     }
 };
 OP_ADD(AddCustom); // 添加算子信息库
