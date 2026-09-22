@@ -101,12 +101,14 @@
 ## 课程内容
 
 | 序号 | 主题 | 主要内容 | 课件 |
-| --- | --- | --- | --- |
-| 02 | MobileNetV3 图像分类 | 网络原理、训练流程、评估迁移与课后习题 | [02_mobilenetv3_image_classification.pptx](./slides/02_mobilenetv3_image_classification.pptx) |
-| 03 | YOLO 单卡训练与性能调优 | PASCAL VOC 原始数据结构说明、XML 转 YOLO txt、YOLO 训练配置、单卡 Ascend NPU 启动、训练代码结构解析、AMP 混合精度、Warmup、Batch Size 与 DataLoader workers 调优、checkpoint 与断点恢复、MSPROF 采集训练瓶颈，多卡 DDP 作为扩展说明 | 授课 PPT 随课程材料提供 |
-| 04 | YOLO 端侧推理与自定义算子集成 | YOLOv5s ONNX 到 OM 转换、PyACL 加载 OM 完成端侧推理、使用 bus.jpg 验证推理链路、建立 CPU NMS baseline、开发并安装 Ascend C 自定义 NMS 算子 YoloNmsCustom、通过 ACLNN runner 将后处理卸载至 NPU、对齐 CPU/NPU NMS 输出、使用 msprof/MindStudio Profiling 分析算子耗时 | 授课 PPT 随课程材料提供 |
-| 05 | DeepSeek LoRA 微调 | LoRA 原理、SFTTrainer 训练、对话测试与课后习题 | [05_deepseek_lora.pptx](./slides/05_deepseek_lora.pptx) |
-| 06 | 算子优化实验 | Conv+BN 融合原理、实验步骤、前后对比与课后习题 | [06_operator_optimization.pptx](./slides/06_operator_optimization.pptx) |
+|---|---|---|---|
+| 02 | MobileNetV3 图像分类 | 网络原理、训练流程、评估迁移 | [02_mobilenetv3_image_classification.pptx](./slides/02_mobilenetv3_image_classification.pptx) |
+| 03 | YOLO 单卡训练与性能调优 | 数据处理、单卡训练、性能调优、课后习题 | [03_YOLO_Training_Ascend.pptx](./slides/03_YOLO_Training_Ascend.pptx) |
+| 04 | YOLO 端侧推理与自定义算子集成 | 模型转换、端侧推理、自定义 NMS 算子开发与性能分析 | [04_YOLO_Edge_TBE_Ascend.pptx](./slides/04_YOLO_Edge_TBE_Ascend.pptx) |
+| 05 | DeepSeek LoRA 微调 | LoRA 原理、SFTTrainer 训练、对话测试 | [05_deepseek_lora_finetune.pptx](./slides/05_deepseek_lora_finetune.pptx) |
+| 06 | 算子优化实验 | Conv+BN 融合原理、实验步骤、前后对比 | [06_operator_optimization.pptx](./slides/06_operator_optimization.pptx) |
+
+
 
 ## 说明
 
