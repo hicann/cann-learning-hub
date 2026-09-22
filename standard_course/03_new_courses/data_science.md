@@ -170,25 +170,11 @@
 
 ## 八、进一步学习参考
 
-### 8.1 进阶方向（原子课程衔接）
-
-| 进阶方向 | 对应原子课程/资源 |
-|---------|------------------|
-| 深度学习进阶 | 课程五《深度学习》（L1-25~33 系列） |
-| NPU 加速数据处理 | L3-10~13（AsNumpy、Math-Python、Thrust-Python） |
-| 大模型训推实践 | 课程二《昇腾 AI 与复杂系统数据智能》（L1-14~21、L2-13~18） |
-| 数据伦理与公平性 | 公平性文献与案例库（Fairness and Machine Learning 等） |
-| 可视化进阶 | Plotly/Streamlit/Dash 官方文档与社区案例 |
-
-### 8.2 资源链接
-
 | 资源 | 链接 | 用途 |
 |------|------|------|
 | CANN 社区主站 | <https://gitcode.com/cann> | CANN 开源社区，获取全部代码与文档 |
 | Ascend C 编程指南 | <https://asc.gitcode.com> | 编程模型、API 用法与最佳实践 |
 | CANN 算子领域样例仓库 | <https://gitcode.com/cann/cann-samples/tree/master/Samples/> | 各领域算子实现样例（参考实现） |
 | CANN Learning Hub | <https://gitcode.com/cann/cann-learning-hub/> | 全栈教程与 Notebook 练习（实践作业载体） |
-| 昇腾社区 | <https://www.hiascend.com/> | 官方文档、论坛、课程、活动 |
-| CANN 开发者论坛 | <https://bbs.huaweicloud.com/forum/forum-1109-1.html> | 问题求助、经验分享、技术交流 |
 | scikit-learn / pandas / PyTorch 官方文档 | <https://scikit-learn.org>、<https://pandas.pydata.org>、<https://pytorch.org> | 数据科学工具栈学习 |
 | 公开数据集 | <https://www.kaggle.com>、<https://archive.ics.uci.edu> | 练习与结业项目数据来源 |

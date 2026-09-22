@@ -8,10 +8,10 @@
 |------|------|
 | **课程名称** | AI 计算与神经网络计算架构实践 |
 | **课程类型** | 高校学分课·实践型（专业选修，16 周） |
-| **学时安排** | **64 学时**（理论 28 + 实践 36）：第一部分 20 学时（第 1~5 周）＋ 第二部分 36 学时（第 6~14 周）＋ 第三部分 8 学时（第 15~16 周）；每讲 2h 理论 + 2h 实践 |
+| **学时安排** | **64 学时**（理论 28 + 实践 36）：第一部分 20 学时（第 1~5 周）＋ 第二部分 36 学时（第 6~14 周）＋ 第三部分 8 学时（第 15~16 周）；第一、二部分每讲 2h 理论 + 2h 实践，第三部分为纯项目实践 |
 | **授课对象** | 计算机/人工智能相关专业本科高年级、研究生 |
 | **先修要求** | Python/C/C++ 基础；线性代数基础；了解深度学习基本概念 |
-| **配套讲义** | 第一部分 8 个 PPT；第二部分双路线（A2/A3 8 个、Ascend 950 12 个，Aclnn 工程化与 CANN Bot 讲次讲义待补充）；第三部分结业大作业 1 份 |
+| **配套讲义** | 第一部分 7 个 PPT；第二部分双路线（A2/A3 8 个、Ascend 950 12 个；第三部分结业大作业 1 份 |
 | **实践平台** | cann-learning-hub（教程型跟练 Notebook）＋ CANNJudge（判题型自动评测） |
 | **结业标准** | 通过各讲 CANNJudge 判题（至少通过基础判题）；提交结业大作业（作业 1 算子开发 ＋ 作业 2 模型集成替换与实训报告）并通过答辩；作业 3 开源贡献为加分项 |
 | **双架构路线** | 路线 A（Atlas A2/A3）与路线 B（Ascend 950）二选一或并行开课，每讲学时与内容对应 |
@@ -24,7 +24,7 @@
 
 | 目标维度 | 达成要求 |
 |---------|---------|
-| **知识目标** | ① 掌握昇腾生态与 CANN 分层架构；② 掌握大模型训练（预训练/SFT/RL）、部署推理与调试调优的核心方法与流程；③ 系统掌握 Ascend C SIMD/SIMT 编程模型（核函数、多级内存、同步机制、多层级编程 API：C API/Tensor API/基础 API）；④ 掌握算子调试调优方法论、PyTorch 接入与图模式集成流程、Aclnn 工程化算子开发方法 |
+| **知识目标** | ① 掌握昇腾生态与 CANN 分层架构；② 掌握大模型训练（预训练/SFT/RL）、部署推理与调试调优的核心方法与流程；③ 系统掌握 Ascend C SIMD/SIMT 编程模型（核函数、多级内存、同步机制、多层级编程 API：C API/Tensor API/基础 API）；④ 掌握算子调试调优方法论、PyTorch 接入与图模式集成流程 |
 | **能力目标** | ① 独立开发 Memory 矢量（路线 A）/Reg 矢量（路线 B）、矩阵、融合算子并完成调试调优；② 实现 SIMD/SIMT 混合编程与性能优化（路线 B）；③ 完成大模型训推性能瓶颈分析并输出优化报告；④ 基于 Agent（CANN Bot）辅助算子开发与优化；⑤ 通过 CANNJudge 泛化算子判题 |
 | **素养目标** | 形成「架构-编程-调优」系统观与「测量→分析→优化→验证」性能闭环习惯；具备 CANN embodied AI SIG 开源协作意识与工程汇报能力 |
 
@@ -35,7 +35,7 @@
 - **讲得透**：CANN 全栈架构、大模型训推链路、Ascend C 编程模型与矢量/矩阵/融合算子的实现原理
 - **写得出**：Memory 矢量（路线 A）/Reg 矢量（路线 B）、矩阵、融合算子独立开发并通过 CANNJudge 判题
 - **调到优**：运用 profiling 与仿真工具定位瓶颈，借鉴最佳实践逐步优化并产出数据报告
-- **接得进**：算子接入 PyTorch 单算子调用与 AclGraph/GE 图，完成 Aclnn 工程化交付与端到端验证
+- **接得进**：算子接入 PyTorch 单算子调用与 AclGraph/GE 图
 - **用得好**：借助 CANN Bot 加速开发与问题排查，AI 生成代码必经人工验证
 - **融得入**：通过 embodied AI SIG 社区实战任务参与开源协作（提交 PR 并被合并）
 
@@ -44,7 +44,7 @@
 | 模块 | 讲次 | 核心内容 | 关键产出 |
 |------|------|---------|---------|
 | AI 计算导论与大模型训推 | 第 1~5 讲 | 昇腾生态与 CANN 架构；大模型训练（预训练/SFT/RL）；部署与推理（Qwen3-1.7B）；调试调优与最佳实践（入图/PD 分离/KV 池化/自动融合） | Qwen3 训推全链路跑通 ＋ 性能分析作业 |
-| Ascend C 算子编程（双路线） | 第 6~14 讲 | A2/A3：编程模型→Memory 矢量→矩阵→融合→调试调优→PyTorch 单算子→图模式→Aclnn→CANN Bot；950：编程模型→Reg 矢量→矩阵（Tensor API）→融合＋SIMT→调试调优→优化案例→单算子＋入图→SIMD&SIMT 高级→CANN Bot | 矢量/矩阵/融合算子独立实现 ＋ 每讲判题 |
+| Ascend C 算子编程（双路线） | 第 6~14 讲 | A2/A3：编程模型→Memory 矢量→矩阵→融合→调试调优→PyTorch 单算子→图模式→CANN Bot；950：编程模型→Reg 矢量→矩阵（Tensor API）→融合＋SIMT→调试调优→优化案例→单算子＋入图→SIMD&SIMT 高级→CANN Bot | 矢量/矩阵/融合算子独立实现 ＋ 每讲判题 |
 | 算子集成与端到端优化 | 第 15~16 讲 | AddRmsNorm ＋ QuantMatmul 开发（支持 Qwen3）→ Qwen3 算子替换与实训报告 → 开源贡献 | 结业大作业三项 |
 
 ---
@@ -75,7 +75,7 @@
 
 ## 四、教学安排与理论讲义（PPT）（16 周，每讲 2h 理论 + 2h 实践）
 
-> 讲义题目与课程大纲中课程内容保持一致，存放在课程对应的 ppt 目录下；「教材 PPT」列为相对本 syllabus 的讲义文件链接。路线 A（Atlas A2/A3）与路线 B（Ascend 950）二选一或并行开课。
+> 讲义题目与课程大纲中课程内容保持一致，「教材 PPT」列为相对本 syllabus 的讲义文件链接；第一、二、三部分讲义分别位于 `part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/`、`part2_ascend_c_operator_programming_model_and_practice_36h/`（含 a2a3_operator_programming/ 与 ascend950_operator_programming/ 两个子目录）、`part3_llm_operator_development_and_inference_optimization_practice_8h/`。路线 A（Atlas A2/A3）与路线 B（Ascend 950）二选一或并行开课。时长标注「2h+2h」指理论 2 学时 ＋ 配套实践 2 学时。
 
 ### 4.1 第一部分：AI 计算导论与大模型训练和推理实践（20 学时，第 1~5 周）
 
@@ -84,8 +84,8 @@
 | 1 | 第 1 讲 | 昇腾 AI 产业生态与 CANN 架构基础 | AI 基础概念概述；CANN 软件栈与架构体系认知；PyTorch NPU 开发快速入门 | 2h+2h, [1_artificial_intelligence_basics.pptx](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/1_artificial_intelligence_basics.pptx) |
 | 2 | 第 2 讲 | 基于 CANN 如何训练大模型 | 模型训练基础概念；预训练、有监督微调（SFT）与强化学习（RL）的核心区别；基于 CANN 的大模型基础训练方法与流程 | 2h+2h, [2_llm_training_with_cann.pptx](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/2_llm_training_with_cann.pptx) |
 | 3 | 第 3 讲 | 基于 CANN 如何部署和推理大模型 | 模型推理的基本概念与应用场景；掌握大模型基础部署与推理的实现方法 | 2h+2h, [3_llm_deployment_and_inference_with_cann.pptx](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/3_llm_deployment_and_inference_with_cann.pptx) |
-| 4 | 第 4 讲 | 基于 CANN 的大模型调试调优与最佳实践（上） | 大模型推理性能瓶颈分析方法；推理调试与性能调优核心手段 | 2h+2h, [4_llm_special_topic_deployment_and_inference_with_cann.pptx](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/4_llm_special_topic_deployment_and_inference_with_cann.pptx) |
-| 5 | 第 5 讲 | 基于 CANN 的大模型调试调优与最佳实践（下） | 部署与推理行业最佳实践：训推优化概述、算子入图优化、PD 分离 & KV 池化、自动融合训练 | 2h+2h, [5_1 训推优化概述](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/5_1_llm_special_topic_training_and_inference_optimization_overview_with_cann.pptx)、[5_2 入图推理优化](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/5_2_llm_special_topic_inference_optimization_via_operator_graph_integration.pptx)、[5_3 PD 分离 & KV 池化](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/5_3_llm_special_topic_inference_optimization_practice_with_cann_pd_disaggregation_and_kv_pooling.pptx)、[5_4 自动融合训练](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/5_4_llm_special_topic_training_optimization_practice_with_cann_automatic_operator_fusion.pptx)（4 个专题子讲） |
+| 4 | 第 4 讲 | 基于 CANN 的大模型训推优化实践（1）：概述与入图推理优化 | 训推优化全景与方法论；算子入图原理、入图推理优化实践、性能对比 | 2h+2h, [4_1 训推优化概述](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/4_1_llm_inference_optimization_overview_with_cann.pptx)、[4_2 入图推理优化](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/4_2_llm_inference_optimization_via_operator_graph_integration.pptx) |
+| 5 | 第 5 讲 | 基于 CANN 的大模型训推优化实践（2）：PD 分离 & KV 池化 & 算子自动融合训练 | PD 分离架构；KV 池化原理与推理优化实战；算子自动融合原理与训练实践 | 2h+2h, [4_3 PD 分离 & KV 池化](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/4_3_llm_inference_optimization_practice_with_cann_pd_disaggregation_and_kv_pooling.pptx)、[4_4 自动融合训练](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/4_4_llm_training_optimization_practice_with_cann_automatic_operator_fusion.pptx) |
 
 ### 4.2 第二部分·路线 A（Atlas A2/A3 系列）：Ascend C 算子编程模型与实践（36 学时，第 6~14 周）
 
@@ -98,8 +98,8 @@
 | 10 | 第 10 讲 | Ascend C 算子调试调优与最佳实践 | 算子常见功能调试方法与问题定位思路；性能采集与分析工具的使用；算子性能调优的基本方法论；SIMD 算子常见性能问题的调试与优化 | 2h+2h, [06 调试调优与最佳实践](./part2_ascend_c_operator_programming_model_and_practice_36h/a2a3_operator_programming/06_a2a3_ascend_c_operator_debugging_tuning_and_best_practices.pptx) |
 | 11 | 第 11 讲 | Ascend C PyTorch 单算子调用与实践 | PyTorch 单算子调用的基本原理与方法；算子注册与绑定；调用验证与测试 | 2h+2h, [07 PyTorch 单算子调用](./part2_ascend_c_operator_programming_model_and_practice_36h/a2a3_operator_programming/07_a2a3_ascend_c_operator_pytorch_single_operator_call.pptx) |
 | 12 | 第 12 讲 | Ascend C 接入 GE、AclGraph、PyTorch 图模式实践 | GE、AclGraph、PyTorch 图模式的核心概念；将 Ascend C 算子接入图模式的完整流程；端到端验证 | 2h+2h, [08 图模式接入](./part2_ascend_c_operator_programming_model_and_practice_36h/a2a3_operator_programming/08_a2a3_ascend_c_operator_graph_integration_pytorch_aclgraph_ge.pptx) |
-| 13 | 第 13 讲 | Ascend C Aclnn 工程化算子开发理论与实践 | Aclnn 工程化算子开发流程（算子原型定义、Tiling、Host 侧实现、编译部署）；自定义算子的工程化管理 | 2h+2h, [aclnn工程化](./part2_ascend_c_operator_programming_model_and_practice_36h/ascend950_operator_programming/Ascend950_08_ascend_c_engineering_operator_development_with_aclnn.pptx) |
-| 14 | 第 14 讲 | 基于 CANN Bot 的 Ascend C 算子开发与实践 | CANN Bot 的基本概念与核心能力；基于 Agent 的算子自动化开发与优化方法 | 2h+2h, [CANNBOT](../../01_bootcamp/two_days_course/05_cannbot_highlights_open_source_community_edition_0.5h.pptx)|
+| 13 | 第 13 讲 | Ascend C 算子优化实践 | Ascend C算子性能优化实践 | 2h+2h, [Ascend C 算子优化实践] (待补充) |
+| 14 | 第 14 讲 | 基于 CANN Bot 的 Ascend C 算子开发与实践 | CANN Bot 的基本概念与核心能力；基于 Agent 的算子自动化开发与优化方法 | 2h+2h, [CANN Bot](../../01_bootcamp/two_days_course/05_cannbot_highlights_open_source_community_edition_0.5h.pptx)（暂借用启航营讲义） |
 
 ### 4.3 第二部分·路线 B（Ascend 950 系列）：Ascend C 算子编程模型与实践（36 学时，第 6~14 周）
 
@@ -112,8 +112,8 @@
 | 10 | 第 10 讲 | Ascend C 算子调试调优与最佳实践 | 算子常见功能调试方法与问题定位思路；性能采集与分析工具的使用；SIMD&SIMT 算子常见性能问题的调试与优化 | 2h+2h, [04 调试调优与最佳实践](./part2_ascend_c_operator_programming_model_and_practice_36h/ascend950_operator_programming/Ascend950_04_ascend_c_operator_debugging_tuning_and_best_practices.pptx) |
 | 11 | 第 11 讲 | Ascend C SIMD&SIMT 算子优化案例 | 典型 SIMD 算子性能优化案例解析；SIMD/SIMT 混合算子优化思路与实战；算子性能优化的通用方法与实践技巧 | 2h+2h, [05 优化案例](./part2_ascend_c_operator_programming_model_and_practice_36h/ascend950_operator_programming/Ascend950_05_ascend_c_simd_simt_typical_operator_optimization_cases.pptx) |
 | 12 | 第 12 讲 | Ascend C PyTorch 单算子调用与接入 GE、AclGraph、PyTorch 图模式理论与实践 | PyTorch 单算子调用的基本原理与方法；GE、AclGraph、PyTorch 图模式接入完整流程；端到端验证 | 2h+2h, [06 PyTorch 单算子调用](./part2_ascend_c_operator_programming_model_and_practice_36h/ascend950_operator_programming/Ascend950_06_ascend_c_operator_pytorch_single_operator_call.pptx)、[09 图模式接入](./part2_ascend_c_operator_programming_model_and_practice_36h/ascend950_operator_programming/Ascend950_09_ascend_c_operator_graph_integration_pytorch_aclgraph_ge.pptx) |
-| 13 | 第 13 讲 | Ascend C SIMD 与 SIMT 高级编程 | Ascend C 高级编程特性与适用场景；SIMD/SIMT 混合编程的典型方法与实现技巧 | 2h+2h, [07 SIMD&SIMT 高级编程](./part2_ascend_c_operator_programming_model_and_practice_36h/ascend950_operator_programming/Ascend950_07_ascend_c_simd_simt_advanced_programming.pptx)；拓展：[08 Aclnn 工程化](./part2_ascend_c_operator_programming_model_and_practice_36h/ascend950_operator_programming/Ascend950_08_ascend_c_engineering_operator_development_with_aclnn.pptx) |
-| 14 | 第 14 讲 | 基于 CANN Bot 的 Ascend C 算子开发与实践 | 同路线 A 第 14 讲 | 2h+2h, [CANNBOT](../../01_bootcamp/two_days_course/05_cannbot_highlights_open_source_community_edition_0.5h.pptx)]|
+| 13 | 第 13 讲 | Ascend C SIMD 与 SIMT 高级编程 | Ascend C 高级编程特性与适用场景；SIMD/SIMT 混合编程的典型方法与实现技巧 | 2h+2h, [07 SIMD&SIMT 高级编程](./part2_ascend_c_operator_programming_model_and_practice_36h/ascend950_operator_programming/Ascend950_07_ascend_c_simd_simt_advanced_programming.pptx) |
+| 14 | 第 14 讲 | 基于 CANN Bot 的 Ascend C 算子开发与实践 | 同路线 A 第 14 讲 | 2h+2h, [CANN Bot](../../01_bootcamp/two_days_course/05_cannbot_highlights_open_source_community_edition_0.5h.pptx)（暂借用启航营讲义） |
 
 ### 4.4 第三部分：大模型算子开发与推理优化实践（8 学时，第 15~16 周）
 
@@ -125,14 +125,14 @@
 
 ## 五、每节课的实践内容（CANN-Learning-Hub 承载）
 
-> 每讲实践由 cann-learning-hub 的跟练 Notebook 承载，与理论课配对，按「跟练 → 变体改造 → 独立实现 → 判题」推进；实践路径链接待平台上线后补充。
+> 每讲实践由 [cann-learning-hub](https://gitcode.com/cann/cann-learning-hub/) 的跟练 Notebook 承载，与理论课配对，按「跟练 → 变体改造 → 独立实现 → 判题」推进；「实践路径」列为教程仓（本仓库）`quick_start/`、`tutorials/` 下的实际目录，进入对应目录即可跟练，路线 B 专属实践路径待补充。
 
 ### 5.1 第一部分：AI 计算导论与大模型训推
 
 | 讲次 | 实践主题 | 实践内容 | 实践路径（cann-learning-hub） |
 |------|---------|---------|------------------------------|
 | 第 1 讲 | NPU 环境初体验 | **易**：`cann_basics` 4 个 Notebook 跟练；**中**：MindStudio 复跑同教程并对比；**难**：手绘 CANN 四层架构图并标注本课涉及层 | `quick_start/cann_basics/` |
-| 第 2 讲 | 大模型训练体验 | **易**：SFT 章节跟练；**中**：换数据集完成微调；**难**：对比预训练/SFT/RL 资源占用并出报告 | `tutorials/llm_inference/qwen3_1.7B` |
+| 第 2 讲 | 大模型训练体验 | **易**：SFT 章节跟练；**中**：换数据集完成微调；**难**：对比预训练/SFT/RL 资源占用并出报告 | `tutorials/sft_training_pipeline`、`tutorials/rl_training_pipeline` |
 | 第 3 讲 | 大模型基线推理 | **易**：baseline 推理跑通；**中**：换模型完成推理与精度校验；**难**：ATC 离线编译并对比在线推理延迟 | `tutorials/llm_inference/qwen3_1.7B` |
 | 第 4~5 讲 | 调试调优实践 | **易**：Profiling 章节跟练；**中**：定位 Top3 算子并解释瓶颈类型（计算/访存）；**难**：PD 分离 & KV 池化 A/B 实测并写优化报告 | `tutorials/llm_inference/qwen3_1.7B` |
 
@@ -144,10 +144,10 @@
 | 第 7 讲 | Memory 矢量编程 | **易**：矢量算子跟练（Add）；**中**：Add 改 Softmax/减法变体；**难**：Add 泛化算子判题（任意 data_len，含尾块掩码处理） | `tutorials/ascendc_operator_development_light/02_AscendC_basic` |
 | 第 8 讲 | 矩阵算子编程 | **易**：Matmul basic 跟练；**中**：修改 Tiling 分块参数对比性能；**难**：Matmul 判题（性能达基线 x%） | `tutorials/ascendc_operator_development_light/03_simple_operator_practice` |
 | 第 9 讲 | 融合算子编程 | **易**：融合算子开发跟练；**中**：手工 AIC/AIV 分离改造；**难**：Matmul+LeakyRelu 融合并实测访存收益 | `tutorials/ascendc_operator_development_light/03_simple_operator_practice` |
-| 第 10 讲 | 调试调优实战 | **易**：Profile/仿真调优跟练；**中**：解读剖析报告并指出瓶颈；**难**：慢算子诊断并优化达标（附前后数据） | `tutorials/ascendc_operator_development_light/03_simple_operator_practice` |
+| 第 10 讲 | 调试调优实战 | **易**：Profile/仿真调优跟练；**中**：解读剖析报告并指出瓶颈；**难**：慢算子诊断并优化达标（附前后数据） | `tutorials/ascendc_operator_development_light/04_debug` |
 | 第 11 讲 | PyTorch 单算子调用 | **易**：单算子调用跟练；**中**：自定义算子注册调用；**难**：调用精度/性能双校验报告 | `tutorials/ascendc_operator_development_light/02_AscendC_basic` |
 | 第 12 讲 | 图模式接入 | **易**：入图流程跟练；**中**：自定义算子入图验证；**难**：算子入图（PyTorch-AclGraph-GE）并端到端验证 | `tutorials/ascendc_operator_development_light/02_AscendC_basic` |
-| 第 13 讲 | Aclnn 工程化 | **易**：工程化开发跟练；**中**：custom_op 示例改造；**难**：完成一个 Aclnn 自定义算子工程交付 | `tutorials/ascendc_operator_development` |
+| 第 13 讲 | Ascend C算子优化实践 | 待补充 | `tutorials/ascendc_operator_development` |
 | 第 14 讲 | CANN Bot 智能开发 | **易**：CANNBot 教程跟练；**中**：Agent 生成算子并人工校验；**难**：生成-校验-优化闭环完成一道判题 | `tutorials/CANNBot` |
 
 ### 5.3 第二部分·路线 B（Ascend 950）
@@ -183,17 +183,17 @@
 | 讲次 | 课后习题（CANNJudge 在线题库） | 小作业（CANNJudge 判题） | 作业参考资源 | CANNJudge 链接 |
 |------|------------------------------|------------------------|-------------|---------------|
 | 第 1 讲 | 昇腾生态与 CANN 分层架构概念题 | PyTorch NPU 入门实践练习 | learning-hub: `quick_start/cann_basics/` | 待补充 |
-| 第 2 讲 | 预训练/SFT/RL 核心区别概念题 | 复用 SFT checkpoint，完成一轮可解释的 Wordle GRPO 短跑 | learning-hub: `tutorials/llm_inference/qwen3_1.7B` | 待补充 |
+| 第 2 讲 | 预训练/SFT/RL 核心区别概念题 | 复用 SFT checkpoint，完成一轮可解释的 Wordle GRPO 短跑 | learning-hub: `tutorials/sft_training_pipeline`、`tutorials/rl_training_pipeline` | 待补充 |
 | 第 3 讲 | CANN 部署推理流程概念题 | 基于 CANNLab 部署 Qwen3-1.7B 模型 | learning-hub: `tutorials/llm_inference/qwen3_1.7B` | 待补充 |
 | 第 4~5 讲 | 推理优化手段配对题（场景 → 优化手段） | 基于 Qwen3 模型完成初步的性能分析 | learning-hub: `tutorials/llm_inference/qwen3_1.7B` | 待补充 |
-| 第 6 讲 | 异构计算与编程模型概念题（核函数/内存/同步） | SIMD Hello World & Add 算子快速入门 | A：`01_simd_cpp_api/00_introduction`；B：`02_simd_c_api/00_introduction` | 待补充 |
-| 第 7 讲 | 矢量算子编程接口题 | Add 算子、Softmax 算子判题 | A：`01_simd_cpp_api/00_introduction`；B：`01_simd_cpp_api/07_tensor_api/experimental/reg_vector_compute` | 待补充 |
-| 第 8 讲 | 矩阵分块与 Tiling 题 | Matmul 算子判题 | A：`01_simd_cpp_api/00_introduction`；B：`01_simd_cpp_api/07_tensor_api` | 待补充 |
-| 第 9 讲 | 融合算子模式概念题 | Matmul+LeakyRelu 算子判题 | A：`01_simd_cpp_api/00_introduction/03_fusion_operation/matmul_leakyrelu_basic_api`；B：`01_simd_cpp_api/07_tensor_api`、`03_simt_api` | 待补充 |
+| 第 6 讲 | Ascend C 算子快速入门 | SIMD Hello World & Add 算子快速入门 | A：`01_simd_cpp_api/00_introduction`；B：`02_simd_c_api/00_introduction` | 待补充 |
+| 第 7 讲 | Ascend C 矢量算子编程 | Add 算子、Softmax 算子判题 | A：`01_simd_cpp_api/00_introduction`；B：`01_simd_cpp_api/07_tensor_api/experimental/reg_vector_compute` | 待补充 |
+| 第 8 讲 | Ascend C 矩阵算子编程 | Matmul 算子判题 | A：`01_simd_cpp_api/00_introduction`；B：`01_simd_cpp_api/07_tensor_api` | 待补充 |
+| 第 9 讲 | Ascend C 融合算子编程 | Matmul+LeakyRelu 算子判题 | A：`01_simd_cpp_api/00_introduction/03_fusion_operation/matmul_leakyrelu_basic_api`；B：`01_simd_cpp_api/07_tensor_api`、`03_simt_api` | 待补充 |
 | 第 10 讲 | 调试工具链操作题（Profile/仿真） | Profile 使用方法、仿真性能统计方法、SIMD 算子最佳实践 | A/B：`01_simd_cpp_api/01_utilities/04_profiling`、`01_simd_cpp_api/01_utilities/08_simulator`、`01_simd_cpp_api/05_best_practices` | 待补充 |
-| 第 11 讲 | 算子注册与调用流程题 | PyTorch 单算子调用实践 | A：`01_simd_cpp_api/02_features/00_framework/00_pytorch`；B：待补充 | 待补充 |
+| 第 11 讲 | Ascend C算子调用 | PyTorch 单算子调用实践 | A：`01_simd_cpp_api/02_features/00_framework/00_pytorch`；B：待补充 | 待补充 |
 | 第 12 讲 | AclGraph/GE 入图流程题 | Ascend C 算子入图实践 | A/B：`01_simd_cpp_api/02_features/00_framework/00_pytorch`、`04_aclgraph`、`03_ge` | 待补充 |
-| 第 13 讲 | Aclnn 工程化流程题 | Aclnn 工程化算子开发实践 | A：`01_simd_cpp_api/02_features/99_acl_based/00_acl_compilation/custom_op`；B：`05_simd_simt_hybrid` | 待补充 |
+| 第 13 讲 | Ascend C 算子优化实践 | 待补充 | 待补充| 待补充 |
 | 第 14 讲 | CANN Bot 功能概念题 | 基于 CANN Bot 开发 AddRmsNorm | A/B：learning-hub: `tutorials/CANNBot` | 待补充 |
 | 第 15~16 讲 | —（结业冲刺） | —（进入结业大作业） | — | — |
 
@@ -233,26 +233,12 @@
 |------|---------|------|
 | **另一架构路线** | 路线 A 学员补学 950（SIMD 编程模型→Reg 矢量→矩阵/融合→SIMT→混合编程）；路线 B 学员补学 A2/A3 | 双平台算子开发能力 |
 | **算子极致性能** | A2/A3 极致性能三课（L4-20~22）→ 950 极致性能（L4-23~25） | 独立开发达到理论峰值 90%+ 的高性能算子 |
-| **算子工程化** | 算子入图（L4-28）→ Aclnn 工程化开发（L4-29）→ 通信算子自定义开发（L4-30） | 算子库级工程化能力 |
 | **多语言算子范式** | PyPTO（L4-31~35）→ TileLang（L4-36~40）→ PyAsc（L4-41~44） | 掌握多种算子编程范式 |
 | **大模型系统** | 训推优化进阶、分布式训练与推理服务化 | 大模型系统优化能力 |
 
 ---
 
 ## 八、进一步学习参考
-
-### 8.1 进阶方向（原子课程衔接）
-
-| 进阶方向 | 对应原子课程 |
-|---------|-------------|
-| A2/A3 矩阵算子编程 | L4-04（`01_ascendc/04_a2a3_simd_matmul/`） |
-| Ascend C 矢量、矩阵、融合算子调试调优与最佳实践 | L4-08（`01_ascendc/08_a2a3_debug_tuning/`） |
-| Ascend 950 Ascend C 算子编程以及进一步性能优化 | L4-09~17（950 SIMD/SIMT 系列）、L4-23~25（950 极致性能）、L4-26~27（SIMD&SIMT 混合编程） |
-| A2/A3 算子极致性能 | L4-20~22（`01_ascendc/20~22_a2a3_*_extreme_performance/`） |
-| 算子工程化与多语言范式 | L4-28~30（入图/Aclnn/通信算子）、PyPTO L4-31~35、TileLang L4-36~40、PyAsc L4-41~44 |
-| 算子设计与优化参考实现 | CANN Samples（基于样例仓学习算子设计与优化） |
-
-### 8.2 资源链接
 
 | 资源 | 链接 | 用途 |
 |------|------|------|
@@ -262,5 +248,3 @@
 | CANN 算子领域样例仓库 | <https://gitcode.com/cann/cann-samples/tree/master/Samples/> | 各领域算子实现样例（参考实现） |
 | CANN Learning Hub | <https://gitcode.com/cann/cann-learning-hub/> | 全栈教程与 Notebook 练习（实践作业载体） |
 | 教材《Ascend C 异构并行程序设计》 | <https://gitcode.com/HIT1920/AscendCBook> | 异构并行程序设计教材 |
-| 昇腾社区 | <https://www.hiascend.com/> | 官方文档、论坛、课程、活动 |
-| CANN 开发者论坛 | <https://bbs.huaweicloud.com/forum/forum-1109-1.html> | 问题求助、经验分享、技术交流 |

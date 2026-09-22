@@ -185,20 +185,6 @@
 
 ## 八、进一步学习参考
 
-### 8.1 进阶方向（原子课程衔接）
-
-| 进阶方向 | 对应原子课程 |
-|---------|-------------|
-| A2/A3 矩阵算子编程 | L4-04（`01_ascendc/04_a2a3_simd_matmul/`） |
-| A2/A3 融合算子编程 | L4-05（`01_ascendc/05_a2a3_simd_fused_operator/`） |
-| Ascend C 矢量、矩阵、融合算子调试调优与最佳实践 | L4-08（`01_ascendc/08_a2a3_debug_tuning/`） |
-| Ascend 950 Ascend C 算子编程以及进一步性能优化 | L4-09~17（950 SIMD/SIMT 系列）、L4-23~25（950 极致性能）、L4-26~27（SIMD&SIMT 混合编程） |
-| A2/A3 算子极致性能 | L4-20~22（`01_ascendc/20~22_a2a3_*_extreme_performance/`） |
-| 算子工程化与多语言范式 | L4-28~30（入图/Aclnn/通信算子）、PyPTO L4-31~35、TileLang L4-36~40、PyAsc L4-41~44 |
-| 大模型训推优化 | 课程一第一部分（L1-14~24）、L2-13~18 |
-
-### 8.2 资源链接
-
 | 资源 | 链接 | 用途 |
 |------|------|------|
 | CANN 社区主站 | <https://gitcode.com/cann> | CANN 开源社区，获取全部代码与文档 |
@@ -207,5 +193,3 @@
 | CANN 算子领域样例仓库 | <https://gitcode.com/cann/cann-samples/tree/master/Samples/> | 各领域算子实现样例（参考实现） |
 | CANN Learning Hub | <https://gitcode.com/cann/cann-learning-hub/> | 全栈教程与 Notebook 练习（实践作业载体） |
 | 教材《Ascend C 异构并行程序设计》 | <https://gitcode.com/HIT1920/AscendCBook> | 异构并行程序设计教材（与本课程「教材↔课程」双载体） |
-| 昇腾社区 | <https://www.hiascend.com/> | 官方文档、论坛、课程、活动 |
-| CANN 开发者论坛 | <https://bbs.huaweicloud.com/forum/forum-1109-1.html> | 问题求助、经验分享、技术交流 |

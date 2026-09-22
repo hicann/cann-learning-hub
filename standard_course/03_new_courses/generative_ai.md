@@ -182,25 +182,11 @@
 
 ## 八、进一步学习参考
 
-### 8.1 进阶方向（原子课程衔接）
-
-| 进阶方向 | 对应原子课程/资源 |
-|---------|------------------|
-| CANN 大模型训推全链路 | 课程一《AI 计算与神经网络计算架构实践》（L1-14~24、L4 系列） |
-| 算子极致性能 | L4-20~22（A2/A3 极致性能）、L4-23~25（950 极致性能） |
-| 分布式训练框架 | L2-01（分布式训练框架）、L1-22（大模型分布式训练） |
-| RAG 与智能体 | L1-17（RAG 检索增强生成）、L1-23（智能体与多模态大模型） |
-| 前沿论文与开源项目 | LLaMA/Qwen/DeepSeek、Stable Diffusion 等论文与官方开源实现 |
-
-### 8.2 资源链接
-
 | 资源 | 链接 | 用途 |
 |------|------|------|
 | CANN 社区主站 | <https://gitcode.com/cann> | CANN 开源社区，获取全部代码与文档 |
 | Ascend C 编程指南 | <https://asc.gitcode.com> | 编程模型、API 用法与最佳实践 |
 | CANN 算子领域样例仓库 | <https://gitcode.com/cann/cann-samples/tree/master/Samples/> | 各领域算子实现样例（参考实现） |
 | CANN Learning Hub | <https://gitcode.com/cann/cann-learning-hub/> | 全栈教程与 Notebook 练习（实践作业载体） |
-| 昇腾社区 | <https://www.hiascend.com/> | 官方文档、论坛、课程、活动 |
-| CANN 开发者论坛 | <https://bbs.huaweicloud.com/forum/forum-1109-1.html> | 问题求助、经验分享、技术交流 |
 | HuggingFace / OpenMind | <https://huggingface.co> | 开源模型与数据集下载 |
 | 教材《Ascend C 异构并行程序设计》 | <https://gitcode.com/HIT1920/AscendCBook> | 异构并行程序设计教材（训练章与本课程呼应） |

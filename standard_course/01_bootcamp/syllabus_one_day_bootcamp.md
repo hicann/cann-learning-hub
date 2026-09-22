@@ -91,12 +91,12 @@
 
 | 讲次 | 实践主题 | 实践内容 | 实践路径（cann-learning-hub） |
 |------|---------|---------|------------------------------|
-| 第 1 讲 | NPU 环境初体验 | 跑通 PyTorch NPU HelloWorld，验证环境与算力 | `tutorials/02_ai_frameworks/01_pytorch_npu_quickstart/` |
-| 第 2 讲 | Ascend C 矢量算子上机 | Add 算子跟练 → 变体改造 → 过渡独立实现（1h） | `tutorials/04_ops_programming/01_ascendc/01_introduction/`、`02_a2a3_simd_programming_model/`、`03_a2a3_simd_memory_vector/` |
-| 第 3 讲 | CANNBot 算子生成体验 | 用 CANNBot 生成一个矢量算子，与手写版本对比 | `tutorials/04_ops_programming/05_cannbot/01_cannbot_introduction_practice/` |
+| 第 1 讲 | NPU 环境初体验 | 跑通 PyTorch NPU HelloWorld，验证环境与算力 | `quick_start/cann_basics/` |
+| 第 2 讲 | Ascend C 矢量算子上机 | Add 算子跟练 → 变体改造 → 过渡独立实现（1h） | `tutorials/ascendc_operator_development_light/01_basic_overview`、`tutorials/ascendc_operator_development_light/02_AscendC_basic` |
+| 第 3 讲 | CANNBot 算子生成体验 | 用 CANNBot 生成一个矢量算子，与手写版本对比 | `tutorials/CANNBot` |
 | 第 4 讲 | 结业作业冲刺 | `add_rms_norm` 功能实现与验证（判题由 CANNJudge 承载，见第六章） | — |
 
-> **实践目录说明：** 「实践路径」列为 tutorials 规划目录（见 [00_atomic_courses/directory.md](../00_atomic_courses/directory.md)），实体目录建设完成后替换为可点击链接。
+> **实践目录说明：** 「实践路径」列为 [cann-learning-hub](https://gitcode.com/cann/cann-learning-hub/) 教程仓（本仓库）`quick_start/`、`tutorials/` 下的实际教程目录，进入对应目录即可跟练 Notebook。
 
 ---
 
@@ -110,19 +110,17 @@
 
 | 讲次 | 课后习题（CANNJudge 在线题库） | 小作业（CANNJudge 判题） | 作业参考资源 | CANNJudge 链接 |
 |------|------------------------------|------------------------|-------------|---------------|
-| 第 1 讲 | 昇腾生态与 CANN 分层架构概念题（选择 / 判断） | NPU 环境验证：跑通 HelloWorld 并提交算力信息 | learning-hub: `tutorials/02_ai_frameworks/01_pytorch_npu_quickstart/` | 待补充 |
-| 第 2 讲 | 矢量算子开发流程概念题（核函数 / Tiling / 流水） | SIMD Hello World & Add 算子快速入门判题（**易**：功能跑通；**中**：Mul / AXPY 变体改造） | `01_simd_cpp_api/00_introduction` | 待补充 |
-| 第 3 讲 | CANNBot 功能与使用概念题 | 用 CANNBot 生成一个矢量算子并与手写版本对比（提交对比记录） | learning-hub: `tutorials/04_ops_programming/05_cannbot/01_cannbot_introduction_practice/` | 待补充 |
-| 第 4 讲 | —（结业冲刺） | —（进入结业大作业） | — | — |
+| 第 1 讲 | Pytorch NPU 入门练习 | torch.matmul 调用实验 | torch API链接 | 待补充CANN Judge链接 |
+| 第 2 讲 | Ascend C 矢量算子 | SIMD Hello World 和 Add 算子快速入门 |  `01_simd_cpp_api/00_introduction` | 待补充CANN Judge链接 |
+| 第 3 讲 | CANNBot 功能与使用概念题 | 用 CANNBot 生成一个矢量算子并与手写版本对比（提交对比记录） | learning-hub: `tutorials/CANNBot` | 待补充 |
 
-### 6.2 结业大作业（两档）
+### 6.2 结业大作业（三档）
 
 | 作业 | 档位 | 内容 | 考核点 |
 |------|------|------|--------|
-| **作业 1** | **必选** | 开发矢量算子 **`add_rms_norm`**（x + bias → RMSNorm → 输出），支持 Qwen3 大模型，功能跑通 | CANNJudge 判题通过（正确性门禁：多形状/多类型/精度达标） |
+| **作业 1** | **必选** | 开发矢量算子 **`sigmoid`** ，支持 Qwen3 大模型，功能跑通 | CANNJudge 判题通过（正确性门禁：多形状/多类型/精度达标） |
 | **作业 2** | 可选 | **持续优化** `add_rms_norm` 算子性能 | 性能提升幅度 + 优化路径说明（VF粒度/双发射/访存/融合等） |
-
-> **与两天营/两周营衔接：** 同源递进——一天营 = 矢量单算子功能跑通（最轻量体验）；两天营 = 矢量单算子入门 + 大模型训推认知 + 可选 PyTorch 集成；两周营 = 双算子（矢量 + 矩阵）+ 框架集成 + 性能优化，是系统性延伸。
+| **作业 3** | 可选 | **持续优化** `add_rms_norm` 算子性能 | 性能提升幅度 + 优化路径说明（VF粒度/双发射/访存/融合等） |
 
 ---
 
@@ -137,17 +135,6 @@
 
 ## 八、进一步学习参考
 
-### 8.1 进阶方向（原子课程衔接）
-
-| 进阶方向 | 对应原子课程（[目录规划](../00_atomic_courses/directory.md)） |
-|---------|------------------------------------------------|
-| A2/A3 矩阵算子编程 | L4-04（`01_ascendc/04_a2a3_simd_matmul/`）、L4-06（典型矩阵算子实践） |
-| A2/A3 融合算子编程 | L4-05（`01_ascendc/05_a2a3_simd_fused_operator/`） |
-| 矢量、矩阵、融合算子调试调优与最佳实践 | L4-08（`01_ascendc/08_a2a3_debug_tuning/`） |
-| Ascend 950 Ascend C 算子编程与性能优化 | L4-09~17（950 系列课程）、L4-23~25（950 极致性能） |
-
-### 8.2 资源链接
-
 | 资源 | 链接 | 用途 |
 |------|------|------|
 | Ascend C API 实现与样例 | <https://gitcode.com/cann/asc-devkit> | API 源码、API 使用示例、算子参考实现 |
@@ -155,5 +142,3 @@
 | CANN 算子领域样例仓库 | <https://gitcode.com/cann/cann-samples/tree/master/Samples/> | 各领域算子实现样例（对标 / 参考实现） |
 | CANN Learning Hub | <https://gitcode.com/cann/cann-learning-hub/> | 全栈教程与 Notebook 练习（本课程实践作业载体） |
 | 教材《Ascend C 异构并行程序设计》 | <https://gitcode.com/HIT1920/AscendCBook> | 异构并行程序设计教材 |
-| 昇腾社区 | <https://www.hiascend.com/> | 官方文档、论坛、课程、活动 |
-| CANN 开发者论坛 | <https://bbs.huaweicloud.com/forum/forum-1109-1.html> | 问题求助、经验分享、技术交流 |
