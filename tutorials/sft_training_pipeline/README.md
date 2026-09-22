@@ -40,7 +40,7 @@
 | 序号 | 主题 | 主要内容 | 课件 |
 |---|---|---|---|
 | 01 | SFT 监督微调（初阶） | Wordle 任务、SFT 原理、TorchTitan/FSDP、基线训练、推理评测 | [01_sft_training_pipeline.pptx](slides/01_sft_training_pipeline.pptx) |
-| 05 | SFT 监督微调（中阶） | Attention/VarLen/通信优化与融合算子性能优化 | [01_sft_training_pipeline.pptx](slides/01_sft_training_pipeline.pptx) |
+| 02 | SFT 性能优化（中阶） | Attention、VarLen、分布式通信与长序列容量优化 | [02_sft_training_pipeline.pptx](slides/02_sft_training_pipeline.pptx) |
 
 
 ## 教程结构
