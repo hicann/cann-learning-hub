@@ -38,6 +38,12 @@ cann-samples 是算子领域高性能实战演进样例与体系化调优知识�
 
 - 计算公式：
 
+$\text{RMS}_i = \sqrt{\frac{1}{r}\sum_{j=0}^{r-1}x_{i,j}^2 + \varepsilon}$
+
+$\text{norm}_{i,j} = \frac{x_{i,j}}{\text{RMS}_i} \cdot \gamma_j$
+
+$y_{i,j} = \text{clamp}\!\left(\text{round}\!\left(\text{norm}_{i,j} \cdot s + b\right),\ -128,\ 127\right)$
+
 - 参数说明：
 
 | 变量名 | 描述 | Dtype | Shape |
@@ -60,6 +66,8 @@ cann-samples 是算子领域高性能实战演进样例与体系化调优知识�
 ### 性能建模
 
 RmsNormQuant 是纯 Vector 算子，单核内的执行流水为 MTE2（GM→UB 搬运）→ VEC（向量计算）→ MTE3（UB→GM 搬运）。理想情况下三条流水并行执行，整体时延的下限由最慢的流水阶段决定：
+
+$T_{\text{total}} = \max(T_{\text{vec}},\ T_{\text{mte2}},\ T_{\text{mte3}}) + T_{\text{overhead}}$
 
 后续优化过程围绕三个分析维度展开，每个维度对应可直接从 profiling 数据中读取的核心指标，作为性能优化的抓手。
 
@@ -406,6 +414,8 @@ ubFactor 的含义：`ubFactor` 是一次 UB 循环中处理的行数。Step 4 �
 
 UB 的总空间消耗由两部分组成：
 
+$\text{UB}_{\text{total}} = \text{fixedSize} + \text{ubFactor} \times \text{linearCoef}$
+
 - 固定部分（fixedSize）：gamma 的 fp16 搬入缓冲和 fp32 常驻缓冲，大小与 `ubFactor` 无关。
 
 - 行数据部分（linearCoef × ubFactor）：每行所需的输入、输出和中间结果空间，随 `ubFactor` 线性增长。由于开启了双缓冲（`BUF_NUM = 2`），输入和输出缓冲各需要两份交替使用。
@@ -479,11 +489,13 @@ int64_t maxUbFactor = (ubSize - fixedSize) / linearCoef;  // ≈ 10
 
 优化目标：在性能基本不退的前提下提高数值精度。
 
-Step 3~5 中，行内平方和通过 float32 寄存器上的 128 次 `Add(vregReduceSum, vregReduceSum, vregXQuared)` 完成，构成典型的线性累加（sequential summation）。float32 的机器精度 （），线性累加的浮点相对误差界为 ——对于 ，误差上界约 。这意味着 RMS 值在千分之一量级上存在偏差，在量化边界附近可能导致输出偏移 1 个 quant level，大规模推理中逐层累积。误差根源在于浮点加法不可结合：，线性累加每一步的舍入误差都被后续操作放大。
+Step 3~5 中，行内平方和通过 float32 寄存器上的 128 次 `Add(vregReduceSum, vregReduceSum, vregXQuared)` 完成，构成典型的线性累加（sequential summation）。float32 的机器精度 $\varepsilon \approx 1.2 \times 10^{-7}$（$2^{-23}$），线性累加的浮点相对误差界为 $O(n \cdot \varepsilon)$——对于 $n=8192$，误差上界约 $10^{-3}$。这意味着 RMS 值在千分之一量级上存在偏差，在量化边界附近可能导致输出偏移 1 个 quant level，大规模推理中逐层累积。误差根源在于浮点加法不可结合：$(a \oplus b) \oplus c \neq a \oplus (b \oplus c)$，线性累加每一步的舍入误差都被后续操作放大。
 
-二分累加。 核心思想是缩短累加链深度。将长度为  的向量递归分成两半分别求和再合并：
+二分累加。 核心思想是缩短累加链深度。将长度为 $n$ 的向量递归分成两半分别求和再合并：
 
-理想的全递归二分累加可将误差界从  降至 。本例将一行 8192 个元素从折叠点 `binaryAddPoint` 处拆分为前后两段（`r=8192` 时取 4096），经两阶段 ReduceSum 归约——虽非完全递归树，但累加链深度已从  量级大为缩短。
+$\text{Sum}(x_0, \ldots, x_{n-1}) = \text{Sum}(x_0, \ldots, x_{n/2-1}) + \text{Sum}(x_{n/2}, \ldots, x_{n-1})$
+
+理想的全递归二分累加可将误差界从 $O(n\varepsilon)$降至 $O(\log n \cdot \varepsilon)$。本例将一行 8192 个元素从折叠点 `binaryAddPoint` 处拆分为前后两段（`r=8192` 时取 4096），经两阶段 ReduceSum 归约——虽非完全递归树，但累加链深度已从 $O(n)$量级大为缩短。
 
 ![binary_reduction_workflow](images/binary_reduction_workflow.png)
 
@@ -507,7 +519,7 @@ ReduceSum(vregReduceSum, vregReduceSum, pregAll);          // 归约为一标量
 
 代价是 `rmsBuf_` 从 `ubFactor × 4B` 增至 `ubFactor × 256B`，`ubFactor` 从 10 降至 9，UB 循环从 7 次变为 8 次，影响极小。
 
-迭代求 rsqrt。 归一化需计算 。Step 3~5 使用的指令链为：
+迭代求 rsqrt。 归一化需计算 $\text{rstd} = 1/\sqrt{\text{var}}$。Step 3~5 使用的指令链为：
 
 ```
 // Step 3~5: 硬件 Div + Sqrt
@@ -517,7 +529,7 @@ Div(vregNorm, vregX, vregRms, preg);  // norm = x / rms
 
 ```
 
-Step 6 以硬件 `Div` + `Sqrt` 获得初始估计 ，再用乘加链迭代提高精度，以两轮 Newton-Raphson 替代直接使用硬件 `Div`/`Sqrt` 的结果。
+Step 6 以硬件 `Div` + `Sqrt` 获得初始估计 $y_0 = \sqrt{1/\text{var}}$，再用乘加链迭代提高精度，以两轮 Newton-Raphson 替代直接使用硬件 `Div`/`Sqrt` 的结果。
 
 初始估计：
 
@@ -529,6 +541,8 @@ Sqrt(y, r, pregLoop);           // y₀ = √(1/var) = rsqrt(var)
 
 第一轮（Newton-Raphson）：
 
+$y_1 = y_0 \cdot \left(\frac{3}{2} - \frac{\text{var}}{2} \cdot y_0^2\right)$
+
 ```
 Muls(t, var, float(-0.5), pregLoop);  // t = -0.5 * var
 Mul(t, t, y, pregLoop);               // t = -0.5 * var * y₀
@@ -539,7 +553,7 @@ Mul(rstd, y, t1, pregLoop);           // rstd = y₀ * (1.5 - 0.5 * var * y₀²
 
 `Mula(dst, src1, src2)` = `dst += src1 * src2`，实现乘加融合。
 
-第二轮（残差形式 Newton 修正）： 令 ，修正步为 ——该形式与 Newton-Raphson 公式代数等价，但更便于在寄存器上直接操作。
+第二轮（残差形式 Newton 修正）： 令 $e = 1 - \text{var} \cdot y_1^2$，修正步为 $y_2 = y_1 \cdot \left(1 + \frac{e}{2}\right)$——该形式与 Newton-Raphson 公式代数等价，但更便于在寄存器上直接操作。
 
 ```
 Muls(t3, var, float(-1.0), pregLoop);   // t3 = -var
@@ -560,7 +574,7 @@ Mul(vregNorm, vregX, vregRms, preg);  // norm = x * rstd = x / rms
 
 ```
 
-迭代结果 `rstd`（代码中复用 `vregRms` 变量名存储）已是  的逼近值，`Div` 被 `Mul` 取代。
+迭代结果 `rstd`（代码中复用 `vregRms` 变量名存储）已是 $1/\text{rms}$的逼近值，`Div` 被 `Mul` 取代。
 
 性能数据：
 
@@ -626,6 +640,8 @@ Double Buffer 的收益取决于两条流水段的工作量是否匹配。Step 3
 3. UB 空间建模
 
 UB 利用率优化需要区分固定开销（如 gamma 缓冲区，大小与 `ubFactor` 无关）和线性开销（如 x/y/rms 缓冲区，大小随 `ubFactor` 线性增长），据此建立 UB 空间方程：
+
+$\text{UB}_{\text{total}} = \text{fixedSize} + \text{ubFactor} \times \text{linearCoef}$
 
 `calcMaxUbFactor` 函数的本质是在给定 UB 总量下求解最大行容量。这一建模方式可直接套用到其他 Vector 算子——只需根据算子的实际缓冲区需求重新计算 `fixedSize` 和 `linearCoef`。
 
