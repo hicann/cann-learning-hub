@@ -57,7 +57,7 @@ cmake --build build -j
 每次运行记录 `Actual Backend`（SpMV 为 `ACL/CANN ops-sparse`，GEMM 为 `ACL/CANN`）、Device ID、时间字段（SpMV 为 `ACL SpMV time`，GEMM 为 `ACL GEMM time`，二者都包含 Stream 同步）和 CPU reference relative L2 error；以程序退出码为首要判据，并使用 `1e-6` 作为实验记录阈值（与程序 Correctness 门槛一致）。
 
 | Operator | Actual backend | Device | ACL time (ms) | CPU reference error | Pass |
-|---|---:|---:|---:|:---:|
+|---|---:|---:|---:|:---:|:---:|
 | GEMM | | | | | |
 | SpMV | | | | | |
 
