@@ -24,51 +24,55 @@ SALS算法主要分为稀疏token选择与稀疏attention计算两部分，如�
 
 ## Quant Sals Indexer（QSI）
 
-`Quant Sals Indexer`是基于一系列计算操作得到每一个query token对应的Top- 个位置的算子。Decode场景，对于Index Query （query这里的维度为1，是由前置算子对query的group维度取平均），给定上下文 Index Key ，其中 为每一个头的维度， 是上下文的长度。同时，考虑到上下文长度较长，我们采取了int4的量化方案，计算公式如下：
+`Quant Sals Indexer`是基于一系列计算操作得到每一个query token对应的Top-$k$ 个位置的算子。Decode场景，对于Index Query $Q_{index}\in\mathbb{R}^{1\times d}$（query这里的维度为1，是由前置算子对query的group维度取平均），给定上下文 Index Key $K_{index}\in\mathbb{R}^{S_{k}\times d}$，其中 $d$ 为每一个头的维度，$S_{k}$ 是上下文的长度。同时，考虑到上下文长度较长，我们采取了int4的量化方案，计算公式如下：
 
-其中， 为固定尾部块索引集合；块级 Log-Sum-Exp 算子  定义为：
+$\text{sparse\_indices} = \text{Top-}k\left\{\text{argsort}\left( \text{LSE}_{\text{block}}\left( \left( \mathbf{Q}_{\text{int4}} @ \mathbf{K}_{\text{int4}}^\top\right) \odot\left( \mathbf{s}_q \otimes\mathbf{s}_k \right); SparseBlockSize \right) \right) \right\}\cup\mathcal{Fix}$
+
+其中，$\mathcal{Fix}$ 为固定尾部块索引集合；块级 Log-Sum-Exp 算子 $\text{LSE}_{\text{block}}(\cdot; SparseBlockSize)$ 定义为：
+
+$\text{LSE}_{\text{block}}(\mathbf{S}; b) = \left[ \underbrace{\max(\mathbf{S}_i)}_{m_i} + \log\left( \sum\exp\left( \mathbf{S}_i - m_i \right) \right) \right]_{i=0}^{B-1}, \quad\mathbf{S}_i = \mathbf{S}[:, i \cdot b : (i+1) \cdot b]$
 
 可拆分为如下计算步骤：
 
-1. Query  与 Key 进行矩阵乘法，得到
+1. Query $\mathbf{Q}_{\text{int4}}$ 与 Key $\mathbf{K}_{\text{int4}}$ 进行矩阵乘法，得到 $\mathbf{S}_{\text{int}}$
 
-2. 反量化：
+2. 反量化：$\mathbf{S} = \mathbf{S}_{\text{int}} \odot \left( \mathbf{s}_q \otimes \mathbf{s}_k \right)$
 
-1. 块级 Log-Sum-Exp (LSE) 计算：将 Key 序列按块大小  划分为  个块，对每个块（排除固定尾部块）计算 LSE 值（用于近似该块的 Attention 权重总和）
+1. 块级 Log-Sum-Exp (LSE) 计算：将 Key 序列按块大小 $SparseBlockSize$ 划分为 $B$ 个块，对每个块（排除固定尾部块）计算 LSE 值（用于近似该块的 Attention 权重总和）
 
-2. 排序与 Top- 选择
+2. 排序与 Top-$k$ 选择
 
 3. 拼接固定尾部索引
 
 ## QSI算子 Tiling 设计
 
-我们将QSI算子基本块大小设置为，这个值的选取可以保证流水线头尾开销可控以及 Cube 核与 Vector 核之间同步开销可被计算掩盖，并尽量减少算子内部的核间同步的scalar开销。
+我们将QSI算子基本块大小设置为 $(16,2048)$，这个值的选取可以保证流水线头尾开销可控以及 Cube 核与 Vector 核之间同步开销可被计算掩盖，并尽量减少算子内部的核间同步的scalar开销。
 
 核内 Tiling 设计采用了如下方案：
 
 - L1 空间划分为如下部分：
 
-  -  2-Buffer循环复用：分配；
+  - $Q_{index}$ 2-Buffer循环复用：分配 $1\text{ KB}$；
 
-  -  矩阵 3-Buffer 循环复用：分配，L1层级基本块为 。
+  - $K_{index}$ 矩阵 3-Buffer 循环复用：分配 $96\text{ KB}$，L1层级基本块为 $(1024,64)$。
 
-- L0A，L0B，L0C使能 Double Buffer，分别划分，，，这是一种对昇腾较为亲和的设置，可以提高算力利用率。
+- L0A，L0B，L0C使能 Double Buffer，分别划分 $\text{1 KB}$，$\text{64 KB}$，$\text{128 KB}$，这是一种对昇腾较为亲和的设置，可以提高算力利用率。
 
 ## QSI Top-k 计算实现
 
-QSI融合算子的核心是在长达数十万的序列中，为每个 token 高效地筛选出分数最高的 （例如2048）个索引。同时，对于算子而言，Top- 的计算必须是准确无误的，不能采用近似算法求解。
+QSI融合算子的核心是在长达数十万的序列中，为每个 token 高效地筛选出分数最高的 $k$（例如2048）个索引。同时，对于算子而言，Top-$k$ 的计算必须是准确无误的，不能采用近似算法求解。
 
-当前的实现方案基于昇腾支持的排序指令进行全量排序，Top- 计算方案过程分为三步：
+当前的实现方案基于昇腾支持的排序指令进行全量排序，Top-$k$ 计算方案过程分为三步：
 
-- 分组排序：将每32个 Sparse Block按照其  进行稳定降序排列，输出其排序向量以及对应索引向量，直到将整个序列的 Sparse Block分组排序完毕。
+- 分组排序：将每32个 Sparse Block按照其 $Score$ 进行稳定降序排列，输出其排序向量以及对应索引向量，直到将整个序列的 Sparse Block分组排序完毕。
 
 ![group_sort_stage](images/group_sort_stage.png)
 
-- 归并：将至多4组（可为2/3组）长度为32、128、512的已排序向量进行归并，直到合并后的向量长度达到2048。合并排列仍然按照其对应  进行稳定降序排列，最终输出的向量长度为4组输入向量长度之和，同时输出其对应索引向量。
+- 归并：将至多4组（可为2/3组）长度为32、128、512的已排序向量进行归并，直到合并后的向量长度达到2048。合并排列仍然按照其对应 $Score$ 进行稳定降序排列，最终输出的向量长度为4组输入向量长度之和，同时输出其对应索引向量。
 
 ![merge_sort_stage](images/merge_sort_stage.png)
 
-- 规约：将至多4组长度为2048已排序的向量进行归并。取出前  个参数组成的向量与另外未参与合并排序的有序向量重复进行 Top- 计算，直到将所有长度为2048的有序向量比较完毕，得到最终所有向量中得分最高的2048个对应的 Index。
+- 规约：将至多4组长度为2048已排序的向量进行归并。取出前 $k=2048$ 个参数组成的向量与另外未参与合并排序的有序向量重复进行 Top-$k$ 计算，直到将所有长度为2048的有序向量比较完毕，得到最终所有向量中得分最高的2048个对应的 Index。
 
 ![topk_reduction_stage](images/topk_reduction_stage.png)
 
@@ -76,38 +80,40 @@ QSI融合算子的核心是在长达数十万的序列中，为每个 token 高�
 
 在SALS中，Key和Value设计为int8的量化输入以应对长上下文场景下，显存占用过大的挑战，SFAA计算可表示为
 
-其中  为基于某种选择算法 (如`Quant Sals Indexer`) 得到的重要性较高的 Key 和 Value，一般具有稀疏或分块稀疏的特征， 为  每一个头的维度。
+$Attention=\text{softmax}(\frac{Q @ \text{Dequant}({\tilde{K}^{INT8}},{Scale_K})^T}{\sqrt{d_k}})@\text{Dequant}(\tilde{V}^{INT8},{Scale_V})$
+
+其中 $\tilde{K},\tilde{V}$ 为基于某种选择算法 (如`Quant Sals Indexer`) 得到的重要性较高的 Key 和 Value，一般具有稀疏或分块稀疏的特征，$d_k$ 为 $Q,\tilde{K}$ 每一个头的维度。
 SFAA针对离散访存进行了指令缩减及搬运聚合的细致优化，计算流程沿用 FlashAttention的计算流程，分为四个阶段：
 
-- ：；
+- $C_1$：$Q@K^T$；
 
-- ：online softmax；
+- $V_1$：online softmax；
 
-- ：$P@V；
+- $C_2$：$P@V$；
 
-- ：rescaling 。
+- $V_2$：rescaling $O$。
 
 ## SFAA 算子 Tiling 设计
 
-`SFAA`一次迭代计算的基本块大小为。以如下Decode场景为例，为10，时，表示所有共用一组稀疏索引，那么一次迭代计算的基本块大小就为
+`SFAA`一次迭代计算的基本块大小为 $(gSize\times QuerySharetoken,1024)$。以如下Decode场景为例，$gSize$ 为10，$QueryShareToken = QueryToken=3$ 时，表示所有 $QueryToken$ 共用一组稀疏索引，那么一次迭代计算的基本块大小就为 $(30,1024)$
 
 算子核内 Tiling 设计如下：
 
 - L1 空间划分为如下部分：
 
--  矩阵常驻，分配；
+- $Q$ 矩阵常驻，分配 $64\text{ KB}$；
 
-  -  矩阵 3-Buffer 循环复用，分配
+  - $K$ 矩阵 3-Buffer 循环复用，分配 $192\text{ KB}$
 
-  -  矩阵 4-Buffer 循环复用，分配
+  - $V$ 矩阵 4-Buffer 循环复用，分配 $256\text{ KB}$
 
-  - 其中矩阵每次的搬运大小为
+  - 其中 $K/V$ 矩阵每次的搬运大小为 $(128,512)$
 
-- L0A，L0B，L0C使能 Double Buffer，分别划分为，，，在  阶段一次搬入 L0A 和 L0B的矩阵块大小分别为 ；在  阶段一次搬入 L0A 和 L0B 的矩阵块大小都为 。
+- L0A，L0B，L0C使能 Double Buffer，分别划分为 $\text{64 KB}$，$\text{64 KB}$，$\text{128 KB}$，在 $C_1$ 阶段一次搬入 L0A 和 L0B的矩阵块大小分别为 $(128,64),(256,128)$；在 $C_2$ 阶段一次搬入 L0A 和 L0B 的矩阵块大小都为 $(128,128)$。
 
 ## SFAA Pipeline 设计
 
-对于复杂的融合算子而言，Cube 核和 Vector 核之间的高效协同是发挥硬件算力的核心挑战，流水掩盖作为连接二者的核心调度机制，其设计优劣直接决定了算子性能。SFAA有4个计算阶段,依赖关系多，朴素的流水排布会导致计算过程中出现大量的空泡。如下图的上半部分所示，由于计算流程中的不同阶段之间存在数据依赖，不论是 Cube 流或 Vector 流上都出现了很多的空闲部分，导致算力利用率较低。本算子采用 Preload 流水排布以消除依赖，实现了除头尾以外的平台期部分 Cube 流完美掩盖 Vector 流，效果如下图下半部分所示，可以看到这种方式相较于朴素的流水排布有较大的性能收益。
+对于复杂的融合算子而言，Cube 核和 Vector 核之间的高效协同是发挥硬件算力的核心挑战，流水掩盖作为连接二者的核心调度机制，其设计优劣直接决定了算子性能。SFAA有4个计算阶段 $C_1,V_1,C_2, V_2$,依赖关系多，朴素的流水排布会导致计算过程中出现大量的空泡。如下图的上半部分所示，由于计算流程中的不同阶段之间存在数据依赖，不论是 Cube 流或 Vector 流上都出现了很多的空闲部分，导致算力利用率较低。本算子采用 Preload 流水排布以消除依赖，实现了除头尾以外的平台期部分 Cube 流完美掩盖 Vector 流，效果如下图下半部分所示，可以看到这种方式相较于朴素的流水排布有较大的性能收益。
 
 ![preload_pipeline_optimization](images/preload_pipeline_optimization.png)
 
