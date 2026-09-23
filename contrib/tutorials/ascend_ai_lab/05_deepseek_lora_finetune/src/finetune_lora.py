@@ -1,4 +1,5 @@
 """DeepSeek-7B LoRA 微调训练参考脚本。"""
+import torch
 from transformers import AutoModelForCausalLM, PreTrainedTokenizerFast
 from peft import LoraConfig, get_peft_model
 from trl import SFTConfig, SFTTrainer
