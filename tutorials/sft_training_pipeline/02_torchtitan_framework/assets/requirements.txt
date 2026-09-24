@@ -1,0 +1,28 @@
+# SFT 课程固定依赖清单：内容与 torchtitan-npu 课程验证提交 0ea4b8d 的
+# requirements.txt 完全一致，仅把 torch 一行改为按 wheel URL 直连：
+#
+#     torch==2.14.0.dev20260719  ->  torch @ <wheel URL>
+#
+# 原因：PyTorch nightly 索引只保留滚动窗口（当前 torch 窗口从 2.14.0.dev20260724 起），
+# 该 nightly 已下架，按版本号安装会报 "No matching distribution found for
+# torch==2.14.0.dev20260719"；但对应的 wheel 文件本身仍可按 URL 直接下载。
+# torch_npu==2.14.0.dev20260808 的元数据要求 torch==2.14.0.dev20260719，
+# `+cpu` 本地版本号在 PEP 440 下仍满足该 pin，因此一次 pip install -r 即可完成解析。
+#
+# 适用环境：CPython 3.12 / aarch64（Atlas A3）、CANN 9.2.0。
+# 维护方式：上游修复该 pin（或课程升级到包含修复的提交）后，可删除本文件并改回
+# 仓库自带的 requirements.txt。
+
+--extra-index-url https://download.pytorch.org/whl/nightly/cpu
+torch @ https://download.pytorch.org/whl/nightly/cpu/torch-2.14.0.dev20260719%2Bcpu-cp312-cp312-manylinux_2_28_aarch64.whl
+--find-links https://cann-ai.obs.cn-north-4.myhuaweicloud.com/torchtitan-npu/simple/torch-npu/index.html
+torch_npu==2.14.0.dev20260808
+torchtitan @ git+https://gitcode.com/GitHub_Trending/to/torchtitan.git@2807d3f550fe27db18bd9395ba63176364eaed6d
+pybind11==3.0.4
+numpy
+PyYAML
+ninja
+--extra-index-url https://triton-ascend.osinfra.cn/pypi/simple
+triton-ascend==3.2.1
+scipy==1.13.1
+safetensors==0.8.0

@@ -20,7 +20,7 @@
 | --- | --- |
 | 支持硬件 | Atlas A3 训练/推理系列产品 |
 | CANN 版本 | 9.0.0 及以上 |
-| Python | 3.11 |
+| Python | 3.12 |
 
 ## 在线体验环境
 
@@ -28,9 +28,11 @@
 
 | 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
 | --- | --- | --- | --- |
-| CANNLab 云开发环境 | cann_9.0.0 py3.11-A3-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+| CANNLab 云开发环境 | cann_9.0.0 py3.12-A3-arm | Python 3.12 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
 
 ![在仓库页面进入 CANNLab 在线开发环境](images/cann-lab-env.png)
+
+> **注意：** 本教程的 notebook 以 Python 3.12 为准。创建 CANNLab 环境时请选择平台的 `py3.12` 模板；若平台实际提供的模板名与上表不同，以平台为准。
 
 > **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)。
 
