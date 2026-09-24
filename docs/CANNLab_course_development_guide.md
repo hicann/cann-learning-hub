@@ -355,6 +355,91 @@ git checkout test
 
 > 仅支持单一硬件的课程，完成对应环境验证即可，无需多硬件验证。
 
+### 7.7 如何安装其他版本的Python
+
+目前 NPU 环境内置 `Python 3.11`，如果需要使用 `Python 3.12` 或其他版本，可参考以下方式进行配置。
+NPU环境中内置 `conda`，通过 `conda` 创建虚拟环境：
+
+1、确认 `conda` 是否安装
+
+```bash
+conda --version
+```
+
+2、创建并激活 `Python 3.12` 隔离环境
+
+```
+conda create -n py12 python=3.12 -y
+conda activate py12
+```
+
+3、选择 `py12` 作为当前notebook执行kernel
+
+- 快捷键Ctrl+Shift+P打开命令面板，选择Python: Select Interpreter
+  
+  <img src="./images/CANNLab_course_development_guide/select_interpreter_1.png">
+
+- 在解释器面板中选择刚刚创建的py12
+  
+  <img src="./images/CANNLab_course_development_guide/select_interpreter_2.png">
+
+- 选择kernel
+  
+  <img src="./images/CANNLab_course_development_guide/select_interpreter_3.png">
+
+> 如果当前环境未安装conda，可以通过以下方式手动安装：
+> 
+> ```
+> wget https://mirrors.tuna.tsinghua.edu.cn/github-release/conda-forge/miniforge/LatestRelease/Miniforge3-Linux-aarch64.sh -O /tmp/miniforge.sh
+> bash /tmp/miniforge.sh -b -p /home/developer/miniforge3
+> echo 'source /home/developer/miniforge3/etc/profile.d/conda.sh' >> /home/developer/.bashrc
+> source /home/developer/miniforge3/etc/profile.d/conda.sh
+> ```
+
+### 7.8 如何安装其他版本的torch工具链
+
+> 通过`CANNLab`创建 `NPU` 环境，一般已预置 `torch` 工具链，用户无需自行安装，如果有差异版本需要，建议通过 `conda` 创建 `python` 虚拟环境，然后在 `python` 虚拟环境中进行自定义安装，避免破坏原始系统安装。
+
+根据[Ascend官方兼容说明文档](https://github.com/Ascend/pytorch/blob/master/COMPATIBILITY.md)，得到配套 `TorchNPU` 和 `Torch` 版本，如果需要获得图像模型、图像处理方面的支持，需要额外安装 `torchvision`，如果需要获得音频处理方面的支持，需要额外安装 `torchaudio`。根据 [torchvision 版本兼容表](https://github.com/pytorch/vision/blob/main/README.md#installation)和 [torchaudio 版本兼容表](https://github.com/pytorch/audio/blob/main/docs/source/installation.rst)，获得 `torchvision` 和 `torchaudio` 的版本号，按照以下方式进行安装：
+
+```bash
+conda create -n torch-npu python=3.12 -y
+conda activate torch-npu
+python -m pip install --upgrade PyYAML setuptools
+python -m pip install \
+  torch==2.10.0 \
+  torchvision==0.25.0 \
+  torchaudio==2.10.0 \
+  --index-url https://download.pytorch.org/whl/cpu
+python -m pip install torch-npu==2.10.0
+```
+
+安装完成之后，可以通过以下命令进行测试：
+
+```bash
+python - <<'PY'
+import torch
+import torch_npu
+import torchvision
+import torchaudio
+
+print("torch:", torch.__version__)
+print("torch_npu:", torch_npu.__version__)
+print("torchvision:", torchvision.__version__)
+print("torchaudio:", torchaudio.__version__)
+print("NPU available:", torch.npu.is_available())
+
+PY
+```
+
+<img src="./images/CANNLab_course_development_guide/torch_npu.png">
+
+不同的 `CANN` 包版本可以参考以下信息安装 `torch` 工具链：
+
+| `CANN`  | `Python` | `torch` | `torch_npu` | `torchvision` | `torchaudio` |
+| ------- | -------- | ------------- | ----------------- | ------------------- | ------------------ |
+| 9.0.0 | 3.11/3.12/3.13   | 2.10.0      | 2.10.0          | 0.25.0            | 2.10.0           |
+| 9.1.0 | 3.11/3.12/3.13   | 2.12.0      | 2.12.0          | 0.27.0            | 2.11.0           |
 ---
 
 ## 8. PR 提交与准入自检
