@@ -8,7 +8,8 @@
 - 多进程（非多线程）并行：每个 worker 进程拥有独立的 NPU context 与默认 stream。
 - torchair 编译图（torch.compile + npu backend）在 worker 进程内编译并绑定到
   该进程的默认 stream，不存在跨 stream 执行问题。
-- torch.npu.set_device_limit 在每个 worker 进程内调用，提供设备级控核。
+- 控核通过 torchair CompilerConfig.ge_config.aicore_num 设置 GE 编译器
+  ge.aicoreNum 选项（格式 "AICore|VectorCore"），作用于整图编译，
 - 使用 spawn 启动方法确保子进程不继承父进程的 NPU 运行时状态。
 - 支持 autofuse 算子融合：通过 AUTOFUSE_FLAGS 环境变量启用 reduce/concat 融合。
 - 支持 1000 请求基准测试：warmup 后处理指定数量请求并统计 latency。
@@ -43,8 +44,9 @@ DEVICE_ID = 0
 NUM_INSTANCES = 4
 BATCH_SIZE = 4
 WARMUP_STEPS = 3
-OP_AICORE_NUM = 7
-OP_VECTORCORE_NUM = 14
+# 控核参数：GE 编译器 ge.aicoreNum 选项，格式 "AICore|VectorCore"。
+# 通过 torchair CompilerConfig.ge_config.aicore_num 设置，作用于整图编译，
+AICORE_NUM = "7|14"
 # 基准测试请求数：warmup 后处理的总请求数（按 batch 切分）。
 NUM_BENCHMARK_REQUESTS = 1000
 # autofuse 配置：启用 reduce 与 concat 算子自动融合。
@@ -209,12 +211,11 @@ def _get_worker_graph():
     torch.npu.set_device(device)
     torch.set_grad_enabled(False)
 
-    # 设备级控核：每个进程独立设置（进程间共享同一物理设备）。
-    torch.npu.set_device_limit(
-        DEVICE_ID, cube_num=OP_AICORE_NUM, vector_num=OP_VECTORCORE_NUM
-    )
-
     compiler_config = CompilerConfig()
+    # 图级控核：通过 GE 编译器 ge.aicoreNum 选项控制整图算子可用核数。
+    # 格式 "AICore|VectorCore"，作用于 torchair 编译图（整图），
+    # 而非单算子级的 torch.npu.set_device_limit 接口。
+    compiler_config.ge_config.aicore_num = AICORE_NUM
     # 不使用 "reduce-overhead"（NPU graph capture）模式：
     # 该模式会启用图捕获/重放，与多进程共享设备的同步语义存在冲突。
     # 默认模式提供算子融合、常量折叠等图优化，但不进行 graph replay。
@@ -378,10 +379,12 @@ def run_multiprocess_inference(
 
 
 def main() -> None:
-    if not hasattr(torch.npu, "set_device_limit"):
-        raise RuntimeError("当前 torch_npu 不包含 torch.npu.set_device_limit。")
     if not hasattr(torchair, "get_npu_backend"):
         raise RuntimeError("当前 TorchAir 不包含 torchair.get_npu_backend。")
+    # 校验 CompilerConfig.ge_config.aicore_num 控核参数可用
+    _check_config = CompilerConfig()
+    if not hasattr(_check_config.ge_config, "aicore_num"):
+        raise RuntimeError("当前 TorchAir CompilerConfig.ge_config 不包含 aicore_num 控核参数。")
     if torch.npu.device_count() <= DEVICE_ID:
         raise RuntimeError(f"NPU {DEVICE_ID} 不可用。")
 
@@ -435,8 +438,7 @@ def main() -> None:
         "batch_latency_max_ms": float(latencies.max()),
         "batch_latency_min_ms": float(latencies.min()),
         "batch_latency_std_ms": float(latencies.std()),
-        "op_aicore_num": OP_AICORE_NUM,
-        "op_vectorcore_num": OP_VECTORCORE_NUM,
+        "ge_aicore_num": AICORE_NUM,
         "autofuse_flags": AUTOFUSE_FLAGS,
         "input_consistent": True,
         "input_seed": 42,
