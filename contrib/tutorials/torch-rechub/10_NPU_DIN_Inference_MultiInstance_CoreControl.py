@@ -21,6 +21,7 @@ import csv
 import json
 import multiprocessing as mp
 import os
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -332,7 +333,22 @@ def run_multiprocess_inference(
 
     Returns:
         (predictions, latencies_ms, wall_seconds)
+        wall_seconds 为正式推理耗时，不含进程启动、图编译与 warmup 时间。
     """
+    # spawn 子进程需要按 __main__.__file__（或 __main__.__spec__.name）
+    # 重新导入主脚本，才能解析 worker 回调函数；此处校验运行方式。
+    main_module = sys.modules["__main__"]
+    main_has_path = bool(getattr(main_module, "__file__", None))
+    main_has_name = (
+        getattr(getattr(main_module, "__spec__", None), "name", None) is not None
+    )
+    if not (main_has_path or main_has_name):
+        raise RuntimeError(
+            "spawn 多进程要求主模块是可重新导入的脚本文件："
+            "请用 `python NPU_DIN_Inference_MultiInstance_CoreControl.py` 直接运行，"
+            "不要通过 python -c / exec / 管道（python -）方式执行本脚本。"
+        )
+
     # 使用 spawn 启动方法：子进程不继承父进程内存状态，
     # 重新初始化 Python 解释器与 NPU 运行时，确保干净的进程隔离。
     ctx = mp.get_context("spawn")
@@ -346,7 +362,6 @@ def run_multiprocess_inference(
     # 跨进程编译锁：序列化 torch.compile，避免 TBE 编译子进程并发冲突。
     compile_lock = ctx.Lock()
 
-    started = time.perf_counter()
     pool = ctx.Pool(
         processes=NUM_INSTANCES,
         initializer=_worker_init,
@@ -360,6 +375,8 @@ def run_multiprocess_inference(
             warmup_results = pool.map(_worker_warmup, warmup_payloads)
             print(f"warm-up {step + 1}/{WARMUP_STEPS} complete (procs={len(warmup_results)})")
 
+        # 正式推理计时起点：wall_seconds 不含进程启动、图编译与 warmup 时间
+        started = time.perf_counter()
         # 正式推理：将所有 batch 分发到进程池
         # chunksize=1 确保任务均匀分布，避免某个进程负载过重
         results = pool.map(_worker_run_batch, payloads, chunksize=1)
@@ -410,9 +427,12 @@ def main() -> None:
     print("=" * 60)
     print(f"warmup + {NUM_BENCHMARK_REQUESTS} 次推理（同一输入）")
     print("=" * 60)
+    # 总耗时（含进程启动、图编译与 warmup）单独统计，与 wall_seconds 区分
+    total_started = time.perf_counter()
     predictions, latencies, wall_seconds = run_multiprocess_inference(
         benchmark_batches
     )
+    total_wall_seconds = time.perf_counter() - total_started
     if not np.isfinite(predictions).all():
         raise RuntimeError("推理输出包含非有限值。")
 
@@ -428,6 +448,7 @@ def main() -> None:
         "num_batches": num_batches,
         "samples": int(len(predictions)),
         "wall_seconds": float(wall_seconds),
+        "total_wall_seconds": float(total_wall_seconds),
         "throughput_samples_per_second": float(len(predictions) / wall_seconds),
         "throughput_batches_per_second": float(num_batches / wall_seconds),
         "batch_latency_mean_ms": float(latencies.mean()),
