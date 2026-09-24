@@ -1,0 +1,34 @@
+# GE Graph + RMSNorm融合基线：用于和o_proj Prefetch 8/16 MiB做公平对比。
+model_config:
+  model_name: "qwen3_8b"
+  model_path: "Qwen/Qwen3-8B"
+  dtype: "bfloat16"
+  exe_mode: "ge_graph"
+  # 正式性能对比关闭Profiler；需要分析时间线时再复制一份并改成True。
+  enable_profiler: False
+  with_ckpt: True
+  enable_cache_compile: False
+  enable_static_kernel: False
+  custom_params:
+    # 保留用户当前验证场景中的NPU RMSNorm与Add+RMSNorm融合。
+    enable_npu_rmsnorm: True
+    enable_add_rmsnorm: True
+    enable_prefetch: False
+    # 关闭Prefetch时prefetch_size不执行，仅记录本组实验的参考大小。
+    prefetch_size: 33554432
+
+data_config:
+  dataset: "default"
+  input_truncated_len: 256
+
+parallel_config:
+  world_size: 1
+  attn_tp_size: 1
+  moe_tp_size: 1
+  embed_tp_size: 1
+  lmhead_tp_size: 1
+
+scheduler_config:
+  max_new_tokens: 64
+  batch_size: 1
+  enable_thinking: False

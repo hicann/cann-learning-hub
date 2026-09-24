@@ -1,0 +1,45 @@
+# 源码走读：与 Eager 基线相比，本配置只切换 NPU Graph EX Decode 后端；
+# enable_static_kernel/cache_compile 保持关闭，避免额外优化影响基础对比。
+model_config:
+  # 结果目录和日志会使用该名称作为前缀。
+  model_name: "qwen3_8b"
+  # Notebook 运行时会把它替换为实际下载缓存或本地权重路径。
+  model_path: "Qwen/Qwen3-8B"
+  # Qwen3-8B 本章使用 BF16 权重和计算精度。
+  dtype: "bfloat16"
+  # npugraph_ex：prefill 保持 Eager，decode 使用 NPU Graph EX 动态图后端。
+  exe_mode: "npugraph_ex"  # ["ge_graph", "eager", "npugraph_ex"]
+  # 公平性能对比默认关闭 Profiler，避免采集开销影响计时。
+  enable_profiler: False  # [False, True]
+  # True 表示从 checkpoint 加载模型权重。
+  with_ckpt: True # [False, True]
+  # 本轮关闭编译缓存，便于记录首次编译的真实冷启动成本。
+  enable_cache_compile: False # [False, True]
+  # 本章先关闭 Static Kernel，只比较 NPU Graph EX 与 GE 后端本身。
+  enable_static_kernel: False # [False, True] only for npugraph_ex
+  custom_params:
+    # 两项都关闭，避免把 RMSNorm 融合收益混入图后端对比。
+    enable_npu_rmsnorm: False
+    enable_add_rmsnorm: False
+    # 第 7 章只比较图后端，因此关闭；第 10 章再实验 npugraph_ex + Prefetch。
+    enable_prefetch: False
+    prefetch_size: 18874368  # 18 MiB; enable_prefetch=False 时不会调用算子
+
+data_config:
+  # 使用 recipes 内置短 prompt，并把输入截断到最多 256 token。
+  dataset: "default"  # ["default", "LongBench"]
+  input_truncated_len: 256
+
+parallel_config:
+  # world_size=1 且各 TP 均为 1，表示单卡、无张量并行。
+  world_size: 1
+  attn_tp_size: 1
+  moe_tp_size: 1
+  embed_tp_size: 1
+  lmhead_tp_size: 1
+
+scheduler_config:
+  # 三组实验固定生成长度、batch 和 thinking，保证工作负载相同。
+  max_new_tokens: 64
+  batch_size: 1
+  enable_thinking: False

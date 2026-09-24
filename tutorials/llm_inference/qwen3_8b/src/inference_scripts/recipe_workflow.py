@@ -52,6 +52,8 @@ def print_yaml_focus(yaml_path: Path) -> None:
     print("enable_profiler =", model_config.get("enable_profiler"))
     print("enable_npu_rmsnorm =", model_config.get("custom_params", {}).get("enable_npu_rmsnorm"))
     print("enable_add_rmsnorm =", model_config.get("custom_params", {}).get("enable_add_rmsnorm"))
+    print("enable_prefetch =", model_config.get("custom_params", {}).get("enable_prefetch", False))
+    print("prefetch_size =", model_config.get("custom_params", {}).get("prefetch_size"))
     print("dataset =", data_config.get("dataset"))
     print("input_truncated_len =", data_config.get("input_truncated_len"))
     print("max_new_tokens =", scheduler_config.get("max_new_tokens"))
@@ -243,6 +245,7 @@ def collect_recipe_metrics(
     dense_npu_norm_fused = bool(custom_params.get("enable_npu_rmsnorm")) and bool(
         custom_params.get("enable_add_rmsnorm")
     )
+    prefetch_enabled = bool(custom_params.get("enable_prefetch", False))
     generation_text_sanity = run_generation_text_sanity_check(output_rows, max_new_tokens=max_new_tokens)
     summary = {
         "metrics_tag": metrics_tag,
@@ -279,6 +282,13 @@ def collect_recipe_metrics(
                 if custom_params.get("enable_add_rmsnorm")
                 else "torch.add + torch.pow + torch.mean + torch.rsqrt + torch.mul"
             ),
+        },
+        "prefetch_status": {
+            "enabled": prefetch_enabled,
+            "target": "self_attn.o_proj" if prefetch_enabled else None,
+            "max_size_bytes": int(custom_params.get("prefetch_size", 0)) if prefetch_enabled else 0,
+            "phase": "decode" if prefetch_enabled else None,
+            "dependency": "value_cache_after_scatter" if prefetch_enabled else None,
         },
         "seed": 2026,
         "batch_size": int(scheduler_config.get("batch_size", len(prompts))),

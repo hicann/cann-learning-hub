@@ -25,6 +25,7 @@
 
 """Unified PyTorch Qwen dense model adapted for Ascend NPU inference."""
 
+import logging
 import os
 from typing import Optional, Tuple, Iterable
 
@@ -46,9 +47,11 @@ from executor.utils.forward_metadata import ForwardMetaData, get_forward_metadat
 from executor.core.config import InferenceConfig, CommManager
 from executor.core.kv_cache.cache_info import CacheEntry, LayerCacheInfo, ModelCacheInfo
 from executor.model_loader.weight_utils import default_weight_loader
+from executor.utils.common_utils import npu_prefetch
 from .configuration_qwen import Qwen2Config, Qwen3Config
 
 torchair.patch_for_hcom()
+logger = logging.getLogger(__name__)
 
 
 class QwenRMSNorm(nn.Module):
@@ -245,6 +248,10 @@ class QwenAttention(nn.Module):
         self.attn_intermediate_size_per_rank = self.attn_intermediate_size // self.attn_tp_size
         self.comm_manager = comm_manager
         quant_cfg = getattr(config, "quant_config", None)
+        custom_params = infer_config.model_config.custom_params
+        # 同层 o_proj 权重预取：仅 ge_graph 模式启用（QwenModel 层校验）。
+        self.enable_prefetch = bool(custom_params.get("enable_prefetch", False))
+        self.prefetch_size = int(custom_params.get("prefetch_size", 16 * 1024 * 1024))
 
         # Config-driven: Qwen2 uses bias=True, Qwen3 uses bias=False
         self.merged_qkv_proj = QKVParallelLinear(
@@ -369,7 +376,7 @@ class QwenAttention(nn.Module):
             tmp_slot_mapping.view(-1, 1),
             key_states,
         )
-        torch_npu.npu_scatter_nd_update_(
+        v_cache_after_scatter = torch_npu.npu_scatter_nd_update_(
             v_cache.view(-1, self.num_key_value_heads_per_rank, self.head_dim),
             tmp_slot_mapping.view(-1, 1),
             value_states,
@@ -382,6 +389,19 @@ class QwenAttention(nn.Module):
         else:
             actual_seq_kvlen = forward_metadata.actual_seq_lengths_kv
             actual_seq_qlen = forward_metadata.actual_seq_lengths_cu_q
+
+        # 在Fused Attention启动前提交同层o_proj权重预取：以v_cache_after_scatter
+        # （V侧npu_scatter_nd_update_的返回值，FA启动前最后一个依赖）作为启动依赖，
+        # Scatter完成后预取与Fused Attention并行，在FA读KV Cache期间把o_proj权重
+        # 搬入L2。GE Graph编译器通过返回值捕获建立算子间数据依赖边，因此必须
+        # 保留该赋值；Fused Attention仍读取保持原始四维布局的v_cache。
+        is_decode = forward_metadata is not None and not forward_metadata.is_prefill
+        npu_prefetch(
+            self.enable_prefetch and is_decode,
+            weight=self.o_proj.weight,
+            depend=v_cache_after_scatter,
+            size=self.prefetch_size,
+        )
 
         attn_output, _ = fa_ops.npu_fused_infer_attention_score_v2(
             query_states,
@@ -526,6 +546,20 @@ class QwenModel(nn.Module):
         self.padding_idx = getattr(config, 'pad_token_id', None)
         self.vocab_size = config.vocab_size
         self.comm_manager = comm_manager
+
+        custom_params = infer_config.model_config.custom_params
+        enable_prefetch = bool(custom_params.get("enable_prefetch", False))
+        prefetch_size = int(custom_params.get("prefetch_size", 18 * 1024 * 1024))
+        if enable_prefetch and infer_config.model_config.exe_mode != "ge_graph":
+            raise ValueError("enable_prefetch requires exe_mode='ge_graph'")
+        if enable_prefetch and prefetch_size <= 0:
+            raise ValueError("prefetch_size must be greater than zero when enable_prefetch=True")
+        if enable_prefetch:
+            logger.info(
+                "Qwen weight prefetch enabled: target=self_attn.o_proj, size=%d bytes, "
+                "phase=decode, dependency=value_cache_after_scatter",
+                prefetch_size,
+            )
 
         self.embed_tokens = VocabParallelEmbedding(
             self.vocab_size,

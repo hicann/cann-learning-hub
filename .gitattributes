@@ -1,2 +1,4 @@
 standard_course/**/*.pptx filter=lfs diff=lfs merge=lfs -text
 standard_course/**/**/*.pptx filter=lfs diff=lfs merge=lfs -text
+tutorials/llm_inference/slides/advance/** filter=lfs diff=lfs merge=lfs -text
+tutorials/llm_inference/slides/intermediate/** filter=lfs diff=lfs merge=lfs -text

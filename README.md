@@ -108,7 +108,7 @@ cd cann-learning-hub
 
 **目标**：在 NPU 上跑通 Qwen3-8B 推理，获得"真实大模型跑起来了"的成就感，配套课件是理论基础，建议先学习课件，再进行实践。
 
-> 📖 **配套课件**：[大语言模型基础](./tutorials/llm_inference/slides/01_llm_fundamentals.pdf) ｜ [CANN 推理仓库](./tutorials/llm_inference/slides/02_cann_inference_repository_overview.pdf)
+> 📖 **配套课件**：[大语言模型基础](./tutorials/llm_inference/slides/intermediate/01_llm_fundamentals.pdf) ｜ [CANN 推理仓库](./tutorials/llm_inference/slides/intermediate/02_cann_inference_repository_overview.pdf)
 
 
 | 序号 | 课程（实践） | 课程内容 | 运行方式 |
@@ -123,7 +123,7 @@ cd cann-learning-hub
 
 **目标**：走完"发现瓶颈 → 性能优化"工程闭环，理解为什么需要算子级优化，配套课件是理论基础，建议先学习课件，再进行实践。
 
-> 📖 **配套课件**：[推理优化基础](./tutorials/llm_inference/slides/03_llm_inference_optimization_fundamentals.pdf) ｜ [Profiling 与瓶颈定位](./tutorials/llm_inference/slides/05_profiling_and_performance_bottleneck_analysis.pdf)
+> 📖 **配套课件**：[推理优化基础](./tutorials/llm_inference/slides/intermediate/03_llm_inference_optimization_fundamentals.pdf) ｜ [Profiling 与瓶颈定位](./tutorials/llm_inference/slides/intermediate/05_profiling_and_performance_bottleneck_analysis.pdf)
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
@@ -139,7 +139,7 @@ cd cann-learning-hub
 
 **目标**：从量化推理中发现算子瓶颈，系统学习算子开发后自研算子并接入真实模型，配套课件是理论基础，建议先学习课件，再进行实践。
 
-> 📖 **配套课件**：[量化基础](./tutorials/llm_inference/slides/04_llm_quantization_fundamentals.pdf)
+> 📖 **配套课件**：[量化基础](./tutorials/llm_inference/slides/intermediate/04_llm_quantization_fundamentals.pdf)
 
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |

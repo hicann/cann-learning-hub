@@ -1,8 +1,8 @@
 # Qwen3-8B 推理优化实践
-本教程以 `Qwen3-8B` 为例，展示如何在昇腾 NPU 上使用 cann-recipes-infer 离线推理框架完成 Baseline 推理、Profiling 分析，验证 Dense RMSNorm NPU 融合路径的性能收益，并通过 AMCT 工具完成 W8A8 量化导出与推理，以及自定义量化 matmul 算子的开发与接入。课程主流程采用 recipes 的典型用法：查看并修改 `models/qwen/config/` 下的 YAML 配置，通过 `executor/scripts/infer.sh` 拉起离线推理，再从 `res/` 与 `prof/` 目录读取日志和性能产物。
+本教程以 `Qwen3-8B` 为例，展示如何在昇腾 NPU 上使用 cann-recipes-infer 离线推理框架完成 Baseline 推理、Profiling 分析，验证 Dense RMSNorm NPU 融合路径的性能收益，并通过 AMCT 工具完成 W8A8 量化导出与推理，以及自定义量化 matmul 算子的开发与接入；进一步对比 Eager、GE Graph 与 NPU Graph EX 三种执行模式，并在 GE 图模式下验证 Fused Attention 期间预取同层 o_proj 权重的性能收益。课程主流程采用 recipes 的典型用法：查看并修改 `models/qwen/config/` 下的 YAML 配置，通过 `executor/scripts/infer.sh` 拉起离线推理，再从 `res/` 与 `prof/` 目录读取日志和性能产物。
 
 教程包含以下内容：
-- Notebooks：包含环境准备、YAML 修改、`infer.sh` 启动、Profiling 分析和 Dense RMSNorm NPU 融合路径 A/B 验证步骤，可在 CANNLab 中运行，也可在本地 Jupyter 环境中执行。
+- Notebooks：包含环境准备、YAML 修改、`infer.sh` 启动、Profiling 分析、Dense RMSNorm NPU 融合路径 A/B 验证、图执行模式对比和 GE 图模式 o_proj 权重预取验证步骤，可在 CANNLab 中运行，也可在本地 Jupyter 环境中执行。
 - SRC：包含教程中使用的 recipes 推理入口、Qwen3-8B 模型适配代码、NPU 适配辅助函数、运行后处理工具与样例 prompt。
 
 ## 关于 cann-recipes-infer
@@ -11,7 +11,7 @@
 
 仓库以 `executor/` 提供统一推理执行框架，包含离线推理入口、在线推理服务、模型加载、配置解析、调度执行和通用工具模块；以 `models/` 提供不同模型的脚本与 YAML 配置；以 `module/` 和 `ops/` 提供基础层、量化模块以及 AscendC、PyPTO、TileLang 等算子样例。不同模型样例围绕昇腾 NPU 推理常见优化点展开，包括融合算子、图模式编译、Packed Sequence、Page Attention、TP/EP/DP/CP 等并行策略、多流并行、KV Cache 管理、W8A8/W8A8C8/混合量化，以及部分模型中的 MTP 投机推理能力。
 
-本课程采用该仓库的 recipes 工作流与 Qwen3-8B 单卡 BF16 推理所需代码子集，保留 YAML 配置、`executor/scripts/infer.sh` 启动方式、离线推理、Profiling 和 Dense RMSNorm NPU 融合验证链路。学习本课程后，可以继续到完整 `cann-recipes-infer` 仓库中查看更多模型和更复杂的部署优化实践。
+本课程采用该仓库的 recipes 工作流与 Qwen3-8B 单卡 BF16 推理所需代码子集，保留 YAML 配置、`executor/scripts/infer.sh` 启动方式、离线推理、Profiling、Dense RMSNorm NPU 融合、图模式对比和 o_proj 权重预取验证链路。学习本课程后，可以继续到完整 `cann-recipes-infer` 仓库中查看更多模型和更复杂的部署优化实践。
 
 ## 软硬件配套说明
 
@@ -32,7 +32,7 @@
 | CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm、cann_9.0.0_py3.11-A3-arm | Python 3.11.4 | 参考 [CANNLab 环境体验指南](../../../docs/CANNLab_env_experience_guide.md)创建环境并运行 Notebook |
 
 > **注意：**
-> - 环境需预置并激活 CANN。第 2 章会按本目录 [`requirements.txt`](./requirements.txt) 检查 1-6 章统一使用的 Python 依赖，仅安装缺失项或替换不匹配的版本；第 3-6 章只检查并复用该环境，不再安装依赖。
+> - 环境需预置并激活 CANN。第 2 章会按本目录 [`requirements.txt`](./requirements.txt) 检查 1-8 章统一使用的 Python 依赖，仅安装缺失项或替换不匹配的版本；第 3-8 章只检查并复用该环境，不再安装依赖。
 > - 本地运行前请先执行 `/usr/local/Ascend/ascend-toolkit/set_env.sh` 或等价 CANN 环境脚本。
 > - `Qwen3-8B` BF16 权重约 16GB。教程默认关闭 thinking 模式并使用短输出，降低在线环境资源压力。
 > - 模型权重使用 `Qwen/Qwen3-8B`。首次运行会通过 ModelScope 下载并缓存权重；如环境中已准备本地权重，可设置 `QWEN3_8B_MODEL_PATH=/path/to/Qwen3-8B`。
@@ -55,10 +55,12 @@ Notebook 环境中按顺序打开并运行。第 6 章包含需要学习者补�
 4. `04_npu_optimization.ipynb`
 5. `05_quantization_qwen3_8b.ipynb`
 6. `06_custom_matmul_operator_development_and_integration_with_qwen3_8b.ipynb`
+7. `07_npu_graph_optimization.ipynb`
+8. `08_ge_o_proj_prefetch.ipynb`
 
 首次执行 `02_baseline_inference.ipynb` 的 Baseline 推理 cell 会开始下载并缓存 `Qwen/Qwen3-8B` 权重；如果已设置 `QWEN3_8B_MODEL_PATH`，则直接使用本地权重目录。
 
-第 2 章的环境准备单元会定位仓库目录、创建 `Sources/model_inference_optimization/qwen3_8b` 运行目录、导入 CANN 环境，并按公共 `requirements.txt` 检查统一依赖。若所有包均满足固定版本，会完全跳过 `pip install`；否则仅由 pip 安装缺失项或替换不匹配版本。第 3-6 章不包含安装操作。手工操作时，进入 `src/inference_scripts/recipe_qwen3_8b/models/qwen/config/` 修改 YAML；Notebook 中会把对应 YAML 复制到 `Sources/.../recipe_yaml/`，只填入当前环境可用的模型路径。启动推理时会显式展示并执行：
+第 2 章的环境准备单元会定位仓库目录、创建 `Sources/model_inference_optimization/qwen3_8b` 运行目录、导入 CANN 环境，并按公共 `requirements.txt` 检查统一依赖。若所有包均满足固定版本，会完全跳过 `pip install`；否则仅由 pip 安装缺失项或替换不匹配版本。第 3-8 章不包含安装操作。手工操作时，进入 `src/inference_scripts/recipe_qwen3_8b/models/qwen/config/` 修改 YAML；Notebook 中会把对应 YAML 复制到 `Sources/.../recipe_yaml/`，只填入当前环境可用的模型路径。启动推理时会显式展示并执行：
 
 ```bash
 cd src/inference_scripts/recipe_qwen3_8b
@@ -70,6 +72,8 @@ recipes 日志保存在 `src/inference_scripts/recipe_qwen3_8b/models/qwen/res/<
 第 3 章会在 YAML 中打开 `model_config.enable_profiler=true`。运行后进入 recipes 结果目录下的 `prof/`，查看 `kernel_details`、trace、`op_statistic` 或 `op_summary` 等性能产物，再基于真实算子耗时选择第 4 章的优化点。
 
 第 5 章使用 AMCT 工具将 BF16 权重导出为 W8A8 INT8 量化权重，并通过量化 YAML 配置（`qwen3_8b_a8w8_1tp.yaml`）执行量化模型推理与 Profiling 分析，定位耗时最高的量化 matmul 算子。第 6 章基于第 5 章 Profiling 归纳的算子规格，需要使用 Ascend C 开发自定义量化 matmul 算子 `QmmCustom`，编译后接入 Qwen3-8B 量化模型验证功能与性能。
+
+第 7 章在相同模型、输入、输出长度与融合开关下对比 `eager`、`ge_graph` 与 `npugraph_ex` 三种执行模式：两种图模式都只编译 decode，prefill 仍使用 Eager，首次 warm-up 会触发编译，因此同时观察正式推理吞吐、decode 耗时与首轮端到端耗时，并从 YAML 记录和编译日志双重确认图模式生效后，给出图后端选择建议。第 8 章固定 GE 图模式与 NPU RMSNorm、Add+RMSNorm 融合，对比 `self_attn.o_proj` 权重预取关闭、16 MiB 与 32 MiB 三组：预取在 Fused Attention 调用前以 V 侧 Scatter 返回值为依赖提交，与 Fused Attention 并行执行，把 o_proj 权重提前搬入 L2；再借助 Profiler 的 PipeUtilization 与 L2Cache 指标确认机制有效性。
 
 本地终端运行前先准备 CANN 和可见 NPU。
 
@@ -88,8 +92,8 @@ export QWEN3_8B_MODEL_PATH=/path/to/Qwen3-8B
 
 - 本实践的 Notebook、推理脚本和 Qwen3 NPU 适配辅助代码位于本目录 `src/`。
 - recipes 推理框架子集位于 `src/inference_scripts/recipe_qwen3_8b/`，保留 Qwen3-8B 单卡离线推理所需的 executor、model loader、Qwen 模型文件与公共线性层代码。
-- recipes YAML 位于 `src/inference_scripts/recipe_qwen3_8b/models/qwen/config/`：`qwen3_8b_1tp.yaml` 用于 Baseline，`qwen3_8b_1tp_profile.yaml` 用于 Profiling，`qwen3_8b_1tp_add_rmsnorm.yaml` 用于 Dense RMSNorm NPU 融合验证。
-- Qwen dense 模型实现位于 `src/inference_scripts/recipe_qwen3_8b/models/qwen/models/modeling_qwen.py`，基于 Qwen2/Qwen3 dense 结构适配 NPU 推理。
+- recipes YAML 位于 `src/inference_scripts/recipe_qwen3_8b/models/qwen/config/`：`qwen3_8b_1tp.yaml` 用于 Baseline，`qwen3_8b_1tp_profile.yaml` 用于 Profiling，`qwen3_8b_1tp_add_rmsnorm.yaml` 用于 Dense RMSNorm NPU 融合验证，`qwen3_8b_1tp_ge_graph.yaml` 与 `qwen3_8b_1tp_npugraph_ex.yaml` 用于第 7 章图模式对比，`qwen3_8b_1tp_ge_graph_fused.yaml` 与 `qwen3_8b_1tp_ge_graph_fused_o_proj_prefetch_16m.yaml`、`qwen3_8b_1tp_ge_graph_fused_o_proj_prefetch_32m.yaml` 用于第 8 章 o_proj 权重预取验证。
+- Qwen dense 模型实现位于 `src/inference_scripts/recipe_qwen3_8b/models/qwen/models/modeling_qwen.py`，基于 Qwen2/Qwen3 dense 结构适配 NPU 推理；第 8 章在该文件中于 Fused Attention 调用前以 V 侧 Scatter 输出为依赖接入 `self_attn.o_proj` 权重预取。
 - Qwen3 NPU norm 精度检查位于 `src/qwen3_npu_adaptation.py`；第 4 章 A/B 只切换 recipes Qwen3-8B 路径中是否启用 `torch_npu.npu_rms_norm` 与 `torch_npu.npu_add_rms_norm` 融合。
 - 模型权重使用 `Qwen/Qwen3-8B`；首次运行会通过默认下载通道获取权重，已准备本地权重时可通过 `QWEN3_8B_MODEL_PATH` 指定。
 
@@ -97,10 +101,12 @@ export QWEN3_8B_MODEL_PATH=/path/to/Qwen3-8B
 
 <table>
 <tr><th>Notebook</th><th>在线体验</th><th>状态</th></tr>
-<tr><td>1. 章节介绍</td><td rowspan="6">在 CANNLab 中运行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab 环境体验指南</a>）</td><td>✅ 已发布</td></tr>
+<tr><td>1. 章节介绍</td><td rowspan="8">在 CANNLab 中运行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab 环境体验指南</a>）</td><td>✅ 已发布</td></tr>
 <tr><td>2. Baseline 跑通</td><td>✅ 已发布</td></tr>
 <tr><td>3. Profiling 分析</td><td>✅ 已发布</td></tr>
 <tr><td>4. Dense RMSNorm NPU 融合路径优化验证</td><td>✅ 已发布</td></tr>
 <tr><td>5. 量化Qwen3-8B模型</td><td>✅ 已发布</td></tr>
 <tr><td>6. 自定义量化 A8W8 matmul 算子开发并接入 Qwen3-8B</td><td>✅ 已发布</td></tr>
+<tr><td>7. 图模式优化：GE Graph 与 NPU Graph EX A/B 验证</td><td>✅ 已发布</td></tr>
+<tr><td>8. GE Graph：Fused Attention 期间预取同层 o_proj 权重</td><td>✅ 已发布</td></tr>
 </table>

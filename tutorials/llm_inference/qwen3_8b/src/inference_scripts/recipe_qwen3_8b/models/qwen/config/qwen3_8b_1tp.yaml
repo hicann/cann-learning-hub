@@ -10,6 +10,8 @@ model_config:
   custom_params:
     enable_npu_rmsnorm: False
     enable_add_rmsnorm: False
+    enable_prefetch: False
+    prefetch_size: 18874368  # 18 MiB; ignored while enable_prefetch is False
 
 data_config:
   dataset: "default"  # ["default", "LongBench"]
