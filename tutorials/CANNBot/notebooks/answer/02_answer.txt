@@ -1,0 +1,96 @@
+第 2 册《第一个算子》练习答案
+
+1.（单选题）B
+   解析：停止条件明确"做到哪一步算完成"（如精度验收通过后
+   即停止），避免 Agent 自作主张扩大范围。它对应 STATE.md
+   中的验收记录，是任务可验收性的一部分。
+
+2.（多选题）A、B、C
+   解析：A 对——标准答案来自 CPU 的 x + y（独立参考）；
+   B 对——用例矩阵含用户指定 shape (8,2048)、非对齐、多维；
+   C 对——边界值专项覆盖 ±0 与带符号零、±Inf、NaN、溢出。
+   D 错——容差按算子语义设定：fp32 加法是 IEEE 754 精确
+   运算，实测为位级一致（rtol=atol=0.0），并非默认 1e-3。
+
+3.（单选题）B
+   解析：Tiling 负责数据切分决策：查询核数（GetCoreNumAiv）、
+   按每核最少 1024 元素算分块数（numBlocks）、每块长度
+   （blockLength）与 tile 大小（按 UB 容量）。A 是
+   TORCH_LIBRARY 注册，C 是 AscendC::Add 指令，D 是测试
+   套件的职责。
+
+4.（编程实践·必做）sigmoid_custom 参考答案
+   （低阶指令组合版）
+
+   参考需求描述（五要素齐全 + 实现约束，可直接发送）：
+
+   「使用 ops-direct-invoke-flash 开发一个 sigmoid_custom
+   算子：sigmoid(x) = 1/(1+exp(-x))，逐元素运算，输入 x
+   shape (8, 2048)，float32，输出 y 与输入同 shape 同
+   dtype。实现约束：禁止直接使用 AscendC::Sigmoid 高阶
+   指令，必须用基础向量指令组合实现（如 Muls、Exp、Adds、
+   Div、Duplicate 等）。精度口径：有限值按混合容差验收
+   （rtol=1e-5、atol=1e-7 量级），±0/±Inf/大幅正负输入的
+   饱和值要求与 CPU 参考精确一致，NaN 按语义比对。在真实
+   NPU 上验证精度，全部用例通过后即停止。」
+
+   精度口径说明：add 是单次舍入的 IEEE 754 精确运算，所以
+   敢要求位级一致；sigmoid 含超越函数 exp，NPU 与 CPU 的
+   exp 实现不同，位级一致既不可能也不必要——三层口径
+   （有限值容差 + 特殊值精确 + NaN 语义）才是按语义定容差。
+
+   实测参考记录（Ascend 910B3 + OpenCode + CANN 9.1，
+   simple 档）：
+   - fp32 全部用例通过（10.71s）：接口 + shape 参数化 +
+     边界专项（±0/±Inf/正饱和/负饱和/NaN）；
+   - (8, 2048) fp32：max_abs_diff≈1.2e-07（约 2 ULP，
+     瓶颈在 exp 指令本身）；
+   - 边界值与 CPU 精确一致：±0→0.5、+Inf→1.0、-Inf→0.0、
+     x≥40→1.0（exp 下溢）、x≤-40→0.0（含 -88 的次正规
+     输出 6.05e-39 也一致）。
+
+   踩坑与修复（真实迭代记录，值得细读）：
+   - 第一版组合链 Muls→Exp→Adds→Reciprocal 测试大面积
+     失败（33/39），连 sigmoid(0) 都返回 0.4990——所有输出
+     呈 2^-9 相对误差的量化特征；
+   - 定位：dav-2201 上的 Reciprocal 是低精度近似指令（尾数
+     约 9 bit），不是正确舍入的除法；
+   - 修复：除法改为 Duplicate(全 1 张量) + Div（正确舍入），
+     重测全部通过、边界值恢复精确一致；
+   - 教训：低阶指令的精度特性各不相同，公式拆解后要重新
+     审视每条指令的精度语义——这正是 2.8 说的「保留现场、
+     贴给 Agent、基于事实修」的完整闭环。
+
+   合规验证：打开生成的 sigmoid_custom.asc 检查（或 grep
+   "AscendC::Sigmoid("），确认无高阶指令调用；组合链为
+   Muls → Exp → Adds → Duplicate → Div，共 5 条基础向量
+   指令，中间张量由 4 个 TBuf（VECCALC）承载，不从数据
+   队列分配临时缓冲。
+
+5.（编程实践·选做）泛化版 sigmoid_custom 参考答案
+
+   参考扩展需求（在必做完成后追加发送）：
+
+   「扩展 sigmoid_custom：支持 float16/float32 双 dtype 输入
+   输出；测试用例矩阵必须覆盖三个指定 case：(7, 83)
+   float32、(1024, 1024) float16、(999, 999) float32。
+   实现约束不变：禁止使用 AscendC::Sigmoid，继续用基础
+   向量指令组合。在真实 NPU 上验证精度，通过后即停止。」
+
+   实测参考记录（低阶组合版）：
+   - 扩展后测试套件 39/39 通过（10.82s）：接口 1 + 14
+     shape × 2 dtype 参数化 28 + 边界 5 × 2 dtype 共 10；
+   - 三指定用例：(7, 83) fp32 max_abs_diff=1.192e-07；
+     (1024, 1024) fp16 max_abs_diff=4.883e-04（fp16 在 1.0
+     附近的 1 ULP，rtol=1e-3/atol=1e-3 内通过）；
+     (999, 999) fp32 max_abs_diff=1.788e-07。
+
+   关键改动点（供核对你的产物）：
+   - 组合指令链对模板参数 T 自适应：fp16/fp32 各自原生
+     计算（Muls/Exp/Adds/Duplicate/Div 均支持 half），
+     无需 Cast 链；
+   - test：DTYPES 扩为 [float32, float16]，SHAPES 增补
+     (7, 83) 与 (1024, 1024)；fp16 容差按输出范围 (0,1)
+     与 2^-11 分辨率取 rtol=1e-3、atol=1e-3；
+   - docs：定义/设计文档同步更新 dtype 策略与三指定用例
+     （阶段回退 3/4/5 后增量实现）。
