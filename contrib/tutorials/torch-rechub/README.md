@@ -12,6 +12,7 @@
 - 在 notebook 开头补充迁移说明，标明源教程地址和当前目录位置。
 - 将原 notebook 中的 attachment 图片改为仓库内相对路径图片，图片文件统一放在 `images/` 目录，便于在代码托管平台和本地 Markdown 预览中显示。
 - 新增本 README，汇总教程列表、运行依赖和迁移说明。
+- 另收录面向昇腾 NPU 的多进程控核推理示例 `10_NPU_DIN_Inference_MultiInstance_CoreControl.ipynb`（含配套脚本 `.py`），非源教程内容，用于演示多实例并行与 TorchAir 整图控核。
 
 ## 目录说明
 
@@ -28,6 +29,8 @@ contrib/tutorials/torch-rechub
 ├── 03_MultiTask_MMOE.ipynb
 ├── 04_Experiment_Tracking_Light.ipynb
 ├── 05_Model_Export_and_Serving.ipynb
+├── 10_NPU_DIN_Inference_MultiInstance_CoreControl.ipynb
+├── 10_NPU_DIN_Inference_MultiInstance_CoreControl.py
 └── README.md
 ```
 
@@ -41,6 +44,7 @@ contrib/tutorials/torch-rechub
 | 03 | [多任务学习：MMOE](./03_MultiTask_MMOE.ipynb) | 使用 Ali-CCP 样例数据演示多目标建模、expert、gate 与 tower | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/03_MultiTask_MMOE.ipynb) |已迁移 |
 | 04 | [实验跟踪：model_logger](./04_Experiment_Tracking_Light.ipynb) | 演示 WandB / SwanLab / TensorBoardX 等轻量实验跟踪接入方式 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/04_Experiment_Tracking_Light.ipynb) |已迁移 |
 | 05 | [模型导出与推理验证：ONNX](./05_Model_Export_and_Serving.ipynb) | 演示 DeepFM 与 DSSM 的 ONNX 导出、ONNXRuntime 推理验证和量化入口 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/05_Model_Export_and_Serving.ipynb) |已迁移 |
+| 10 | [DIN 多进程控核推理](./10_NPU_DIN_Inference_MultiInstance_CoreControl.ipynb) | 在昇腾 NPU 上以多进程（spawn Pool）运行 DIN 推理，通过 TorchAir `ge.aicoreNum` 整图控核，含 1000 请求基准与 latency 统计 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/torch-rechub&scanFilePath=contrib/tutorials/torch-rechub/10_NPU_DIN_Inference_MultiInstance_CoreControl.ipynb) | 新增 |
 
 ## 环境要求
 
