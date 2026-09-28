@@ -8,17 +8,24 @@
 
 ## 1. 整体流程概览
 
-基于 CANNLab 环境开发并提交课程的整体流程如下：
+基于 CANNLab 环境开发并提交课程，根据开发方式与课程体量选择提交路径：
+
+- 个人开发者、课程内容量偏小 → 推荐路径A：在个人 fork 仓开发分支上开发，直接向 `master` 提 PR。
+- 课程内容量较大、需要多人协作开发 → 推荐路径B：在个人 fork 仓的 `test` 分支上协作开发，PR 提交到主仓 `test` 分支，全部章节完成后再合入 `master`。
+
+两种方式均为推荐而非强制；单人 fork 仓也支持多人协作开发。注意 `test` 分支为开发集成分支，不提供在线体验，体验内容一律以 `master` 分支为准。具体流程见 [课程上线流程](./course_submission_criteria.md#1-新教程的上线流程)。
+
+整体流程如下：
 
 | 步骤 | 操作 | 说明 |
 | --- | --- | --- |
 | 1 | 签署 CLA & Fork 仓库 | 完成社区准入准备，获取个人开发仓库。 |
 | 2 | 创建并进入 CANNLab 云开发环境 | 申请 NPU 环境，通过 WebIDE 连接。 |
-| 3 | 克隆仓库 & 切换开发分支 | 在环境中拉取代码，切换到 `test` 分支。 |
+| 3 | 克隆仓库 & 切换开发分支 | 路径A：在个人 fork 仓创建开发分支；路径B：在个人 fork 仓切换到 `test` 分支。 |
 | 4 | 开发课程内容 | 按照目录结构与 Notebook 规范开发课程。 |
-| 5 | 提交代码 | 将开发内容提交并推送到个人 fork 仓库的 `test` 分支。 |
+| 5 | 提交代码 | 路径A：推送到个人 fork 仓的开发分支；路径B：推送到个人 fork 仓的 `test` 分支。 |
 | 6 | 运行验证 | 在课程支持的环境中逐 cell 执行 Notebook，确认可正常运行。 |
-| 7 | 发起 PR | 向 `cann/cann-learning-hub` 的 `test` 分支发起 PR。 |
+| 7 | 发起 PR | 路径A：向 `cann/cann-learning-hub` 的 `master` 分支发起 PR；路径B：从个人 fork 仓向主仓 `test` 分支发起 PR，全部章节完成后再合入 `master` 分支。 |
 | 8 | 响应评审 & 迭代修改 | 根据评审意见在环境中修改并更新 PR。 |
 
 详细规范请参见 [新课程上库与上线验收标准](./course_submission_criteria.md)，本指南聚焦于 CANNLab 环境下的操作步骤。
@@ -104,10 +111,20 @@ cd cann-learning-hub
 
 ### 4.3 切换到开发分支
 
-课程开发统一基于个人 fork 仓库的 `test` 分支进行，切换到该分支即可开始开发：
+根据提交路径选择开发分支：
+
+**路径A（个人fork仓直提）**：基于个人 fork 仓的 `master` 分支创建课程开发分支：
+
+```bash
+git checkout master
+git checkout -b dev_<课程名>
+```
+
+**路径B（test分支协作开发）**：在个人 fork 仓中切换到 `test` 分支开发，并定期从主仓同步最新代码：
 
 ```bash
 git checkout test
+git pull https://gitcode.com/cann/cann-learning-hub.git test
 ```
 
 ---
@@ -172,7 +189,7 @@ tutorials/
 - 整体学习目标。
 - **支持或已验证的硬件型号**（必须说明）。
 - **在线体验环境说明**（必须说明）：明确课程支持在 **gitcode 在线 Notebook 环境** 还是 **CANNLab 环境** 中体验。
-  - 若支持 **gitcode 在线 Notebook 环境**：在 README 中说明。gitcode 在线体验链接由仓库维护人员统一配置，开发者无需自行配置；课程提交到 `test` 分支后，请创建一个 Issue，说明课程名称、目录路径及各 `.ipynb` 入口文件，请求维护人员协助配置 gitcode 在线体验链接。
+  - 若支持 **gitcode 在线 Notebook 环境**：在 README 中说明。gitcode 在线体验链接由仓库维护人员统一配置，开发者无需自行配置；课程合入 `master` 分支后，请创建一个 Issue，说明课程名称、目录路径及各 `.ipynb` 入口文件，请求维护人员协助配置 gitcode 在线体验链接。
   - 若支持 **CANNLab 环境**：在 README 中说明，并附上 CANNLab 环境体验指导链接：[CANNLab 环境体验指南](./CANNLab_env_experience_guide.md)。
 
 ### 5.5 开发 Notebook 内容
@@ -201,7 +218,17 @@ tutorials/
 
 ## 6. 提交代码
 
-在终端中执行以下命令，将开发内容提交到个人 fork 仓库的 `test` 分支：
+在终端中执行以下命令，将开发内容提交并推送到个人 fork 仓库：
+
+**路径A（个人fork仓直提）**：推送到课程开发分支：
+
+```bash
+git add .
+git commit -m "feat: 新增<课程名称>课程"
+git push origin dev_<课程名>
+```
+
+**路径B（test分支协作开发）**：推送到个人 fork 仓的 `test` 分支：
 
 ```bash
 git add .
@@ -236,17 +263,19 @@ git push origin test
 
 <img src="./images/CANNLab_course_development_guide/new_terminal.png" width="800">
 
-在终端中执行以下命令，克隆个人 fork 仓库并切换到 `test` 分支：
+在终端中执行以下命令，克隆个人 fork 仓库并切换到开发分支（路径A为 `dev_<课程名>`，路径B为 `test`）：
 
 ```bash
 cd
 rm -rf cann-learning-hub/
 git clone https://gitcode.com/<your_username>/cann-learning-hub.git
 cd cann-learning-hub/
-git checkout test
+git checkout dev_<课程名>   # 路径A
+# 或
+git checkout test           # 路径B
 ```
 
-从左侧菜单栏点击进入 `cann-learning-hub` 仓库，即可在 Notebook 中查看并打开个人 fork 仓库 `test` 分支下的新增课程内容：
+从左侧菜单栏点击进入 `cann-learning-hub` 仓库，即可在 Notebook 中查看并打开个人 fork 仓库开发分支下的新增课程内容：
 
 <img src="./images/CANNLab_course_development_guide/cann-learning-hub_contents.png" width="400">
 
@@ -455,9 +484,11 @@ PY
 
 ### 8.2 发起 PR
 
-1. 在 GitCode 上进入个人 fork 仓库页面，切换到 `test` 分支。
+**路径A（个人fork仓直提）**：
+
+1. 在 GitCode 上进入个人 fork 仓库页面，切换到课程开发分支（如 `dev_<课程名>`）。
 2. 点击 **发起 Pull Request**。
-3. **目标仓库** 选择 `cann/cann-learning-hub`，**目标分支** 选择 `test`。
+3. **目标仓库** 选择 `cann/cann-learning-hub`，**目标分支** 选择 `master`。
 4. 按照 PR 模板填写以下内容：
    - **描述**：本次改动的背景、目的与方案。
    - **测试**：说明运行验证情况（硬件型号、环境、验证结果）。
@@ -465,36 +496,40 @@ PY
    - **类型标签**：勾选 **新特性** 或对应类型。
 5. 提交 PR。
 
+**路径B（test分支协作开发）**：
+
+1. 在 GitCode 上进入个人 fork 仓库页面，切换到 `test` 分支。
+2. 点击 **发起 Pull Request**。
+3. **目标仓库** 选择 `cann/cann-learning-hub`，**目标分支** 选择 `test`。
+4. 按照 PR 模板填写内容（同路径A第 4 步）。
+5. 提交 PR。
+6. 全部章节完成并合入 `test` 分支后，按 [附录二：test → master 选择性合并操作指引](./course_submission_criteria.md#附录二test--master-选择性合并操作指引) 将课程文件合并到 `master` 分支并发起 PR。
+
 ---
 
 ## 9. 课程上线流程
 
-课程从开发到正式发布，按照"设计开发 → 合入 test 分支 → 优化打磨 → 合入 master 分支"四个阶段推进。完整流程共 8 个步骤，各步骤的核心任务、责任方和验收关注点详见 [新课程上库与上线验收标准](./course_submission_criteria.md#1-新教程的上线流程)。
+课程从开发到正式发布，按照“设计开发 → 内容开发与验证 → 验收评审 → 合入 master 发布”推进。两种提交路径的完整步骤、责任方和验收关注点详见 [新课程上库与上线验收标准](./course_submission_criteria.md#1-新教程的上线流程)。
 
 简要流程如下：
 
-| 阶段 | 步骤 | 核心任务 | 责任方 |
-| --- | --- | --- | --- |
-| 设计开发 | 1. 课程大纲设计与评审 | 设计课程大纲并完成内部分层评审 | 课程组 |
-| | 2. 课程内容开发与验证 | 开发教程内容并本地验证通过 | 课程组 |
-| 合入 test | 3. 提 PR 到 test 分支 | 完成质量自检后提 PR | 课程组 |
-| | 4. 合入 test 分支 | 审核内容质量与低错，通过后合入 | 课程组长、Committer |
-| 优化打磨 | 5. 内测（持续打磨） | 在 test 分支上持续完善课程内容 | 课程组 |
-| 合入 master | 6. 提 PR 到 master 分支 | 选择性合并 test 分支内容到 master | 课程组 |
-| | 7. 公测（体验 & 评审） | 评审团队在线体验并评论，课程组逐条闭环 | 评审团队、Committer、课程组 |
-| | 8. 上线 master 分支 | Committer 审核通过，合入 master 并发布 | Committer |
+| 提交路径 | 流程 | 说明 |
+| --- | --- | --- |
+| 路径A：个人fork仓直提 | 大纲设计评审 → fork 开发分支开发自验 → 提 PR 到 master → 验收评审（Committer在线体验与 PR 分支运行验证）→ 合入 master 发布 | 个人开发者、课程内容量偏小 |
+| 路径B：test分支协作开发 | 大纲设计评审 → 个人 fork 仓 test 分支协作开发 → 提 PR 到主仓 test（按 master 准入标准审核合入）→ 持续开发与打磨 → 全部章节完成后提 PR 到 master → 复审与公测 → 合入 master 发布 | 课程内容量较大、需要多人协作开发 |
 
-> **test → master 合并操作指引**：步骤 6 中如何选择性合并 test 分支内容到 master 分支，详见 [附录二：test → master 选择性合并操作指引](./course_submission_criteria.md#附录二test--master-选择性合并操作指引)。
+> - **test → master 合并操作指引**：路径B如何选择性合并 test 分支内容到 master 分支，详见 [附录二：test → master 选择性合并操作指引](./course_submission_criteria.md#附录二test--master-选择性合并操作指引)。
+> - **test 分支为开发集成分支**：不承诺任意时刻整体可运行，不对外提供在线体验；体验内容一律以 `master` 分支为准。
 
 ---
 
 ## 10. 响应评审与迭代修改
 
-### 10.1 test 分支评审（步骤 3-4）
+### 10.1 PR 评审与迭代修改（路径A/B通用）
 
-PR 提交后，课程组组长与 Committer 会依据准入 Checklist 进行评审。评审意见会在 PR 评论中给出。
+PR 提交后，课程组组长与Committer会依据准入 Checklist 进行评审。评审意见会在 PR 评论中给出。
 
-如需修改，在原开发环境（CANNLab 云开发环境）中继续开发。若使用 CANNLab 环境，环境关机后重新开机并进入即可，代码已保存在 fork 仓库。拉取最新代码：
+如需修改，在原开发环境（CANNLab 云开发环境）中继续开发。若使用 CANNLab 环境，环境关机后重新开机并进入即可，代码已保存在 fork 仓库。拉取最新代码（以路径B为例）：
 
 ```bash
 cd cann-learning-hub
@@ -502,7 +537,7 @@ git checkout test
 git pull origin test
 ```
 
-修改完成后再次到对应环境运行验证，然后推送更新：
+修改完成后再次到对应环境运行验证，然后推送更新（路径A推送到 `dev_<课程名>` 分支，路径B推送到 `test` 分支）：
 
 ```bash
 git add .
@@ -512,17 +547,24 @@ git push origin test
 
 推送后 PR 会自动更新，在 PR 评论中回复评审意见并说明修改情况。
 
-### 10.2 master 分支公测（步骤 7-8）
+### 10.2 master 分支验收与发布
 
-课程合入 master 分支后，评审团队在线体验并评论，Committer 执行验证。如需修改，流程与 10.1 相同，在开发环境中修改后推送到 master 分支即可。
+- **路径A**：验收评审（Committer在线体验与 PR 分支运行验证）在 master PR 合入前完成，全部意见闭环且验证通过后合入 master 发布。
+- **路径B**：全部章节完成并向 master 发起 PR 后，Committer在线体验、评论并复审验证，课程组逐条闭环；全部通过后合入 master 发布。
+
+如需修改，流程与 10.1 相同，在开发环境中修改后推送到对应分支即可。
 
 ---
 
 ## 11. 常见问题
 
-**Q1：课程应该提交到 `test` 分支还是 `master` 分支？**
+**Q1：课程应该提交到 `master` 分支还是先走 `test` 分支？**
 
-所有课程 PR 统一提交到 `test` 分支，经内测闭环后再由课程组提 PR 合入 `master`。具体流程见 [课程上线流程](./course_submission_criteria.md#1-新教程的上线流程)。
+按推荐方式选择提交路径：
+- 个人开发者、课程内容量偏小 → 推荐路径A：在个人 fork 仓开发分支上开发，直接向 `master` 提 PR。
+- 课程内容量较大、需要多人协作开发 → 推荐路径B：在个人 fork 仓的 `test` 分支上协作开发，PR 提交到主仓 `test` 分支，全部章节完成后再合入 `master`。
+
+两种方式均为推荐而非强制；单人 fork 仓也支持多人协作开发。注意 `test` 分支为开发集成分支，不提供在线体验，体验内容一律以 `master` 分支为准。具体流程见 [课程上线流程](./course_submission_criteria.md#1-新教程的上线流程)。
 
 **Q2：如何选择 CANNLab 环境规格？**
 
