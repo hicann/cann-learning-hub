@@ -1,9 +1,9 @@
+#!/bin/bash
 # coding=utf-8
 # Copyright (c) 2025 Huawei Technologies Co., Ltd.
 #
 # Licensed under the CANN Open Software License Agreement Version 2.0.
 
-#!/bin/bash
 set -o pipefail
 
 function launch()

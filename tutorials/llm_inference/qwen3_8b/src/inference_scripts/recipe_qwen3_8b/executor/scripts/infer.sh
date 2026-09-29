@@ -1,3 +1,4 @@
+#!/bin/bash
 # coding=utf-8
 # Copyright (c) 2026 Huawei Technologies Co., Ltd. All Rights Reserved.
 #
@@ -13,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
 SCRIPT_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 SET_ENV_ABS_PATH="${SCRIPT_PATH}/set_env.sh"
 FUNCTION_ABS_PATH="${SCRIPT_PATH}/function.sh"
