@@ -162,8 +162,8 @@ def main():
     print()
 
     # 图片路径
-    image_files = ['images/cat1.jpg', 'images/cat2.jpg',
-                   'images/dog1.jpg', 'images/dog2.jpg']
+    image_files = ['../../images/cat1.jpg', '../../images/cat2.jpg',
+                   '../../images/dog1.jpg', '../../images/dog2.jpg']
     image_names = ['cat1', 'cat2', 'dog1', 'dog2']
 
     # 第 1 步：查看图片

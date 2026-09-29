@@ -181,8 +181,8 @@ def main():
     print(f"NPU name: {torch.npu.get_device_name(0)}")
     print()
 
-    image_files = ['images/cat1.jpg', 'images/cat2.jpg',
-                   'images/dog1.jpg', 'images/dog2.jpg']
+    image_files = ['../../images/cat1.jpg', '../../images/cat2.jpg',
+                   '../../images/dog1.jpg', '../../images/dog2.jpg']
     image_names = ['cat1', 'cat2', 'dog1', 'dog2']
 
     # 第 1 步：查看图片
