@@ -78,3 +78,21 @@
 ---
 
 本课程从基础概念到实际开发，循序渐进地帮助您掌握 Vector 算子开发的完整流程。
+
+## 参考资料
+
+- [算子工程入门](../ascendc_operator_development/03_intermediate_vector_operator_development/03.02_operator_engineering_intro.ipynb) - InferShape / InferDtype 实现
+- [开源仓算子开发](../ascendc_operator_development/06_opensource_repo_operator_intro_and_contribution/06.03_operator_development_based_on_opensource_repo.ipynb) - InferDataType 实现与注册
+- [SIMT 同步机制详解](../ascendc_operator_development_V2/03_programming_model/03.04.05_simt_synchronization_mechanism.ipynb) - asc_syncthreads、asc_threadfence
+- [Regbase 流水线同步](../../blogs/operator/regbase_vec_add/从一个向量加法出发，深入理解Regbase编程范式.md) - LocalMemBar 与同步控制
+- [动态 Shape 执行](../ge_development/04_model_execution_optimization/04.03_dynamic_shape_execution.ipynb) - Unknown Shape 运行时调度
+- [动态 Shape 优化](../ge_development/04_model_execution_optimization/04.05_dynamic_shape_optimization.ipynb) - Dynamic Gear 分档策略
+- [开源仓算子交付件](../ascendc_operator_development/06_opensource_repo_operator_intro_and_contribution/06.02_opensource_repo_intro_and_verification.ipynb) - op_proto、op_impl、op_tiling 等
+- [aclnn pybind 调用](../ascendc_operator_development/03_intermediate_vector_operator_development/03.03_acl_pybind_call.ipynb) - aclnn 封装与 Python 调测
+- [aclnn 算子工程](../ascendc_operator_development_V2/06_advanced_features/06.03_aclnn_operator_engineering_development.ipynb) - OpDef、自动生成、编译流程
+- [开源仓贡献流程](../ascendc_operator_development/06_opensource_repo_operator_intro_and_contribution/06.01_chapter_intro.ipynb) - 算子上库完整流程
+- [MIX算子贡献实战](../../blogs/operator/transformer_experimental_mix_operator/transformer仓experimental路径MIX算子开发贡献.md) - 端到端贡献经验
+- [GE 图构建与框架适配](../ge_development/03_graph_compilation/03.02_graph_build_and_input.ipynb) - PyTorch/TensorFlow/ONNX 差异
+- [Kernel 直调编程](../../blogs/operator/kernel_direct_call_programming/算子Kernel直调编程.md) - 异构编程、AscendOps 模板
+- [Scalar 高性能编码](../../blogs/operator/scalar_npu_operator_performance_optimization/scalar_npu_operator_performance_optimization.md) - 7 条编码原则
+- [泛化 Tiling 设计](../ascendc_operator_development/03_intermediate_vector_operator_development/03.04_generalized_tiling_design.ipynb) - 算子开发规范
