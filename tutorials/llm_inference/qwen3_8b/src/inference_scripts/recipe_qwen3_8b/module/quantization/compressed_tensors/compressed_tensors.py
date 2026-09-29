@@ -71,9 +71,6 @@ class CompressedTensorsConfig(QuantizationConfig):
             scheme = self.get_scheme(layer=layer, layer_name=prefix)
             layer.scheme = scheme
             return CompressedTensorsLinearMethod(self)
-        elif isinstance(layer, FusedMoEGMM):
-            moe_method = CompressedTensorsMoEGMMMethod.get_moe_method(self, layer)
-            return moe_method
         return None
 
     @classmethod
@@ -198,121 +195,6 @@ class CompressedTensorsConfig(QuantizationConfig):
         # Only symmetric weight quantization is supported.
         return is_8_bits and is_token and weight_quant.symmetric and is_dynamic
 
-    def is_wNa16_group_channel(self,
-                            weight_quant: BaseModel,
-                            input_quant: BaseModel,) -> bool:
-        input_quant_none = input_quant is None
-        is_symmetric = weight_quant.symmetric
-        is_channel_group = (
-            weight_quant.strategy == QuantizationStrategy.CHANNEL.value
-            or weight_quant.strategy == QuantizationStrategy.GROUP.value
-        )
-        is_static = not weight_quant.dynamic
-
-        return is_channel_group and input_quant_none and is_symmetric and is_static
-
-    def is_dynamic_token_w4a8_int8(self,
-                               weight_quant: BaseModel,
-                               input_quant: BaseModel,) -> bool:
-        is_w4a8_int8 = (weight_quant.num_bits == 4) and (input_quant.num_bits == 8) and weight_quant.type == "int"
-        weight_strategy = (
-            weight_quant.strategy == QuantizationStrategy.TENSOR.value
-            or weight_quant.strategy == QuantizationStrategy.CHANNEL.value
-            or weight_quant.strategy == QuantizationStrategy.GROUP.value)
-        is_token = (weight_strategy and input_quant.strategy
-                    == QuantizationStrategy.TOKEN.value)
-        is_dynamic = not weight_quant.dynamic and input_quant.dynamic
-
-        # Both symmetric and asymmetric input quantization supported.
-        # Only symmetric weight quantization supported.
-        return is_w4a8_int8 and is_token and weight_quant.symmetric and is_dynamic
-
-    def is_dynamic_token_w8a8_mxfp8(self,
-                               weight_quant: BaseModel,
-                               input_quant: BaseModel,) -> bool:
-        is_mxfloat = (self.weight_block_size is not None and self.weight_block_size[0] == 1 and
-                      self.weight_block_size[1] == MX_BLOCK_K and weight_quant.type == "float")
-        is_w8a8_mxfp8 = (weight_quant.num_bits == 8) and (input_quant.num_bits == 8) and is_mxfloat
-        weight_strategy = (
-            weight_quant.strategy == QuantizationStrategy.TENSOR.value
-            or weight_quant.strategy == QuantizationStrategy.CHANNEL.value
-            or weight_quant.strategy == QuantizationStrategy.GROUP.value)
-        is_token = (weight_strategy and input_quant.strategy
-                    == QuantizationStrategy.TOKEN.value)
-        is_dynamic = not weight_quant.dynamic and input_quant.dynamic
-
-        # Both symmetric and asymmetric input quantization supported.
-        # Only symmetric weight quantization supported.
-        return is_w8a8_mxfp8 and is_token and weight_quant.symmetric and is_dynamic
-
-    def is_dynamic_token_w8a8_fp8(self,
-                               weight_quant: BaseModel,
-                               input_quant: BaseModel,) -> bool:
-        is_not_mxfloat = (self.weight_block_size is not None and (self.weight_block_size[0] != 1 or
-                      self.weight_block_size[1] != MX_BLOCK_K) and weight_quant.type == "float")
-        is_w8a8_fp8 = (weight_quant.num_bits == 8) and (input_quant.num_bits == 8) and is_not_mxfloat
-        weight_strategy = (
-            weight_quant.strategy == QuantizationStrategy.TENSOR.value
-            or weight_quant.strategy == QuantizationStrategy.CHANNEL.value
-            or weight_quant.strategy == QuantizationStrategy.GROUP.value)
-        is_token = (weight_strategy and input_quant.strategy
-                    == QuantizationStrategy.TOKEN.value)
-        is_dynamic = not weight_quant.dynamic and input_quant.dynamic
-
-        # Both symmetric and asymmetric input quantization supported.
-        # Only symmetric weight quantization supported.
-        return is_w8a8_fp8 and is_token and weight_quant.symmetric and is_dynamic
-
-    def is_dynamic_token_w4a8_mxfp8(self,
-                               weight_quant: BaseModel,
-                               input_quant: BaseModel,) -> bool:
-        is_w4a8_mxfp8 = (weight_quant.num_bits == 4) and (input_quant.num_bits == 8) and weight_quant.type == "float"
-        weight_strategy = (
-            weight_quant.strategy == QuantizationStrategy.TENSOR.value
-            or weight_quant.strategy == QuantizationStrategy.CHANNEL.value
-            or weight_quant.strategy == QuantizationStrategy.GROUP.value)
-        is_token = (weight_strategy and input_quant.strategy
-                    == QuantizationStrategy.TOKEN.value)
-        is_dynamic = not weight_quant.dynamic and input_quant.dynamic
-
-        # Both symmetric and asymmetric input quantization supported.
-        # Only symmetric weight quantization supported.
-        return is_w4a8_mxfp8 and is_token and weight_quant.symmetric and is_dynamic
-
-    def is_dynamic_token_w4a4_mxfp4(self,
-                               weight_quant: BaseModel,
-                               input_quant: BaseModel,) -> bool:
-        is_w4a4_mxfp4 = (weight_quant.num_bits == 4) and (input_quant.num_bits == 4) and weight_quant.type == "float"
-        weight_strategy = (
-            weight_quant.strategy == QuantizationStrategy.TENSOR.value
-            or weight_quant.strategy == QuantizationStrategy.CHANNEL.value
-            or weight_quant.strategy == QuantizationStrategy.GROUP.value)
-        is_token = (weight_strategy and input_quant.strategy
-                    == QuantizationStrategy.TOKEN.value)
-        is_dynamic = not weight_quant.dynamic and input_quant.dynamic
-
-        # Both symmetric and asymmetric input quantization supported.
-        # Only symmetric weight quantization supported.
-        return is_w4a4_mxfp4 and is_token and weight_quant.symmetric and is_dynamic
-
-    def is_dynamic_token_w8a8_hifloat8(self,
-                               weight_quant: BaseModel,
-                               input_quant: BaseModel,) -> bool:
-        # avoid a16 none input_quant that input_quant.num_bits will be error
-        if input_quant is None:
-            return False
-        is_8_bits = weight_quant.num_bits == input_quant.num_bits == 8 and weight_quant.type == "float"
-        weight_strategy = (
-            weight_quant.strategy == QuantizationStrategy.TENSOR.value 
-            or weight_quant.strategy == QuantizationStrategy.CHANNEL.value 
-            or weight_quant.strategy == QuantizationStrategy.GROUP.value)
-        is_tensor = (weight_strategy and input_quant.strategy == QuantizationStrategy.TENSOR.value)
-        is_dynamic = not weight_quant.dynamic and input_quant.dynamic
-        
-        # Both symmetric and asymmetric input quantization are supported.
-        # Only symmetric weight quantization is supported.
-        return is_8_bits and is_tensor and weight_quant.symmetric and is_dynamic
-
     def _get_scheme_from_parts(
             self,
             layer_name: str,
@@ -325,18 +207,10 @@ class CompressedTensorsConfig(QuantizationConfig):
                     strategy=weight_quant.strategy,
                     is_static_input_scheme=False,
                     input_symmetric=input_quant.symmetric)
-            elif self.is_dynamic_token_w8a8_hifloat8(weight_quant, input_quant): 
-                return CompressedTensorsW8A8Hif8LinearMethod( 
-                    strategy=weight_quant.strategy, 
-                    is_static_input_scheme=False, 
-                    input_symmetric=input_quant.symmetric) 
-            elif self.is_dynamic_token_w8a8_mxfp8(weight_quant, input_quant):
-                return MxFp8LinearMethod()
-            elif self.is_dynamic_token_w8a8_fp8(weight_quant, input_quant):
-                return Fp8LinearMethod(self)
 
         raise NotImplementedError(
-            "No compressed-tensors compatible scheme was found.")
+            "No compressed-tensors compatible scheme was found; "
+            "this tutorial recipe subset only supports dynamic-token W8A8 INT8.")
 
     def get_scheme(self,
                    layer: torch.nn.Module,
