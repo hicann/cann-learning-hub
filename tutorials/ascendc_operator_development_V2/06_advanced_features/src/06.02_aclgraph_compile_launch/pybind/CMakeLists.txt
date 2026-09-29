@@ -15,6 +15,8 @@ set(CMAKE_ASC_ARCHITECTURES "dav-3510" CACHE STRING "NPU architecture: dav-3510,
 
 find_package(ASC REQUIRED)
 project(aclgraph_pybind LANGUAGES ASC CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
 function(query_python_path output_var expression)
@@ -39,11 +41,18 @@ query_python_path(TORCH_NPU_PATH "import os, torch_npu; print(os.path.dirname(to
 set(TORCH_NPU_INCLUDE_DIRS ${TORCH_NPU_PATH}/include)
 set(TORCH_NPU_LIBRARIES ${TORCH_NPU_PATH}/lib)
 
+find_file(ASCENDC_RUNTIME_LIBRARY libascendc_runtime.a
+    HINTS "${ASCEND_CANN_PACKAGE_PATH}" "${ASCEND_CANN_PACKAGE_LINUX_PATH}" "$ENV{ASCEND_HOME_PATH}"
+    PATH_SUFFIXES lib64
+    NO_DEFAULT_PATH
+)
+
 query_python_path(PYBIND11_CMAKE_PREFIX_PATH "import pybind11; print(pybind11.get_cmake_dir())")
 find_package(pybind11 REQUIRED HINTS ${PYBIND11_CMAKE_PREFIX_PATH})
 
 pybind11_add_module(ascendc_ops SHARED
     add_custom.asc
+    pybind11.cpp
 )
 
 target_include_directories(ascendc_ops PRIVATE
@@ -53,6 +62,7 @@ target_include_directories(ascendc_ops PRIVATE
 
 target_link_libraries(ascendc_ops PRIVATE
     torch_npu
+    ${ASCENDC_RUNTIME_LIBRARY}
 )
 
 target_link_directories(ascendc_ops PRIVATE
