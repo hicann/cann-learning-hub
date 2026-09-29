@@ -10,7 +10,7 @@ AReaL 是一个面向算法设计者的强化学习框架，核心目标是：
 
 AReaL 通过 极简 API + 可扩展插件机制，把算法开发者从复杂的系统工程中解放出来，使其专注于 RL 算法、Reward 设计与 Agent 行为建模，而不是分布式、通信、容错等底层细节。
 
-📌 项目地址：👉 https://github.com/inclusionAI/AReaL
+📌 项目地址：👉 https://github.com/areal-project/AReaL
 
 ## 2、AReaL 的核心优势
 
@@ -121,7 +121,7 @@ ${IMAGE}  \
 
 ```bash
 docker exec -it areal_npu /bin/bash
-git clone https://github.com/inclusionAI/AReaL
+git clone https://github.com/areal-project/AReaL
 cd AReaL
 git checkout ascend
 pip install -e .
@@ -196,10 +196,10 @@ python -m areal.launcher.local examples/math/gsm8k_rl.py --config examples/math/
 
 更多详细使用方法参考：
 
-📘 官方文档：https://inclusionai.github.io/AReaL/tutorial/installation_npu.html
+📘 官方文档：https://areal-ai.io/AReaL/zh/tutorial/installation_npu.html
 
 ## 🎯 总结
 
 AReaL框架为需要在昇腾平台进行强化学习的开发者提供了新的可靠途径——开箱即用保障开发者轻松上手，优秀架构支撑模型性能。AReaL框架在昇腾平台上会持续演进，为开发者提供更强大、更便捷的强化学习体验，大家可以持续关注AReaL开源项目了解最新的技术动态。
 
-AReaL开源项目：https://github.com/inclusionAI/AReaL
+AReaL开源项目：https://github.com/areal-project/AReaL
