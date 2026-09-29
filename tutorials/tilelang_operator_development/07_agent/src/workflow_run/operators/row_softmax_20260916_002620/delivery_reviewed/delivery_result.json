@@ -1,0 +1,50 @@
+{
+  "at": "2026-09-16T05:25:55.801588+08:00",
+  "status": "PASS",
+  "kernel": "operators/row_softmax/row_softmax.py",
+  "pytest": "operators/row_softmax/test_row_softmax.py",
+  "source_hashes": {
+    "operators/row_softmax/row_softmax.py": "9a271fb879b0453aeb67362c4fde1cbe87f0013a3a242c183ab2497f0bc6a351",
+    "operators/row_softmax/test_row_softmax.py": "d44409ea05e24e3d6bef79968955ee05659b29eef45936035b938d6013507ef3",
+    "course_inputs/cases.json": "cf78042af40794b57a8b3b5bdc6a4742ea8cf6a9f253145cfb88398310793eca"
+  },
+  "format": {
+    "status": "PASS",
+    "files_checked": 2,
+    "lint_issues": 0,
+    "format_issues": 0
+  },
+  "post_format_ST": {
+    "status": "PASS",
+    "collected": 90,
+    "passed": 90,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "execution": "review_evidence/post_format_level1.json",
+    "report": "post_format_st_report.md"
+  },
+  "equivalence": {
+    "kernel_bytes_unchanged": true,
+    "kernel_AST_equal": true,
+    "pytest_AST_equal": true,
+    "generated_cpp_equal_count": 9,
+    "nodeids_equal": true
+  },
+  "performance": {
+    "status": "VERIFIED",
+    "primary_metric": "device Task Duration",
+    "geomean_ratio": 0.9332184090513448,
+    "worst_ratio": 1.0079180251513737,
+    "worst_case": "m64_n128",
+    "comparison": "../comparisons/fixed12_Bstar_vs_B0.json",
+    "course_summary": "../comparisons/course_kernel_duration_summary.json",
+    "diagnostic_block_metrics": {
+      "geomean_ratio": 0.9200415717839596,
+      "worst_ratio": 1.0456302203181942
+    },
+    "new_execution_performed_for_course_reframing": false
+  },
+  "design": "design_final.md",
+  "remaining_required_work": []
+}

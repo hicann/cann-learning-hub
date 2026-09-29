@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="864" viewBox="0 0 1300 864">
+<rect width="1300" height="864" fill="#F4F7FB"/>
+<text x="42" y="26" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="32" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">8 核：连续分配与 Persistent 跨步遍历</text>
+<text x="44" y="81" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">1152 个输出 tile  ·  每核处理 144 个  ·  表内数字为完整输出块的编号 idx</text>
+<rect x="42" y="132" width="594" height="602" rx="18" fill="white" stroke="#DFE6EF"/>
+<text x="66" y="153" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="28" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">连续分配</text>
+<rect x="66" y="204" width="546" height="52" rx="10" fill="#E9F0FF" stroke="none"/>
+<text x="339" y="214" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="25" font-weight="700" fill="#3268D6" text-anchor="middle" dominant-baseline="text-before-edge">idx = bx × 144 + it</text>
+<text x="67" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">核 / 轮次</text>
+<text x="192" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">it=0</text>
+<text x="278" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">it=1</text>
+<text x="364" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">it=2</text>
+<text x="436" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="528" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">it=143</text>
+<rect x="58" y="316" width="562" height="39" rx="6" fill="#F6F8FB" stroke="none"/>
+<text x="69" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core0</text>
+<text x="192" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">0</text>
+<text x="278" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1</text>
+<text x="364" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">2</text>
+<text x="436" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="528" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">143</text>
+<rect x="58" y="359" width="562" height="39" rx="6" fill="#E9F0FF" stroke="none"/>
+<text x="69" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#3268D6" text-anchor="start" dominant-baseline="text-before-edge">core1</text>
+<text x="192" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#3268D6" text-anchor="middle" dominant-baseline="text-before-edge">144</text>
+<text x="278" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#3268D6" text-anchor="middle" dominant-baseline="text-before-edge">145</text>
+<text x="364" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#3268D6" text-anchor="middle" dominant-baseline="text-before-edge">146</text>
+<text x="436" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#3268D6" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="528" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#3268D6" text-anchor="middle" dominant-baseline="text-before-edge">287</text>
+<rect x="58" y="402" width="562" height="39" rx="6" fill="#F6F8FB" stroke="none"/>
+<text x="69" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core2</text>
+<text x="192" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">288</text>
+<text x="278" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">289</text>
+<text x="364" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">290</text>
+<text x="436" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="528" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">431</text>
+<rect x="58" y="445" width="562" height="39" rx="6" fill="white" stroke="none"/>
+<text x="69" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core3</text>
+<text x="192" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">432</text>
+<text x="278" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">433</text>
+<text x="364" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">434</text>
+<text x="436" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="528" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">575</text>
+<rect x="58" y="488" width="562" height="39" rx="6" fill="#F6F8FB" stroke="none"/>
+<text x="69" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core4</text>
+<text x="192" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">576</text>
+<text x="278" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">577</text>
+<text x="364" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">578</text>
+<text x="436" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="528" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">719</text>
+<rect x="58" y="531" width="562" height="39" rx="6" fill="white" stroke="none"/>
+<text x="69" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core5</text>
+<text x="192" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">720</text>
+<text x="278" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">721</text>
+<text x="364" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">722</text>
+<text x="436" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="528" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">863</text>
+<rect x="58" y="574" width="562" height="39" rx="6" fill="#F6F8FB" stroke="none"/>
+<text x="69" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core6</text>
+<text x="192" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">864</text>
+<text x="278" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">865</text>
+<text x="364" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">866</text>
+<text x="436" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="528" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1007</text>
+<rect x="58" y="617" width="562" height="39" rx="6" fill="white" stroke="none"/>
+<text x="69" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core7</text>
+<text x="192" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1008</text>
+<text x="278" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1009</text>
+<text x="364" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1010</text>
+<text x="436" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="528" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1151</text>
+<path d="M66,679 L612,679" stroke="#CBD6E4" stroke-width="2"/>
+<text x="339" y="697" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#3268D6" text-anchor="middle" dominant-baseline="text-before-edge">每轮编号 +1，同一核处理连续区间</text>
+<rect x="664" y="132" width="594" height="602" rx="18" fill="white" stroke="#DFE6EF"/>
+<text x="688" y="153" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="28" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">Persistent 跨步遍历</text>
+<rect x="688" y="204" width="546" height="52" rx="10" fill="#F0EBFA" stroke="none"/>
+<text x="961" y="214" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="25" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">idx = bx + it × 8</text>
+<text x="689" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">核 / 轮次</text>
+<text x="814" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">it=0</text>
+<text x="900" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">it=1</text>
+<text x="986" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">it=2</text>
+<text x="1058" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1150" y="280" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">it=143</text>
+<rect x="680" y="316" width="562" height="39" rx="6" fill="#F6F8FB" stroke="none"/>
+<text x="691" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core0</text>
+<text x="814" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">0</text>
+<text x="900" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">8</text>
+<text x="986" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">16</text>
+<text x="1058" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1150" y="323" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1144</text>
+<rect x="680" y="359" width="562" height="39" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="691" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#7656BF" text-anchor="start" dominant-baseline="text-before-edge">core1</text>
+<text x="814" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">1</text>
+<text x="900" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">9</text>
+<text x="986" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">17</text>
+<text x="1058" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1150" y="366" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">1145</text>
+<rect x="680" y="402" width="562" height="39" rx="6" fill="#F6F8FB" stroke="none"/>
+<text x="691" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core2</text>
+<text x="814" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">2</text>
+<text x="900" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">10</text>
+<text x="986" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">18</text>
+<text x="1058" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1150" y="409" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1146</text>
+<rect x="680" y="445" width="562" height="39" rx="6" fill="white" stroke="none"/>
+<text x="691" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core3</text>
+<text x="814" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">3</text>
+<text x="900" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">11</text>
+<text x="986" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">19</text>
+<text x="1058" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1150" y="452" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1147</text>
+<rect x="680" y="488" width="562" height="39" rx="6" fill="#F6F8FB" stroke="none"/>
+<text x="691" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core4</text>
+<text x="814" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">4</text>
+<text x="900" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">12</text>
+<text x="986" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">20</text>
+<text x="1058" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1150" y="495" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1148</text>
+<rect x="680" y="531" width="562" height="39" rx="6" fill="white" stroke="none"/>
+<text x="691" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core5</text>
+<text x="814" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">5</text>
+<text x="900" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">13</text>
+<text x="986" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">21</text>
+<text x="1058" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1150" y="538" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1149</text>
+<rect x="680" y="574" width="562" height="39" rx="6" fill="#F6F8FB" stroke="none"/>
+<text x="691" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core6</text>
+<text x="814" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">6</text>
+<text x="900" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">14</text>
+<text x="986" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">22</text>
+<text x="1058" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1150" y="581" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1150</text>
+<rect x="680" y="617" width="562" height="39" rx="6" fill="white" stroke="none"/>
+<text x="691" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core7</text>
+<text x="814" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">7</text>
+<text x="900" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">15</text>
+<text x="986" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">23</text>
+<text x="1058" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1150" y="624" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="middle" dominant-baseline="text-before-edge">1151</text>
+<path d="M688,679 L1234,679" stroke="#CBD6E4" stroke-width="2"/>
+<text x="961" y="697" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">每轮编号 +8，同一核按固定步长遍历</text>
+<rect x="42" y="756" width="1216" height="72" rx="14" fill="#E8EFF8" stroke="none"/>
+<text x="64" y="769" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">两种方式都覆盖全部 1152 个输出块，每核任务数相同。</text>
+<text x="64" y="801" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">Persistent 在本例中改变的是静态遍历顺序，并非由空闲核动态领取任务。</text>
+</svg>

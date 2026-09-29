@@ -1,0 +1,46 @@
+{
+  "locked_at": "2026-09-16T00:29:38.048058+08:00",
+  "device": 0,
+  "backend": "AscendC",
+  "target": "ascend",
+  "vector": "SimdVF",
+  "cases": "cases.csv",
+  "cases_sha256": "9eb4daf854aeb97f90f9a57d6ec9ca1893b73ed38e7f19e02cbbfdab1582a7ad",
+  "input": "Each case CPU Generator seed 707, float32 randn clamped [-80,80]; exact input hashes checked across variants.",
+  "concurrency": "one process, one physical NPU, all nine cases in supplied order; no concurrent profiling",
+  "cache": "same allocated X/Y within each case; 10 warmup executions, no artificial L2 flushing; compiler artifacts under isolated runtime, JIT/preflight excluded from selected kernel metric",
+  "preferred": {
+    "tool": "msprof op",
+    "warm_up": 10,
+    "launch_count": 9,
+    "app_warm_up": 0,
+    "app_launch_count": 1,
+    "metric": "AIV-only max aiv_time(us) across blocks for each selected launch; retain device Task Duration separately"
+  },
+  "fallback": {
+    "allowed_only": "same latest entry direct run succeeds and msprof op fails specifically in DBI/instrumentation/export; preserve failure evidence; new output directory",
+    "tool": "ordinary msprof task-based PipeUtilization",
+    "warm_up": 10,
+    "launch_count_per_case": 1,
+    "expected_exact_target_rows": 99,
+    "metric": "aiv_time(us) if exported for target; otherwise the equivalent device Task Duration(us) from exact-name task/op summary, explicitly report unavailable per-core metrics; never host timing",
+    "mapping": "exact full runtime kernel name, chronological task order grouped as nine groups of eleven; discard first ten in every group"
+  },
+  "sampling": {
+    "sessions_per_variant": 3,
+    "statistic": "per-case median of the three formal device samples; also retain min/max/MAD",
+    "noise": "repeat B0 three times before promotion; if candidate differences approach baseline noise, alternate Bstar/Ci/Bstar/Ci with three-session batches and compare medians",
+    "final": "fresh entries for B0 and Bstar, same method and three sessions each, all nine cases"
+  },
+  "acceptance": {
+    "per_case_ratio_max": 1.05,
+    "geomean_ratio_max": 0.95,
+    "final_full_level1": 90
+  },
+  "missing_metrics": "Do not synthesize any of the eight msprof-op CSV files; record exactly which fields/counters are absent.",
+  "course_presentation": {
+    "primary_metric": "device Task Duration",
+    "source": "comparisons/fixed12_Bstar_vs_B0.json task_duration_us/task_ratio",
+    "note": "preferred 字段保留原始采集过程的口径。本课程检视后按交付目标改用同批样本已记录的整体 kernel Task Duration；没有重新采集。"
+  }
+}

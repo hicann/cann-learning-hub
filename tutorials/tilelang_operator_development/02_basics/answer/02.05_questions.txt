@@ -1,0 +1,43 @@
+# 2.5 三档练习解析
+
+## 1. Mul
+
+Mul 沿用 2.4 Add 的一维分块和 CopyIn → Compute → CopyOut 结构。计算部分只需把向量加法换成向量乘法：
+
+```python
+out_vec = T.simd.vmul(x_vec, y_vec, mask)
+```
+
+Mul 只需要 `x`、`y` 和 `out` 三个 Tensor，不需要额外的 `alpha` 参数。
+
+## 2. SAXPY
+
+SAXPY 计算 `out = alpha * x + y`。`alpha` 使用 shape 为 `(1,)` 的 Tensor，进入计算需要经过以下步骤：
+
+```python
+T.copy(alpha[:], alpha_ub)
+alpha_vec = T.simd.vld(alpha_ub[0], "BRC_B32")
+scaled_vec = T.simd.vmul(alpha_vec, x_vec, mask)
+out_vec = T.simd.vadd(scaled_vec, y_vec, mask)
+```
+
+`BRC_B32` 将 `alpha_ub[0]` 中的一个 32 位值广播到寄存器向量的各个 lane。这样同一个 `alpha` 就可以和一组 `x` 元素相乘。
+
+## 3. 2-D Add
+
+输入矩阵 shape 为 `(16,128)`，局部 tile 为 `(16,64)`，所以共有两个逻辑块。`bid=0` 处理列 `[0,64)`，`bid=1` 处理列 `[64,128)`。每个 tile 包含 16 行，每行正好有 64 个 float32 元素，因此内层代码每次完成一整行的 `vld → vadd → vsts`。
+
+一般情况下，逻辑块编号可以转换成二维 tile 坐标：
+
+```python
+row0 = (bid // col_tiles) * tile_m
+col0 = (bid % col_tiles) * tile_n
+```
+
+## 4. 怎样判断三档练习完成
+
+- Mul 的完整输出与 `x * y` 比较。
+- SAXPY 的完整输出与 `alpha[0] * x + y` 比较。
+- 2-D Add 的完整输出与 `a + b` 比较。
+
+三个结果都使用 `rtol=0.0、atol=0.0` 的 `torch.testing.assert_close`。任何一项失败，脚本都会报错；三项全部通过后才打印 `Verification passed!`。完整实现见 `02.05_answer.py`。

@@ -1,0 +1,3 @@
+# 2.1 练习解析
+
+Host 负责准备 PyTorch Tensor、触发 compile/jit、调用返回的 kernel 和比较参考结果；kernel 负责执行 T.prim_func 描述的 NPU 数据搬运与计算。

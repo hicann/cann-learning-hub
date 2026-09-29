@@ -1,0 +1,50 @@
+{
+  "at": "2026-09-16T04:57:10.151085+08:00",
+  "status": "VERIFIED",
+  "performance_complete": true,
+  "best": "C4",
+  "final_attempt": "fixed12",
+  "level1_passed": 90,
+  "geomean_ratio": 0.9332184090513448,
+  "worst_ratio": 1.0079180251513737,
+  "all_nine_within_1_05": true,
+  "geomean_within_0_95": true,
+  "frequency_rows_qualified": 216,
+  "samples_per_case_per_version": 12,
+  "sample_exclusions": [],
+  "report": "$WORKSPACE/operators/row_softmax_20260916_002620/flash-report.md",
+  "review": "COMPLETED",
+  "stage_artifacts": {
+    "design": [
+      "operators/row_softmax/evidence/design/design_v1.md"
+    ],
+    "generation": [
+      "operators/row_softmax/evidence/generation/initial/row_softmax.py",
+      "operators/row_softmax/evidence/generation/result.json"
+    ],
+    "ST": [
+      "operators/row_softmax/st_report.md",
+      "operators/row_softmax/evidence/st/level1.json"
+    ],
+    "Flash": [
+      "operators/row_softmax_20260916_002620/profiling_protocol.json",
+      "operators/row_softmax_20260916_002620/search-coverage.json",
+      "operators/row_softmax_20260916_002620/iteration_ledger.md",
+      "operators/row_softmax_20260916_002620/flash-report.md"
+    ],
+    "final_acceptance": [
+      "operators/row_softmax_20260916_002620/evidence/fixed12_level1.json",
+      "operators/row_softmax_20260916_002620/comparisons/fixed12_Bstar_vs_B0.json",
+      "operators/row_softmax_20260916_002620/delivery_reviewed/delivery_result.json"
+    ]
+  },
+  "course_primary_metric": "device Task Duration",
+  "worst_case": "m64_n128",
+  "diagnostic_block_metrics": {
+    "geomean_ratio": 0.9200415717839596,
+    "worst_ratio": 1.0456302203181942,
+    "role": "diagnosis_only"
+  },
+  "course_summary": "comparisons/course_kernel_duration_summary.json",
+  "new_execution_performed_for_course_reframing": false
+}

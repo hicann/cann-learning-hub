@@ -1,0 +1,2834 @@
+{
+  "schema_version": 2,
+  "created_at": "2026-09-16T00:40:24.956072+08:00",
+  "cases": [
+    {
+      "case_id": "m4_n128",
+      "outer_items": 4,
+      "inner_independent_chunks_per_item": 1,
+      "inner_chunks_independent": false,
+      "available_cores": 72,
+      "outer_task_waves": 0.05555555555555555,
+      "flattened_task_waves": 0.05555555555555555,
+      "per_task_payload_bytes": 1024,
+      "kernel_time_us": 1.121818,
+      "lower_bounds_us": {
+        "movement": null,
+        "compute": null
+      },
+      "lower_bound_evidence": "GM8MN; ops-profiling gives approximate 950DT4TB/s but cache regime and per-core exp/div throughput uncalibrated. No verified kernel latency lower bound; semantic_cost_model.md.",
+      "main_pipes": [
+        "MTE2",
+        "SCALAR"
+      ],
+      "source_window": {
+        "access_pattern": "DIRECT_CONTIGUOUS",
+        "bounded": true,
+        "span_bytes": 512,
+        "consumed_bytes": 512,
+        "density": 1,
+        "window_vregs": 2,
+        "index_regularity": "identity j, aligned 64-float chunks; no gather/reorder",
+        "evidence": "B0 generated C++ vlds_norm and GM DMA; no indexed lane or layout transform. Register-reorder feasibility flag is inapplicable because no reorder is required."
+      },
+      "obligation_ids": [
+        "O_GRANULARITY"
+      ]
+    },
+    {
+      "case_id": "m4_n2048",
+      "outer_items": 4,
+      "inner_independent_chunks_per_item": 1,
+      "inner_chunks_independent": false,
+      "available_cores": 72,
+      "outer_task_waves": 0.05555555555555555,
+      "flattened_task_waves": 0.05555555555555555,
+      "per_task_payload_bytes": 16384,
+      "kernel_time_us": 1.582424,
+      "lower_bounds_us": {
+        "movement": null,
+        "compute": null
+      },
+      "lower_bound_evidence": "GM8MN; ops-profiling gives approximate 950DT4TB/s but cache regime and per-core exp/div throughput uncalibrated. No verified kernel latency lower bound; semantic_cost_model.md.",
+      "main_pipes": [
+        "MTE2",
+        "SCALAR",
+        "VEC"
+      ],
+      "source_window": {
+        "access_pattern": "DIRECT_CONTIGUOUS",
+        "bounded": true,
+        "span_bytes": 8192,
+        "consumed_bytes": 8192,
+        "density": 1,
+        "window_vregs": 32,
+        "index_regularity": "identity j, aligned 64-float chunks; no gather/reorder",
+        "evidence": "B0 generated C++ vlds_norm and GM DMA; no indexed lane or layout transform. Register-reorder feasibility flag is inapplicable because no reorder is required."
+      },
+      "obligation_ids": [
+        "O_GRANULARITY"
+      ]
+    },
+    {
+      "case_id": "m64_n128",
+      "outer_items": 64,
+      "inner_independent_chunks_per_item": 1,
+      "inner_chunks_independent": false,
+      "available_cores": 72,
+      "outer_task_waves": 0.8888888888888888,
+      "flattened_task_waves": 0.8888888888888888,
+      "per_task_payload_bytes": 1024,
+      "kernel_time_us": 1.398182,
+      "lower_bounds_us": {
+        "movement": null,
+        "compute": null
+      },
+      "lower_bound_evidence": "GM8MN; ops-profiling gives approximate 950DT4TB/s but cache regime and per-core exp/div throughput uncalibrated. No verified kernel latency lower bound; semantic_cost_model.md.",
+      "main_pipes": [
+        "MTE2",
+        "SCALAR"
+      ],
+      "source_window": {
+        "access_pattern": "DIRECT_CONTIGUOUS",
+        "bounded": true,
+        "span_bytes": 512,
+        "consumed_bytes": 512,
+        "density": 1,
+        "window_vregs": 2,
+        "index_regularity": "identity j, aligned 64-float chunks; no gather/reorder",
+        "evidence": "B0 generated C++ vlds_norm and GM DMA; no indexed lane or layout transform. Register-reorder feasibility flag is inapplicable because no reorder is required."
+      },
+      "obligation_ids": [
+        "O_GRANULARITY"
+      ]
+    },
+    {
+      "case_id": "m64_n512",
+      "outer_items": 64,
+      "inner_independent_chunks_per_item": 1,
+      "inner_chunks_independent": false,
+      "available_cores": 72,
+      "outer_task_waves": 0.8888888888888888,
+      "flattened_task_waves": 0.8888888888888888,
+      "per_task_payload_bytes": 4096,
+      "kernel_time_us": 1.706667,
+      "lower_bounds_us": {
+        "movement": null,
+        "compute": null
+      },
+      "lower_bound_evidence": "GM8MN; ops-profiling gives approximate 950DT4TB/s but cache regime and per-core exp/div throughput uncalibrated. No verified kernel latency lower bound; semantic_cost_model.md.",
+      "main_pipes": [
+        "MTE2",
+        "SCALAR",
+        "VEC"
+      ],
+      "source_window": {
+        "access_pattern": "DIRECT_CONTIGUOUS",
+        "bounded": true,
+        "span_bytes": 2048,
+        "consumed_bytes": 2048,
+        "density": 1,
+        "window_vregs": 8,
+        "index_regularity": "identity j, aligned 64-float chunks; no gather/reorder",
+        "evidence": "B0 generated C++ vlds_norm and GM DMA; no indexed lane or layout transform. Register-reorder feasibility flag is inapplicable because no reorder is required."
+      },
+      "obligation_ids": [
+        "O_GRANULARITY"
+      ]
+    },
+    {
+      "case_id": "m64_n2048",
+      "outer_items": 64,
+      "inner_independent_chunks_per_item": 1,
+      "inner_chunks_independent": false,
+      "available_cores": 72,
+      "outer_task_waves": 0.8888888888888888,
+      "flattened_task_waves": 0.8888888888888888,
+      "per_task_payload_bytes": 16384,
+      "kernel_time_us": 2.045455,
+      "lower_bounds_us": {
+        "movement": null,
+        "compute": null
+      },
+      "lower_bound_evidence": "GM8MN; ops-profiling gives approximate 950DT4TB/s but cache regime and per-core exp/div throughput uncalibrated. No verified kernel latency lower bound; semantic_cost_model.md.",
+      "main_pipes": [
+        "MTE2",
+        "SCALAR",
+        "VEC"
+      ],
+      "source_window": {
+        "access_pattern": "DIRECT_CONTIGUOUS",
+        "bounded": true,
+        "span_bytes": 8192,
+        "consumed_bytes": 8192,
+        "density": 1,
+        "window_vregs": 32,
+        "index_regularity": "identity j, aligned 64-float chunks; no gather/reorder",
+        "evidence": "B0 generated C++ vlds_norm and GM DMA; no indexed lane or layout transform. Register-reorder feasibility flag is inapplicable because no reorder is required."
+      },
+      "obligation_ids": [
+        "O_GRANULARITY"
+      ]
+    },
+    {
+      "case_id": "m256_n128",
+      "outer_items": 256,
+      "inner_independent_chunks_per_item": 1,
+      "inner_chunks_independent": false,
+      "available_cores": 72,
+      "outer_task_waves": 3.5555555555555554,
+      "flattened_task_waves": 3.5555555555555554,
+      "per_task_payload_bytes": 1024,
+      "kernel_time_us": 1.364242,
+      "lower_bounds_us": {
+        "movement": null,
+        "compute": null
+      },
+      "lower_bound_evidence": "GM8MN; ops-profiling gives approximate 950DT4TB/s but cache regime and per-core exp/div throughput uncalibrated. No verified kernel latency lower bound; semantic_cost_model.md.",
+      "main_pipes": [
+        "MTE2",
+        "SCALAR"
+      ],
+      "source_window": {
+        "access_pattern": "DIRECT_CONTIGUOUS",
+        "bounded": true,
+        "span_bytes": 512,
+        "consumed_bytes": 512,
+        "density": 1,
+        "window_vregs": 2,
+        "index_regularity": "identity j, aligned 64-float chunks; no gather/reorder",
+        "evidence": "B0 generated C++ vlds_norm and GM DMA; no indexed lane or layout transform. Register-reorder feasibility flag is inapplicable because no reorder is required."
+      },
+      "obligation_ids": [
+        "O_GRANULARITY",
+        "O_PIPE_C4"
+      ]
+    },
+    {
+      "case_id": "m256_n512",
+      "outer_items": 256,
+      "inner_independent_chunks_per_item": 1,
+      "inner_chunks_independent": false,
+      "available_cores": 72,
+      "outer_task_waves": 3.5555555555555554,
+      "flattened_task_waves": 3.5555555555555554,
+      "per_task_payload_bytes": 4096,
+      "kernel_time_us": 1.605455,
+      "lower_bounds_us": {
+        "movement": null,
+        "compute": null
+      },
+      "lower_bound_evidence": "GM8MN; ops-profiling gives approximate 950DT4TB/s but cache regime and per-core exp/div throughput uncalibrated. No verified kernel latency lower bound; semantic_cost_model.md.",
+      "main_pipes": [
+        "MTE2",
+        "SCALAR",
+        "VEC"
+      ],
+      "source_window": {
+        "access_pattern": "DIRECT_CONTIGUOUS",
+        "bounded": true,
+        "span_bytes": 2048,
+        "consumed_bytes": 2048,
+        "density": 1,
+        "window_vregs": 8,
+        "index_regularity": "identity j, aligned 64-float chunks; no gather/reorder",
+        "evidence": "B0 generated C++ vlds_norm and GM DMA; no indexed lane or layout transform. Register-reorder feasibility flag is inapplicable because no reorder is required."
+      },
+      "obligation_ids": [
+        "O_GRANULARITY",
+        "O_PIPE_C4"
+      ]
+    },
+    {
+      "case_id": "m256_n2048",
+      "outer_items": 256,
+      "inner_independent_chunks_per_item": 1,
+      "inner_chunks_independent": false,
+      "available_cores": 72,
+      "outer_task_waves": 3.5555555555555554,
+      "flattened_task_waves": 3.5555555555555554,
+      "per_task_payload_bytes": 16384,
+      "kernel_time_us": 2.033939,
+      "lower_bounds_us": {
+        "movement": null,
+        "compute": null
+      },
+      "lower_bound_evidence": "GM8MN; ops-profiling gives approximate 950DT4TB/s but cache regime and per-core exp/div throughput uncalibrated. No verified kernel latency lower bound; semantic_cost_model.md.",
+      "main_pipes": [
+        "MTE2",
+        "SCALAR",
+        "VEC"
+      ],
+      "source_window": {
+        "access_pattern": "DIRECT_CONTIGUOUS",
+        "bounded": true,
+        "span_bytes": 8192,
+        "consumed_bytes": 8192,
+        "density": 1,
+        "window_vregs": 32,
+        "index_regularity": "identity j, aligned 64-float chunks; no gather/reorder",
+        "evidence": "B0 generated C++ vlds_norm and GM DMA; no indexed lane or layout transform. Register-reorder feasibility flag is inapplicable because no reorder is required."
+      },
+      "obligation_ids": [
+        "O_GRANULARITY",
+        "O_PIPE_C4"
+      ]
+    },
+    {
+      "case_id": "m68_n192",
+      "outer_items": 68,
+      "inner_independent_chunks_per_item": 1,
+      "inner_chunks_independent": false,
+      "available_cores": 72,
+      "outer_task_waves": 0.9444444444444444,
+      "flattened_task_waves": 0.9444444444444444,
+      "per_task_payload_bytes": 1536,
+      "kernel_time_us": 1.446061,
+      "lower_bounds_us": {
+        "movement": null,
+        "compute": null
+      },
+      "lower_bound_evidence": "GM8MN; ops-profiling gives approximate 950DT4TB/s but cache regime and per-core exp/div throughput uncalibrated. No verified kernel latency lower bound; semantic_cost_model.md.",
+      "main_pipes": [
+        "MTE2",
+        "SCALAR"
+      ],
+      "source_window": {
+        "access_pattern": "DIRECT_CONTIGUOUS",
+        "bounded": true,
+        "span_bytes": 768,
+        "consumed_bytes": 768,
+        "density": 1,
+        "window_vregs": 3,
+        "index_regularity": "identity j, aligned 64-float chunks; no gather/reorder",
+        "evidence": "B0 generated C++ vlds_norm and GM DMA; no indexed lane or layout transform. Register-reorder feasibility flag is inapplicable because no reorder is required."
+      },
+      "obligation_ids": [
+        "O_GRANULARITY"
+      ]
+    }
+  ],
+  "obligations": [
+    {
+      "obligation_id": "O_GRANULARITY",
+      "kind": "work_granularity_search",
+      "case_ids": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "status": "SATISFIED",
+      "candidate_ids": [
+        "C5",
+        "C6",
+        "C7"
+      ],
+      "case_dispositions": [
+        {
+          "case_id": "m4_n128",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        }
+      ],
+      "boundary_plan": [
+        {
+          "plan_id": "B_FULL_CONTIGUOUS_UNIT",
+          "boundary_kind": "FULL_CONTIGUOUS_UNIT",
+          "case_values": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          },
+          "status": "BASELINE_MEASURED",
+          "candidate_ids": [],
+          "evidence": [
+            "B0 copies/reduces exactly N elements per semantic row. Each output depends on the full row. profiling/B0_initial_v2/aggregate.json and *.cpp"
+          ]
+        },
+        {
+          "plan_id": "B_SIMD",
+          "boundary_kind": "SIMD",
+          "case_values": {
+            "m4_n128": 64,
+            "m4_n2048": 64,
+            "m64_n128": 64,
+            "m64_n512": 64,
+            "m64_n2048": 64,
+            "m256_n128": 64,
+            "m256_n512": 64,
+            "m256_n2048": 64,
+            "m68_n192": 64
+          },
+          "status": "BASELINE_MEASURED",
+          "candidate_ids": [],
+          "evidence": [
+            "FP32 64 lanes; every N divisible64. B0 emits full masks, no tail. Baseline all nine actual runs."
+          ]
+        },
+        {
+          "plan_id": "B_DMA",
+          "boundary_kind": "DMA",
+          "case_values": {
+            "m4_n128": 512,
+            "m4_n2048": 8192,
+            "m64_n128": 512,
+            "m64_n512": 2048,
+            "m64_n2048": 8192,
+            "m256_n128": 512,
+            "m256_n512": 2048,
+            "m256_n2048": 8192,
+            "m68_n192": 768
+          },
+          "status": "BASELINE_MEASURED",
+          "candidate_ids": [],
+          "evidence": [
+            "B0 full contiguous row burst, multiples256B; actual DMA payload and OpBasicInfo validated. Batch variants will separately test larger bursts."
+          ]
+        },
+        {
+          "plan_id": "B_CAPACITY",
+          "boundary_kind": "CAPACITY",
+          "case_values": {
+            "m4_n128": 158,
+            "m4_n2048": 10,
+            "m64_n128": 158,
+            "m64_n512": 40,
+            "m64_n2048": 10,
+            "m256_n128": 158,
+            "m256_n512": 40,
+            "m256_n2048": 10,
+            "m68_n192": 107
+          },
+          "status": "CLOSED_WITH_EVIDENCE",
+          "candidate_ids": [],
+          "evidence": [
+            "Conservative whole baseline row-state capacity floor(253952/(12N+64)); includes all three payloads and aligned m/s. Pending audit after batching.",
+            "capacity_context_C4.md: initial B0 raw capacity superseded by measured C4 storage lifetime; retained as historical bound, effective new bound separately tested by C7."
+          ]
+        },
+        {
+          "plan_id": "B_PARALLEL",
+          "boundary_kind": "PARALLEL",
+          "case_values": {
+            "m4_n128": 2,
+            "m4_n2048": 2,
+            "m64_n128": 2,
+            "m64_n512": 2,
+            "m64_n2048": 2,
+            "m256_n128": 2,
+            "m256_n512": 2,
+            "m256_n2048": 2,
+            "m68_n192": 2
+          },
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5"
+          ],
+          "evidence": [
+            "First batching boundary R=2: exact M/2 tasks, no row tail; compare all cases. Additional R=4 boundary will be added if R=2 evidence warrants."
+          ]
+        },
+        {
+          "plan_id": "B_DMA_R2",
+          "boundary_kind": "DMA",
+          "case_values": {
+            "m4_n128": 2,
+            "m4_n2048": 2,
+            "m64_n128": 2,
+            "m64_n512": 2,
+            "m64_n2048": 2,
+            "m256_n128": 2,
+            "m256_n512": 2,
+            "m256_n2048": 2,
+            "m68_n192": 2
+          },
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C5"
+          ],
+          "evidence": [
+            "R2 whole-row burst bytes=2*4N, rectangular input/output; candidate_pool_05.md"
+          ]
+        },
+        {
+          "plan_id": "B_PARALLEL_R4",
+          "boundary_kind": "PARALLEL",
+          "case_values": {
+            "m4_n128": 4,
+            "m4_n2048": 4,
+            "m64_n128": 4,
+            "m64_n512": 4,
+            "m64_n2048": 4,
+            "m256_n128": 4,
+            "m256_n512": 4,
+            "m256_n2048": 4,
+            "m68_n192": 4
+          },
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C6"
+          ],
+          "evidence": [
+            "R4 geometric tile, candidate_pool_06.md"
+          ]
+        },
+        {
+          "plan_id": "B_DMA_R4",
+          "boundary_kind": "DMA",
+          "case_values": {
+            "m4_n128": 4,
+            "m4_n2048": 4,
+            "m64_n128": 4,
+            "m64_n512": 4,
+            "m64_n2048": 4,
+            "m256_n128": 4,
+            "m256_n512": 4,
+            "m256_n2048": 4,
+            "m68_n192": 4
+          },
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C6"
+          ],
+          "evidence": [
+            "R4 geometric tile, candidate_pool_06.md"
+          ]
+        },
+        {
+          "plan_id": "B_CAPACITY_C4_EFFECTIVE",
+          "boundary_kind": "CAPACITY",
+          "case_values": {
+            "m4_n128": 4,
+            "m4_n2048": 4,
+            "m64_n128": 64,
+            "m64_n512": 32,
+            "m64_n2048": 8,
+            "m256_n128": 128,
+            "m256_n512": 32,
+            "m256_n2048": 8,
+            "m68_n192": 68
+          },
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C7"
+          ],
+          "evidence": [
+            "capacity_context_C4.md"
+          ]
+        }
+      ]
+    },
+    {
+      "obligation_id": "O_PIPE_C4",
+      "kind": "pipeline_realization",
+      "basis_candidate_id": "C4",
+      "case_ids": [
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048"
+      ],
+      "status": "SATISFIED",
+      "candidate_ids": [
+        "C8",
+        "C9",
+        "C10"
+      ],
+      "case_dispositions": [
+        {
+          "case_id": "m256_n128",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C8",
+            "C9",
+            "C10"
+          ],
+          "evidence": [
+            "candidates/C10/decision.md"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C8",
+            "C9",
+            "C10"
+          ],
+          "evidence": [
+            "candidates/C10/decision.md"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "status": "TESTED_PATH",
+          "candidate_ids": [
+            "C8",
+            "C9",
+            "C10"
+          ],
+          "evidence": [
+            "candidates/C10/decision.md"
+          ]
+        }
+      ],
+      "pipeline_plan": {
+        "automatic": "PARTIAL",
+        "manual": "TESTED",
+        "automatic_evidence": [
+          "candidates/C9/decision.md",
+          "profiling/C9_initial/pipe_timeline/overlap_analysis.json"
+        ],
+        "manual_evidence": [
+          "candidates/C10/decision.md",
+          "candidates/C10/lowering_proof.json",
+          "comparisons/C10_vs_C8_fresh.json"
+        ]
+      },
+      "evidence": [
+        "pipeline_admission_C4.md",
+        "candidates/C9/decision.md",
+        "candidates/C10/decision.md"
+      ]
+    }
+  ],
+  "candidate_events": [
+    {
+      "candidate_id": "C1",
+      "event": "CREATED",
+      "at": "2026-09-16T00:41:06.556140+08:00",
+      "parent": "B0",
+      "identity": {
+        "work_granularity": "one full row, vector-fold reductions inside one VF",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "GM contiguous row to xUB, fused max/exp/sum, eUB saved once, normalize to yUB then GM. No layout transform.",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exp/div unchanged; associative lane fold replaces chunk scalar fold, fixed original oracle tolerance",
+        "storage_pipeline": "x/e/y UB single versions; max/sum register-live in one VF",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C1",
+      "event": "RESULT",
+      "at": "2026-09-16T00:48:38.040833+08:00",
+      "parent": "B0",
+      "identity": {
+        "work_granularity": "one full row, vector-fold reductions inside one VF",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "GM contiguous row to xUB, fused max/exp/sum, eUB saved once, normalize to yUB then GM. No layout transform.",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exp/div unchanged; associative lane fold replaces chunk scalar fold, fixed original oracle tolerance",
+        "storage_pipeline": "x/e/y UB single versions; max/sum register-live in one VF",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C1/accuracy_result.json",
+        "candidates/C1/lowering_proof.json",
+        "comparisons/C1_vs_B0.json",
+        "candidates/C1/anomaly_notes.md"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C1/accuracy_repair1.xml",
+            "profiling/C1_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C1/accuracy_repair1.xml",
+            "profiling/C1_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C1/accuracy_repair1.xml",
+            "profiling/C1_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C1/accuracy_repair1.xml",
+            "profiling/C1_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C1/accuracy_repair1.xml",
+            "profiling/C1_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C1/accuracy_repair1.xml",
+            "profiling/C1_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C1/accuracy_repair1.xml",
+            "profiling/C1_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C1/accuracy_repair1.xml",
+            "profiling/C1_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C1/accuracy_repair1.xml",
+            "profiling/C1_initial/aggregate.json"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C2",
+      "event": "CREATED",
+      "at": "2026-09-16T00:48:38.569615+08:00",
+      "parent": "B0",
+      "identity": {
+        "work_granularity": "one full row retained as 2..32 vector registers",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "GM row to xUB, load each chunk once to register array, max then overwrite registers with exp then normalize directly to yUB; no eUB or scalar UB",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 exp/div unchanged; associative lane fold replaces chunk scalar fold, fixed original oracle tolerance",
+        "storage_pipeline": "x/y UB single versions; complete row register array retained through max/exp/sum/normalization, no UB store-load intermediate",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C2",
+      "event": "RESULT",
+      "at": "2026-09-16T00:55:54.407082+08:00",
+      "parent": "B0",
+      "identity": {
+        "work_granularity": "one full row retained as 2..32 vector registers",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "GM row to xUB, load each chunk once to register array, max then overwrite registers with exp then normalize directly to yUB; no eUB or scalar UB",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 exp/div unchanged; associative lane fold replaces chunk scalar fold, fixed original oracle tolerance",
+        "storage_pipeline": "x/y UB single versions; complete row register array retained through max/exp/sum/normalization, no UB store-load intermediate",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "INAPPLICABLE_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C2/accuracy.log: backend VF stack61632 >6144, vector slots237",
+        "candidates/C2/accuracy.xml: m4_n128 passed; m4_n2048 compile failed; others not executed"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "NOT_RUN_WITH_EVIDENCE",
+          "evidence": [
+            "candidates/C2/accuracy.log; full nine-case profiling not run because deterministic compile failure. m4_n128 accuracy alone does not count as performance coverage."
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "NOT_RUN_WITH_EVIDENCE",
+          "evidence": [
+            "candidates/C2/accuracy.log; full nine-case profiling not run because deterministic compile failure. m4_n128 accuracy alone does not count as performance coverage."
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "NOT_RUN_WITH_EVIDENCE",
+          "evidence": [
+            "candidates/C2/accuracy.log; full nine-case profiling not run because deterministic compile failure. m4_n128 accuracy alone does not count as performance coverage."
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "NOT_RUN_WITH_EVIDENCE",
+          "evidence": [
+            "candidates/C2/accuracy.log; full nine-case profiling not run because deterministic compile failure. m4_n128 accuracy alone does not count as performance coverage."
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "NOT_RUN_WITH_EVIDENCE",
+          "evidence": [
+            "candidates/C2/accuracy.log; full nine-case profiling not run because deterministic compile failure. m4_n128 accuracy alone does not count as performance coverage."
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "NOT_RUN_WITH_EVIDENCE",
+          "evidence": [
+            "candidates/C2/accuracy.log; full nine-case profiling not run because deterministic compile failure. m4_n128 accuracy alone does not count as performance coverage."
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "NOT_RUN_WITH_EVIDENCE",
+          "evidence": [
+            "candidates/C2/accuracy.log; full nine-case profiling not run because deterministic compile failure. m4_n128 accuracy alone does not count as performance coverage."
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "NOT_RUN_WITH_EVIDENCE",
+          "evidence": [
+            "candidates/C2/accuracy.log; full nine-case profiling not run because deterministic compile failure. m4_n128 accuracy alone does not count as performance coverage."
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "NOT_RUN_WITH_EVIDENCE",
+          "evidence": [
+            "candidates/C2/accuracy.log; full nine-case profiling not run because deterministic compile failure. m4_n128 accuracy alone does not count as performance coverage."
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C3",
+      "event": "CREATED",
+      "at": "2026-09-16T00:55:55.112343+08:00",
+      "parent": "B0",
+      "identity": {
+        "work_granularity": "one full row retained as 2..32 vector registers",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "GM row to xUB, load each chunk once to register array, max then overwrite registers with exp then normalize directly to yUB; no eUB or scalar UB",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "x/y UB single versions; complete row register array retained through max/exp/sum/normalization, no UB store-load intermediate",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C3",
+      "event": "RESULT",
+      "at": "2026-09-16T01:11:16.839192+08:00",
+      "parent": "B0",
+      "identity": {
+        "work_granularity": "one full row retained as 2..32 vector registers",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "GM row to xUB, load each chunk once to register array, max then overwrite registers with exp then normalize directly to yUB; no eUB or scalar UB",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "x/y UB single versions; complete row register array retained through max/exp/sum/normalization, no UB store-load intermediate",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C3/accuracy_result.json",
+        "comparisons/C3_vs_B0.json",
+        "comparisons/C3_retest_vs_B0.json",
+        "candidates/C3/lowering_proof.json",
+        "candidates/C3/retest_plan.json"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C3/accuracy_repair1.xml",
+            "profiling/C3_initial/aggregate.json",
+            "profiling/C3_interleave1/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C3/accuracy_repair1.xml",
+            "profiling/C3_initial/aggregate.json",
+            "profiling/C3_interleave1/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C3/accuracy_repair1.xml",
+            "profiling/C3_initial/aggregate.json",
+            "profiling/C3_interleave1/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C3/accuracy_repair1.xml",
+            "profiling/C3_initial/aggregate.json",
+            "profiling/C3_interleave1/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C3/accuracy_repair1.xml",
+            "profiling/C3_initial/aggregate.json",
+            "profiling/C3_interleave1/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C3/accuracy_repair1.xml",
+            "profiling/C3_initial/aggregate.json",
+            "profiling/C3_interleave1/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C3/accuracy_repair1.xml",
+            "profiling/C3_initial/aggregate.json",
+            "profiling/C3_interleave1/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C3/accuracy_repair1.xml",
+            "profiling/C3_initial/aggregate.json",
+            "profiling/C3_interleave1/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C3/accuracy_repair1.xml",
+            "profiling/C3_initial/aggregate.json",
+            "profiling/C3_interleave1/aggregate.json"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C4",
+      "event": "CREATED",
+      "at": "2026-09-16T01:11:17.332078+08:00",
+      "parent": "B0",
+      "identity": {
+        "work_granularity": "one full row, three UB read passes and bounded vector live state",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "one GM read into xUB; max, exp-sum, recompute exp-normalize in same VF with bounded vector state; direct output yUB; no full intermediate payload or register array",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "x/y UB single version; row_max/lane_sum/row_recip vector state constant in N, exponentials recomputed instead of retained",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C4",
+      "event": "RESULT",
+      "at": "2026-09-16T01:19:17.746324+08:00",
+      "parent": "B0",
+      "identity": {
+        "work_granularity": "one full row, three UB read passes and bounded vector live state",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "one GM read into xUB; max, exp-sum, recompute exp-normalize in same VF with bounded vector state; direct output yUB; no full intermediate payload or register array",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "x/y UB single version; row_max/lane_sum/row_recip vector state constant in N, exponentials recomputed instead of retained",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "PROMOTED",
+      "evidence": [
+        "candidates/C4/accuracy_result.json",
+        "candidates/C4/lowering_proof.json",
+        "comparisons/C4_vs_B0_repeat.json",
+        "comparisons/C4_vs_B0_initial.json",
+        "candidates/C4/decision.md"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C4/accuracy.xml",
+            "profiling/C4_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C4/accuracy.xml",
+            "profiling/C4_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C4/accuracy.xml",
+            "profiling/C4_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C4/accuracy.xml",
+            "profiling/C4_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C4/accuracy.xml",
+            "profiling/C4_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C4/accuracy.xml",
+            "profiling/C4_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C4/accuracy.xml",
+            "profiling/C4_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C4/accuracy.xml",
+            "profiling/C4_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C4/accuracy.xml",
+            "profiling/C4_initial/aggregate.json"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C5",
+      "event": "CREATED",
+      "at": "2026-09-16T01:19:18.232443+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "2 adjacent complete rows per block and bulk DMA",
+        "granularity_facts": {
+          "unit": "rows per contiguous tile/DMA",
+          "boundary_kinds": [
+            "PARALLEL",
+            "DMA"
+          ],
+          "values_by_case": {
+            "m4_n128": 2,
+            "m4_n2048": 2,
+            "m64_n128": 2,
+            "m64_n512": 2,
+            "m64_n2048": 2,
+            "m256_n128": 2,
+            "m256_n512": 2,
+            "m256_n2048": 2,
+            "m68_n192": 2
+          }
+        },
+        "task_mapping": "T.Kernel(M/2); block bx rows [2bx,2bx+2), serial row loop in one VF",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "inherited C4 bounded-state recomputation; bulk contiguous 2xN GM-to-xUB and yUB-to-GM; serial row state reused",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "single-version x/y UB shape(2,N), fixed vector states reused by VF row loop; one MTE2 and one MTE3 per block",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M divisible2, N divisible64; no row or lane tail"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C5",
+      "event": "RESULT",
+      "at": "2026-09-16T01:28:00.192471+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "2 adjacent complete rows per block and bulk DMA",
+        "granularity_facts": {
+          "unit": "rows per contiguous tile/DMA",
+          "boundary_kinds": [
+            "PARALLEL",
+            "DMA"
+          ],
+          "values_by_case": {
+            "m4_n128": 2,
+            "m4_n2048": 2,
+            "m64_n128": 2,
+            "m64_n512": 2,
+            "m64_n2048": 2,
+            "m256_n128": 2,
+            "m256_n512": 2,
+            "m256_n2048": 2,
+            "m68_n192": 2
+          }
+        },
+        "task_mapping": "T.Kernel(M/2); block bx rows [2bx,2bx+2), serial row loop in one VF",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "inherited C4 bounded-state recomputation; bulk contiguous 2xN GM-to-xUB and yUB-to-GM; serial row state reused",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "single-version x/y UB shape(2,N), fixed vector states reused by VF row loop; one MTE2 and one MTE3 per block",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M divisible2, N divisible64; no row or lane tail"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C5/accuracy_result.json",
+        "candidates/C5/lowering_proof.json",
+        "comparisons/C5_vs_C4.json",
+        "comparisons/C5_vs_B0.json"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C5/accuracy.xml",
+            "profiling/C5_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C5/accuracy.xml",
+            "profiling/C5_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C5/accuracy.xml",
+            "profiling/C5_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C5/accuracy.xml",
+            "profiling/C5_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C5/accuracy.xml",
+            "profiling/C5_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C5/accuracy.xml",
+            "profiling/C5_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C5/accuracy.xml",
+            "profiling/C5_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C5/accuracy.xml",
+            "profiling/C5_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C5/accuracy.xml",
+            "profiling/C5_initial/aggregate.json"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C6",
+      "event": "CREATED",
+      "at": "2026-09-16T01:28:00.688777+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "4 adjacent complete rows per block and bulk DMA",
+        "granularity_facts": {
+          "unit": "rows per contiguous tile/DMA",
+          "boundary_kinds": [
+            "PARALLEL",
+            "DMA"
+          ],
+          "values_by_case": {
+            "m4_n128": 4,
+            "m4_n2048": 4,
+            "m64_n128": 4,
+            "m64_n512": 4,
+            "m64_n2048": 4,
+            "m256_n128": 4,
+            "m256_n512": 4,
+            "m256_n2048": 4,
+            "m68_n192": 4
+          }
+        },
+        "task_mapping": "T.Kernel(M/4); block bx rows [4bx,4bx+4), serial row loop in one VF",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "inherited C4 bounded-state recomputation; bulk contiguous 4xN GM-to-xUB and yUB-to-GM; serial row state reused",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "single-version x/y UB shape(4,N), fixed vector state reused; one MTE2 and MTE3 per block",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M divisible4, N divisible64; no row or lane tail"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C6",
+      "event": "RESULT",
+      "at": "2026-09-16T01:40:42.854069+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "4 adjacent complete rows per block and bulk DMA",
+        "granularity_facts": {
+          "unit": "rows per contiguous tile/DMA",
+          "boundary_kinds": [
+            "PARALLEL",
+            "DMA"
+          ],
+          "values_by_case": {
+            "m4_n128": 4,
+            "m4_n2048": 4,
+            "m64_n128": 4,
+            "m64_n512": 4,
+            "m64_n2048": 4,
+            "m256_n128": 4,
+            "m256_n512": 4,
+            "m256_n2048": 4,
+            "m68_n192": 4
+          }
+        },
+        "task_mapping": "T.Kernel(M/4); block bx rows [4bx,4bx+4), serial row loop in one VF",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "inherited C4 bounded-state recomputation; bulk contiguous 4xN GM-to-xUB and yUB-to-GM; serial row state reused",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "single-version x/y UB shape(4,N), fixed vector state reused; one MTE2 and MTE3 per block",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M divisible4, N divisible64; no row or lane tail"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C6/accuracy_result.json",
+        "candidates/C6/lowering_proof.json",
+        "comparisons/C6_vs_C4.json",
+        "comparisons/C6_vs_B0.json"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C6/accuracy.xml",
+            "profiling/C6_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C6/accuracy.xml",
+            "profiling/C6_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C6/accuracy.xml",
+            "profiling/C6_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C6/accuracy.xml",
+            "profiling/C6_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C6/accuracy.xml",
+            "profiling/C6_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C6/accuracy.xml",
+            "profiling/C6_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C6/accuracy.xml",
+            "profiling/C6_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C6/accuracy.xml",
+            "profiling/C6_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C6/accuracy.xml",
+            "profiling/C6_initial/aggregate.json"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C7",
+      "event": "CREATED",
+      "at": "2026-09-16T01:40:42.854069+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "max no-tail row tile within current C4 UB capacity",
+        "granularity_facts": {
+          "unit": "rows per contiguous tile/DMA",
+          "boundary_kinds": [
+            "CAPACITY"
+          ],
+          "values_by_case": {
+            "m4_n128": 4,
+            "m4_n2048": 4,
+            "m64_n128": 64,
+            "m64_n512": 32,
+            "m64_n2048": 8,
+            "m256_n128": 128,
+            "m256_n512": 32,
+            "m256_n2048": 8,
+            "m68_n192": 68
+          }
+        },
+        "task_mapping": "T.Kernel(M/R), R=max divisor of M within 8RN<=253952",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "C4 bounded recomputation, contiguous whole tile GM copies with capacity-bounded R",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "single x/y UB (R,N), bounded C4 vector states reused by serial VF rows",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "R divides M by launcher, N multiple64"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C7",
+      "event": "RESULT",
+      "at": "2026-09-16T01:49:33.695667+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "max no-tail row tile within current C4 UB capacity",
+        "granularity_facts": {
+          "unit": "rows per contiguous tile/DMA",
+          "boundary_kinds": [
+            "CAPACITY"
+          ],
+          "values_by_case": {
+            "m4_n128": 4,
+            "m4_n2048": 4,
+            "m64_n128": 64,
+            "m64_n512": 32,
+            "m64_n2048": 8,
+            "m256_n128": 128,
+            "m256_n512": 32,
+            "m256_n2048": 8,
+            "m68_n192": 68
+          }
+        },
+        "task_mapping": "T.Kernel(M/R), R=max divisor of M within 8RN<=253952",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "C4 bounded recomputation, contiguous whole tile GM copies with capacity-bounded R",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "single x/y UB (R,N), bounded C4 vector states reused by serial VF rows",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "R divides M by launcher, N multiple64"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C7/accuracy_result.json",
+        "candidates/C7/lowering_proof.json",
+        "comparisons/C7_vs_C4.json",
+        "comparisons/C7_vs_B0.json",
+        "evidence/C7_initial_concurrency_result.json"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C7/accuracy.xml",
+            "profiling/C7_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C7/accuracy.xml",
+            "profiling/C7_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C7/accuracy.xml",
+            "profiling/C7_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C7/accuracy.xml",
+            "profiling/C7_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C7/accuracy.xml",
+            "profiling/C7_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C7/accuracy.xml",
+            "profiling/C7_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C7/accuracy.xml",
+            "profiling/C7_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C7/accuracy.xml",
+            "profiling/C7_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C7/accuracy.xml",
+            "profiling/C7_initial/aggregate.json"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C8",
+      "event": "CREATED",
+      "at": "2026-09-16T01:49:33.695667+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one row per logical iteration; full-wave stage1 mapping control",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "cores=max divisor of M <= available vector cores; block bx owns contiguous M/cores rows",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "unchanged C4 row arithmetic/three xUB read passes, repeated GM copy per independent row",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "single x/y UB logical (1,N); T.Pipelined(iterations,num_stages=1), explicit versions1, enable_offset loop",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "cores divides M; uniform complete iterations with no tail"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C8",
+      "event": "RESULT",
+      "at": "2026-09-16T01:56:33.004971+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one row per logical iteration; full-wave stage1 mapping control",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "cores=max divisor of M <= available vector cores; block bx owns contiguous M/cores rows",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "unchanged C4 row arithmetic/three xUB read passes, repeated GM copy per independent row",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "single x/y UB logical (1,N); T.Pipelined(iterations,num_stages=1), explicit versions1, enable_offset loop",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "cores divides M; uniform complete iterations with no tail"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C8/accuracy_result.json",
+        "candidates/C8/lowering_proof.json",
+        "comparisons/C8_vs_C4.json",
+        "comparisons/C8_vs_B0.json"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C8/accuracy.xml",
+            "profiling/C8_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C8/accuracy.xml",
+            "profiling/C8_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C8/accuracy.xml",
+            "profiling/C8_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C8/accuracy.xml",
+            "profiling/C8_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C8/accuracy.xml",
+            "profiling/C8_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C8/accuracy.xml",
+            "profiling/C8_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C8/accuracy.xml",
+            "profiling/C8_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C8/accuracy.xml",
+            "profiling/C8_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C8/accuracy.xml",
+            "profiling/C8_initial/aggregate.json"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C9",
+      "event": "CREATED",
+      "at": "2026-09-16T01:56:33.004971+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one row per full-wave iteration, automatic two-stage pipeline",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048
+          }
+        },
+        "task_mapping": "cores=max divisor of M <= available vector cores; block bx owns contiguous M/cores rows",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "unchanged C4 row arithmetic/three xUB read passes, repeated GM copy per independent row",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "x/y logical (1,N), automatic versions2 on both; T.Pipelined full-wave4, enable_offset; one-iteration cases remain stage1",
+        "pipeline_facts": {
+          "stages": 2,
+          "realization": "AUTOMATIC"
+        },
+        "tail_strategy": "cores divides M; uniform complete iterations with no tail"
+      },
+      "applicable_cases": [
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048"
+      ]
+    },
+    {
+      "candidate_id": "C9",
+      "event": "RESULT",
+      "at": "2026-09-16T02:24:31.808642+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one row per full-wave iteration, automatic two-stage pipeline",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048
+          }
+        },
+        "task_mapping": "cores=max divisor of M <= available vector cores; block bx owns contiguous M/cores rows",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "unchanged C4 row arithmetic/three xUB read passes, repeated GM copy per independent row",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "x/y logical (1,N), automatic versions2 on both; T.Pipelined full-wave4, enable_offset; one-iteration cases remain stage1",
+        "pipeline_facts": {
+          "stages": 2,
+          "realization": "AUTOMATIC"
+        },
+        "tail_strategy": "cores divides M; uniform complete iterations with no tail"
+      },
+      "applicable_cases": [
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C9/accuracy_result.json",
+        "candidates/C9/ordered_accuracy.json",
+        "candidates/C9/lowering_proof.json",
+        "comparisons/C9_vs_C4.json",
+        "comparisons/C9_vs_C8.json",
+        "profiling/C9_initial/pipe_timeline/overlap_analysis.json"
+      ],
+      "case_results": [
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "profiling/C9_initial/aggregate.json",
+            "candidates/C9/accuracy.xml"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "profiling/C9_initial/aggregate.json",
+            "candidates/C9/accuracy.xml"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "profiling/C9_initial/aggregate.json",
+            "candidates/C9/accuracy.xml"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C10",
+      "event": "CREATED",
+      "at": "2026-09-16T02:24:31.808642+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one full row per iteration, explicit manual two-stage storage representative",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048
+          }
+        },
+        "task_mapping": "cores=max divisor of M <= available vector cores; block bx owns contiguous M/cores rows",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "unchanged C4 row arithmetic/three xUB read passes, repeated GM copy per independent row",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "x/y explicit (stages,1,N) storage; annotate_manual_multi_buffer, slot=row_iter%stages, unconditional Pipelined full-wave with enable_offset; stages2 for admitted M256",
+        "pipeline_facts": {
+          "stages": 2,
+          "realization": "MANUAL"
+        },
+        "tail_strategy": "cores divides M; uniform complete iterations with no tail"
+      },
+      "applicable_cases": [
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048"
+      ]
+    },
+    {
+      "candidate_id": "C10",
+      "event": "RESULT",
+      "at": "2026-09-16T02:38:17.123290+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one full row per iteration, explicit manual two-stage storage representative",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048
+          }
+        },
+        "task_mapping": "cores=max divisor of M <= available vector cores; block bx owns contiguous M/cores rows",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "unchanged C4 row arithmetic/three xUB read passes, repeated GM copy per independent row",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": false
+        },
+        "precision": "fp32 exact vdiv(1,row_sum) once per row, fp32 multiply of each exponential; unchanged exp and original CPU double oracle tolerances",
+        "storage_pipeline": "x/y explicit (stages,1,N) storage; annotate_manual_multi_buffer, slot=row_iter%stages, unconditional Pipelined full-wave with enable_offset; stages2 for admitted M256",
+        "pipeline_facts": {
+          "stages": 2,
+          "realization": "MANUAL"
+        },
+        "tail_strategy": "cores divides M; uniform complete iterations with no tail"
+      },
+      "applicable_cases": [
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C10/accuracy_result.json",
+        "candidates/C10/ordered_accuracy.json",
+        "candidates/C10/lowering_proof.json",
+        "comparisons/C10_vs_C8_fresh.json",
+        "comparisons/C10_vs_C4.json",
+        "comparisons/C10_vs_B0.json",
+        "candidates/C10/decision.md"
+      ],
+      "case_results": [
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C10/accuracy.xml",
+            "profiling/C10_initial/aggregate.json",
+            "profiling/C8_manual_pair/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C10/accuracy.xml",
+            "profiling/C10_initial/aggregate.json",
+            "profiling/C8_manual_pair/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C10/accuracy.xml",
+            "profiling/C10_initial/aggregate.json",
+            "profiling/C8_manual_pair/aggregate.json"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C11",
+      "event": "CREATED",
+      "at": "2026-09-16T03:08:11.008991+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one full row, three UB read passes and bounded vector live state",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "one GM read into xUB; max, exp-sum, recompute exp-normalize in same VF with bounded vector state; direct output yUB; no full intermediate payload or register array",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 hardware S.vdiv(1,row_sum,precision='ftz_true') once per row; original exp/multiply and immutable CPU-double oracle thresholds",
+        "storage_pipeline": "x/y UB single version; row_max/lane_sum/row_recip vector state constant in N, exponentials recomputed instead of retained",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C11",
+      "event": "RESULT",
+      "at": "2026-09-16T04:00:57.828599+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one full row, three UB read passes and bounded vector live state",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "one GM read into xUB; max, exp-sum, recompute exp-normalize in same VF with bounded vector state; direct output yUB; no full intermediate payload or register array",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 hardware S.vdiv(1,row_sum,precision='ftz_true') once per row; original exp/multiply and immutable CPU-double oracle thresholds",
+        "storage_pipeline": "x/y UB single version; row_max/lane_sum/row_recip vector state constant in N, exponentials recomputed instead of retained",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C11/accuracy_result.json",
+        "candidates/C11/lowering_proof.json",
+        "candidates/C11/timeline_diagnosis.md",
+        "comparisons/C11_vs_C4_recovery_pooled6.json",
+        "comparisons/C4_vs_B0_recovery.json",
+        "candidates/C11/decision.md"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C11/accuracy.xml",
+            "profiling/C11_device_recovery/aggregate.json",
+            "profiling/C11_recovery_interleave2/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C11/accuracy.xml",
+            "profiling/C11_device_recovery/aggregate.json",
+            "profiling/C11_recovery_interleave2/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C11/accuracy.xml",
+            "profiling/C11_device_recovery/aggregate.json",
+            "profiling/C11_recovery_interleave2/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C11/accuracy.xml",
+            "profiling/C11_device_recovery/aggregate.json",
+            "profiling/C11_recovery_interleave2/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C11/accuracy.xml",
+            "profiling/C11_device_recovery/aggregate.json",
+            "profiling/C11_recovery_interleave2/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C11/accuracy.xml",
+            "profiling/C11_device_recovery/aggregate.json",
+            "profiling/C11_recovery_interleave2/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C11/accuracy.xml",
+            "profiling/C11_device_recovery/aggregate.json",
+            "profiling/C11_recovery_interleave2/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C11/accuracy.xml",
+            "profiling/C11_device_recovery/aggregate.json",
+            "profiling/C11_recovery_interleave2/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C11/accuracy.xml",
+            "profiling/C11_device_recovery/aggregate.json",
+            "profiling/C11_recovery_interleave2/aggregate.json"
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_id": "C12",
+      "event": "CREATED",
+      "at": "2026-09-16T04:12:43.937589+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one full row retained as 2..32 vector registers",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "GM row to xUB, load each chunk once to register array, max then overwrite registers with exp then normalize directly to yUB; no eUB or scalar UB",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 hardware S.vdiv(1,row_sum,precision='ftz_true') once per row; retained exp vectors; immutable original CPU-double reference and thresholds",
+        "storage_pipeline": "x/y UB single versions; complete row register array retained through max/exp/sum/normalization, no UB store-load intermediate",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ]
+    },
+    {
+      "candidate_id": "C12",
+      "event": "RESULT",
+      "at": "2026-09-16T04:38:02.730311+08:00",
+      "parent": "C4",
+      "identity": {
+        "work_granularity": "one full row retained as 2..32 vector registers",
+        "granularity_facts": {
+          "unit": "elements per row",
+          "boundary_kinds": [
+            "FULL_CONTIGUOUS_UNIT"
+          ],
+          "values_by_case": {
+            "m4_n128": 128,
+            "m4_n2048": 2048,
+            "m64_n128": 128,
+            "m64_n512": 512,
+            "m64_n2048": 2048,
+            "m256_n128": 128,
+            "m256_n512": 512,
+            "m256_n2048": 2048,
+            "m68_n192": 192
+          }
+        },
+        "task_mapping": "T.Kernel(M), logical block bx owns row bx",
+        "physical_dataflow": {
+          "route_kind": "OTHER",
+          "source_access": "CONTIGUOUS",
+          "description": "GM row to xUB, load each chunk once to register array, max then overwrite registers with exp then normalize directly to yUB; no eUB or scalar UB",
+          "full_payload_materialization": false,
+          "register_lane_reorder": false,
+          "indexed_lane_access": false,
+          "route_experiment": true
+        },
+        "precision": "fp32 hardware S.vdiv(1,row_sum,precision='ftz_true') once per row; retained exp vectors; immutable original CPU-double reference and thresholds",
+        "storage_pipeline": "x/y UB single versions; complete row register array retained through max/exp/sum/normalization, no UB store-load intermediate",
+        "pipeline_facts": {
+          "stages": 1,
+          "realization": "SINGLE_STAGE"
+        },
+        "tail_strategy": "M all legal rows; N multiple64, full-mask no tails"
+      },
+      "applicable_cases": [
+        "m4_n128",
+        "m4_n2048",
+        "m64_n128",
+        "m64_n512",
+        "m64_n2048",
+        "m256_n128",
+        "m256_n512",
+        "m256_n2048",
+        "m68_n192"
+      ],
+      "result_status": "REJECTED_WITH_EVIDENCE",
+      "evidence": [
+        "candidates/C12/accuracy_result.json",
+        "candidates/C12/lowering_proof.json",
+        "comparisons/C12_vs_C4.json",
+        "comparisons/C12_vs_B0.json",
+        "candidates/C12/timeline_diagnosis.md",
+        "candidates/C12/decision.md"
+      ],
+      "case_results": [
+        {
+          "case_id": "m4_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C12/accuracy.xml",
+            "profiling/C12_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m4_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C12/accuracy.xml",
+            "profiling/C12_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C12/accuracy.xml",
+            "profiling/C12_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C12/accuracy.xml",
+            "profiling/C12_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m64_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C12/accuracy.xml",
+            "profiling/C12_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n128",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C12/accuracy.xml",
+            "profiling/C12_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n512",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C12/accuracy.xml",
+            "profiling/C12_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m256_n2048",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C12/accuracy.xml",
+            "profiling/C12_initial/aggregate.json"
+          ]
+        },
+        {
+          "case_id": "m68_n192",
+          "disposition": "TESTED_PATH",
+          "evidence": [
+            "candidates/C12/accuracy.xml",
+            "profiling/C12_initial/aggregate.json"
+          ]
+        }
+      ]
+    }
+  ]
+}

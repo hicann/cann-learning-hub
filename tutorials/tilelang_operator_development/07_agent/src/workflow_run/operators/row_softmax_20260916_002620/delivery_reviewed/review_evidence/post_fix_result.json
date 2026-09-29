@@ -1,0 +1,26 @@
+{
+  "at": "2026-09-16T05:14:47.920554+08:00",
+  "status": "FORMAT_PASS",
+  "files_checked": 2,
+  "ruff_check_returncode": 0,
+  "ruff_format_check_returncode": 0,
+  "lint_issues": 0,
+  "format_issues": 0,
+  "tool_errors": [],
+  "before": {
+    "operators/row_softmax/row_softmax.py": "9a271fb879b0453aeb67362c4fde1cbe87f0013a3a242c183ab2497f0bc6a351",
+    "operators/row_softmax/test_row_softmax.py": "29f16f1725303f5390cc0efb6cd1bb1a4537a8b420fbbe870f910cb700825e5f",
+    "course_inputs/cases.json": "cf78042af40794b57a8b3b5bdc6a4742ea8cf6a9f253145cfb88398310793eca",
+    "pyproject.toml": "a5c528e16bd994f9291f88af94f3730b540a349405205a67858719931ad11cb8"
+  },
+  "after": {
+    "operators/row_softmax/row_softmax.py": "9a271fb879b0453aeb67362c4fde1cbe87f0013a3a242c183ab2497f0bc6a351",
+    "operators/row_softmax/test_row_softmax.py": "d44409ea05e24e3d6bef79968955ee05659b29eef45936035b938d6013507ef3",
+    "course_inputs/cases.json": "cf78042af40794b57a8b3b5bdc6a4742ea8cf6a9f253145cfb88398310793eca",
+    "pyproject.toml": "a5c528e16bd994f9291f88af94f3730b540a349405205a67858719931ad11cb8"
+  },
+  "kernel_bytes_unchanged": true,
+  "test_ast_unchanged": true,
+  "configuration_unchanged": true,
+  "only_changed_file": "operators/row_softmax/test_row_softmax.py"
+}

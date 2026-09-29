@@ -1,0 +1,86 @@
+{
+  "purpose": "第 7.3 节按整次 kernel duration 组织的课程性能汇总",
+  "derived_from": "fixed12_Bstar_vs_B0.json",
+  "new_execution_performed": false,
+  "primary_metric": {
+    "name": "device Task Duration",
+    "meaning": "一次目标 kernel 的完整设备执行时间",
+    "source_fields": [
+      "groups.*.cases[].task_duration_us",
+      "cases[].task_ratio"
+    ],
+    "statistic": "每个版本、每个 case 的 12 个样本取中位数"
+  },
+  "diagnostic_metrics": [
+    "最慢逻辑 block 的 AIV 时间",
+    "Vector/MTE/Scalar 流水数据"
+  ],
+  "cases": [
+    {
+      "case_id": "m4_n128",
+      "baseline_median_us": 1.6195,
+      "candidate_median_us": 1.6099999999999999,
+      "ratio": 0.994133991972831
+    },
+    {
+      "case_id": "m4_n2048",
+      "baseline_median_us": 2.279,
+      "candidate_median_us": 1.873,
+      "ratio": 0.8218516893374287
+    },
+    {
+      "case_id": "m64_n128",
+      "baseline_median_us": 2.1470000000000002,
+      "candidate_median_us": 2.1639999999999997,
+      "ratio": 1.0079180251513737
+    },
+    {
+      "case_id": "m64_n512",
+      "baseline_median_us": 2.497,
+      "candidate_median_us": 2.3955,
+      "ratio": 0.959351221465759
+    },
+    {
+      "case_id": "m64_n2048",
+      "baseline_median_us": 2.955,
+      "candidate_median_us": 2.6094999999999997,
+      "ratio": 0.8830795262267342
+    },
+    {
+      "case_id": "m256_n128",
+      "baseline_median_us": 5.5295000000000005,
+      "candidate_median_us": 5.505000000000001,
+      "ratio": 0.9955692196401121
+    },
+    {
+      "case_id": "m256_n512",
+      "baseline_median_us": 6.5685,
+      "candidate_median_us": 6.2075,
+      "ratio": 0.945040724670777
+    },
+    {
+      "case_id": "m256_n2048",
+      "baseline_median_us": 8.5525,
+      "candidate_median_us": 7.029,
+      "ratio": 0.8218649517684887
+    },
+    {
+      "case_id": "m68_n192",
+      "baseline_median_us": 2.3685,
+      "candidate_median_us": 2.357,
+      "ratio": 0.9951446062909015
+    }
+  ],
+  "geomean_ratio": 0.9332184090513448,
+  "worst_ratio": 1.0079180251513737,
+  "worst_case": "m64_n128",
+  "thresholds": {
+    "per_case_ratio_max": 1.05,
+    "geomean_ratio_max": 0.95
+  },
+  "all_cases_within_threshold": true,
+  "geomean_within_threshold": true,
+  "qualified_frequency_rows": 216,
+  "sample_exclusions": [],
+  "note": "本文件只重新汇总原比较文件已经保存的 Task Duration；没有重新运行、删除样本或修改原始测量值。"
+}

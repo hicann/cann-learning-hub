@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="800" viewBox="0 0 1300 800">
+<rect width="1300" height="800" fill="#F4F7FB"/>
+<text x="42" y="28" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="34" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">同一矩阵乘的三步演进</text>
+<text x="44" y="83" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">围绕 C = A × B</text>
+<text x="199.5" y="79" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="14" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">T</text>
+<text x="215.7" y="83" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">，逐步学习分核、流水与任务调度</text>
+<rect x="42" y="138" width="384" height="382" rx="18" fill="white" stroke="#DFE6EF"/>
+<rect x="64" y="159" width="56" height="33" rx="8" fill="#3268D6" stroke="none"/>
+<text x="92" y="163" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">4.2</text>
+<text x="64" y="209" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="27" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">基础 GEMM</text>
+<text x="64" y="254" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">划分输出块，完成核内计算</text>
+<rect x="458" y="138" width="384" height="382" rx="18" fill="white" stroke="#DFE6EF"/>
+<rect x="480" y="159" width="56" height="33" rx="8" fill="#078879" stroke="none"/>
+<text x="508" y="163" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">4.3</text>
+<text x="480" y="209" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="27" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">多 buffer 流水</text>
+<text x="480" y="254" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">让不同轮次的搬运与计算并行</text>
+<rect x="874" y="138" width="384" height="382" rx="18" fill="white" stroke="#DFE6EF"/>
+<rect x="896" y="159" width="56" height="33" rx="8" fill="#7656BF" stroke="none"/>
+<text x="924" y="163" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">4.4</text>
+<text x="896" y="209" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="27" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">Persistent 调度</text>
+<text x="896" y="254" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">用有限的核遍历更多输出任务</text>
+<path d="M431,329 L453,329" stroke="#61748B" stroke-width="2"/>
+<path d="M446,324 L453,329" stroke="#61748B" stroke-width="2"/>
+<path d="M446,334 L453,329" stroke="#61748B" stroke-width="2"/>
+<path d="M847,329 L869,329" stroke="#61748B" stroke-width="2"/>
+<path d="M862,324 L869,329" stroke="#61748B" stroke-width="2"/>
+<path d="M862,334 L869,329" stroke="#61748B" stroke-width="2"/>
+<rect x="64" y="302" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="118" y="302" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="172" y="302" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="226" y="302" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="280" y="302" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="334" y="302" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="64" y="334" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="118" y="334" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="172" y="334" width="49" height="27" rx="4" fill="#3268D6" stroke="none"/>
+<rect x="226" y="334" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="280" y="334" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="334" y="334" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="64" y="366" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="118" y="366" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="172" y="366" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="226" y="366" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="280" y="366" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="334" y="366" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="64" y="398" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="118" y="398" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="172" y="398" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="226" y="398" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="280" y="398" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<rect x="334" y="398" width="49" height="27" rx="4" fill="#E9F0FF" stroke="none"/>
+<text x="232" y="446" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#3268D6" text-anchor="middle" dominant-baseline="text-before-edge">确定每个核负责的输出区域</text>
+<text x="232" y="478" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">输出分块 → 搬入 → GEMM → 写回</text>
+<text x="480" y="308" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">搬入</text>
+<rect x="532" y="305" width="46" height="31" rx="5" fill="#76BFC1" stroke="none"/>
+<text x="555" y="309" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">0</text>
+<rect x="582" y="305" width="46" height="31" rx="5" fill="#76BFC1" stroke="none"/>
+<text x="605" y="309" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">1</text>
+<rect x="632" y="305" width="46" height="31" rx="5" fill="#76BFC1" stroke="none"/>
+<text x="655" y="309" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">2</text>
+<text x="480" y="352" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">计算</text>
+<rect x="582" y="349" width="46" height="31" rx="5" fill="#078879" stroke="none"/>
+<text x="605" y="353" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">0</text>
+<rect x="632" y="349" width="46" height="31" rx="5" fill="#078879" stroke="none"/>
+<text x="655" y="353" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">1</text>
+<rect x="682" y="349" width="46" height="31" rx="5" fill="#078879" stroke="none"/>
+<text x="705" y="353" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">2</text>
+<text x="480" y="396" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">写回</text>
+<rect x="632" y="393" width="46" height="31" rx="5" fill="#A2ADBA" stroke="none"/>
+<text x="655" y="397" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">0</text>
+<rect x="682" y="393" width="46" height="31" rx="5" fill="#A2ADBA" stroke="none"/>
+<text x="705" y="397" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">1</text>
+<rect x="732" y="393" width="46" height="31" rx="5" fill="#A2ADBA" stroke="none"/>
+<text x="755" y="397" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">2</text>
+<path d="M532,445 L805,445" stroke="#61748B" stroke-width="2"/>
+<path d="M798,440 L805,445" stroke="#61748B" stroke-width="2"/>
+<path d="M798,450 L805,445" stroke="#61748B" stroke-width="2"/>
+<text x="650" y="463" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">时间 →   不同颜色代表不同流水</text>
+<text x="896" y="310" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core0</text>
+<rect x="974" y="306" width="55" height="33" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="1001.5" y="310" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">0</text>
+<path d="M1032,323 L1044,323" stroke="#7656BF" stroke-width="2"/>
+<path d="M1037,318 L1044,323" stroke="#7656BF" stroke-width="2"/>
+<path d="M1037,328 L1044,323" stroke="#7656BF" stroke-width="2"/>
+<rect x="1048" y="306" width="55" height="33" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="1075.5" y="310" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">8</text>
+<path d="M1106,323 L1118,323" stroke="#7656BF" stroke-width="2"/>
+<path d="M1111,318 L1118,323" stroke="#7656BF" stroke-width="2"/>
+<path d="M1111,328 L1118,323" stroke="#7656BF" stroke-width="2"/>
+<rect x="1122" y="306" width="55" height="33" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="1149.5" y="310" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">16</text>
+<text x="1200" y="310" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#7656BF" text-anchor="start" dominant-baseline="text-before-edge">…</text>
+<text x="896" y="358" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core1</text>
+<rect x="974" y="354" width="55" height="33" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="1001.5" y="358" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">1</text>
+<path d="M1032,371 L1044,371" stroke="#7656BF" stroke-width="2"/>
+<path d="M1037,366 L1044,371" stroke="#7656BF" stroke-width="2"/>
+<path d="M1037,376 L1044,371" stroke="#7656BF" stroke-width="2"/>
+<rect x="1048" y="354" width="55" height="33" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="1075.5" y="358" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">9</text>
+<path d="M1106,371 L1118,371" stroke="#7656BF" stroke-width="2"/>
+<path d="M1111,366 L1118,371" stroke="#7656BF" stroke-width="2"/>
+<path d="M1111,376 L1118,371" stroke="#7656BF" stroke-width="2"/>
+<rect x="1122" y="354" width="55" height="33" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="1149.5" y="358" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">17</text>
+<text x="1200" y="358" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#7656BF" text-anchor="start" dominant-baseline="text-before-edge">…</text>
+<text x="896" y="406" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">core7</text>
+<rect x="974" y="402" width="55" height="33" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="1001.5" y="406" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">7</text>
+<path d="M1032,419 L1044,419" stroke="#7656BF" stroke-width="2"/>
+<path d="M1037,414 L1044,419" stroke="#7656BF" stroke-width="2"/>
+<path d="M1037,424 L1044,419" stroke="#7656BF" stroke-width="2"/>
+<rect x="1048" y="402" width="55" height="33" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="1075.5" y="406" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">15</text>
+<path d="M1106,419 L1118,419" stroke="#7656BF" stroke-width="2"/>
+<path d="M1111,414 L1118,419" stroke="#7656BF" stroke-width="2"/>
+<path d="M1111,424 L1118,419" stroke="#7656BF" stroke-width="2"/>
+<rect x="1122" y="402" width="55" height="33" rx="6" fill="#F0EBFA" stroke="none"/>
+<text x="1149.5" y="406" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="700" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">23</text>
+<text x="1200" y="406" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#7656BF" text-anchor="start" dominant-baseline="text-before-edge">…</text>
+<text x="1066" y="465" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">8 核示例：每核按步长 8 遍历</text>
+<rect x="42" y="548" width="1216" height="216" rx="14" fill="#E8EFF8" stroke="none"/>
+<rect x="64" y="568" width="61" height="34" rx="8" fill="#172D46" stroke="none"/>
+<text x="94.5" y="572" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">4.5</text>
+<text x="148" y="569" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="26" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">扩展到 36 核进行优化实践</text>
+<text x="866" y="578" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">同一用例，逐步调整并验证</text>
+<rect x="64" y="623" width="276" height="82" rx="10" fill="white" stroke="none"/>
+<text x="78" y="635" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" font-weight="700" fill="#3268D6" text-anchor="start" dominant-baseline="text-before-edge">01  建立基线</text>
+<text x="78" y="672" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="16" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">36 核完成 GEMM</text>
+<path d="M344,664 L354,664" stroke="#61748B" stroke-width="2"/>
+<path d="M347,659 L354,664" stroke="#61748B" stroke-width="2"/>
+<path d="M347,669 L354,664" stroke="#61748B" stroke-width="2"/>
+<rect x="358" y="623" width="276" height="82" rx="10" fill="white" stroke="none"/>
+<text x="372" y="635" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" font-weight="700" fill="#078879" text-anchor="start" dominant-baseline="text-before-edge">02  开启流水</text>
+<text x="372" y="672" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="16" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">双 buffer 并行搬运与计算</text>
+<path d="M638,664 L648,664" stroke="#61748B" stroke-width="2"/>
+<path d="M641,659 L648,664" stroke="#61748B" stroke-width="2"/>
+<path d="M641,669 L648,664" stroke="#61748B" stroke-width="2"/>
+<rect x="652" y="623" width="276" height="82" rx="10" fill="white" stroke="none"/>
+<text x="666" y="635" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" font-weight="700" fill="#3268D6" text-anchor="start" dominant-baseline="text-before-edge">03  调整分块</text>
+<text x="666" y="672" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="16" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">调整 BM，比较不同 tiling</text>
+<path d="M932,664 L942,664" stroke="#61748B" stroke-width="2"/>
+<path d="M935,659 L942,664" stroke="#61748B" stroke-width="2"/>
+<path d="M935,669 L942,664" stroke="#61748B" stroke-width="2"/>
+<rect x="946" y="623" width="276" height="82" rx="10" fill="white" stroke="none"/>
+<text x="960" y="635" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" font-weight="700" fill="#7656BF" text-anchor="start" dominant-baseline="text-before-edge">04  复用与调度</text>
+<text x="960" y="672" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="16" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">A 常驻 L1 + Persistent 列优先</text>
+<text x="64" y="724" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="400" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">先验证输出正确性，再比较 kernel 耗时、有效带宽与算力利用率。</text>
+</svg>

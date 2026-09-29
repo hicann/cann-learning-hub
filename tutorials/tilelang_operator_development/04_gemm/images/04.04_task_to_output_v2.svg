@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="842" viewBox="0 0 1300 842">
+<rect width="1300" height="842" fill="#F4F7FB"/>
+<text x="42" y="26" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="34" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">从任务编号到输出区域</text>
+<text x="44" y="80" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">8 核 Persistent 示例  ·  C：512 × 36864  ·  BM = BN = 128  ·  4 行块 × 288 列块</text>
+<rect x="42" y="130" width="384" height="160" rx="16" fill="white" stroke="#DFE6EF"/>
+<rect x="458" y="130" width="384" height="160" rx="16" fill="white" stroke="#DFE6EF"/>
+<rect x="874" y="130" width="384" height="160" rx="16" fill="white" stroke="#DFE6EF"/>
+<text x="64" y="150" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#3268D6" text-anchor="start" dominant-baseline="text-before-edge">01  核与轮次</text>
+<text x="64" y="190" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="28" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">core1，it = 1</text>
+<text x="64" y="241" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">核编号 bx = 1；当前为第 2 轮</text>
+<text x="480" y="150" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#078879" text-anchor="start" dominant-baseline="text-before-edge">02  输出任务编号</text>
+<text x="480" y="190" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="26" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">idx = 1 + 1 × 8 = 9</text>
+<text x="480" y="241" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">idx = bx + it × 8</text>
+<text x="896" y="150" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#7656BF" text-anchor="start" dominant-baseline="text-before-edge">03  二维块坐标</text>
+<text x="896" y="190" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="28" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">mi = 0，ni = 9</text>
+<text x="896" y="241" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">mi = 9 // 288；ni = 9 % 288</text>
+<path d="M431,210 L453,210" stroke="#61748B" stroke-width="2"/>
+<path d="M446,205 L453,210" stroke="#61748B" stroke-width="2"/>
+<path d="M446,215 L453,210" stroke="#61748B" stroke-width="2"/>
+<path d="M847,210 L869,210" stroke="#61748B" stroke-width="2"/>
+<path d="M862,205 L869,210" stroke="#61748B" stroke-width="2"/>
+<path d="M862,215 L869,210" stroke="#61748B" stroke-width="2"/>
+<rect x="42" y="312" width="1216" height="339" rx="18" fill="white" stroke="#DFE6EF"/>
+<text x="64" y="332" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">输出矩阵 C</text>
+<text x="305" y="338" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">每格为 128 × 128 的输出块；仅展开部分列块</text>
+<text x="1160" y="339" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">N  列方向 →</text>
+<text x="179" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">0</text>
+<rect x="145" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="145" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="145" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="145" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="255" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">1</text>
+<rect x="221" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="221" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="221" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="221" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="331" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">2</text>
+<rect x="297" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="297" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="297" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="297" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="407" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">3</text>
+<rect x="373" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="373" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="373" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="373" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="483" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">4</text>
+<rect x="449" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="449" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="449" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="449" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="559" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">5</text>
+<rect x="525" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="525" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="525" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="525" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="635" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">6</text>
+<rect x="601" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="601" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="601" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="601" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="711" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">7</text>
+<rect x="677" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="677" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="677" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="677" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="787" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">8</text>
+<rect x="753" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="753" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="753" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="753" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="863" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#7656BF" text-anchor="middle" dominant-baseline="text-before-edge">9</text>
+<rect x="829" y="411" width="69" height="37" rx="5" fill="#7656BF" stroke="none"/>
+<text x="863.5" y="418" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="16" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="text-before-edge">core1</text>
+<rect x="829" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="829" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="829" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="939" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">10</text>
+<rect x="905" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="905" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="905" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="905" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="1015" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">11</text>
+<rect x="981" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="981" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="981" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="981" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="1091" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<rect x="1057" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="1091.5" y="418" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<rect x="1057" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="1091.5" y="461" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<rect x="1057" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="1091.5" y="504" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<rect x="1057" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="1091.5" y="547" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="17" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">…</text>
+<text x="1167" y="379" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="middle" dominant-baseline="text-before-edge">287</text>
+<rect x="1133" y="411" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="1133" y="454" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="1133" y="497" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<rect x="1133" y="540" width="69" height="37" rx="5" fill="#F0F3F8" stroke="none"/>
+<text x="66" y="418" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#7656BF" text-anchor="start" dominant-baseline="text-before-edge">mi = 0</text>
+<text x="66" y="461" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">mi = 1</text>
+<text x="66" y="504" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">mi = 2</text>
+<text x="66" y="547" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">mi = 3</text>
+<text x="78" y="382" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">ni →</text>
+<text x="66" y="606" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" font-weight="700" fill="#7656BF" text-anchor="start" dominant-baseline="text-before-edge">高亮块：第 0 行块、第 9 列块</text>
+<text x="637" y="606" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="23" font-weight="700" fill="#7656BF" text-anchor="start" dominant-baseline="text-before-edge">C[0:128, 1152:1280]</text>
+<rect x="42" y="676" width="1216" height="118" rx="14" fill="#E8EFF8" stroke="none"/>
+<text x="64" y="692" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">这一块怎样计算</text>
+<text x="64" y="730" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">A[0:128, :]  ×  B[1152:1280, :]</text>
+<text x="421.0" y="726" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="15" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">T</text>
+<text x="438.4" y="730" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" font-weight="700" fill="#172D46" text-anchor="start" dominant-baseline="text-before-edge">  →  C[0:128, 1152:1280]</text>
+<text x="44" y="809" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18" font-weight="400" fill="#61748B" text-anchor="start" dominant-baseline="text-before-edge">完成当前块后：it = 2，idx = 17，再按同一规则定位下一个输出块。</text>
+</svg>

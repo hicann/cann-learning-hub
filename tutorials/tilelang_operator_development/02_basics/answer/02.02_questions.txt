@@ -1,0 +1,6 @@
+# 2.2 练习解析
+
+1. kernel 内的 `range`/`T.serial` 描述会被 lower 为设备串行循环，用来推进向量块；`T.simd` 指令处理块内多个 lane。它们是 NPU 计算描述，不是 Host 上立即执行的普通 Python 循环。
+2. N、tile 和 grid 是工厂参数时会在编译时特化；运行时只传入匹配 shape 的 Tensor。
+3. `@tilelang.jit` 触发即时编译并返回可调用 kernel，`@T.prim_func` 是描述菜谱，`T.Kernel` 是逻辑启动上下文，`T.Tensor/T.Buffer` 是 shape/dtype 注解。
+4. T.print 应放在 SimdVF 外。当前环境输出示例为 `[AIV Block 0/1] msg='tilelang kernel reached' BlockIdx=0`；多块输出顺序可能交错。

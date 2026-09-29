@@ -1,0 +1,47 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.9, pytest-9.0.3, pluggy-1.6.0 -- $COURSE_RUNTIME/venv/bin/python
+rootdir: $WORKSPACE
+configfile: pyproject.toml
+plugins: repeat-0.9.4, xdist-3.8.0, forked-1.6.0
+collecting ... [W916 00:08:19.143986375 FunctionLoader.cpp:48] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+collected 9 items
+
+operators/row_softmax/test_row_softmax.py::test_specified[m4_n128] 2026-09-16 00:08:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:142): TileLang begins to compile kernel `row_softmax_kernel` with `out_idx=None`
+2026-09-16 00:08:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:150): TileLang completes to compile kernel `row_softmax_kernel`
+{"case_id": "m4_n128", "seed": 707, "max_abs_error": 7.450580596923828e-09, "max_normalized_error": 0.001017924622461835, "max_row_sum_error": 5.302717909216881e-08}
+PASSED
+operators/row_softmax/test_row_softmax.py::test_specified[m4_n2048] 2026-09-16 00:08:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:142): TileLang begins to compile kernel `row_softmax_kernel` with `out_idx=None`
+2026-09-16 00:08:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:150): TileLang completes to compile kernel `row_softmax_kernel`
+{"case_id": "m4_n2048", "seed": 707, "max_abs_error": 1.3969838619232178e-09, "max_normalized_error": 0.0009028538176310551, "max_row_sum_error": 1.2777854863088578e-07}
+PASSED
+operators/row_softmax/test_row_softmax.py::test_specified[m64_n128] 2026-09-16 00:08:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:142): TileLang begins to compile kernel `row_softmax_kernel` with `out_idx=None`
+2026-09-16 00:08:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:150): TileLang completes to compile kernel `row_softmax_kernel`
+{"case_id": "m64_n128", "seed": 707, "max_abs_error": 1.4901161193847656e-08, "max_normalized_error": 0.0014595404271885285, "max_row_sum_error": 1.047446858137846e-07}
+PASSED
+operators/row_softmax/test_row_softmax.py::test_specified[m64_n512] 2026-09-16 00:08:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:142): TileLang begins to compile kernel `row_softmax_kernel` with `out_idx=None`
+2026-09-16 00:08:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:150): TileLang completes to compile kernel `row_softmax_kernel`
+{"case_id": "m64_n512", "seed": 707, "max_abs_error": 3.725290298461914e-09, "max_normalized_error": 0.0011550000797758556, "max_row_sum_error": 1.1679367162287235e-07}
+PASSED
+operators/row_softmax/test_row_softmax.py::test_specified[m64_n2048] 2026-09-16 00:08:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:142): TileLang begins to compile kernel `row_softmax_kernel` with `out_idx=None`
+2026-09-16 00:09:00  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:150): TileLang completes to compile kernel `row_softmax_kernel`
+{"case_id": "m64_n2048", "seed": 707, "max_abs_error": 1.862645149230957e-09, "max_normalized_error": 0.00103872592321342, "max_row_sum_error": 1.9727940525626764e-07}
+PASSED
+operators/row_softmax/test_row_softmax.py::test_specified[m256_n128] 2026-09-16 00:09:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:142): TileLang begins to compile kernel `row_softmax_kernel` with `out_idx=None`
+2026-09-16 00:09:01  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:150): TileLang completes to compile kernel `row_softmax_kernel`
+{"case_id": "m256_n128", "seed": 707, "max_abs_error": 1.4901161193847656e-08, "max_normalized_error": 0.0016141158225078727, "max_row_sum_error": 1.047446858137846e-07}
+PASSED
+operators/row_softmax/test_row_softmax.py::test_specified[m256_n512] 2026-09-16 00:09:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:142): TileLang begins to compile kernel `row_softmax_kernel` with `out_idx=None`
+2026-09-16 00:09:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:150): TileLang completes to compile kernel `row_softmax_kernel`
+{"case_id": "m256_n512", "seed": 707, "max_abs_error": 7.450580596923828e-09, "max_normalized_error": 0.0014454695750004047, "max_row_sum_error": 1.3102908269502223e-07}
+PASSED
+operators/row_softmax/test_row_softmax.py::test_specified[m256_n2048] 2026-09-16 00:09:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:142): TileLang begins to compile kernel `row_softmax_kernel` with `out_idx=None`
+2026-09-16 00:09:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:150): TileLang completes to compile kernel `row_softmax_kernel`
+{"case_id": "m256_n2048", "seed": 707, "max_abs_error": 2.7939677238464355e-09, "max_normalized_error": 0.001276682709047376, "max_row_sum_error": 2.3961001716088504e-07}
+PASSED
+operators/row_softmax/test_row_softmax.py::test_specified[m68_n192] 2026-09-16 00:09:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:142): TileLang begins to compile kernel `row_softmax_kernel` with `out_idx=None`
+2026-09-16 00:09:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:150): TileLang completes to compile kernel `row_softmax_kernel`
+{"case_id": "m68_n192", "seed": 707, "max_abs_error": 1.4901161193847656e-08, "max_normalized_error": 0.0017278905637608585, "max_row_sum_error": 1.1730298865586519e-07}
+PASSED
+
+- generated xml file: $WORKSPACE/operators/row_softmax/evidence/generation/junit.xml -
+============================== 9 passed in 56.59s ==============================

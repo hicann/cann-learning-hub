@@ -214,6 +214,7 @@
 | 序号 | 课程 | 课程内容 | 运行方式 |
 | :---: | :--- | :--- | :--- |
 | 7 | [Ascend C 算子开发系列（Kernel 直调版）](./tutorials/ascendc_operator_development_light) | 算子基础概念、编程范式、Vector/Cube/融合算子开发与调试调优 | [在线体验](./tutorials/ascendc_operator_development_light) |
+| — | [TileLang 昇腾算子开发](./tutorials/tilelang_operator_development/README.md) | 面向昇腾950，学习Vector、GEMM、融合算子、调试与性能测量及AI Agent辅助开发 | 阅读课程；自备950环境运行 |
 
 </details>
 
@@ -433,7 +434,7 @@
 │   ├── MC2_fused_operator_development     # MC2 融合算子开发实战
 │   ├── llm_inference                      # 大模型推理系列课程
 │   ├── hixl_development                   # HiXL 单边通信应用开发（4 章）
-│   └── ...                                # 待扩展（PyPTO / TileLang 等）
+│   └── ...                                # 待扩展（PyPTO 等）
 ├── reference_practice                 # 参考实践
 │   ├── model_inference_optimization   # 模型推理优化
 │   │   └── sana_video                # Sana-Video 推理优化

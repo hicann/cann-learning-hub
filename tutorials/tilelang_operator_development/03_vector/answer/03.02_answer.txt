@@ -1,0 +1,1 @@
+保留读入、写回以及当前版本要求的 SimdVF 骨架，将计算改为 rc = T.simd.vexp(ra, mask)。完整实现见 src/relu_basic.py 的 make_exp；answer/03.02_exp.py 验证三种 shape 的四类输入，使用 torch.exp 参考和 rtol=1e-5、atol=1e-6。

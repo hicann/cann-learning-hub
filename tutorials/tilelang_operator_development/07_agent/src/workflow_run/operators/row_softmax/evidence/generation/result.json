@@ -1,0 +1,78 @@
+{
+  "at": "2026-09-16T00:11:17.239782+08:00",
+  "stage": "generation",
+  "status": "PASS",
+  "passed": 9,
+  "failed": 0,
+  "skipped": 0,
+  "metrics": [
+    {
+      "case_id": "m4_n128",
+      "seed": 707,
+      "max_abs_error": 7.450580596923828e-09,
+      "max_normalized_error": 0.001017924622461835,
+      "max_row_sum_error": 5.302717909216881e-08
+    },
+    {
+      "case_id": "m4_n2048",
+      "seed": 707,
+      "max_abs_error": 1.3969838619232178e-09,
+      "max_normalized_error": 0.0009028538176310551,
+      "max_row_sum_error": 1.2777854863088578e-07
+    },
+    {
+      "case_id": "m64_n128",
+      "seed": 707,
+      "max_abs_error": 1.4901161193847656e-08,
+      "max_normalized_error": 0.0014595404271885285,
+      "max_row_sum_error": 1.047446858137846e-07
+    },
+    {
+      "case_id": "m64_n512",
+      "seed": 707,
+      "max_abs_error": 3.725290298461914e-09,
+      "max_normalized_error": 0.0011550000797758556,
+      "max_row_sum_error": 1.1679367162287235e-07
+    },
+    {
+      "case_id": "m64_n2048",
+      "seed": 707,
+      "max_abs_error": 1.862645149230957e-09,
+      "max_normalized_error": 0.00103872592321342,
+      "max_row_sum_error": 1.9727940525626764e-07
+    },
+    {
+      "case_id": "m256_n128",
+      "seed": 707,
+      "max_abs_error": 1.4901161193847656e-08,
+      "max_normalized_error": 0.0016141158225078727,
+      "max_row_sum_error": 1.047446858137846e-07
+    },
+    {
+      "case_id": "m256_n512",
+      "seed": 707,
+      "max_abs_error": 7.450580596923828e-09,
+      "max_normalized_error": 0.0014454695750004047,
+      "max_row_sum_error": 1.3102908269502223e-07
+    },
+    {
+      "case_id": "m256_n2048",
+      "seed": 707,
+      "max_abs_error": 2.7939677238464355e-09,
+      "max_normalized_error": 0.001276682709047376,
+      "max_row_sum_error": 2.3961001716088504e-07
+    },
+    {
+      "case_id": "m68_n192",
+      "seed": 707,
+      "max_abs_error": 1.4901161193847656e-08,
+      "max_normalized_error": 0.0017278905637608585,
+      "max_row_sum_error": 1.1730298865586519e-07
+    }
+  ],
+  "files": {
+    "row_softmax.py": "b15ea29f2a988abfa1189d2c28275d27a3777fd86a5dcd870f199489345a62e4",
+    "test_row_softmax.py": "237897c826512c57f12bb0bdb0767b05ec0afaa22d895eabdbe1066aa094503e"
+  },
+  "source_check": "AscendC __vector__, four __simd_vf__ blocks; MTE2->V and V->MTE3 notify/wait; max explicit UB 24640 bytes"
+}

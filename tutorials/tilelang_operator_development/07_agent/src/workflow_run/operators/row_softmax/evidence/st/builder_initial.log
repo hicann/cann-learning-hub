@@ -1,0 +1,30 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.9, pytest-9.0.3, pluggy-1.6.0 -- $COURSE_RUNTIME/venv/bin/python
+rootdir: $WORKSPACE
+configfile: pyproject.toml
+plugins: repeat-0.9.4, xdist-3.8.0, forked-1.6.0
+collecting ... collected 4 items
+
+operators/row_softmax/test_row_softmax.py::test_reject_builder[rows3] PASSED [ 25%]
+operators/row_softmax/test_row_softmax.py::test_reject_builder[cols129] PASSED [ 50%]
+operators/row_softmax/test_row_softmax.py::test_reject_builder[float_rows] FAILED [ 75%]
+
+=================================== FAILURES ===================================
+_______________________ test_reject_builder[float_rows] ________________________
+
+rows = 4.0, cols = 128, reason = 'rows'
+
+    @pytest.mark.parametrize('rows,cols,reason', [(3, 128, 'rows'), (4, 129, 'cols'), (4.0, 128, 'rows'), (4, 128.0, 'cols')],
+                             ids=['rows3', 'cols129', 'float_rows', 'float_cols'])
+    def test_reject_builder(rows, cols, reason):
+        # Prime the valid cache entry first, so the test detects invalid cache hits.
+        row_softmax.build(4, 128)
+>       with pytest.raises(ValueError, match=reason):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+operators/row_softmax/test_row_softmax.py:247: Failed
+=========================== short test summary info ============================
+FAILED operators/row_softmax/test_row_softmax.py::test_reject_builder[float_rows]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+========================= 1 failed, 2 passed in 9.86s ==========================

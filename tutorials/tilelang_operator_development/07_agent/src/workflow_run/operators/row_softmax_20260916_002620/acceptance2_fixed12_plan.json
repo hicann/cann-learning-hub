@@ -1,0 +1,32 @@
+{
+  "at": "2026-09-16T04:27:04.178292+08:00",
+  "purpose": "Resolve final same-source sampling uncertainty after C12 structural rejection; performance metric/thresholds/cases are unchanged. This is a fixed repeat-of-three-session-batches under the original noisy-result policy, not accepting a favorable partial batch.",
+  "source_baseline": "baseline/operators/row_softmax/row_softmax.py",
+  "source_best": "working/operators/row_softmax/row_softmax.py",
+  "base": [
+    "B0_acceptance2",
+    "B0_acceptance2_repeat1",
+    "B0_acceptance2_repeat2",
+    "B0_acceptance2_repeat3"
+  ],
+  "candidate": [
+    "Bstar_acceptance2",
+    "Bstar_acceptance2_repeat1",
+    "Bstar_acceptance2_repeat2",
+    "Bstar_acceptance2_repeat3"
+  ],
+  "chronology": "C12 supplemental diagnostic and RESULT first; unchanged C4 final fullLevel1 refresh; then B0->C4 paired3sessions repeated three times. acceptance2 existing3sessions included, yielding exactly12 formal samples per case/version.",
+  "rationale": {
+    "acceptance2_failed_case": "m64_n128",
+    "B0_median_us": 1.37697,
+    "C4_median_us": 1.487273,
+    "C4_MAD_us": 0.198788,
+    "allowed_C4_us": 1.4458185,
+    "gap_us": 0.0414545,
+    "note": "Within-version MAD greatly exceeds failed threshold gap. C12 only changes VF, has large-N VEC regression and no incremental GM benefit. Need stable median estimation rather than a syntax rewrite or selecting fast samples."
+  },
+  "fixed_protocol": "msprof op warm-up10 launch-count9, one formal launch/case/entry, all9original cases fixedseed707, maxaiv acrossalllogicalblocks, samecache/concurrency, nofrequency-normalized orhosttime",
+  "statistic": "Median of ALL12 samples percase/version; include all originally failed acceptance2 samples. Keep min/max/MAD and session-global variability. Compare only after all planned batches, zero exclusions.",
+  "qualification": "All216 current/rated frequency rows1650/1650 andcomplete8CSV percase; any runtime/control failure is retained and prevents VERIFIED.",
+  "stop_rule": "No more unchanged-code samples after these fixed12. If still unmet, keep unmet state and return to independently justified candidates such as bounded register retention; do not claim convergence or completion merely from materials."
+}

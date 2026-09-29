@@ -1,0 +1,119 @@
+[
+  {
+    "case_id": "m4_n128",
+    "shape": [
+      4,
+      128
+    ],
+    "dtype": "float32",
+    "layout": "contiguous",
+    "axis": 1,
+    "device_id": 0,
+    "seed": 707,
+    "input_distribution": "normal(0,1), clamped to [-80,80]"
+  },
+  {
+    "case_id": "m4_n2048",
+    "shape": [
+      4,
+      2048
+    ],
+    "dtype": "float32",
+    "layout": "contiguous",
+    "axis": 1,
+    "device_id": 0,
+    "seed": 707,
+    "input_distribution": "normal(0,1), clamped to [-80,80]"
+  },
+  {
+    "case_id": "m64_n128",
+    "shape": [
+      64,
+      128
+    ],
+    "dtype": "float32",
+    "layout": "contiguous",
+    "axis": 1,
+    "device_id": 0,
+    "seed": 707,
+    "input_distribution": "normal(0,1), clamped to [-80,80]"
+  },
+  {
+    "case_id": "m64_n512",
+    "shape": [
+      64,
+      512
+    ],
+    "dtype": "float32",
+    "layout": "contiguous",
+    "axis": 1,
+    "device_id": 0,
+    "seed": 707,
+    "input_distribution": "normal(0,1), clamped to [-80,80]"
+  },
+  {
+    "case_id": "m64_n2048",
+    "shape": [
+      64,
+      2048
+    ],
+    "dtype": "float32",
+    "layout": "contiguous",
+    "axis": 1,
+    "device_id": 0,
+    "seed": 707,
+    "input_distribution": "normal(0,1), clamped to [-80,80]"
+  },
+  {
+    "case_id": "m256_n128",
+    "shape": [
+      256,
+      128
+    ],
+    "dtype": "float32",
+    "layout": "contiguous",
+    "axis": 1,
+    "device_id": 0,
+    "seed": 707,
+    "input_distribution": "normal(0,1), clamped to [-80,80]"
+  },
+  {
+    "case_id": "m256_n512",
+    "shape": [
+      256,
+      512
+    ],
+    "dtype": "float32",
+    "layout": "contiguous",
+    "axis": 1,
+    "device_id": 0,
+    "seed": 707,
+    "input_distribution": "normal(0,1), clamped to [-80,80]"
+  },
+  {
+    "case_id": "m256_n2048",
+    "shape": [
+      256,
+      2048
+    ],
+    "dtype": "float32",
+    "layout": "contiguous",
+    "axis": 1,
+    "device_id": 0,
+    "seed": 707,
+    "input_distribution": "normal(0,1), clamped to [-80,80]"
+  },
+  {
+    "case_id": "m68_n192",
+    "shape": [
+      68,
+      192
+    ],
+    "dtype": "float32",
+    "layout": "contiguous",
+    "axis": 1,
+    "device_id": 0,
+    "seed": 707,
+    "input_distribution": "normal(0,1), clamped to [-80,80]"
+  }
+]

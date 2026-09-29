@@ -1,0 +1,6 @@
+简单档：SimdVF 内全部采用向量寄存器微指令，先用 vmax/vadd 合并多组数据，再用 vcmax/vcadd 得到行归约结果；通过 BRC_B32 广播行标量。softmax_single 完整执行 amax、减最大值、exp、对 exp 求和、除以行和；输出 Max、Shift、Exp、Sum、Y，不能只实现原输入的 amax/sum。
+中等档：softmax_kernel 按完整行组成 tile。begin=bx*(M//blocks)+it*rows，所有读入和写回使用同一行偏移；列维仍完整，所以归约不跨核。
+困难档：softmax_pipeline 对 a、mx、shifted、e、sm、y 都配置 buffer 内存份数，并用 T.Pipelined 遍历相同的行 tile。rows=8、C=128 时每份元素容量为 16.0625 KiB，双 buffer 32.125 KiB，三 buffer 48.1875 KiB。
+验收：四类输入逐一核对五个输出，再比较 torch.softmax 与行和；性能使用相同五输出实现的 msprof kernel 耗时。运行对应答案完成设备检查；按正文命令采集当前环境的性能，原表格保留课程参考测量值。
+
+五步合一：以同一行的两个寄存器组完成最大值、平移、指数、求和与归一化；中间结果不再往返UB，只写回Y。精度阈值与前面最终输出一致，为rtol=1e-5、atol=1e-6；性能比较必须先统一输出要求。

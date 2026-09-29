@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="520" viewBox="0 0 2048 520">
+<defs>
+  <linearGradient id="box" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8fcff"/><stop offset="1" stop-color="#eaf5ff"/></linearGradient>
+  <linearGradient id="ok" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#46c46f"/><stop offset="1" stop-color="#19a750"/></linearGradient>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#2389df"/></marker>
+  <marker id="back" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#f36b21"/></marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#6e8fac" flood-opacity="0.18"/></filter>
+</defs>
+<rect width="2048" height="520" fill="#ffffff"/>
+<g font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif" text-anchor="middle">
+  <g filter="url(#shadow)"><rect x="55" y="75" width="285" height="230" rx="22" fill="url(#box)" stroke="#2b91df" stroke-width="5"/></g>
+  <path d="M140 125 h82 l34 34 v93 h-116z" fill="#fff" stroke="#247bc4" stroke-width="7"/><path d="M222 125 v36 h34" fill="none" stroke="#247bc4" stroke-width="7"/>
+  <path d="M166 190 l19 19 43-48" fill="none" stroke="#2aaf58" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="198" y="282" font-size="35" font-weight="700" fill="#162f52">design.md</text>
+
+  <path d="M355 190 H450" stroke="#2389df" stroke-width="9" marker-end="url(#arrow)"/>
+  <g filter="url(#shadow)"><rect x="475" y="75" width="440" height="230" rx="22" fill="url(#box)" stroke="#2b91df" stroke-width="5"/></g>
+  <rect x="530" y="120" width="140" height="98" rx="12" fill="#273849"/><text x="600" y="185" font-size="48" fill="#fff">&lt;/&gt;</text>
+  <rect x="716" y="120" width="140" height="98" rx="12" fill="#fff" stroke="#247bc4" stroke-width="6"/>
+  <path d="M741 151 l12 12 24-27 M741 183 l12 12 24-27" fill="none" stroke="#2aaf58" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="786" y1="151" x2="831" y2="151" stroke="#66788c" stroke-width="6"/><line x1="786" y1="184" x2="831" y2="184" stroke="#66788c" stroke-width="6"/>
+  <text x="695" y="275" font-size="34" font-weight="700" fill="#162f52">编写 kernel 与 pytest</text>
+
+  <path d="M930 190 H1025" stroke="#2389df" stroke-width="9" marker-end="url(#arrow)"/>
+  <g filter="url(#shadow)"><rect x="1050" y="75" width="350" height="230" rx="22" fill="url(#box)" stroke="#2b91df" stroke-width="5"/></g>
+  <rect x="1120" y="118" width="210" height="102" rx="15" fill="#273849"/><text x="1225" y="184" font-size="52" fill="#fff">&gt;_</text>
+  <text x="1225" y="275" font-size="34" font-weight="700" fill="#162f52">编译 · 运行 · 调试</text>
+
+  <path d="M1415 190 H1510" stroke="#2389df" stroke-width="9" marker-end="url(#arrow)"/>
+  <g filter="url(#shadow)"><rect x="1535" y="75" width="290" height="230" rx="22" fill="url(#box)" stroke="#2b91df" stroke-width="5"/></g>
+  <circle cx="1680" cy="165" r="63" fill="url(#ok)"/><path d="M1648 166 l23 23 47-55" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="1680" y="275" font-size="34" font-weight="700" fill="#162f52">指定案例通过</text>
+
+  <path d="M1840 190 H1920" stroke="#2389df" stroke-width="9" marker-end="url(#arrow)"/>
+  <rect x="1935" y="125" width="105" height="130" rx="22" fill="#2089df"/><text x="1987" y="180" font-size="31" font-weight="700" fill="#fff">进入</text><text x="1987" y="220" font-size="34" font-weight="700" fill="#fff">ST</text>
+
+  <path d="M1225 320 V405 H695 V322" fill="none" stroke="#f36b21" stroke-width="9" marker-end="url(#back)"/>
+  <rect x="790" y="372" width="340" height="60" rx="25" fill="#fff"/><text x="960" y="415" font-size="33" font-weight="700" fill="#f05a18">失败：定位并修复</text>
+</g>
+</svg>

@@ -1,0 +1,1518 @@
+{
+  "rows": [
+    {
+      "label": "B0_acceptance2",
+      "session": 1,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 1,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 1,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 1,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 1,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 1,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 1,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 1,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 1,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 2,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 2,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 2,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 2,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 2,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 2,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 2,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 2,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 2,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 3,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 3,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 3,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 3,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 3,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 3,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 3,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 3,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2",
+      "session": 3,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "B0_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 1,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 1,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 1,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 1,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 1,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 1,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 1,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 1,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 1,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 2,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 2,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 2,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 2,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 2,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 2,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 2,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 2,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 2,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 3,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 3,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 3,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 3,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 3,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 3,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 3,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 3,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2",
+      "session": 3,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 1,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 2,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat1",
+      "session": 3,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 1,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 2,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat2",
+      "session": 3,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 1,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 2,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m4_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m4_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m64_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m64_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m64_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m256_n128",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m256_n512",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m256_n2048",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    },
+    {
+      "label": "Bstar_acceptance2_repeat3",
+      "session": 3,
+      "case_id": "m68_n192",
+      "current_freq": "1650",
+      "rated_freq": "1650"
+    }
+  ],
+  "qualified": true,
+  "exclusions": []
+}
