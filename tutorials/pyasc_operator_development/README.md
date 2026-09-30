@@ -100,16 +100,16 @@
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 5.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
-| 5.2 融合算子概念 | 在线体验建设中 | 🚧 开发中 |
-| 5.3 Matmul+矢量融合算子开发 | 在线体验建设中 | 🚧 开发中 |
-| 5.4 章节实践 | 在线体验建设中 | 🚧 开发中 |
+| 5.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/05_fused_operator_development/05.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 5.2 CV架构与融合算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/05_fused_operator_development/05.02_fusion_value_and_boundaries.ipynb) | ✅ 已发布 |
+| 5.3 基于MatmulLeakyRelu样例开发CV融合算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/05_fused_operator_development/05.03_common_fusion_patterns.ipynb) | ✅ 已发布 |
+| 5.4 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/05_fused_operator_development/05.04_chapter_practice.ipynb) | ✅ 已发布 |
 
 #### 第六章：算子调试与性能调优
 
 | Notebook | 链接 | 状态 |
 |--|--|--|
-| 6.1 章节介绍 | 在线体验建设中 | 🚧 开发中 |
-| 6.2 功能调试 | 在线体验建设中 | 🚧 开发中 |
-| 6.3 性能调优 | 在线体验建设中 | 🚧 开发中 |
-| 6.4 章节实践 | 在线体验建设中 | 🚧 开发中 |
+| 6.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/06_debug_and_profiling/06.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 6.2 功能调试 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/06_debug_and_profiling/06.02_functional_debugging.ipynb) | ✅ 已发布 |
+| 6.3 性能调优 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/06_debug_and_profiling/06.03_performance_profiling.ipynb) | ✅ 已发布 |
+| 6.4 章节实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/pyasc_operator_development&scanFilePath=tutorials/pyasc_operator_development/06_debug_and_profiling/06.04_chapter_practice.ipynb) | ✅ 已发布 |

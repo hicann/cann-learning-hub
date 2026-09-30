@@ -1,0 +1,8 @@
+---
+1. 答案：B。解析：asc.printf中换行符需以转义形式书写，Python源码中写作\\n（字符串中的字面反斜杠+n两个字符），编译后在Device侧输出为换行；直接写\n会被Python解释为换行字符而非转义序列。
+2. 答案：C。解析：第二个参数是desc_id，用于标识不同打印点，便于在混合多处dump_tensor的输出中区分数据来源；打印元素数是第三个参数dump_size。
+3. 答案：A。解析：切分越界属于"执行到哪、变量值是多少"的问题，printf打印offset/block_idx最先收敛假设；dump_tensor用于核对数据内容，msprof面向性能而非功能。
+4. 实践题参考：在Compute阶段asc.add之后插入
+   if asc.get_block_idx() == 0 and i == 0:
+       asc.dump_tensor(z_local[buf_id * tile_length:], 2, 32)
+   运行后desc=2的输出应等于对应x_local+y_local（同为block 0首拍的desc=0/1数据之和），若不等则计算或搬运有误。

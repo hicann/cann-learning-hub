@@ -1,0 +1,15 @@
+==================== 第 1 题（单选） ====================
+答案：B
+解析：将 C 的逻辑位置配置为 VECCALC 后，Matmul 当前迭代产生的矩阵分片可以通过 get_tensor_c 交给 LocalTensor，并继续执行 LeakyReLU Vector 计算。
+
+==================== 第 2 题（单选） ====================
+答案：B
+解析：每轮先由 iterate 计算 Matmul 分片，再通过 get_tensor_c 获取分片，在 LocalTensor 上执行 leaky_relu，最后使用 data_copy 将激活结果写回 GM。
+
+==================== 第 3 题（多选） ====================
+答案：A、B、C
+解析：队列缓冲区大小按 base_m * base_n 个输出元素分配；LeakyReLU 使用同一个 LocalTensor 作为源和目的；当前分片完成 data_copy 后释放，缓冲区可在下一轮继续使用。get_tensor_c 写入 LocalTensor 前不能释放该 Tensor，因此 D 错误。
+
+==================== 第 4 题（多选） ====================
+答案：A、B、C
+解析：验证代码使用 torch.matmul + bias 和 torch.where 独立表达完整公式，再用带相对容差和绝对容差的 torch.allclose 比较实际输出。只检查 Kernel 能否启动不能证明数值结果正确。

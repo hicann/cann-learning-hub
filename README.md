@@ -745,6 +745,7 @@ cd cann-learning-hub
 </details>
 
 ## 🔥 Latest News
+- [2026/09] [PyASC 算子开发系列教程](./tutorials/pyasc_operator_development)新增高阶课程：融合算子开发（AIC/AIV 分离架构、MatmulLeakyRelu CV 融合实践）与算子调试及性能调优（printf/dump_tensor 功能调试、msprof op 性能分析），至此初、中、高级课程全部上线。
 - [2026/09] 新增[大模型 RL 训练系列教程](./tutorials/rl_training_pipeline)，使用 verl + GRPO 完成 Qwen3-1.7B Wordle 强化学习训练，涵盖 RL 核心概念、Wordle Agent Loop、训练监控、TorchTitan-NPU 后端、FSDP2、TND 变长注意力与上下文并行。
 - [2026/09] 新增[面向高性能计算的数据结构](./contrib/tutorials/data_structure_for_hpc)课程，围绕数据结构与高性能计算实践，涵盖并行计算、分布式计算、Ascend C 算子开发与性能优化等内容。
 - [2026/08] 新增[PyPTO 算子开发系列教程](./tutorials/pypto_development)，基于 PyPTO Tensor 编程范式开发昇腾算子，涵盖 CANN/芯片认知、MPMD 编程范式、elementwise/matmul/reduction 基础实践与 Attention/Transformer 中高级实践。
