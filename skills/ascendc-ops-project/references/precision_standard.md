@@ -114,12 +114,12 @@ def check_precision_threshold(npu_output, golden_output):
     
     # 根据数据类型选择阈值
     dtype_thresholds = {
-        np.float16: 2**-10,      # 0.000977
-        np.float32: 2**-13,      # 0.000122
-        np.bfloat16: 2**-7,      # 0.00781
+        "float16": 2**-10,      # 0.000977
+        "float32": 2**-13,      # 0.000122
+        "bfloat16": 2**-7,      # 0.00781
     }
     
-    threshold = dtype_thresholds.get(npu_output.dtype, 2**-13)
+    threshold = dtype_thresholds.get(npu_output.dtype.name, 2**-13)
     mare_threshold = 10 * threshold
     
     # 计算误差
