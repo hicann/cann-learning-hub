@@ -1,6 +1,6 @@
 # Ascend C 算子开发系列教程（Kernel 直调）
 
-本教程将带你学习面向昇腾 NPU 的 Ascend C 高性能算子开发，包含算子核函数、算子编译、Tiling 计算、矩阵算子开发、CV 融合算子开发、算子调试调优等核心内容。
+本教程将带你学习面向昇腾 NPU 的 Ascend C 高性能算子开发，包含算子核函数、算子编译、Tiling 计算、矩阵算子开发、CV 融合算子开发、算子调试调优、Aclgraph 入图编译与运行等核心内容。
 
 教程按章节划分，每个章节均包含以下内容：
 - Notebooks：包含课程知识点与练习题，适用于自主学习或讲师引导式教学，可在 GitCode 提供的轻量级 Notebook 上运行，也可自行搭建 JupyterLab 在本地环境中使用。
@@ -15,7 +15,7 @@
 
 在学习本教程之前，建议先完成以下前置学习：
 
-- 阅读 [cann-learning-hub 快速入门](https://gitcode.com/cann/cann-learning-hub/quick_start) 中的 `cann_basics` 章节，了解 AI 基础概念、NPU 硬件架构与 CANN 软件栈
+- 阅读 [cann-learning-hub 快速入门](https://gitcode.com/cann/cann-learning-hub/tree/master/quick_start) 中的 `cann_basics` 章节，了解 AI 基础概念、NPU 硬件架构与 CANN 软件栈
 - 掌握 C/C++ 编程基础
 - 了解并行编程基本概念
 
@@ -57,7 +57,7 @@
 | 2.2 Ascend C的"Hello world" | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.02_HelloWorld.ipynb) | ✅ 已发布 |
 | 2.3 AscendC编程范式介绍与API介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.03_ascendc_programming_paradigm_and_api_introduction.ipynb) | ✅ 已发布 |
 | 2.4 基于Add算子的核函数介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.04_introduction_to_kernel_functions_based_on_add_operator.ipynb) | ✅ 已发布 |
-| 2.5 基于静态Tensor的Vector算子入门 | [本地学习](02_AscendC_basic/02.05_introduction_to_vector_operator_based_on_static_tensor.ipynb) | 新增 |
+| 2.5 基于静态Tensor的Vector算子入门 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.05_introduction_to_vector_operator_based_on_static_tensor.ipynb) | ✅ 已发布 |
 | 2.6 泛化Tiling设计 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.06_generalized_tiling_design.ipynb) | ✅ 已发布 |
 | 2.7 PyTorch框架下Kernel直调 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.07_kernel_pytorch_call.ipynb) | ✅ 已发布 |
 | 2.8 核函数实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.08_kernel_function_practice.ipynb) | ✅ 已发布 |
@@ -74,6 +74,7 @@
 | 3.5 CV融合算子开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.05_cv_fused_operator_development.ipynb) | ✅ 已发布 |
 | 3.6 Matmul算子实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.06_matmul_practice.ipynb) | ✅ 已发布 |
 | 3.7 CV融合算子实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.07_cv_fused_operator_practice.ipynb) | ✅ 已发布 |
+| 3.8 PyTorch调用算子综合实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.08_pytorch_operator_practice.ipynb) | ✅ 已发布 |
 
 ### 第四章：Ascend C算子调试调优
 
@@ -83,3 +84,10 @@
 | 4.2 NPU域上板调试 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_debug/04.02_NPU_On-Board_Debugging.ipynb) | ✅ 已发布 |
 | 4.3 算子性能优化工具 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_debug/04.03_profiling_tool_usage.ipynb) | ✅ 已发布 |
 | 4.4 算子仿真调优 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_debug/04.04_simulation_analysis.ipynb) | ✅ 已发布 |
+
+### 第五章：Ascend C算子进阶特性
+
+| Notebook | Link | 状态 |
+|--|--|--|
+| 5.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/05_advanced_features/05.01_chapter_intro.ipynb) | ✅ 已发布 |
+| 5.2 Aclgraph入图编译与运行 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/05_advanced_features/05.02_aclgraph_compile_launch.ipynb) | ✅ 已发布 |
