@@ -14,7 +14,7 @@
 
 ## 环境与运行
 
-在已配置 CANN、PyTorch/torch_npu 和课程 TileLang fork 的容器内运行。课程 TileLang fork 的参考 commit 为 `130962668c3cc79b3a41c92b57c81923cfcc669f`。
+在已安装 TileLang 的环境中运行，并按第1.4节配置好 CANN、PyTorch 和 torch_npu。
 
 ### 在终端运行
 
@@ -31,7 +31,7 @@ python src/run_gemm.py persistent
 python answer/04.05_practice.py
 ```
 
-需要切换已编译好的兼容 fork 时，在 source 前设置 `TILELANG_COURSE_FORK`。`src/env.sh` 只设置当前 shell 的环境与临时缓存，不修改安装仓库。它通过 `src/sitecustomize.py` 选择指定 fork，避免另一个 editable 安装重定向到错误仓库。
+默认使用当前 Python 环境中已安装的 TileLang，无需额外指定源码目录。若需要使用另一份已编译好的 TileLang，可在执行 `source src/env.sh` 前设置 `TILELANG_COURSE_FORK`，指定其源码目录。这是可选配置；`src/env.sh` 只设置当前 shell 的环境与临时缓存，不修改安装内容。
 
 ### 在 Notebook 中运行
 
@@ -67,4 +67,4 @@ python src/summarize_profile.py "${COURSE_OUTPUT_DIR}/practice_step5" --blocks 3
 - `images/`：正文图示。
 - `src/original/`：上游扩展示例，供理解 swizzle 等机制；不替代本章 8/36 核教学实现。
 
-核心文件：[8 核 GEMM](src/gemm_kernel.py)、[K 切分](src/gemm_k_demo.py)、[36 核 GEMM](src/gemm_practice36.py)、[A 常驻与列优先](src/gemm_reuse_persistent.py)、[API 依据](src/reference_notes.md)。
+核心文件：[8 核 GEMM](src/gemm_kernel.py)、[K 切分](src/gemm_k_demo.py)、[36 核 GEMM](src/gemm_practice36.py)、[A 常驻与列优先](src/gemm_reuse_persistent.py)。

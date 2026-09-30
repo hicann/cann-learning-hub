@@ -1,6 +1,6 @@
 # 练习：让 Agent 完成一次算子交付
 
-本练习使用课程开始时已经拉取的 TileKernels 代码仓，无需另外下载工作流。下文中的 `agent/init.sh` 和 `agent/` 均为相对于该代码仓根目录的路径。
+本练习使用 [CANNBot Skills 仓库](https://gitcode.com/cann/cannbot-skills/)中的 TileLang 算子开发插件，并将其安装到前六章使用的 TileLang 仓库中。
 
 需求和测试案例已经准备好。同学们只需把材料交给 Agent，跟随提示完成设计、生成、ST、调优、Review 和交付。
 
@@ -8,7 +8,7 @@
 
 ## 1. 准备材料
 
-下载下面两份必要材料，并放到待开发仓库的同一任务目录中：
+下载下面两份必要材料，并放到 TileLang 仓库的同一任务目录中：
 
 - [需求文档](workflow_run/course_inputs/task.md)
 - [指定案例](workflow_run/course_inputs/cases.json)
@@ -17,16 +17,21 @@
 
 ## 2. 初始化工作流
 
-进入课程配套的 TileKernels 代码仓根目录后执行：
+先填写自己使用的 Agent 类型和前六章 TileLang 仓库的实际路径，再执行安装：
 
 ```bash
-bash agent/init.sh --tool codex --scope project
-bash agent/init.sh --tool codex --scope project --check
-cd agent
-codex
+CANNBOT_DIR="$HOME/cannbot-skills"
+TILELANG_DIR="<前六章使用的 TileLang 仓库绝对路径>"
+AGENT_TOOL="<填写自己使用的 Agent 类型，支持项可通过init.sh --help 查看>"
+
+git clone https://gitcode.com/cann/cannbot-skills.git "$CANNBOT_DIR"
+bash "$CANNBOT_DIR/plugins-official/tilelang-op-orchestrator/init.sh" \
+  project "$AGENT_TOOL" "$TILELANG_DIR"
+
+cd "$TILELANG_DIR"
 ```
 
-前两条命令分别安装并检查项目工作流。安装入口位于仓库的 `agent/` 目录，因此需要进入该目录后再启动 Codex。
+安装器会同时完成项目级配置和健康检查。看到 `All checks passed` 后，在 TileLang 仓库根目录启动所选 Agent；Agent 会识别本机芯片，并在 Ascend 950 设备上进入对应工作流。项目中的配置通过软链接使用插件源码，因此运行期间需要保留 CANNBot Skills 仓库。
 
 ## 3. 发送任务
 

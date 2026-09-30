@@ -29,10 +29,4 @@
 
 ## 课后自主运行
 
-自主运行直接使用课程开始时已经拉取的 TileKernels 代码仓。工作流安装脚本的相对路径为 `agent/init.sh`，安装后的启动目录为 `agent/`；完整命令见[课后练习](src/exercise_task.md)。此外还需要完整任务与合适环境：
-
-- Linux 与可用的 Ascend 950 系列 NPU，Docker 可选。
-- 与 CANN 匹配的 PyTorch、torch_npu 和 TileLang Ascend 环境；本例采用 AscendC + SimdVF。
-- Codex 与工程已安装的 Skills；本练习推荐选择 Flash 模式，完整案例和目标在运行前给清楚。
-
-具体任务与启动方式见 [课后练习](src/exercise_task.md)。换设备、软件或输入要求后，需要按新条件取得自己的结果。课件里的记录不能代替自己的执行。
+自主运行时，将 [CANNBot Skills 仓库](https://gitcode.com/cann/cannbot-skills/)中的 TileLang 算子开发插件安装到前六章使用的 TileLang 仓库，并在该仓库启动自己使用的 Agent。具体操作见[课后练习](src/exercise_task.md)。
