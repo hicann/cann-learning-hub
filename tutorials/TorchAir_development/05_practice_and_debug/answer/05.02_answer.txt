@@ -1,0 +1,75 @@
+﻿======================================================================
+5.2 图编译 Debug 信息保存功能 章节练习答案
+======================================================================
+
+1. （单选题）开启图编译 Debug 信息保存功能，需要设置哪个环境变量？
+   答案：B
+   解析：本功能复用 PyTorch 原生 TORCH_COMPILE_DEBUG 环境变量，设置为
+         1 后会自动收集必要的日志和图文件。ASCEND_GLOBAL_LOG_LEVEL 是
+         CANN 全局日志级别变量，与图编译 Debug 产物收集无关；
+         TORCHAIR_DEBUG、TORCH_COMPILE_CACHE 均非本功能使用的变量。
+
+2. （单选题）在 Python 脚本中通过 `os.environ` 设置该环境变量时，正确的做法是？
+   答案：C
+   解析：TORCH_COMPILE_DEBUG 必须在导入 torchair 和 logger 之前设置，
+         否则无法生效。在推理完成后或 torch.compile 调用时设置都为时
+         已晚；"任意位置设置效果相同"的说法不成立。
+
+3. （单选题）使用 compile_fx 开启该功能时，下列哪个文件不会被收集？
+   答案：D
+   解析：使用约束明确说明：使用 compile_fx 开启该功能时，不会收集 AOT
+         前的 GraphModule 文件 dynamo_out_graph.txt。output_code.py
+         （编译后的图结构）、AOT 后的 GraphModule（000_aot_forward_
+         graph.txt）与 debug.log 均正常收集。
+
+4. （单选题）aclgraph 在 Capture 阶段捕获的模型运行实例信息（*.json 文件）的生成条件是？
+   答案：A
+   解析：仅当配套的 CANN 版本是 8.5.0 及之后的版本，才会生成原始
+         *.json 及用于可视化的 *.aligned.json 文件，否则不会生成。该
+         信息由功能在编译过程中自动收集（内部通过 Runtime
+         aclmdlRIDebugJsonPrint 接口获取），无需用户手动调用。
+
+5. （单选题）分布式场景下，Debug 产物运行目录名的特点是？
+   答案：B
+   解析：分布式场景下，运行目录名会在末尾追加 -rank_<rank_id>，例如
+         torch_compile_debug/run_<时间>-pid_<进程号>-rank_<rank_id>；
+         同时需在脚本开头 import npugraph_ex，确保 debug 目录能正确
+         创建。
+
+6. （单选题）示例中 `config.debug.graph_dump.type = "pbtxt"` 的作用是？
+   答案：C
+   解析：通过 CompilerConfig 开启 graph_dump 并指定 pbtxt 格式，用于
+         保存 GE 图。编译模式 max-autotune 由 config.mode.value 设置，
+         Dynamo 日志由 torch._logging.set_logs 开启，与本配置无关。
+
+7. （多选题）开启本功能后，产物中可以包含哪些图文件？
+   答案：ABC
+   解析：应选择 A（AOT 前的 GraphModule，即 dynamo_out_graph.txt）、
+         B（每个公共 Pass 处理后的 FX 图）、C（aclgraph 编译后的图
+         结构文件 output_code.py）。训练数据集样本（D）不属于本功能
+         收集的调试信息。
+
+8. （多选题）下列关于产物目录结构的说法，正确的有哪些？
+   答案：ABD
+   解析：应选择 A（npugraph_ex 的日志文件为 debug.log）、B（output_
+         code.py 保存编译后的图结构）、D（分布式场景下运行目录名会在
+         末尾追加 -rank_<rank_id>）。C 错误：000_aot_forward_graph.txt
+         是 AOT 后的 GraphModule，AOT 前的 GraphModule 对应
+         dynamo_out_graph.txt。
+
+9. （多选题）开启本功能后，能自动收集的调试信息包括哪些？
+   答案：ABCD
+   解析：本功能自动收集的信息包括：日志信息（PyTorch 原生 Dynamo 日志、
+         npugraph_ex 日志）、AOT 后的 GraphModule、每个公共 Pass 处理
+         后的 FX 图、aclgraph 优化中不同 Pass 处理后的 FX 图、编译后
+         的 FX 图结构信息（output_code.py），以及 Capture 阶段捕获的
+         模型运行实例 JSON（需 CANN 8.5.0 及之后版本），四个选项均
+         正确。
+
+10. （多选题）使用本功能进行图编译问题定位时，合理的做法有哪些？
+    答案：ABC
+    解析：应选择 A（同时观察 Dynamo、FX Graph、TorchAir 后端和设备侧
+          编译产物）、B（对比各 Pass 处理后的 FX 图，锁定引入问题的
+          环节）、C（利用 *.aligned.json 文件进行可视化分析）。本功能
+          只负责收集调试信息、辅助人工定位，不能自动修复图编译错误
+          （D 错误）。

@@ -1,0 +1,75 @@
+======================================================================
+5.6 第五章章节练习 参考答案
+======================================================================
+
+一、单选题
+----------
+
+1. 图编译 Debug 信息保存功能中，AOT 前的 GraphModule 对应的产物文件是？
+   答案：D
+   解析：dynamo_out_graph.txt 是 AOT 前的 GraphModule；000_aot_
+         forward_graph.txt 是 AOT 后的 GraphModule，output_code.py 是
+         aclgraph 编译后的图结构文件，debug.log 是日志文件。
+
+2. Data-Dump 功能中，`data_dump_stage` 的默认取值是？
+   答案：B
+   解析：data_dump_stage 默认取 optimized，即 dump 经过 npugraph_ex
+         优化后的 FX 图；original 表示 dump 最原始未优化的 FX 图
+         （开启后通过 eager mode 执行，不进入 aclgraph 模式）。
+
+3. 多流并发死锁检测功能在哪个阶段分析死锁风险？
+   答案：A
+   解析：死锁检测在编译期自动分析整图中各流上通信类算子的核心资源
+         占用，提前发现死锁隐患，无需真正运行到死锁发生。
+
+4. Plog 日志的默认存放路径是？
+   答案：C
+   解析：Plog 日志默认存放在 /root/ascend/log；./dump_output 是
+         Data-Dump 产物目录，./torch_compile_debug 是图编译 Debug
+         产物目录。
+
+5. Data-Dump 产物目录 `worldsize1_global_rank0` 的命名反映了什么信息？
+   答案：B
+   解析：整图算子 Dump 执行成功后，会在 data_dump_dir 指定目录下生成
+         如 worldsize1_global_rank0 的文件夹，命名包含世界规模（卡数）
+         与全局 rank 编号信息，多卡场景会生成多个文件夹。
+
+6. 下列功能与其开启方式的对应关系，错误的是？
+   答案：D
+   解析：Plog 日志打屏应通过 ASCEND_SLOG_PRINT_TO_STDOUT=1 开启，而非
+         TORCH_COMPILE_DEBUG=0（该变量是图编译 Debug 信息保存开关）。
+         A、B、C 三组的对应关系均正确。
+
+二、多选题
+----------
+
+7. 关于图编译 Debug 信息保存功能，正确的说法有哪些？
+   答案：ABCD
+   解析：该功能复用 PyTorch 原生 TORCH_COMPILE_DEBUG 变量（A），须在
+         导入 torchair 和 logger 之前设置（B）；使用 compile_fx 开启时
+         不会收集 dynamo_out_graph.txt（C）；分布式场景下运行目录名
+         会在末尾追加 -rank_<rank_id>（D），四个选项均正确。
+
+8. 关于 SuperKernel 融合优化与 Data-Dump 的约束关系，正确的说法有哪些？
+   答案：ABC
+   解析：应选择 A（开启 SuperKernel 融合优化后 dump_tensor_data 不再
+         生效）、B（使用 torch_npu.save_npugraph_tensor 会使 SuperKernel
+         融合优化断开）、C（将 task_breaker_bypass 配置为 1 可避免融合
+         优化断开）。D 错误：SuperKernel 融合优化与 Data-Dump 存在
+         上述约束，关闭融合优化后 dump 功能仍可使用。
+
+9. 死锁检测的 CONFLICT 日志能够提供的信息包括哪些？
+   答案：ABD
+   解析：CONFLICT 日志包含冲突算子所在的流编号与 TaskId（如
+         stream316 TaskId=4）、算子名称及占用的 Vector 核数量（如
+         32 AIVEC）、以及核数总和与设备总核数的比较结果（如
+         sum=56 > 48）。本功能只输出风险提示，不会自动生成修复
+         代码（C 错误）。
+
+10. 本章介绍的调试功能与其适用问题类型的对应关系，正确的有哪些？
+    答案：ABCD
+    解析：图编译 Debug 信息保存用于分析图编译过程与 Pass 优化问题
+          （A）；算子 Data-Dump 用于定位 NaN、Inf 等精度异常问题（B）；
+          多流死锁检测用于发现多流并发通信算子核资源冲突（C）；Plog
+          日志用于底层运行时与设备侧日志排查（D），四个选项的对应
+          关系均正确。
