@@ -137,7 +137,7 @@ Device 内部的指令执行如下：
 
 **3.发送结束信号：** 任务完成后，Device 调用 HcommAclrtNotifyRecordOnThread 接口发送同步信号，告诉Host算子已执行完毕，唤醒 Host。
 
-## 5 . 样例执行
+## 5 样例执行
 
 ### 5.1 样例设计
 
@@ -175,7 +175,7 @@ Device 内部的指令执行如下：
 
 Host 收到Device发送的同步信号，确认 Device 执行完毕，取回结果进行验证。
 
-1. **Host 恢复：** 阶段三中的 aclrtWaitNotify 收到 Device 的结束信号，Host 线程恢复运行。
+1. **Host 恢复：** 4.2 节 Step 2「下发 Kernel」中调用的 aclrtWaitAndResetNotify 收到 Device 的结束信号，Host 线程恢复运行。
 1. **流同步：** 调用 aclrtSynchronizeStream 确保所有操作彻底完成。
 1. **结果回传 （仅 Recv 端）：** 调用 aclrtMemcpy (Device->Host)，将 Device 侧 recvBuf 中的最终结果搬回 Host 侧内存。
 1. **校验与清理：** Host 打印结果，验证数值正确性，最后销毁 Stream、Context 和 Device 资源。
@@ -213,10 +213,17 @@ AI CPU算子包会在业务启动时加载至Device，加载过程中驱动默�
 
 参考如下命令，使用 root用户在物理机上执行，以device 0为例：
 
-```apache
-npu-smi set -t custom-op-secverify-enable -i 0 -d 1 # 使能验签配置
-npu-smi set -t custom-op-secverify-mode -i 0 -d 0 # 关闭自定义验签
+```shell
+npu-smi set -t custom-op-secverify-enable -i 0 -d 1    # 0 卡使能验签配置开关
+npu-smi set -t custom-op-secverify-mode  -i 0 -d 0     # 0 卡关闭验签
 ```
+
+两条命令需配套执行，缺一不可：
+
+- 第一条 `-t custom-op-secverify-enable -d 1` 用于**使能验签配置项开关**，只有该开关打开后，下面对验签模式的设置才会生效；它只是让"验签"这件事变得可配置，并不代表开启验签。
+- 第二条 `-t custom-op-secverify-mode -d 0` 才是**真正关闭验签**：模式值 `0` 表示"关闭验证，不验签"（其余取值：1 华为证书、2 客户证书、3 华为或客户证书、4 社区证书、5 华为或社区证书、6 客户或社区证书、7 华为或客户或社区证书，默认为 5）。
+
+其中 `-i` 指定设备 ID（可通过 `npu-smi info -l` 查询 NPU ID），`-d` 指定对应配置项的属性值。
 
 关闭驱动安全验签机制存在一定的安全风险，需要用户自行确保自定义通信算子的安全可靠，防止恶意攻击行为。
 
@@ -226,7 +233,23 @@ npu-smi set -t custom-op-secverify-mode -i 0 -d 0 # 关闭自定义验签
 
 vim /usr/local/Ascend/cann/conf/ascend_package_load.ini
 
-将下列内容追加到 ascend_package_load.ini中：name:aicpu_hccl_custom_p2p.tar.gzinstall _path:2optional:truepackage_path:opp/vendors/cust/aicpu/kernel
+将下列内容逐行追加到 ascend_package_load.ini 中：
+
+```ini
+name:aicpu_hccl_custom_p2p.tar.gz
+install_path:2
+optional:true
+package_path:opp/vendors/cust/aicpu/kernel
+load_as_per_soc:false
+```
+
+各字段含义如下：
+
+- name：tar 包文件名。
+- install_path：Device 侧的安装路径枚举值，AI CPU kernel 文件路径须设置为 2。
+- optional：默认为 true，若对应的包不存在，则跳过加载。
+- package_path：tar 包在 Host 侧 CANN Toolkit 包下的相对路径。
+- load_as_per_soc：是否每种芯片类型都加载。
 
 **编译并执行测试样例：**
 
@@ -238,7 +261,7 @@ cd examples/04_custom_ops_p2p/testcase
 
 - 编译
 
-```go
+```bash
 make
 ```
 
@@ -252,7 +275,7 @@ make test
 
 rank为偶数的节点负责发送数据，内容为其rank编号，rank为奇数的节点负责接收数据，因此打印结果中各个奇数rank接收到的是上一rank的编号。
 
-```apache
+```text
 Found 8 NPU device(s) available
 rankId: 1, output: [ 0 0 0 0 0 0 0 0 ]
 rankId: 3, output: [ 2 2 2 2 2 2 2 2 ]
