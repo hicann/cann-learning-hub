@@ -20,7 +20,7 @@ xLLM是一个高效的开源大模型推理框架，提供企业级的服务部�
 算子侧：swiglu算子高性能版本替换、GroupMatmul算子二次开发优化、Cast算子消除、替换MoEInitRoutingV3融合算子
 框架侧：使能MTP Eagle3特性
 
-b）DeepSeek-v3.2：
+b）DeepSeek-V3.2：
 算子侧：GroupMatmul算子使能NZ格式、o_proj替换爱因斯坦乘融合算子、替换gmmSwigluQuant和MoeInitRoutingV3融合算子
 框架侧：使能aclgraph特性、使能MTP（K=3）
 
@@ -35,8 +35,8 @@ c）ChatGLM 4.6/4.7:
 | 模型 | 目标(E2E/TPS) | 优化前 | 优化后 | 提升百分比 |
 | --- | --- | --- | --- | --- |
 | Qwen3-30B-MOE | 4s | 5.1s | 2.75s | 85.45% |
-| DeepSeek-3.2 | 55 | 27 | 55.2 | 103.70% |
-| GLM-4.5/4.6 | 60 | 51 | 81 | 58.82% |
+| DeepSeek-V3.2 | 55 | 27 | 55.2 | 104.44% |
+| GLM-4.6/4.7 | 60 | 51 | 81 | 58.82% |
 
 ## 5. 总结
 
