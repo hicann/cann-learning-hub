@@ -385,6 +385,6 @@ Regbase编程虽然更底层，但正是这种对硬件的直接控制能力，�
 **参考资料：**
 - CANN社区版 9.0.0-beta.2 开发文档
 - Ascend C算子开发指南 - Reg矢量计算编程
-- 本文代码案例参考：https://gitcode.com/cann/asc-devkit/blob/master/examples/01_simd_cpp_api/00_introduction/04_vector_reg/vector_add
+- 本文代码案例参考：https://gitcode.com/cann/asc-devkit/blob/master/examples/01_simd_cpp_api/00_introduction/04_reg_compute/add
 
-（本文基于CANN asc-devkit样例整理，支持Ascend 950PR/Ascend 950DT产品）
+（该样例实现 y=x+x 自加（4 核连续段），无 LocalMemBar、无 CreateMask（掩码接口为 AscendC::Reg::UpdateMask）。本文基于CANN asc-devkit样例整理，支持Ascend 950PR/Ascend 950DT产品）
