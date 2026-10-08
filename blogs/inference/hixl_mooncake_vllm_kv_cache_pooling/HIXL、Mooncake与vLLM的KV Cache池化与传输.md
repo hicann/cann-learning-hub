@@ -16,7 +16,7 @@ Prefix Caching是大语言模型（LLM）推理中的一项重要功能，不同
 
 HIXL（ Huawei Xfer Library ）是CANN通信库中提供点对点数据传输能力的单边通信库，面向集群场景提供简易、可靠、高效的点对点数据传输。依托Mooncake开源组件Transfer Engine（传输引擎）和Mooncake Store（存储组件）为大模型推理引擎vLLM提供亲和昇腾的高效KV Cache传输与池化存储能力，优化推理性能。
 
-![在这里插入图片描述](images/vllm_mooncake_hixl_interfacing.png)
+![vLLM-Mooncake-HIXL 协同架构图](images/vllm_mooncake_hixl_interfacing.png)
 
 - vLLM 对接 Mooncake，实现缓存共享与传输
   在 vLLM 的 V1 Engine 中，通过新增两种 Connector 原生接入 Mooncake：
