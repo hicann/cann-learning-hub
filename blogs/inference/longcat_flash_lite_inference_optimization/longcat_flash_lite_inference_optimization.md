@@ -14,7 +14,7 @@ MoE 架构通过“总参数大、激活参数少”的方式提升模型容量�
 
 LongCat-Flash-Lite 选择把一部分参数扩展放到 Embedding 层。Embedding 本质上是查表：输入 token ID 后，从参数表中取出对应向量。即使 Embedding 表很大，每个 token 实际访问的也只是少量表项，因此 Embedding 也具备天然的稀疏访问特征，适合作为 MoE 专家之外的另一条参数扩展路径。
 
-N-gram Embedding 就是在这个思路上进一步扩展。这里的 gram 可以理解为一段连续 token 片段，N 表示片段长度。1-gram 是单个 token，2-gram 是由连续 2 个 token 组成的片段，3-gram 是由连续 3 个 token 组成的片段。比如输入序列为“你 很 好”，当处理“很”这个 token 时，“很”本身是 1-gram，“你 很”是 2-gram，“你 很 好”是 3-gram。
+N-gram Embedding 就是在这个思路上进一步扩展。这里的 gram 可以理解为一段连续 token 片段，N 表示片段长度。1-gram 是单个 token，2-gram 是由连续 2 个 token 组成的片段，3-gram 是由连续 3 个 token 组成的片段。比如输入序列为"你 很 好"，当处理"好"这个 token 时，"好"本身是 1-gram，"很 好"是 2-gram，"你 很 好"是 3-gram。
 
 传统 Embedding 只查询当前 token 的向量，而 N-gram Embedding 会把当前 token 与前序 token 组成的连续片段也纳入表示。具体来说，N-gram 片段经过 Hash 映射后查询扩展 Embedding 表，再与基础 Embedding 结果融合，使当前 token 的输入表示不仅包含单 token 语义，也包含局部上下文组合信息。
 
