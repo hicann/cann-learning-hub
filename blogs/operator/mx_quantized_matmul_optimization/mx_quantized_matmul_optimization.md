@@ -169,15 +169,21 @@ Figure 2. MX量化数据搬运流程：GM → L1 → L0/L0_MX → MMAD计算
 
 MMAD计算时间：
 
-核数频率
+$$T_{MMAD} = \dfrac{M \times K \times N}{16 \times C0 \times 16 \times 核数 \times 频率}$$
 
 其中`16 × C0 × 16`表示MX量化在Cube核上每拍的计算量。其中，MXFP8场景下`C0 = 32`，MXFP4场景下`C0 = 64`。
 
 MTE2搬运时间（GM到L1）：
 
+$$T_{MTE2} = \dfrac{GM搬运量}{GM带宽} + \dfrac{L2搬运量}{L2带宽}$$
+
 MTE1搬运时间（L1到L0）：
 
+$$T_{MTE1} = \dfrac{单核MTE1搬运量}{单核MTE1速率}$$
+
 FIXPIPE搬出时间（L0C到GM）：
+
+$$T_{FIXPIPE} = \dfrac{输出搬运量}{L2带宽}$$
 
 ### Bound类型判断
 
@@ -196,13 +202,17 @@ FIXPIPE搬出时间（L0C到GM）：
 
 步骤1：计算理论MMAD耗时
 
-核数频率
+$$T_{MMAD} = \dfrac{M \times K \times N}{16 \times C0 \times 16 \times 核数 \times 频率}$$
 
-步骤2：计算MTE2搬运耗时步骤3：对比判断
+步骤2：计算MTE2搬运耗时
 
-- 若  → Cube Bound（计算已达极限）
+$$T_{MTE2} = \dfrac{GM搬运量}{GM带宽} + \dfrac{L2搬运量}{L2带宽}$$
 
-- 若  → MTE2 Bound（搬运受限）
+步骤3：对比判断
+
+- 若 $T_{MMAD} \geq T_{MTE2}$ → Cube Bound（计算已达极限）
+
+- 若 $T_{MTE2} > T_{MMAD}$ → MTE2 Bound（搬运受限）
 
 关键洞察：通过定量分析，精准定位瓶颈因素，避免"盲人摸象"式的调优。上述公式可以分析出：增大baseM/baseN可降低重复搬运比例，更容易达成Cube Bound。
 
@@ -444,7 +454,7 @@ AscendC::Te::Copy(copyL12L0, tensorAL0, tensorBlockAL1);
 
 quant_matmul_mxfp4_swat.asc：
 
-https://gitcode.com/cann/cann-samples/blob/master/Samples/2_Performance/matmul_story/matmul_recipes/examples/quant_matmul_mxfp4/quant_matmul_mxfp4_swat.cpp
+https://gitcode.com/cann/cann-samples/blob/master/Samples/2_Performance/matmul_story/matmul_recipes/examples/quant_matmul_mxfp4/quant_matmul_mxfp4_swat.asc
 
 ### TensorAPI的核心价值
 
@@ -508,7 +518,7 @@ bash scripts/run.sh --help
 
 - 硬件融合设计：MMAD指令自动完成Scale乘法，无需AIV参与，开发复杂度降低50%+
 
-- 纯Cube核计算：无需编写双核代码、管理同步逻辑，代码量减少60%+
+- 纯Cube核计算：无需编写双核代码、管理同步逻辑，整体代码量减少60%+（其中免去同步相关代码约30%+）
 
 - TensorAPI范式：Layout抽象 + 自动坐标映射，大幅降低开发门槛，新手学习周期缩短
 
