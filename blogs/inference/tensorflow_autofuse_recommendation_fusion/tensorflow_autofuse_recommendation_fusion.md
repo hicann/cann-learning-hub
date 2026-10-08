@@ -127,7 +127,13 @@ Backend 负责判断融合结构是否能被 AutoFuse 后端实现，主要包�
 
 下面演示一个基于 TF 1.x 的简单使用示例。示例包含两个输入 input1 和 input2，计算逻辑为：
 
-在未使能 AutoFuse 前，该计算会拆分为 Abs、Add 和 Relu 三个独立算子执行。每个算子都需要分别完成输入搬运、计算和输出搬运，因此整体耗时近似于这三个阶段的和。使能 AutoFuse 后，Abs、Add 和 Relu 可以被自动合并为一个融合算子。融合后，中间结果不再需要反复写回和读取，例如 Abs 的输出搬运、Add 对  的输入搬运、Add 的输出搬运以及 Relu 的输入搬运都可以被省去，从而减少访存开销并提升执行效率。
+```text
+output = ReLU(Add(Abs(input1), input2))
+```
+
+即 `output = ReLU(Abs(input1) + input2)`：先对 input1 逐元素取绝对值，再与 input2 逐元素相加，最后对相加结果逐元素做 ReLU 激活。
+
+在未使能 AutoFuse 前，该计算会拆分为 Abs、Add 和 Relu 三个独立算子执行。每个算子都需要分别完成输入搬运、计算和输出搬运，因此整体耗时近似于这三个阶段的和。使能 AutoFuse 后，Abs、Add 和 Relu 可以被自动合并为一个融合算子。融合后，中间结果不再需要反复写回和读取，例如 Abs 的输出搬运、Add 对 Abs 输出的输入搬运、Add 的输出搬运以及 Relu 的输入搬运都可以被省去，从而减少访存开销并提升执行效率。
 
 ```
 import tensorflow as tf
