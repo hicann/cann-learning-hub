@@ -1,7 +1,7 @@
 #!/bin/bash
 # 对多个 seq_len 执行 msProf 上板性能采集
 # 用法：bash scripts/run_profiling.sh [seq_len ...] [--output DIR]
-set -e
+set -eo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LAB_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
