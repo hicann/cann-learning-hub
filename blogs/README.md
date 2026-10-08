@@ -14,6 +14,7 @@
 | [MX量化矩阵乘性能优化实践](./operator/mx_quantized_matmul_optimization/mx_quantized_matmul_optimization.md) | 针对 MX 量化矩阵乘的数据搬运和 Cube 利用率，结合 SWAT、尾轮负载均衡和 UnitFlag 提升流水并行效率。 | 2026.5 |
 | [TileLang-Ascend算子性能优化实践](./operator/tilelang_ascend_operator_optimization/tilelang_ascend_operator_optimization.md) | 总结 TileLang-Ascend 算子在流水级数、核间同步、数据切分和调试分析方面的性能优化方法。 | 2026.5 |
 | [面向MoE的Dispatch与Combine算子优化](./operator/moe_dispatch_combine_optimization/moe_dispatch_combine_optimization.md) | 通过跨 Rank 通信去重、本地加权合并、AIV 直驱 RDMA 与多流并行，降低 MoE Dispatch/Combine 算子的通信和调度开销。 | 2026.5 |
+| [Ascend C矩阵乘接口选型指南：从场景到API的快速决策](./operator/ascend_c_mmad_selection_guide/Ascend%20C矩阵乘接口选型指南-从场景到API的快速决策.md) | 介绍矩阵乘相关的API如何选，如Mmad/MmadWithBias/Fixpipe系列等等有什么区别，什么时候用？ | 2026.4 |
 | [使用DumpTensor定位算子计算结果异常](./operator/dumptensor_operator_debugging/dumptensor_operator_debugging.md) | 利用 DumpTensor 观察 GM、UB、L1 中间数据，沿算子数据流逐步定位输入搬运、计算或回写阶段的结果异常。 | 2026.4 |
 | [基于AICPU引擎的HCCL点对点通信算子开发](./operator/hccl_custom_operator_aicpu_p2p/基于AICPU引擎的HCCL点对点通信算子开发.md) | 介绍基于 AICPU+TS 引擎实现 HCCL 自定义 Send/Recv 点对点通信算子，满足 pipeline 并行等灵活通信编排需求。 | 2026.2 |
 | [AICPU Tiling下沉编程](./operator/aicpu_tiling_sink/AICPU%20Tiling下沉编程.md) |AICPU Tiling下沉编程 将 Tiling 计算下沉到 AICPU，减少 Host 与 Device 交互及拷贝，降低 Host Bound 并提升算子执行效率。 | 2025.12 |
@@ -24,6 +25,7 @@
 | [CrossEntropyLoss与Zloss融合算子开发](./operator/cross_entropy_zloss_fusion/CrossEntropyLoss与Zloss融合算子开发.md) | CrossEntropyLoss和Zloss融合算子通过损失函数融合消除串行小算子开销，解决训练尾部瓶颈，在 MoE 场景中实现整网端到端 5.2% 效率提升。 | 2025.11 |
 | [算子Kernel直调编程](./operator/kernel_direct_call_programming/算子Kernel直调编程.md) | 通过 Kernel 直调、异构混合编程和模板化能力，简化算子编译部署流程，降低开发实现门槛。 | 2025.11 |
 | [TilingKey模板化编程](./operator/tilingkey_template_programming/TilingKey模板化编程.md) | 借助 TilingKey 模板化编程统一多场景算子开发与管理，同时减少 icache miss 和 scalar 开销，提升调用性能。 | 2025.11 |
+
 
 <br>
 
