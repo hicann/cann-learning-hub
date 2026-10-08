@@ -45,7 +45,7 @@ CANNLab 环境创建与使用方法请参考 [CANNLab 环境体验指南](https:
 | Notebook | Link | 状态 |
 | --- | --- | --- |
 | 01.00 基于不同存储结构的求和算子实现 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/01_base/01_00_extra_ascendc_sum_op_various_storage_struct.ipynb) | ✅ 已发布 |
-| 01.00 基于不同存储结构的求和算子实现——实践 | [Notebook](./01_base/01_00_extra_ascendc_sum_op_various_storage_struct_practice.ipynb) | ✅ 已发布 |
+| 01.00 基于不同存储结构的求和算子实现——实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/01_base/01_00_extra_ascendc_sum_op_various_storage_struct_practice.ipynb) | ✅ 已发布 |
 | 01.01 基于静态 Tensor 的 ReLU 向量算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=contrib/tutorials/data_structure_for_hpc&scanFilePath=contrib/tutorials/data_structure_for_hpc/01_base/01_01_extra_ascendc_static_tensor_relu_vector.ipynb) | ✅ 已发布 |
 
 ### 第二章：并行计算
