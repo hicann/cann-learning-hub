@@ -30,7 +30,7 @@ ignore_index: 一个整数，表示要忽略的标签值。
 
 **ZLoss**
 
-在机器学习中，我们经常通过在损失函数中添加正则项（如L1、L2）来防止过拟合。ZLoss并非一个通用损失函数，它在某些场景下被用作正则项，旨在惩罚过大的 logits 值，从而增加数值稳定性，它计算的是所有logits的平方和(L2 Norm)，对于上述Cross Entropy Loss损失函数第i个样本对应Zloss计算公式为：
+在机器学习中，我们经常通过在损失函数中添加正则项（如L1、L2）来防止过拟合。ZLoss并非一个通用损失函数，它在某些场景下被用作正则项，旨在惩罚过大的 logits 值，从而增加数值稳定性，它计算的是所有logits的log-sum-exp 的平方和，对于上述Cross Entropy Loss损失函数第i个样本对应Zloss计算公式为：
 
 ![zloss_formula](images/zloss_formula.png)
 
