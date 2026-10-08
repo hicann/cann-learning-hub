@@ -11,7 +11,7 @@
 | **学时安排** | **20 个工作日 ≈ 120 小时**（理论约 35h + 实践约 55h + 结业大作业与社区任务约 30h；上午理论 / 下午实践为主，含多个纯实践半日与全天实践日） |
 | **授课对象** | 有一定编程基础、希望系统掌握 CANN 大模型训推全链路与 Ascend C 矢量 / 矩阵 / 融合算子开发的工程师（含高校学生，无需先修其他启航营） |
 | **先修要求** | Python/C/C++ 基础；了解 Makefile/GIT 操作等 |
-| **配套讲义** | 部分讲次复用 [two_weeks_course/](./two_weeks_course/)（13 份 PPT）；SFT 性能优化、推理优化高级实践、融合算子、极致性能案例等专属讲义建设中 |
+| **配套讲义** | 部分讲次复用 [two_weeks_course/](./two_weeks_course/)（14 份 PPT）；SFT 性能优化、推理优化高级实践、融合算子、极致性能案例等专属讲义建设中 |
 | **实践平台** | cann-learning-hub（教程型跟练 Notebook）＋ CANNJudge（判题型自动评测） |
 | **结业标准** | 独立完成 `add_rms_norm` 算子开发（QWen3-1.7B 场景）、PyTorch 整网集成与性能优化，并完成一项社区任务（提交 PR / issue 或参加算子竞赛） |
 
@@ -102,9 +102,9 @@
 |------|------|------|---------|------|
 | **D6 上午** | 第 11 讲 | Ascend C(A2/A3) Memory 矢量算子编程模型 | 数据搬运接口；矢量计算接口；Softmax 实现剖析 | 2h, [PPT](./two_weeks_course/08_a2a3_ascend_c_simd_memory_vector_operator_programming.pptx) |
 | **D6 下午** | 第 12 讲 | Memory 矢量算子（Softmax）编程实践 | Softmax 跟练 → 独立实现 → 判题 | 4h 纯实践, 共用第 11 讲 PPT |
-| **D7 上午** | 第 13 讲 | Ascend C(A2/A3) 矩阵算子编程实践 | Cube 单元；Matmul 高阶 API；分块与数据布局 | 2h, c10_a2a3_ascend_c_simd_matrix_operator_programming.pptx) |
+| **D7 上午** | 第 13 讲 | Ascend C(A2/A3) 矩阵算子编程实践 | Cube 单元；Matmul 高阶 API；分块与数据布局 | 2h, [PPT](./two_weeks_course/10_a2a3_ascend_c_simd_matrix_operator_programming.pptx) |
 | **D7 下午** | 第 14 讲 | 矩阵算子（Matmul）编程实践 | GEMM 跟练 → 独立实现 → 判题 | 4h 纯实践, 共用第 13 讲 PPT |
-| **D6 上午** | 第 15 讲 | Ascend C(A2/A3) 融合算子编程实践（**基于基础 API**） | 融合算子模式；多算子协同；Matmul+LeakyReLU 剖析 | 2h + 2h, [PPT](./two_weeks_course/09_a2a3_ascend_c_simd_fused_operator_programming) |
+| **D6 上午** | 第 15 讲 | Ascend C(A2/A3) 融合算子编程实践（**基于基础 API**） | 融合算子模式；多算子协同；Matmul+LeakyReLU 剖析 | 2h + 2h, [PPT](./two_weeks_course/09_a2a3_ascend_c_simd_fused_operator_programming.pptx) |
 | **D8 上午** | 第 15 讲 | Ascend C(A2/A3) 融合算子编程实践（**基于基础 API**） | 融合算子模式；多算子协同；Matmul+LeakyReLU 剖析 | 2h + 2h, 讲义建设中 |
 | **D8 下午** | 第 16 讲 | （简单）融合算子（Matmul+LeakyReLU）编程实践 | 融合算子跟练 → 独立实现 → 判题 | 4h 纯实践, 共用第 15 讲讲义 |
 | **D9 上午** | 第 17 讲 | Ascend C 功能与性能调试概述 | CPU 仿真调试；NPU 板上调试；msprof 性能分析；Profile 使用方法与仿真性能统计 | 2h + 1h, [PPT](./two_weeks_course/12_a2a3_ascend_c_operator_debugging_tuning_and_best_practices.pptx) |
@@ -116,8 +116,9 @@
 
 | 时段 | 讲次 | 主题 | 内容要点 | 教材PPT |
 |------|------|------|---------|------|
-| **D11 上午** | 第 21 讲 | Ascend C 算子如何接入 AclGraph、GE 图（Softmax/Matmul 等算子） | AclGraph 构图与执行；GE 图接入；入图验证 | 2h（讲授 + 跟练）, [PPT](./two_weeks_course/15_a2a3_ascend_c_operator_graph_integration_pytorch_aclgraph_ge.pptx) |
-| **D11 下午** | 第 22 讲 | 算子接入 AclGraph、GE 图实践（Softmax/Matmul 等算子） | 入图端到端 → 图执行验证 → 判题 | 3h 纯实践, 共用第 21 讲 PPT |
+| **D11 上午** | 第 21 讲 | Ascend C 算子如何接入 AclGraph（理论） | AclGraph 构图与执行；算子入图原理与流程 | 1h, [PPT](./two_weeks_course/15_a2a3_ascend_c_operator_graph_integration_pytorch_aclgraph_ge.pptx) |
+| **D11 上午** | 第 22 讲 | Ascend C 算子如何接入 GE 图（理论） | GE 图接入；图编译与执行原理 | 1h, 共用第 21 讲 PPT |
+| **D11 下午** | 第 21~22 讲 | AclGraph / GE 入图实践（Softmax/Matmul 等算子） | 算子入图端到端 → 图执行验证 → 判题 | 3h 纯实践, 共用第 21 讲 PPT |
 | **D12 全天** | 第 23 讲 | 基于 CANNBot 的算子开发实践 | CANNBot 生成 / 调试 / 优化；**尝试更改 skill 优化算子** | 2h + 4h, [PPT](./two_weeks_course/16_cannbot_highlights_open_source_community_edition_0.5h.pptx) |
 | **D13 全天** | 第 24 讲 | 案例分析与实践：矢量算子（Add / Softmax 等）如何逐步实现极致性能 | 优化路径案例剖析（VF 粒度 / 双发射 / 访存优化）；复现与超越 | 2h 案例 + 4h 实践, 讲义建设中 |
 | **D14 全天** | 第 25 讲 | 案例分析与实践：Matmul 算子如何逐步实现极致性能 | 分块 / 数据布局 / 流水优化路径剖析；复现与超越 | 2h 案例 + 4h 实践, 讲义建设中 |
@@ -158,7 +159,7 @@
 | 第 15~16 讲 | 融合算子编程 | Matmul+LeakyReLU 跟练 → 独立实现 → 判题（D8 下午 4h 纯实践） | `tutorials/ascendc_operator_development_light/03_simple_operator_practice` |
 | 第 17~18 讲 | 调试调优实战 | 仿真 / 板调 + msprof 性能分析 → 瓶颈定位与优化 | `tutorials/ascendc_operator_development_light/04_debug` |
 | 第 19~20 讲 | PyTorch 接入 | 算子注册与单算子调用 → 端到端验证（D10 下午 3h 纯实践） | `tutorials/ascendc_operator_development_light/02_AscendC_basic` |
-| 第 21~22 讲 | AclGraph / GE 图接入 | 算子入图 → 图执行端到端验证（D11 下午 3h 纯实践） | `tutorials/ge_development` |
+| 第 21~22 讲 | AclGraph / GE 图接入 | 算子入图 → 图执行端到端验证（D11 下午 3h 纯实践，覆盖 AclGraph 与 GE 两种图模式） | `tutorials/ge_development` |
 | 第 23 讲 | CANNBot 智能开发 | CANNBot 生成 / 调试 / 优化算子 + 更改 skill 优化算子记录 | `tutorials/CANNBot` |
 | 第 24 讲 | 矢量算子极致性能 | Add / Softmax 逐步极致优化实战 + 性能数据报告 | `tutorials/ascendc_operator_development/08_performance_optimization` |
 | 第 25 讲 | 矩阵算子极致性能 | Matmul 逐步极致优化实战 + 优化数据报告 | `tutorials/ascendc_operator_development/08_performance_optimization` |
@@ -194,7 +195,8 @@
 | 第 17 讲 | 调试工具链操作题（仿真 / 板调 / msprof） | Profile 使用方法、仿真性能统计方法实践 | `01_simd_cpp_api/01_utilities/04_profiling`、`01_simd_cpp_api/01_utilities/08_simulator` | 待补充 |
 | 第 18 讲 | 最佳实践案例题（UB Bank / DataCopy） | UB Bank 冲突案例、数据搬运 DataCopy 案例分析 | `01_simd_cpp_api/05_best_practices/04_memory_access` | 待补充 |
 | 第 19~20 讲 | 算子注册与调用流程题 | PyTorch 单算子调用实践：Softmax / Matmul 算子端到端判题 | `01_simd_cpp_api/02_features/00_framework/00_pytorch` | 待补充 |
-| 第 21~22 讲 | AclGraph / GE 入图流程题 | Ascend C 算子入图实践：端到端验证 | `01_simd_cpp_api/02_features/00_framework/00_pytorch`、`04_aclgraph`、`03_ge` | 待补充 |
+| 第 21 讲 | AclGraph 入图流程题 | AclGraph 构图与算子入图练习（D11 下午实践承载） | `01_simd_cpp_api/02_features/00_framework/00_pytorch`、`04_aclgraph` | 待补充 |
+| 第 22 讲 | GE 入图流程题 | GE 图接入端到端验证（D11 下午实践承载） | `01_simd_cpp_api/02_features/00_framework/03_ge` | 待补充 |
 | 第 23 讲 | CANNBot 功能概念题 | CANNBot 生成算子 + 更改 skill 优化记录 | learning-hub: `tutorials/CANNBot` | 待补充 |
 | 第 24 讲 | 矢量极致优化方法题 | Add / Softmax 算子性能优化报告（基线对比） | `01_simd_cpp_api/05_best_practices/00_vector_compute/add_high_performance` | 待补充 |
 | 第 25 讲 | 分块 / 流水策略题 | Matmul 算子优化数据报告（基线对比） | `01_simd_cpp_api/05_best_practices/01_matrix_compute/matmul_basic_api_high_performance` | 待补充 |
@@ -204,11 +206,13 @@
 
 ### 6.2 结业大作业（四档，全部必选）
 
+> **`add_rms_norm` 结业作业由两部分构成**：**第一部分 · 功能跑通**（作业 1，CANNJudge 判题通过）→ **第二部分 · 持续优化性能**（作业 3，性能提升数据 + 优化路径剖析）；作业 2 整网集成与作业 4 社区任务为独立作业维度。
+
 | 作业 | 档位 | 内容 | 考核点 |
 |------|------|------|--------|
-| **作业 1** | **必选** | 开发矢量算子 **`add_rms_norm`**（只需要支持 QWen3-1.7B 模型） | CANNJudge 判题通过（正确性） |
+| **作业 1** | **必选** | 开发矢量算子 **`add_rms_norm`**（只需要支持 QWen3-1.7B 模型）—— 第一部分：功能跑通 | CANNJudge 判题通过（正确性） |
 | **作业 2** | **必选** | 将 `add_rms_norm` 算子接入 **PyTorch QWen3-1.7B** | 整网集成端到端跑通，推理结果正确 |
-| **作业 3** | **必选** | **持续优化** `add_rms_norm` 算子，优化推理模型性能 | 性能提升数据 + 优化路径剖析（profiling 证据 + 改动说明） |
+| **作业 3** | **必选** | **持续优化** `add_rms_norm` 算子，优化推理模型性能 —— 第二部分：持续优化性能 | 性能提升数据 + 优化路径剖析（profiling 证据 + 改动说明） |
 | **作业 4** | **必选** | 挑选任意**社区任务**、或**算子竞赛** | PR / issue 提交记录，或竞赛参赛证明 |
 
 > **与两周营衔接：** 两周营 = 双算子 + 集成 + 可选优化（10 天）；四周营在 20 天周期内完成「训推全链路 → 三类算子 → 图接入 → 极致性能」的完整训练，结业作业全部必选，并以真实社区贡献（作业 4）收尾，直接衔接开源社区与算子竞赛。

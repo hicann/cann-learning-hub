@@ -10,12 +10,12 @@
 |------|--------|--------|--------|--------|
 | **总学时** | 1 天 ≈ 6.5h | 2 天 ≈ 16h | 10 个工作日 ≈ 60h | 20 个工作日 ≈ 120h |
 | **学时分配** | 理论 2.5h + 实践 1h + 结业作业 2~3h | 理论 7h + 实践 7h（每讲 1:1 配实践）+ 结业作业 2~3h | 理论 20h + 实践 40h（D1–D8 上午理论 2h + 下午实践 2~4h；D7 全天调试调优上下两讲） | 理论约 35h + 实践约 55h + 结业大作业与社区任务约 30h（上午理论 / 下午实践为主，含多个纯实践半日与全天实践日） |
-| **结业算子主线** | `add_rms_norm`（矢量单算子，功能跑通）→ 可选性能优化 | `add_rms_norm`（矢量单算子，Qwen3-1.7B 场景）→ 可选 PyTorch 接入 / 性能优化 | `add_rms_norm` + `quant_matmul`（双算子）+ 必选 PyTorch 集成 + 可选优化 | `add_rms_norm`（QWen3-1.7B 场景）+ 必选整网集成 + 必选性能优化 + 必选社区任务；课内覆盖矢量 / 矩阵 / 融合算子与 AclGraph/GE 图接入 |
+| **结业算子主线** | `add_rms_norm`（矢量单算子，功能跑通）→ 可选性能优化 | `add_rms_norm`（矢量单算子，Qwen3-1.7B 场景）→ 可选 PyTorch 接入 / 性能优化 | `add_rms_norm` + `quant_matmul`（双算子，与 Qwen3-1.7B 大模型匹配）+ 必选 PyTorch 集成 + 可选优化 | `add_rms_norm`（QWen3-1.7B 场景）+ 必选整网集成 + 必选性能优化 + 必选社区任务；课内覆盖矢量 / 矩阵 / 融合算子与 AclGraph/GE 图接入 |
 | **目标学员** | 零基础、时间有限、希望一天体验 NPU 算子开发的工程师 | 有 C/C++ 基础、希望快速了解 NPU 算子开发的工程师 | 有一定编程基础、希望系统掌握 NPU 算子开发与优化的工程师 | 有一定编程基础、希望系统完整掌握 CANN 训推与算子开发全流程的工程师（无需先修其他启航营） |
 | **前置要求** | C/C++ 基础；了解Makefile/GIT操作等 | C/C++ 基础；了解Makefile/GIT操作等 | C/C++ 基础；了解Makefile/GIT操作等 | C/C++ 基础；了解Makefile/GIT操作等 |
 | **结业标准** | 独立完成矢量算子开发，功能跑通 | 独立完成矢量算子开发（Qwen3-1.7B 场景），理解 NPU 编程模型 | 独立完成矢量+矩阵双算子开发，并集成到 PyTorch 框架 | 独立完成 `add_rms_norm` 开发（QWen3-1.7B）、整网集成与性能优化，并完成一项社区任务 |
 | **课程大纲** | [一天营详细大纲](./syllabus_one_day_bootcamp.md) | [两天营详细大纲](./syllabus_two_days_bootcamp.md) | [两周营详细大纲](./syllabus_two_weeks_bootcamp.md) | [四周营详细大纲](./syllabus_four_weeks_bootcamp.md) |
-| **讲义目录** | 与两天营共用 [two_days_course/](./two_days_course/)（4 份 PPT） | [two_days_course/](./two_days_course/)（7 份 PPT，6 讲） | [two_weeks_course/](./two_weeks_course/)（13 份 PPT，支撑 18 讲次） | 部分讲次复用 two_weeks_course/（13 份 PPT）+ 专属讲义建设中（共 28 讲次） |
+| **讲义目录** | 与两天营共用 [two_days_course/](./two_days_course/)（4 份 PPT） | [two_days_course/](./two_days_course/)（7 份 PPT，6 讲） | [two_weeks_course/](./two_weeks_course/)（14 份 PPT，支撑 18 讲次） | 部分讲次复用 two_weeks_course/（14 份 PPT）+ 专属讲义建设中（共 28 讲次） |
 
 ---
 
@@ -69,7 +69,7 @@
 | **W3**（D11~D15） | 图接入、CANNBot 与极致性能案例 | AclGraph / GE 入图；CANNBot 全天专题（含更改 skill 优化算子）；矢量 / Matmul / 融合极致性能案例三部曲 | D12 CANNBot 全天专题 |
 | **W4**（D16~D20） | 结业大作业与社区实践 | `add_rms_norm` 开发、整网集成、持续优化；社区任务（PR / issue / 算子竞赛） | **D16~D17 结业大作业；D18~D20 社区任务** |
 
-> 四周营部分讲次复用两周营讲义（13 份 PPT）；W1~W2 以「上午理论 + 下午实践」推进（含 7 个纯实践半日），W3 为图接入、CANNBot 专题与极致性能案例三部曲，W4 为结业大作业与社区任务。
+> 四周营部分讲次复用两周营讲义（14 份 PPT）；W1~W2 以「上午理论 + 下午实践」推进（含 7 个纯实践半日），W3 为图接入、CANNBot 专题与极致性能案例三部曲，W4 为结业大作业与社区任务。
 
 ---
 
@@ -81,7 +81,7 @@
 
 | 档位 | 一天营 | 两天营 | 两周营 | 四周营 | 说明 |
 |------|--------|--------|--------|--------|------|
-| **必选保底** | `add_rms_norm` 矢量算子功能跑通 | `add_rms_norm` 矢量算子正确性通过（Qwen3-1.7B 场景） | `add_rms_norm` + `quant_matmul` 双算子正确性通过 | `add_rms_norm` 矢量算子判题通过（QWen3-1.7B 场景） | 正确性门禁，必须通过 |
+| **必选保底** | `add_rms_norm` 矢量算子功能跑通 | `add_rms_norm` 矢量算子正确性通过（Qwen3-1.7B 场景） | `add_rms_norm` + `quant_matmul` 双算子（Qwen3-1.7B 匹配）正确性通过 | `add_rms_norm` 矢量算子判题通过（QWen3-1.7B 场景） | 正确性门禁，必须通过 |
 | **必选集成** | —（可选） | —（可选） | 算子集成到 PyTorch 框架，端到端跑通 | 接入 PyTorch QWen3-1.7B 整网 + 持续性能优化 | 两周营起必选 |
 | **必选社区** | — | — | — | 挑选任意社区任务，提交 PR / issue 或参加算子竞赛 | 四周营特有 |
 | **可选优化** | 性能优化加分（可选） | 性能优化加分（可选） | 性能优化 + 高级特性加分（可选） | —（性能优化已并入必选作业 3） | 超出基线性能可获加分 |
@@ -124,7 +124,7 @@
   - 性能优化超出基线（+10%）
 
 **两周营结业作业：**
-- 必选保底：`add_rms_norm` + `quant_matmul` 双算子正确性通过
+- 必选保底：`add_rms_norm` + `quant_matmul` 双算子（与 Qwen3-1.7B 大模型匹配）正确性通过
 - 必选集成：双算子集成到 PyTorch，端到端跑通
 - 可选加分：性能优化、高级特性、代码质量等
 

@@ -6,8 +6,8 @@
 
 | 文件 | 书籍 | 定位（业界对标） | 状态 |
 |------|------|----------------|------|
-| [book1_ascend_c_parallel_programming.md](./book1_ascend_c_parallel_programming.md) | **教材一《Ascend C 并行程序设计》** | 对标《Programming Massively Parallel Processors》（PMPP）——昇腾算子开发权威教材 | 规划 |
-| [book2_ai_chip_and_system.md](./book2_ai_chip_and_system.md) | **教材二《人工智能芯片与系统》** | 对标《AI Accelerators》类教材（Hennessy & Patterson DSA 章延伸）——NPU 架构与系统教材 | 规划 |
+| book1_ascend_c_parallel_programming.md（待建） | **教材一《Ascend C 并行程序设计》** | 对标《Programming Massively Parallel Processors》（PMPP）——昇腾算子开发权威教材 | 规划 |
+| book2_ai_chip_and_system.md（待建） | **教材二《人工智能芯片与系统》** | 对标《AI Accelerators》类教材（Hennessy & Patterson DSA 章延伸）——NPU 架构与系统教材 | 规划 |
 
 ## 双教材分工与课程同构
 

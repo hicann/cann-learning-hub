@@ -8,8 +8,12 @@
 
 | 传统课程 | 融入模式 | 交付形态 | 文件 |
 |---------|---------|---------|------|
-| **计算机组成原理**（本科大二必修） | M2/M5 轻量融入 | 外挂式 6–8 学时（一章新增 + 五处小节扩充） | [computer_organization.md](./computer_organization.md) |
+| **计算机组成原理 / 计算机组成与系统结构**（课程十四；2024 版 64 学时 + 未来学院版 80 学时，双版适配） | M2/M5 + 专题主讲 | 新增 2~3 学时专题"**从 CPU 到 NPU——AI 算力底座与 Ascend C 实践**"（●：算力之问 → 芯片之芯 → 编程之道，两版通用；理论讲义落位 `05_npu_architecture` 待建，实践 quick_start）+ 五处小节扩充；未来学院版另享**模块 8 并行架构 × NPU 实例深化**与分层实验对接（试点首选） | [computer_organization.md](./computer_organization.md) |
 | **计算机体系结构**（本科高年级/研究生，13 次大课） | M2/M5 主讲融入 | "AI 时代的体系结构挑战"三幕剧三次主讲课（各 135 分钟） | [computer_architecture.md](./computer_architecture.md) |
+| **实时系统设计**（中国科学技术大学） | M2 单元植入 | 传统实时理论主体 + Ascend C 算子编程 6 次 × 3 课时（A2/A3 主线 + 950 新特性）+ 时延确定性分析大作业 | [real_time_system_design.md](./real_time_system_design.md) |
+| **计算机网络**（华东师范大学） | M2 单元植入 | "AI 集群通信"专题 2 学时 + 分布式大模型通信分析大作业 | [computer_network.md](./computer_network.md) |
+| **AI 芯片技术**（华东师范大学） | M2 主讲 + 实验融入 | 达芬奇架构实例解剖 3 学时 + CANN-Lab 双模实验（真板跑分/仿真解剖） | [ai_chip_technology.md](./ai_chip_technology.md) |
+| **人工智能通识课程**（课程十三） | ● 整课植入 | "从图灵到 CANN"4 学时通识讲座（75 页课件已就绪：AI 来龙去脉 → 大模型计算本质 → 昇腾 NPU/CANN 底座）+ quick_start 体验实践 | [ai_general_education.md](./ai_general_education.md) |
 | 其他 12 个学科 15 门课（并行计算 / DL 系统 / 图像处理 / 编译 / OS / 嵌入式 / 数值 / 计算科学 / 数据科学 / HPC 等） | M2–M4 | 方向性规划（见第四章学科覆盖总表） | 待立项后逐课建文 |
 
 ---
@@ -242,4 +246,3 @@
 | CANN 算子领域样例仓库 | <https://gitcode.com/cann/cann-samples/tree/master/Samples/> | 各领域算子实现样例（对标/参考实现） |
 | CANN Learning Hub | <https://gitcode.com/cann/cann-learning-hub/> | 全栈教程与 Notebook 练习（实践作业载体） |
 | 教材《Ascend C 异构并行程序设计》 | <https://gitcode.com/HIT1920/AscendCBook> | 异构并行程序设计教材 |
-| 昇腾社区 | <https://www.hiascend.com/> | 官方文档、论坛、课程、活动 |

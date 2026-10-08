@@ -13,7 +13,7 @@
 | **先修要求** | Python/C/C++ 基础；了解Makefile/GIT操作等 |
 | **配套讲义** | [two_weeks_course/](./two_weeks_course/)（13 份 PPT，支撑 18 讲次，部分讲次共用讲义） |
 | **实践平台** | cann-learning-hub（教程型跟练 Notebook）＋ CANNJudge（判题型自动评测） |
-| **结业标准** | 独立完成 `add_rms_norm` + `quant_matmul` 双算子开发，通过判题并接入 PyTorch 端到端验证 |
+| **结业标准** | 独立完成与 **Qwen3-1.7B 大模型匹配**的 `add_rms_norm` + `quant_matmul` 双算子开发，通过判题并接入 PyTorch 端到端验证 |
 
 ---
 
@@ -24,7 +24,7 @@
 | 目标维度 | 达成要求 |
 |---------|---------|
 | **知识目标** | ① 掌握 CANN 软件栈与昇腾硬件架构；② 掌握大模型训练 / 推理 / 优化基本方法；③ 系统掌握 Ascend C SIMD 编程模型（**Memory 矢量 C API / 基础 API 双路线 + 矩阵算子**）与调试调优方法；④ 掌握算子接入 PyTorch 全流程（单算子调用 + 入图集成）；⑤ 了解 CANNBot 智能开发模式 |
-| **能力目标** | ① 独立完成矢量 / 矩阵算子的开发、调试与调优（双 API 栈）；② 算子接入 PyTorch 并完成端到端验证；③ 通过 CANNJudge 矢量 + 矩阵双判题；④ 完成 **`add_rms_norm` + `quant_matmul` 双算子**结业项目 |
+| **能力目标** | ① 独立完成矢量 / 矩阵算子的开发、调试与调优（双 API 栈）；② 算子接入 PyTorch 并完成端到端验证；③ 通过 CANNJudge 矢量 + 矩阵双判题；④ 完成与 **Qwen3-1.7B 大模型匹配**的 **`add_rms_norm` + `quant_matmul` 双算子**结业项目 |
 | **素养目标** | 形成「架构认知 → 编程实现 → 调试调优 → 框架集成」一体化工程思维，具备独立查阅文档与解决算子开发问题的能力 |
 
 ### 2.2 结业能力画像
@@ -47,7 +47,7 @@
 | 矩阵算子 | 第 11~12 讲 | Matmul 高阶 API；Cube 单元与分块策略 | GEMM 算子独立实现 |
 | 调试调优 | 第 13~14 讲 | 调试工具链（仿真/板调）；性能分析与优化方法 | 性能瓶颈定位与优化实践 |
 | 框架集成与智能开发 | 第 15~17 讲 | PyTorch 单算子调用与入图；CANNBot 智能开发 | 算子端到端集成 |
-| 结业项目 | 第 18 讲 | 双算子开发 + 集成 + 优化 + 答辩 | `add_rms_norm` + `quant_matmul` |
+| 结业项目 | 第 18 讲 | 双算子开发 + 集成 + 优化 + 答辩 | `add_rms_norm` + `quant_matmul`（均与 Qwen3-1.7B 匹配） |
 
 ---
 
@@ -88,7 +88,7 @@
 | **D4 下午** | 第 8 讲 | Memory 矢量算子（Softmax）编程实践 |  Softmax 跟练 → 独立实现 → 判题 | 4h, 共用第 7 讲 PPT |
 | **D5 上午** | 第 9 讲 | Ascend C(A2/A3) 矩阵算子编程实践（基于基础 API） | Cube 单元；Matmul 高阶 API；分块与数据布局 | 2h, [PPT](./two_weeks_course/10_a2a3_ascend_c_simd_matrix_operator_programming.pptx) |
 | **D5 下午** | 第 10 讲 | 矩阵算子编程实践 · 纯实践 | GEMM 跟练 → 独立实现 → 判题 | 4h, 共用第 11 讲 PPT |
-| **D6 上午** | 第 11 讲 | Ascend C(A2/A3) 融合算子编程实践（**基于基础 API**） | 融合算子模式；多算子协同；Matmul+LeakyReLU 剖析 | 2h + 2h, [PPT](./two_weeks_course/09_a2a3_ascend_c_simd_fused_operator_programming) |
+| **D6 上午** | 第 11 讲 | Ascend C(A2/A3) 融合算子编程实践（**基于基础 API**） | 融合算子模式；多算子协同；Matmul+LeakyReLU 剖析 | 2h + 2h, [PPT](./two_weeks_course/09_a2a3_ascend_c_simd_fused_operator_programming.pptx) |
 | **D6 下午** | 第 12 讲 | （简单）融合算子（Matmul+LeakyReLU）编程实践 | 融合算子跟练 → 独立实现 → 判题 | 4h 纯实践, 共用第 12 讲讲义 |
 | **D7 上午** | 第 13 讲 | Ascend C 调试调优与最佳实践（1） | CPU 仿真调试；NPU 板上调优；常见问题定位 | 2h, [PPT](./two_weeks_course/12_a2a3_ascend_c_operator_debugging_tuning_and_best_practices.pptx) |
 | **D7 下午** | 第 14 讲 | Ascend C 调试调优与最佳实践（2） | msprof 性能分析；Roofline；瓶颈优化方法 | 2h, 共用第 13 讲 PPT |
@@ -155,11 +155,13 @@
 
 ### 6.2 结业大作业（三档）
 
+> **结业双算子（`add_rms_norm` / `quant_matmul`）均需与 Qwen3-1.7B 大模型匹配**；`add_rms_norm` 结业作业由两部分构成：**第一部分 · 功能跑通**（作业 1，CANNJudge 判题通过）→ **第二部分 · 持续优化性能**（作业 3，性能提升 + 优化路径剖析）。
+
 | 作业 | 档位 | 内容 | 考核点 |
 |------|------|------|--------|
-| **作业 1** | **必选** | 开发矢量算子 **`add_rms_norm`** ＋ 矩阵算子 **`quant_matmul`** | CANNJudge 双算子判题通过（正确性 + 性能不低于参考 80%） |
+| **作业 1** | **必选** | 开发与 **Qwen3-1.7B 大模型匹配**的矢量算子 **`add_rms_norm`** ＋ 矩阵算子 **`quant_matmul`** —— 第一部分：功能跑通 | CANNJudge 双算子判题通过（正确性 + 性能不低于参考 80%） |
 | **作业 2** | **必选** | 双算子**接入 PyTorch 模型** | 单算子调用正确性 + 入图端到端验证 |
-| **作业 3** | 可选 | **持续优化**双算子，提升推理性能 | 性能提升幅度 + 优化路径剖析证据（profiling 数据 + 改动说明） |
+| **作业 3** | 可选 | **持续优化**双算子，提升推理性能 —— 第二部分：持续优化性能 | 性能提升幅度 + 优化路径剖析证据（profiling 数据 + 改动说明） |
 
 > **与两天营衔接：** 同源递进——两天营 = 矢量单算子入门；两周营 = 双算子（矢量 + 矩阵）+ 框架集成 + 性能优化，是两天营的系统性延伸。
 
