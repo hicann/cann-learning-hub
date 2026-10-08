@@ -1,0 +1,29 @@
+# 8.4 小测验答案
+
+**1. VF 优化的本质为什么是「少写指令」？与 CPU 的乱序执行对比说明。**
+
+VF（Vector Function）是顺序执行、无 Cache、无分支预测、无乱序的执行模型：源代码里写几条指令，硬件就按顺序发射几条，每条都要占用发射周期。CPU 有乱序引擎、分支预测、Cache 把「写得烂的代码」掩盖掉，VF 没有——所以 VF 的性能几乎完全由指令条数和依赖编排决定，优化本质就是少写指令、编排好依赖。
+
+**2. x * (a/b) 中 a、b 为标量时，怎么重排最省 VF 指令？**
+
+先在 Scalar 侧（或 Host 侧）把 a/b 算成一个标量，VF 里只剩一次广播 + 一次乘法。若不重排，VF 每轮都要做：广播 a、广播 b、Div（贵）、Mul。重排后：Div 从 Vector 指令消失（变 Scalar 一条除法，几乎免费），且广播可以外提到循环外只做一次。
+
+**3. 数据量 4100 个 FP32、单指令 64 个，写出 MaskReg 方案的循环结构（伪代码）。**
+
+repeatTimes = ceil(4100/64) = 65，最后一轮只有 4100 - 64×64 = 4 个有效元素：
+
+```cpp
+MaskReg pregAll  = CreateMask<float, MaskPattern::ALL>();
+MaskReg pregTail = MakeTailMask(4);              // 低 4 位有效
+for (int i = 0; i < 65; i++) {
+    MaskReg preg = (i == 64) ? pregTail : pregAll;
+    DataCopy(vregSrc, inputBuf + i*64);           // Load
+    Mul(vregRes, vregSrc, vregScale, preg);       // 只换掩码, 指令不变
+    DataCopy(outputBuf + i*64, vregRes, preg);    // Store
+}
+```
+关键点：整块与尾块共用同一套指令，仅最后一轮切换掩码，避免拆两份循环代码。
+
+**4. 寄存器级双缓冲为什么能消除相邻指令的等待？**
+
+相邻指令若操作同一块数据（写后读），硬件必须插入等待。交错两组独立数据（A 组、B 组）后，指令序列变成 A.load → B.load → A.calc → B.calc → A.store → B.store：A.calc 依赖的 A.load 早已发射完成，B 的指令把 A 的依赖等待时间填满——等待被「别的有用指令」覆盖掉了。这与核间 PingPong 是同一思想下沉到寄存器层。

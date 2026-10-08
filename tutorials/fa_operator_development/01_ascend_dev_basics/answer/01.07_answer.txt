@@ -1,0 +1,3 @@
+1. B。Mask 是位掩码，用于屏蔽不参与运算的元素位置——尾块对齐、Causal 部分掩码都靠它。
+2. 错。Vector 是三段式（CopyIn/Compute/CopyOut），Cube 是五段式（多出 Split/Aggregate，因为进出矩阵乘要转分形格式）。
+3. C。rescale 是逐元素的向量乘法（O = O * e^(m_old - m_new)），由 Vector 的 Mul 类指令完成。

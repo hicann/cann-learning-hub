@@ -1,0 +1,24 @@
+《FlashAttention 算子开发课程》第 4 章 4.5 节测验答案
+====================================================
+
+1. 四个分开：tiling 与 kernel 分开、编译与运行分开。
+   FA 是三层结构，任何一层都可能出错：
+   - tiling 错 → kernel 拿错表格，跑得再对也没用；
+   - kernel 错 → 表格再对也白搭；
+   - 编译错 vs 运行错 → 先确认编译产物正确，再查运行逻辑，
+     避免「编译都没过就在猜运行 bug」。
+   分开隔离后每次只调一个变量，定位不用大海捞针。
+
+2. AIC 与 AIV 是不同的核、执行不同代码：Cube 管矩阵乘
+   （mm1/mm2），Vector 管逐元素逻辑（softmax/mask/scale/update），
+   所以编译成 <算子名>_aic.o 与 <算子名>_aiv.o 两个产物；
+   运行时按 AIV+AIC 组合一起加载、协同执行四拍循环。
+
+3. 排查顺序：先 tiling 后 kernel，再查输入。
+   - 第一步看 tiling 运行结果（debug_workspace/<op>/tiling/）：
+     基本块、切分参数是否合理——表格错了下游全错；
+   - tiling 正常再查 kernel：用 DumpTensor(ptr, index)
+     逐拍 dump（mm1 的 S → vector1 的 P → mm2 的输出 →
+     vector2 的 update），定位第一个出错的拍；
+   - 仍找不到问题时回头怀疑 golden 本身算错
+     （用 fp32 中间过程重新生成）。

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="620" viewBox="0 0 940 620" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowH" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">kernel 代码分层：入口路由 → 主类 → 三服务 → 底层原语</text>
+
+  <!-- 第一层：入口 -->
+  <rect x="90" y="60" width="760" height="88" rx="10" fill="#E8F5EC" stroke="#34A853" stroke-width="2"/>
+  <text x="470" y="86" text-anchor="middle" font-size="14" font-weight="bold" fill="#1E6B34">① 核函数入口（fused_infer_attention_score.cpp）</text>
+  <g font-family="Consolas, monospace" font-size="11" fill="#444">
+    <text x="470" y="110" text-anchor="middle">extern "C" __global__ __aicore__ void fused_infer_attention_score(..., __gm__ uint8_t* tiling)</text>
+    <text x="470" y="132" text-anchor="middle">TilingKey 三路分发：FAI（SplitFuse）｜ PFA ｜ IFA　＋　__NPU_ARCH__ 架构分发</text>
+  </g>
+
+  <line x1="470" y1="148" x2="470" y2="172" stroke="#555" stroke-width="2" marker-end="url(#arrowH)"/>
+
+  <!-- 第二层：Kernel 主类 -->
+  <rect x="90" y="176" width="760" height="100" rx="10" fill="#E8F1FE" stroke="#4C88F7" stroke-width="2"/>
+  <text x="470" y="202" text-anchor="middle" font-size="14" font-weight="bold" fill="#1B4E9B">② Kernel 主类（arch22：FiaKernelNonQuant）</text>
+  <g font-family="Consolas, monospace" font-size="11" fill="#444">
+    <text x="470" y="226" text-anchor="middle">Process() → InitBuffers / AllocEventID → FlashAttention()（主循环入口）</text>
+    <text x="470" y="250" text-anchor="middle">CalcParams(...) → 循环内依次调用 ComputeMm1 / ComputeVec1 / ComputeMm2 / ComputeVec2</text>
+    <text x="470" y="270" text-anchor="middle" font-size="10.5" fill="#888">另有 FiaKernelNonQuantMla（MLA）、fia_kernel_*_gqa 等特化版本</text>
+  </g>
+
+  <line x1="470" y1="276" x2="470" y2="300" stroke="#555" stroke-width="2" marker-end="url(#arrowH)"/>
+
+  <!-- 第三层：三服务 -->
+  <g>
+    <rect x="90" y="304" width="240" height="120" rx="10" fill="#4C88F7" fill-opacity="0.16" stroke="#4C88F7" stroke-width="1.8"/>
+    <text x="210" y="330" text-anchor="middle" font-size="13" font-weight="bold" fill="#1B4E9B">③ Cube 服务</text>
+    <text x="210" y="352" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#444">FiaBlockCubeNonQuant</text>
+    <text x="210" y="376" text-anchor="middle" font-size="11" fill="#444">ComputeMm1 / ComputeMm2</text>
+    <text x="210" y="396" text-anchor="middle" font-size="11" fill="#444">基于 MatMul 高级 API</text>
+    <text x="210" y="414" text-anchor="middle" font-size="11" fill="#888">AIC 侧：InitBuffers 等</text>
+
+    <rect x="350" y="304" width="240" height="120" rx="10" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.8"/>
+    <text x="470" y="330" text-anchor="middle" font-size="13" font-weight="bold" fill="#A81640">③ Vector 服务</text>
+    <text x="470" y="352" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#444">FiaBlockVecNonQuant</text>
+    <text x="470" y="376" text-anchor="middle" font-size="11" fill="#444">ComputeVec1 / ComputeVec2</text>
+    <text x="470" y="396" text-anchor="middle" font-size="11" fill="#444">SoftmaxFlashV2 / rescale</text>
+    <text x="470" y="414" text-anchor="middle" font-size="11" fill="#888">AIV 侧：写出 attention_out</text>
+
+    <rect x="610" y="304" width="240" height="120" rx="10" fill="#9334E6" fill-opacity="0.14" stroke="#9334E6" stroke-width="1.8"/>
+    <text x="730" y="330" text-anchor="middle" font-size="13" font-weight="bold" fill="#6B21A8">③ FlashDecode 服务</text>
+    <text x="730" y="352" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#444">fia_block_vec_flashdecode</text>
+    <text x="730" y="376" text-anchor="middle" font-size="11" fill="#444">KV 沿 S2 切到多核</text>
+    <text x="730" y="396" text-anchor="middle" font-size="11" fill="#444">AIV 二次规约出结果</text>
+    <text x="730" y="414" text-anchor="middle" font-size="11" fill="#888">decode 场景负载均衡</text>
+  </g>
+
+  <line x1="470" y1="424" x2="470" y2="448" stroke="#555" stroke-width="2" marker-end="url(#arrowH)"/>
+
+  <!-- 第四层：底层原语 -->
+  <rect x="90" y="452" width="760" height="110" rx="10" fill="#FFF8E6" stroke="#E0A800" stroke-width="2"/>
+  <text x="470" y="478" text-anchor="middle" font-size="14" font-weight="bold" fill="#8A5500">④ 底层原语（attention/common/op_kernel 等）</text>
+  <g font-size="11.5" fill="#444">
+    <text x="220" y="504" text-anchor="middle">GmCopyInToL1（ND2NZ 搬运）</text>
+    <text x="220" y="524" text-anchor="middle">FixpipeOut（L0C → GM）</text>
+    <text x="470" y="504" text-anchor="middle">MatMul API（Mmad 流水）</text>
+    <text x="470" y="524" text-anchor="middle">SoftmaxFlashV2（融合 softmax）</text>
+    <text x="720" y="504" text-anchor="middle">跨核同步（SyncAll）</text>
+    <text x="720" y="524" text-anchor="middle">EventID（Cube↔Vector 握手）</text>
+    <text x="470" y="548" text-anchor="middle" font-size="10.5" fill="#888">另有 attn_infra/：CUTLASS 风格的 BlockMmad / BlockEpilogue 多级搬运链（SplitFuse 路径）</text>
+  </g>
+
+  <!-- 右侧注释 -->
+  <text x="880" y="70" font-size="11" fill="#1E6B34" font-weight="bold" text-anchor="middle">读源码</text>
+  <text x="880" y="88" font-size="11" fill="#1E6B34" font-weight="bold" text-anchor="middle">先找①</text>
+  <text x="880" y="230" font-size="11" fill="#1B4E9B" font-weight="bold" text-anchor="middle">主循环</text>
+  <text x="880" y="248" font-size="11" fill="#1B4E9B" font-weight="bold" text-anchor="middle">在②</text>
+  <text x="880" y="364" font-size="11" fill="#A81640" font-weight="bold" text-anchor="middle">改性能</text>
+  <text x="880" y="382" font-size="11" fill="#A81640" font-weight="bold" text-anchor="middle">看③</text>
+  <text x="880" y="508" font-size="11" fill="#8A5500" font-weight="bold" text-anchor="middle">搬运</text>
+  <text x="880" y="526" font-size="11" fill="#8A5500" font-weight="bold" text-anchor="middle">在④</text>
+
+  <text x="470" y="600" text-anchor="middle" font-size="12" fill="#C0392B" font-weight="bold">混合核 AIC : AIV = 1 : 2——一个 Cube 核喂两个 Vector 核，这正是第 5 章 BN1 / 第 8 章 VF 优化的硬件前提</text>
+</svg>

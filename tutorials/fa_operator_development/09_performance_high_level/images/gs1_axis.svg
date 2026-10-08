@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="520" viewBox="0 0 880 520" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <text x="440" y="28" text-anchor="middle" font-size="20" font-weight="bold" fill="#111827">GS1 合轴 vs 不合轴：封核边界落在哪</text>
+
+  <!-- 不合轴 -->
+  <text x="70" y="70" font-size="16" font-weight="bold" fill="#1d4ed8">不合轴（B、N 嵌套循环）</text>
+  <g font-size="13">
+    <rect x="70" y="90" width="150" height="44" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="145" y="117" text-anchor="middle" fill="#1d4ed8">b=0</text>
+    <rect x="220" y="90" width="150" height="44" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="295" y="117" text-anchor="middle" fill="#1d4ed8">n=0</text>
+    <rect x="370" y="90" width="180" height="44" fill="#f3f4f6" stroke="#374151"/>
+    <text x="460" y="117" text-anchor="middle" fill="#111827">s1: 0..S1-1</text>
+
+    <text x="70" y="165" fill="#374151">for b:  for n:  for s1:  装箱(有效块数)</text>
+    <text x="70" y="188" fill="#b91c1c">封核边界只能落在整行 (b,n,s1) 边界 —— 粒度 = 一行的权重</text>
+  </g>
+
+  <!-- core boundary illustration -->
+  <g font-size="12">
+    <text x="70" y="225" fill="#374151">行序列（每格 = 一行, 高低 = 权重）：</text>
+    <rect x="70"  y="235" width="50" height="40" fill="#93c5fd"/>
+    <rect x="122" y="255" width="50" height="20" fill="#93c5fd"/>
+    <rect x="174" y="243" width="50" height="32" fill="#bfdbfe"/>
+    <rect x="226" y="237" width="50" height="38" fill="#bfdbfe"/>
+    <rect x="278" y="259" width="50" height="16" fill="#bfdbfe"/>
+    <rect x="330" y="248" width="50" height="27" fill="#dbeafe"/>
+
+    <!-- 行边界封核 -->
+    <line x1="330" y1="230" x2="330" y2="285" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="330" y="302" text-anchor="middle" fill="#b91c1c">不合轴: 只能在这切</text>
+  </g>
+
+  <!-- 合轴 -->
+  <text x="70" y="350" font-size="16" font-weight="bold" fill="#065f46">合轴（展平成一维 gs1 轴）</text>
+  <g font-size="13">
+    <text x="70" y="378" fill="#374151">for gs1 in range(B×N×S1):  b, n, s1 = 解码(gs1);  装箱(有效块数)</text>
+    <text x="70" y="401" fill="#065f46">封核边界可落在任意 gs1 位置（行内也能切）—— 粒度 = 一个基本块</text>
+  </g>
+
+  <g font-size="12">
+    <rect x="70"  y="418" width="50" height="40" fill="#6ee7b7"/>
+    <rect x="122" y="438" width="28" height="20" fill="#6ee7b7"/>
+    <rect x="150" y="418" width="22" height="20" fill="#a7f3d0"/>
+    <rect x="174" y="443" width="46" height="15" fill="#a7f3d0"/>
+    <rect x="226" y="426" width="50" height="32" fill="#d1fae5"/>
+    <rect x="278" y="436" width="18" height="22" fill="#d1fae5"/>
+    <rect x="296" y="446" width="32" height="12" fill="#d1fae5"/>
+    <rect x="330" y="424" width="50" height="34" fill="#ecfdf5" stroke="#10b981"/>
+
+    <line x1="150" y1="413" x2="150" y2="465" stroke="#059669" stroke-width="2"/>
+    <line x1="296" y1="413" x2="296" y2="465" stroke="#059669" stroke-width="2"/>
+    <text x="296" y="482" text-anchor="middle" fill="#065f46">合轴: 任意位置都能切</text>
+  </g>
+
+  <!-- summary -->
+  <g font-size="13">
+    <rect x="470" y="350" width="350" height="130" fill="#f9fafb" stroke="#374151" rx="8"/>
+    <text x="490" y="378" fill="#111827" font-weight="bold">对比</text>
+    <text x="490" y="402" fill="#374151">不合轴：结构简单，六数组消费方便，粒度粗</text>
+    <text x="490" y="426" fill="#374151">合轴：均衡逼近理论极限，代价是 gs1 解码</text>
+    <text x="490" y="450" fill="#374151">（除法/取模 → 预计算查找表上提 TilingData）</text>
+    <text x="490" y="472" fill="#6b7280">行多选不合轴；行少且权重悬殊选合轴</text>
+  </g>
+</svg>

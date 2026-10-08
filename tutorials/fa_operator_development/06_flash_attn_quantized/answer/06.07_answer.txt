@@ -1,0 +1,35 @@
+06.07 章节测验 —— 参考答案
+
+1. （格式解码）
+   - 位域 S=0, E=1001₂=9, M=101₂=5。
+   - E4M3（bias=7）：值 = (1 + 5/8) × 2^(9-7) = 1.625 × 4 = 6.5。
+   - E5M2（bias=15）：E=9, M=01₂=1，值 = (1 + 1/2) × 2^(9-15) = 1.5 × 2^-6 ≈ 0.0234。
+   - E5M2 指数位多一位 → 范围大（max ≈ 57344 vs 448）；E4M3 尾数位多一位 → 精度高（3 位 vs 2 位尾数）。
+
+2. （累加与 E8M0）
+   - E4M3 max ≈ 448：448 × 448 = 200704 ≫ 448，乘积若直接存回 E4M3 即溢出；矩阵乘成千上万次累加，8-bit 累加器立即崩坏，所以累加必须是 FP32（同构于 int8×int8 → int32，255×255=65025>255）。
+   - E8M0 的 8 位全是指数、值恒为 2^(E-127)：反量化「乘 scale」= 阶码相加 = 硬件移位，几乎免费。
+
+3. （量化原理）
+   - 非对称：q = round((r - Z)/S)，r̂ = S·q + Z；反量化即后者。
+   - r = [0.2, 0.8, 3.0]，amax = 3.0，S = 3.0/127 ≈ 0.02362：
+     q = round(r/S) = [8, 34, 127]，r̂ = [0.189, 0.803, 3.0]；
+     误差 = [-0.011, +0.003, 0]，最大相对误差约 5.5%（0.2 那个数）——注意小值相对误差更大，这是均匀 scale 的固有特点。
+
+4. （粒度排序与 mx）
+   - 开销从小到大：pertensor < perchannel ≈ pertoken < pergroup < perblock。
+   - mx = G-G（双侧 pergroup）+ 两条限定：scale 类型 FLOAT8_E8M0（换来反量化退化为移位）、group size = 32（换来 scale 量为数据 1/32 且对齐硬件块宽度）。
+   - 「离群值只污染自己的组」：每组的 scale 只由本组 32 个元素的 amax 决定，离群通道的巨大 amax 只影响它所在的那一组，其他组仍用小 scale 保持分辨率（代码实验：pertensor 3.7% vs pergroup32 0.95%）。
+
+5. （MXFP8 方案）
+   - 存储布局：K/V 数据 E4M3（shape 不变，如 S2 × D），scale 沿 D 轴每 32 元素一个 E8M0，shape (S2, D/32)，数据量的 1/32。
+   - 三处 diff：① Tiling——scale tensor 的 shape/对齐/dtype 检查，TilingKey 隔离量化与非量化模板（治 ICache Miss），UB 给 scale 留位；② 搬入——K/V 按 MXFP8 搬入，数据体量减半（memory-bound 下的主要收益），scale 随路搬入；③ scale 处理——K 的 scale 在 softmax 前生效（随路反量化成 BF16 进 mm，或 FP8 直吃 + 按 D 分组 Mmad 加权累加），V 的 scale 在 mm2 输出侧按 D 分组乘回。
+   - K 的 scale 必须在 softmax 前生效：softmax 非线性且各 k 位置 scale 不同，「先乘再 softmax」≠「先 softmax 再统一乘」，事后补乘结果直接错。
+
+6. （HiP8 四步推演）
+   - 位布局：动态点位域（变长前缀码指示阶码位宽与 Denormal）+ 变长尾数 → 锥形精度；
+   - 动态范围：综合阶码 [-22, 15] 共 38 个，接近 FP16 → 宽动态范围；
+   - scale 需求：最简 per-tensor scale 甚至免 scale → 相比 MXFP8 砍掉整条分组 scale 通路（无 (S2, D/32) 存储、无双通路搬入、无分组反量化/累加）；
+   - 三处 diff：Tiling 检查更简（dtype 换 HiF8、无 scale 检查）、搬入单通路、计算前反量化变为 HiF8→BF16 硬件解码（不再是纯移位）；softmax 仍 FP32。
+   - 附加收益：宽动态范围降低 amax 统计频次，Vector 统计开销随之减少；训练算法更简（无需按行按列分别量化）。
+

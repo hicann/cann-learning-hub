@@ -1,0 +1,16 @@
+《FlashAttention 算子开发课程》第 4 章 4.4 节测验答案
+====================================================
+
+1. BNSD 下 Q 的 shape 是 [B, N1, S1, D] = [B, 32, S1, 128]，
+   KV 的 shape 是 [B, N2, S2, D] = [B, 8, S2, 128]
+   （N2 由 numKeyValueHeads 指定，G = 32/8 = 4）。
+
+2. preTokens 取一个不构成限制的大值（如 S2 或更大），
+   nextTokens = 0，即只关注自己和之前的 token（因果掩码）。
+
+3. Decode 阶段每步只有 1 个新 token，S1 = 1。
+   核间任务总数 totalSize = B × N2 × G × ceil(S1/s1BasicBlock)
+   中的 S1 项退化为 1，总任务数大幅减少，
+   通常远小于核数——此时性能瓶颈在搬运而非计算，
+   也是 FA 针对 Decode 场景做特化（如 flash-decoding 切 S2）
+   的原因。

@@ -1,0 +1,45 @@
+《FlashAttention 算子开发课程》第 4 章 4.6 节章节测验答案
+==========================================================
+
+1. 路径 A（本地服务器）适合有昇腾设备的读者；
+   路径 B（CANNLab）适合无硬件但要真实远程环境的读者；
+   路径 C（CANNSim）适合无硬件的本课程读者。
+   CANNSim 用 CPU 模拟 AI Core 行为（指令/存储/同步），
+   数值行为与硬件一致。它适合调「正确性」；
+   调「性能」必须上真机（仿真没有真实时序）。
+
+2. 三层映射：
+   - 调用通路：IR 原型注册 *.cpp（被算子执行框架加载）；
+   - Tiling：*_tiling.h（TilingData 结构）+ *_tiling.cpp
+     （DoTiling 多模板实现）；
+   - Kernel：*.cc（核函数主入口，SPMD 分任务）
+     + kernel_fia_*.h（按 TilingKey 隔离的场景实现）。
+
+3. GQA Decode 调用：
+   1) BNSD 下 q: [8, 32, 1, 128]（B, N1, S1=1, D）；
+      k: [8, 8, 2048, 128]、v: [8, 8, 2048, 128]
+      （B, N2=8, S2=2048, D），G = 32/8 = 4；
+   2) 因果掩码：preTokens = 2048（或更大的不构成限制的值）、
+      nextTokens = 0；
+   3) scaleValue = 1/sqrt(128) ≈ 0.0884。
+
+4. 四步调测流程：
+   ① tiling 编译（CPU 侧）→ ② tiling 运行，
+   产物看 debug_workspace/<算子名>/tiling/（基本块、切分参数、
+   TilingKey）→ ③ kernel 编译，产出 _aic.o 与 _aiv.o 两个目标
+   文件 → ④ kernel 运行（仿真，tail -f 盯实时日志），
+   dump 结果在 debug_workspace/<算子名>/simulator/dump/，
+   与 golden 按 json 里的精度标准对拍。
+   「分开」的原因：FA 三层任何一层都可能出错，分开隔离后
+   每次只调一个变量——tiling 表格错了下游全错，
+   所以 tiling 优先；编译产物错了运行必错，
+   所以编译优先于运行排查。
+
+5. S 矩阵正确而 P 错误 → mm1 没问题，
+   问题大概率出在 vector1（softmax/mask/scale）一拍：
+   可能是 softmax 的 m/l 状态初始化或更新逻辑错、
+   mask 边界参数错、scale 应用错。
+   验证方法：在 vector1 的输入与输出处分别 DumpTensor
+   （用不同 index 区分），对拍输入是否与预期 S 一致、
+   输出是否等于 golden 的 softmax(S)；再用小尺寸输入
+   手算逐元素比对，锁定具体子步骤。

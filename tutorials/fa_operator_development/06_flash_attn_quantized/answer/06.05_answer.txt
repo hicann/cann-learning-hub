@@ -1,0 +1,26 @@
+06.05 FA 支持 MXFP8 量化方案 —— 小测验答案
+
+1. 量化 KV Cache 的三重收益与 Q 不量化的原因：
+   - 显存：数据从 BF16（2 字节）变 E4M3（1 字节），外加 1/32 的 scale，占用近乎减半——同样显存放更长序列、更大 batch；
+   - 搬运：MTE2 搬运量近乎减半，Decode 是 memory-bound 场景，Kernel 时间直接下降（本方案的主要收益来源）；
+   - 计算：若硬件 Cube 支持 FP8 Mmad，吞吐再翻倍（累加仍 FP32）。
+   - Q 不量化的原因：每个 Q token 在一次 attention 里只用一次，没有 K/V 那种「被反复搬运」的复用放大效应；且 Q 保持 BF16 还能充当高精度一侧，减少 mm 的整体量化误差。量化的主体是「读多写少」的 KV Cache。
+
+2. MXFP8 的 scale shape 与 E8M0 选型：
+   - scale shape (S2, D/32)：沿 D（head 维）每 32 个元素一组，每组一个 E8M0；数据量的 1/32。
+   - 选 E8M0 而非普通 FP8/FP16 做 scale 的原因：(a) 只能表示 2 的幂——反量化退化为指数加/移位，Vector 上几乎免费；(b) 8 位覆盖 2^-127 ~ 2^+127 的缩放范围，足够 amax 归一化；(c) 与数据同为 8-bit，存储/搬运对齐简单。
+
+3. K 的 scale 不能事后统一乘与两条工程路线：
+   - 原因：score = Q · (s_k ∘ K8)ᵀ，s_k 沿 D（reduce 轴）分组——不同 d 位置的 scale 不同，乘法提不出求和号，输出矩阵上没有任何「一个系数乘一列/一行」能等价还原它。
+   - 路线一（随路反量化）：Vector 上先做 s_k × K8（E8M0 → 移位/指数加）恢复 BF16 再进 Mmad——mm 完全复用非量化模板，代价是 Vector 多一段反量化计算；
+   - 路线二（FP8 直吃）：Cube 直接吃 FP8（FP32 累加），K 沿 D 切成 D/32 段分别 Mmad，各段结果乘本组 scale 后加权累加——省掉反量化、吃到 FP8 算力，代价是 mm 编排复杂化（分组累加）、且要求硬件支持 FP8 Mmad。
+
+4. scale 生效位置的讲究：
+   - K 的 scale 必须在 softmax 之前生效：softmax 是非线性的，且各 k 位置的 scale 各不相同——「先乘 scale 再 softmax」≠「先 softmax 再乘 scale」，事后统一补乘结果直接错。
+   - V 的 scale 可以在 mm2 输出侧乘回：O = P · V 的 reduce 轴是 S2，而 V 的分组在 D 轴（输出轴）上，每个输出元素只依赖自己 D 分组的 scale，乘法可以作用在 mm2 的输出上（V2 阶段顺便完成）。
+
+5. 对拍 golden 的生成方式：
+   - golden 必须模拟同一条量化链路：参考实现里先做 E4M3 量化-反量化 + E8M0 分组 scale，再走 FP32 softmax 与 mm——即「量化方案预期的误差」要被 golden 吸收。
+   - 不能用纯 BF16 参考当 golden 的原因：那样误差里混入了量化本身引入的、方案预期内的误差（通常 1e-2 量级），阈值设松了掩盖 kernel bug、设紧了永远过不了——无法定位真正的 kernel 问题（搬运错位、scale 乘错位置等）。
+   - 实操：先 CANNSim 仿真，dump 反量化后的 K/V 与 FP32 softmax 结果分步对拍；精度阈值按量化方案单独设定（如 SQNR 40dB 级），不沿用非量化的 2e-3。
+

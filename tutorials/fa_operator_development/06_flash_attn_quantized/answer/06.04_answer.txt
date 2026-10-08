@@ -1,0 +1,25 @@
+06.04 量化方式 —— 小测验答案
+
+1. 五种粒度的 scale shape（左矩阵 (m, k)、右矩阵 (k, n)，k 为 reduce 轴）：
+   - pertensor (T)：(1, )——整个 Tensor 一个 scale，开销最小；
+   - perchannel (C)：右矩阵 (n, )——每个 channel 一个；
+   - pertoken (K)：左矩阵 (m, )——每个 token 一个；
+   - pergroup (G)：左 (m, k/gs) 或右 (k/gs, n)——reduce 轴上分组；
+   - perblock (B)：左 (m/bs, k/bs) 或右 (k/bs, n/bs)——所有轴上分块。
+   - 开销排序：T < C ≈ K < G < B。perblock 的 scale 数量最多（两个轴同时分），存储、搬运与施加开销最大。
+
+2. mx 量化的两条限定及收益：
+   - 限定一：scale 数据类型为 FLOAT8_E8M0（只能表示 2 的幂）——收益：反量化退化为指数加/移位，几乎免费；
+   - 限定二：group size 固定为 32——收益：scale 量固定为数据量的 1/32，存储/搬运开销有上界；且 32 恰好是 FP8 硬件块计算的自然宽度。
+   - mx 的本质 = pergroup-pergroup（G-G）量化模式 + 这两条特例。
+
+3. 随路量化：
+   - 把量化/反量化搬进消费算子的 kernel 内部，在数据搬入后、计算前就地完成。
+   - 省掉的是：独立 Quant/AntiQuant 算子带来的一整次「GM 读出 → 转换 → 写回 GM → 消费算子再读出」往返（两次 GM 读写 + 一次 kernel 启动）。
+   - 要求算子自己承担：scale 的搬入与对齐、反量化的计算（通常落在 Vector 上）、以及量化分支与非量化分支的模板隔离（TilingKey 区分，避免互相污染 ICache）。
+
+4. pergroup 沿 reduce 轴分组的麻烦：
+   - score = Q · (s_k ∘ K8)ᵀ 中，K 的 scale 沿 D（reduce 轴）分组——不同 d 位置的 scale 不同，乘法不能提到求和号外面，无法在 mm 输出上「事后统一乘」。
+   - 工程上要么分组做 mm：K 沿 D 切成 D/32 段分别 Mmad，每段结果乘上本组 scale 后再累加（多了分组与加权累加的编排）；要么 Vector 上先把 s_k × K8 随路反量化成 BF16 再进正常的 mm（多一次 Vector 反量化计算）。
+   - 对比：若 scale 沿非 reduce 轴分组（如 perchannel 沿 n），scale 可以直接作用在 mm 输出的对应列上，一次乘完——这就是「reduce 轴分组」与「输出轴分组」的代价差异。
+

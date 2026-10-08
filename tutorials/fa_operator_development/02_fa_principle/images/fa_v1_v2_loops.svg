@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="540" viewBox="0 0 940 540" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">FlashAttention V1 → V2：循环交换 + rescale 时机后移</text>
+
+  <!-- 块网格示意函数 -->
+  <!-- V1 面板 -->
+  <g>
+    <text x="235" y="66" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#8A5500">V1（2022）：外层 KV 块，内层 Q 块</text>
+
+    <!-- 网格 6x5：Q 行 x KV 列 -->
+    <g>
+      <!-- 先画第 0 列（外层第一步）高亮，逐列编号顺序 -->
+      <!-- 列块 -->
+      <rect x="120" y="95" width="64" height="40" fill="#E0A800" fill-opacity="0.55" stroke="#B58500"/>
+      <rect x="184" y="95" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="248" y="95" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="312" y="95" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="120" y="135" width="64" height="40" fill="#E0A800" fill-opacity="0.55" stroke="#B58500"/>
+      <rect x="184" y="135" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="248" y="135" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="312" y="135" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="120" y="175" width="64" height="40" fill="#E0A800" fill-opacity="0.55" stroke="#B58500"/>
+      <rect x="184" y="175" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="248" y="175" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="312" y="175" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="120" y="215" width="64" height="40" fill="#E0A800" fill-opacity="0.55" stroke="#B58500"/>
+      <rect x="184" y="215" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="248" y="215" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="312" y="215" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <!-- 行列标注 -->
+      <text x="100" y="119" text-anchor="end" font-size="11" fill="#1B4E9B">Q块0</text>
+      <text x="100" y="159" text-anchor="end" font-size="11" fill="#1B4E9B">Q块1</text>
+      <text x="100" y="199" text-anchor="end" font-size="11" fill="#1B4E9B">Q块2</text>
+      <text x="100" y="239" text-anchor="end" font-size="11" fill="#1B4E9B">Q块3</text>
+      <text x="152" y="88" text-anchor="middle" font-size="11" fill="#1E6B34" font-weight="bold">KV块0</text>
+      <text x="216" y="88" text-anchor="middle" font-size="11" fill="#1E6B34">KV块1</text>
+      <text x="280" y="88" text-anchor="middle" font-size="11" fill="#1E6B34">KV块2</text>
+      <text x="344" y="88" text-anchor="middle" font-size="11" fill="#1E6B34">KV块3</text>
+      <!-- 扫描顺序箭头 -->
+      <path d="M 152 250 L 152 268 M 152 268 L 216 268 L 216 250" fill="none" stroke="#B58500" stroke-width="2" marker-end="url(#arrowT)"/>
+      <text x="235" y="285" text-anchor="middle" font-size="11" fill="#8A5500">一列一列推进（每个 Q 块的状态跨整个外层循环驻留）</text>
+    </g>
+
+    <rect x="80" y="302" width="330" height="72" rx="10" fill="#FFF8E6" stroke="#E0A800" stroke-width="1.6"/>
+    <text x="245" y="324" text-anchor="middle" font-size="12" fill="#8A5500" font-weight="bold">每处理完一个 KV 块：</text>
+    <text x="245" y="343" text-anchor="middle" font-size="11.5" fill="#A81640">所有 Q 块的 O 都要 乘 α 再 除 l（保持已归一化）</text>
+    <text x="245" y="362" text-anchor="middle" font-size="11" fill="#888">大量 non-matmul 逐元素运算，GPU/NPU 上都不讨好</text>
+
+    <text x="245" y="408" text-anchor="middle" font-size="11.5" fill="#888">并行度 = B × H（Q 块维度不并行）</text>
+  </g>
+
+  <!-- 中间箭头 -->
+  <line x1="425" y1="230" x2="515" y2="230" stroke="#3EAA8C" stroke-width="3" marker-end="url(#arrowT)"/>
+  <text x="470" y="215" text-anchor="middle" font-size="12.5" fill="#166B54" font-weight="bold">V2 交换</text>
+  <text x="470" y="255" text-anchor="middle" font-size="11" fill="#166B54">外层换主角</text>
+
+  <!-- V2 面板 -->
+  <g>
+    <text x="705" y="66" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#166B54">V2（2023）：外层 Q 块，内层 KV 块</text>
+
+    <g>
+      <!-- 行块优先：第 0 行高亮 -->
+      <rect x="560" y="95" width="64" height="40" fill="#3EAA8C" fill-opacity="0.55" stroke="#2C8168"/>
+      <rect x="624" y="95" width="64" height="40" fill="#3EAA8C" fill-opacity="0.55" stroke="#2C8168"/>
+      <rect x="688" y="95" width="64" height="40" fill="#3EAA8C" fill-opacity="0.55" stroke="#2C8168"/>
+      <rect x="752" y="95" width="64" height="40" fill="#3EAA8C" fill-opacity="0.55" stroke="#2C8168"/>
+      <rect x="560" y="135" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="624" y="135" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="688" y="135" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="752" y="135" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="560" y="175" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="624" y="175" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="688" y="175" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="752" y="175" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="560" y="215" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="624" y="215" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="688" y="215" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <rect x="752" y="215" width="64" height="40" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.3"/>
+      <text x="540" y="119" text-anchor="end" font-size="11" fill="#1B4E9B" font-weight="bold">Q块0</text>
+      <text x="540" y="159" text-anchor="end" font-size="11" fill="#1B4E9B">Q块1</text>
+      <text x="540" y="199" text-anchor="end" font-size="11" fill="#1B4E9B">Q块2</text>
+      <text x="540" y="239" text-anchor="end" font-size="11" fill="#1B4E9B">Q块3</text>
+      <text x="592" y="88" text-anchor="middle" font-size="11" fill="#1E6B34">KV块0</text>
+      <text x="656" y="88" text-anchor="middle" font-size="11" fill="#1E6B34">KV块1</text>
+      <text x="720" y="88" text-anchor="middle" font-size="11" fill="#1E6B34">KV块2</text>
+      <text x="784" y="88" text-anchor="middle" font-size="11" fill="#1E6B34">KV块3</text>
+      <path d="M 816 115 L 838 115 L 838 155 L 816 155" fill="none" stroke="#2C8168" stroke-width="2" marker-end="url(#arrowT)"/>
+      <text x="705" y="285" text-anchor="middle" font-size="11" fill="#166B54">一行一行推进（Q 块的状态只在本地内层循环中存在）</text>
+    </g>
+
+    <rect x="530" y="302" width="350" height="72" rx="10" fill="#3EAA8C" fill-opacity="0.12" stroke="#3EAA8C" stroke-width="1.6"/>
+    <text x="705" y="324" text-anchor="middle" font-size="12" fill="#166B54" font-weight="bold">O 未归一化累加（acc）：</text>
+    <text x="705" y="343" text-anchor="middle" font-size="11.5" fill="#166B54">内层只 乘 α；÷l 推迟到 Q 块收尾只做一次</text>
+    <text x="705" y="362" text-anchor="middle" font-size="11" fill="#888">non-matmul 逐元素运算大幅减少（见 2.7 节实验计数）</text>
+
+    <text x="705" y="408" text-anchor="middle" font-size="11.5" fill="#166B54" font-weight="bold">并行度 = B × H × Q块数（长序列小 batch 也能吃满算力）</text>
+  </g>
+
+  <!-- 底部对比条 -->
+  <rect x="80" y="440" width="800" height="72" rx="10" fill="#FAFAFA" stroke="#CCC" stroke-width="1.2"/>
+  <text x="480" y="466" text-anchor="middle" font-size="13" font-weight="bold" fill="#444">对每个 (Q块 i, KV块 j)：V1 每步对 O 做「×α·l、+PV、÷l」；V2 每步只做「×α、+PV」，÷l 仅在 Q 块结束时一次</text>
+  <text x="480" y="492" text-anchor="middle" font-size="12" fill="#888">数学结果逐位一致；省下的是逐元素乘除的搬运与指令开销——2.5 节伪代码采用的正是 V2 结构</text>
+</svg>

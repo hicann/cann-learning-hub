@@ -1,0 +1,55 @@
+《FlashAttention 算子开发课程》第 3 章 3.8 节章节测验答案
+==========================================================
+
+1. 完整链路：
+   框架（PyTorch / 推理引擎）→ aclnn 接口第一段
+   （GetWorkspaceSize：解析输入、触发 Tiling 计算、算出 workspace
+   大小、构造 executor）→ 申请 workspace → aclnn 第二段
+   （按 blockDim 启动 Kernel，任务入 stream）→ Device 上执行。
+   Tiling 发生在第一段接口内部，跑在 Host（CPU）上。
+
+2. 排布填表（B=2,N=4,S=256,D=128）：
+
+   | 排布 | shape | 基本块取数 | 尾块/padding |
+   |--|--|--|--|
+   | BSND | [2,256,4,128] | 跳址（同头 token 不连续） | 短 batch padding |
+   | BNSD | [2,4,256,128] | 顺序（同头 token 连续） | 短 batch padding |
+   | BSH  | [2,256,512]（H=N×D） | 跳址 | 短 batch padding |
+   | TND  | [512,4,128]（B、S 合轴） | 跳址 | 无 padding，但有尾块 |
+
+3. 一句话解释：
+   1) Kernel 侧 Scalar 算力宝贵，切分逻辑上提 Host，
+      Kernel 拿 TilingData 照表执行；
+   2) TilingKey 治 ICache Miss——编译期隔离不同场景代码，
+      防止代码段膨胀导致指令缓存未命中；
+   3) TilingData 随任务下发、每核一份，太大会放大图开销
+      与同地址访问开销。
+
+4. D = H/N1 = 512/32 = 16；G = N1/N2 = 32/8 = 4；
+   N2 = 8；S1 = S2 = 512（BSH 单 batch 的 S），
+   ceil(S1/128) = 4，
+   totalSize = B × N2 × G × 4 = 2 × 8 × 4 × 4 = 256。
+
+5. Softmax 沿 S2 归一化，一个 Q 块必须见到全部 KV 才能算对分母 l，
+   核间数据独立性被破坏；强行切 S2 则各核只有部分分数，
+   必须引入核间通信与状态合并（Online Softmax 的 m/l 跨核归约），
+   通信开销和同步代价远超切分收益，所以 KV 必须完整 S 轴加载、
+   S2 只留在核内循环。
+
+6. 四拍：mm1（AIC，Q·Kᵀ）→ vector1（AIV，softmax/mask/scale）
+   → mm2（AIC，P·V）→ vector2（AIV，update）。
+   搬运路径：
+   - Q：GM →（DataCopy/MTE2）→ L1A →（LoadData/MTE1）→ L0A；
+   - K：GM → L1B →（LoadDataWithTranspose/MTE1）→ L0B；
+   - V：GM → L1B →（LoadDataWithTranspose/MTE1）→ L0B；
+   - P（vector1 产物）：UB → L1A →（LoadData）→ L0A；
+   结果链路：mmad 算至 L0C →（FixPipe）→ UB。
+
+7. 参考示例：
+   FA 用 Online Softmax 解决了「Softmax 要整行才能归一化、
+   而片上放不下整行」的矛盾，让 Q 块驻留片上、KV 块逐块流入，
+   中间结果 S/P 从此不出片（算法创新）；工程上它用 TilingKey 做
+   编译期场景隔离保住 ICache 命中率，用 nRatio 把 Cube 大块与
+   Vector 基本块（64×128）配平，用四拍循环（mm1→vector1→mm2→
+   vector2）+ 乒乓 + preload 让搬运与计算在时间上完全重叠
+   ——每一层都是「让硬件别闲着」的工程杰作。

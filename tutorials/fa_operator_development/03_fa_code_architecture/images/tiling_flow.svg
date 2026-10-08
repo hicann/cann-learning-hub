@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="500" viewBox="0 0 940 500" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">Tiling 的计算与下发：Host 算好切分参数，打包送到 Device</text>
+
+  <!-- Host: TilingFunc -->
+  <rect x="40" y="70" width="250" height="330" rx="12" fill="#9334E6" fill-opacity="0.12" stroke="#9334E6" stroke-width="2"/>
+  <rect x="40" y="70" width="250" height="32" rx="12" fill="#9334E6" fill-opacity="0.85"/>
+  <text x="165" y="92" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#FFF">Host：TilingFunc（CPU）</text>
+  <g font-size="11.5" fill="#444">
+    <text x="60" y="128">① 读输入 shape / 属性</text>
+    <text x="60" y="152">② 读平台信息（核数/UB/L1）</text>
+    <text x="60" y="176">③ 核间任务划分</text>
+    <text x="60" y="200">④ 核内矩阵块 M / N</text>
+    <text x="60" y="224">⑤ workspace 大小</text>
+    <text x="60" y="248">⑥ 填 TilingData 各字段</text>
+    <text x="60" y="272">⑦ SetTilingKey（选分支）</text>
+    <text x="60" y="296">⑧ SetBlockDim（用多少核）</text>
+    <text x="60" y="320">⑨ 结果存入 TilingCache</text>
+  </g>
+  <text x="165" y="360" text-anchor="middle" font-size="11" fill="#888">真实入口：DoOpTiling</text>
+  <text x="165" y="378" text-anchor="middle" font-size="11" fill="#888">FusedInferAttentionScore</text>
+
+  <!-- TilingData 结构体 -->
+  <rect x="345" y="95" width="240" height="280" rx="12" fill="#E8F1FE" stroke="#4C88F7" stroke-width="2"/>
+  <rect x="345" y="95" width="240" height="32" rx="12" fill="#4C88F7" fill-opacity="0.9"/>
+  <text x="465" y="117" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#FFF">TilingData（参数包）</text>
+  <g font-size="11" fill="#444">
+    <text x="465" y="152" text-anchor="middle" font-weight="bold" fill="#1B4E9B">BaseParams</text>
+    <text x="465" y="168" text-anchor="middle">bSize / n2Size / scale …</text>
+    <text x="465" y="196" text-anchor="middle" font-weight="bold" fill="#1B4E9B">InnerSplitParams</text>
+    <text x="465" y="212" text-anchor="middle">mBaseSize / s2BaseSize</text>
+    <text x="465" y="240" text-anchor="middle" font-weight="bold" fill="#1B4E9B">OuterSplitParams</text>
+    <text x="465" y="256" text-anchor="middle">bN2End[26] / gS1End[26]</text>
+    <text x="465" y="284" text-anchor="middle" font-weight="bold" fill="#1B4E9B">FlashDecodeParams</text>
+    <text x="465" y="300" text-anchor="middle">usedVecNumOfFd …</text>
+    <text x="465" y="328" text-anchor="middle" font-weight="bold" fill="#888">… 共 12 个子结构</text>
+    <text x="465" y="352" text-anchor="middle" font-size="10.5" fill="#888">BEGIN_TILING_DATA_DEF 宏定义</text>
+  </g>
+
+  <!-- GM tiling 区 -->
+  <rect x="645" y="150" width="265" height="170" rx="12" fill="#FFF8E6" stroke="#E0A800" stroke-width="2"/>
+  <rect x="645" y="150" width="265" height="32" rx="12" fill="#E0A800" fill-opacity="0.85"/>
+  <text x="777" y="172" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#FFF">GM 上的 tiling 区</text>
+  <g font-size="11.5" fill="#444">
+    <text x="777" y="204" text-anchor="middle">TilingData 序列化字节流</text>
+    <text x="777" y="230" text-anchor="middle">＋ TilingKey（选哪个 kernel）</text>
+    <text x="777" y="256" text-anchor="middle">＋ blockDim（起多少个核）</text>
+    <text x="777" y="288" text-anchor="middle" font-size="11" fill="#888">框架随 kernel 启动一并搬运</text>
+  </g>
+
+  <!-- Device: kernel -->
+  <rect x="645" y="360" width="265" height="100" rx="12" fill="#E8F5EC" stroke="#34A853" stroke-width="2"/>
+  <rect x="645" y="360" width="265" height="32" rx="12" fill="#34A853" fill-opacity="0.9"/>
+  <text x="777" y="382" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#FFF">Device：kernel 解包</text>
+  <g font-family="Consolas, 'Courier New', monospace" font-size="10.5" fill="#1E6B34">
+    <text x="777" y="412" text-anchor="middle">GET_TILING_DATA_WITH_STRUCT(</text>
+    <text x="777" y="430" text-anchor="middle">FusedInferAttentionScoreTilingData,</text>
+    <text x="777" y="448" text-anchor="middle">tiling)</text>
+  </g>
+
+  <!-- 箭头 -->
+  <line x1="292" y1="235" x2="342" y2="235" stroke="#555" stroke-width="2" marker-end="url(#arrowT)"/>
+  <text x="317" y="222" text-anchor="middle" font-size="10.5" fill="#888">SaveToBuffer</text>
+  <line x1="587" y1="235" x2="642" y2="235" stroke="#555" stroke-width="2" marker-end="url(#arrowT)"/>
+  <line x1="777" y1="322" x2="777" y2="357" stroke="#555" stroke-width="2" marker-end="url(#arrowT)"/>
+
+  <!-- 底部彩蛋 -->
+  <rect x="40" y="430" width="545" height="48" rx="8" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.4"/>
+  <text x="312" y="450" text-anchor="middle" font-size="12" font-weight="bold" fill="#A81640">扩展：Tiling 下沉——把 TilingFunc 搬到 Device 侧 AICPU 执行</text>
+  <text x="312" y="468" text-anchor="middle" font-size="11" fill="#666">省去 Host→Device 传参，推理小算子场景收益明显（详见仓库博客《AICPU Tiling下沉编程》）</text>
+
+  <text x="165" y="425" text-anchor="middle" font-size="11" fill="#888">每个核拿到的</text>
+  <text x="165" y="443" text-anchor="middle" font-size="11" fill="#888">都是同一份参数包</text>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="470" viewBox="0 0 880 470" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+  <text x="440" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#24292f">搬运指令与存储层级的对应关系（经典 MTE 体系）</text>
+  <!-- storage hierarchy (left) -->
+  <rect x="50" y="55" width="260" height="52" rx="6" fill="#f6f8fa" stroke="#57606a" stroke-width="1.5"/>
+  <text x="180" y="76" text-anchor="middle" font-size="13" font-weight="bold" fill="#24292f">Global Memory（GM/HBM）</text>
+  <text x="180" y="95" text-anchor="middle" font-size="11" fill="#57606a">容量最大 · 带宽最低</text>
+  <rect x="50" y="125" width="260" height="52" rx="6" fill="#e8f1fb" stroke="#2f6fb5" stroke-width="1.5"/>
+  <text x="180" y="146" text-anchor="middle" font-size="13" font-weight="bold" fill="#1a4c8b">L1 Buffer</text>
+  <text x="180" y="165" text-anchor="middle" font-size="11" fill="#57606a">AI Core 子系统内共享</text>
+  <rect x="50" y="195" width="260" height="52" rx="6" fill="#eaf6ec" stroke="#3d8b53" stroke-width="1.5"/>
+  <text x="180" y="216" text-anchor="middle" font-size="13" font-weight="bold" fill="#216639">L0A / L0B（Cube 专属）</text>
+  <text x="180" y="235" text-anchor="middle" font-size="11" fill="#57606a">矩阵操作数缓存</text>
+  <rect x="50" y="265" width="260" height="52" rx="6" fill="#fdf3e3" stroke="#c58a1e" stroke-width="1.5"/>
+  <text x="180" y="286" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a5a00">Unified Buffer（UB）</text>
+  <text x="180" y="305" text-anchor="middle" font-size="11" fill="#57606a">Vector 侧工作空间</text>
+  <rect x="50" y="335" width="260" height="52" rx="6" fill="#f5ecfb" stroke="#7a3fb5" stroke-width="1.5"/>
+  <text x="180" y="356" text-anchor="middle" font-size="13" font-weight="bold" fill="#5a2d8b">L0C（矩阵结果缓存）</text>
+  <text x="180" y="375" text-anchor="middle" font-size="11" fill="#57606a">mmad 累加输出</text>
+  <!-- arrows: data flows -->
+  <defs>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#c0392b"/></marker>
+  </defs>
+  <line x1="310" y1="81" x2="560" y2="81" stroke="#c0392b" stroke-width="2.5" marker-end="url(#m)"/>
+  <text x="435" y="70" text-anchor="middle" font-size="12" fill="#c0392b" font-weight="bold">MTE2（外部 → 片上）</text>
+  <line x1="310" y1="151" x2="560" y2="151" stroke="#c0392b" stroke-width="2.5" marker-end="url(#m)"/>
+  <text x="435" y="140" text-anchor="middle" font-size="12" fill="#c0392b" font-weight="bold">MTE1（L1 → L0A/L0B，可做分形排布转换）</text>
+  <line x1="310" y1="361" x2="560" y2="361" stroke="#c0392b" stroke-width="2.5" marker-end="url(#m)"/>
+  <text x="435" y="350" text-anchor="middle" font-size="12" fill="#c0392b" font-weight="bold">MTE3（L0C → UB，专用于矩阵结果搬运）</text>
+  <line x1="310" y1="291" x2="560" y2="291" stroke="#c0392b" stroke-width="2.5" marker-end="url(#m)"/>
+  <text x="435" y="280" text-anchor="middle" font-size="12" fill="#c0392b" font-weight="bold">FIXPIPE（L0C → GM/UB，含随路量化）</text>
+  <!-- right panel: notes -->
+  <rect x="565" y="55" width="290" height="115" rx="8" fill="#fff8f0" stroke="#c58a1e" stroke-width="1.5"/>
+  <text x="710" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a5a00">MTE2</text>
+  <text x="580" y="103" font-size="11" fill="#555">· GM → L1 / UB / L0</text>
+  <text x="580" y="121" font-size="11" fill="#555">· 大块数据搬运主力</text>
+  <text x="580" y="139" font-size="11" fill="#555">· 每周期搬运 256B（对齐要求）</text>
+  <text x="580" y="157" font-size="11" fill="#555">· NDMA：NPU 间直通搬运</text>
+  <rect x="565" y="180" width="290" height="100" rx="8" fill="#f0f7f2" stroke="#3d8b53" stroke-width="1.5"/>
+  <text x="710" y="205" text-anchor="middle" font-size="13" font-weight="bold" fill="#216639">MTE1 / MTE3 / FIXPIPE</text>
+  <text x="580" y="228" font-size="11" fill="#555">· MTE1：L1 → L0A/L0B（矩阵输入）</text>
+  <text x="580" y="246" font-size="11" fill="#555">· MTE3：L0C/UB → UB/GM（结果输出）</text>
+  <text x="580" y="264" font-size="11" fill="#555">· FIXPIPE：L0C 定点结果 + 量化</text>
+  <rect x="565" y="290" width="290" height="97" rx="8" fill="#f5ecfb" stroke="#7a3fb5" stroke-width="1.5"/>
+  <text x="710" y="315" text-anchor="middle" font-size="13" font-weight="bold" fill="#5a2d8b">FA 中的典型路径</text>
+  <text x="580" y="338" font-size="11" fill="#555">Q/K/V：GM --MTE2--&gt; L1</text>
+  <text x="580" y="356" font-size="11" fill="#555">K：L1 --MTE1--&gt; L0B（NZ 分形）</text>
+  <text x="580" y="374" font-size="11" fill="#555">S=P·K^T 结果：L0C --FIXPIPE--&gt; UB</text>
+  <text x="440" y="450" text-anchor="middle" font-size="12" fill="#57606a">各 MTE 有独立的指令队列，可与 Cube/Vector 计算并行 —— Double Buffering 的硬件基础</text>
+</svg>

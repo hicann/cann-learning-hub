@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="660" viewBox="0 0 940 660" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">FA 算子调用通路：从一行 PyTorch 代码到 AI Core 上执行的 kernel</text>
+
+  <!-- 用户层 -->
+  <g>
+    <rect x="230" y="52" width="480" height="58" rx="8" fill="#4C88F7" fill-opacity="0.16" stroke="#4C88F7" stroke-width="1.6"/>
+    <text x="470" y="76" text-anchor="middle" font-size="14" font-weight="bold" fill="#1B4E9B">用户代码（Host）</text>
+    <text x="470" y="98" text-anchor="middle" font-size="12" fill="#333">model(x) ｜ torch_npu 调用注意力接口</text>
+  </g>
+
+  <!-- 框架层 -->
+  <g>
+    <rect x="230" y="128" width="480" height="66" rx="8" fill="#4C88F7" fill-opacity="0.24" stroke="#4C88F7" stroke-width="1.6"/>
+    <text x="470" y="152" text-anchor="middle" font-size="14" font-weight="bold" fill="#1B4E9B">框架层：torch_npu ＋ GE 图引擎</text>
+    <text x="470" y="174" text-anchor="middle" font-size="11.5" fill="#333">.npu() 搬数据、算子映射 → 入图 / 算子融合 / 内存优化</text>
+  </g>
+
+  <!-- aclnn 两段式 -->
+  <g>
+    <rect x="120" y="212" width="700" height="118" rx="10" fill="#FDE8E8" stroke="#E8446D" stroke-width="2"/>
+    <rect x="120" y="212" width="700" height="30" rx="10" fill="#E8446D" fill-opacity="0.85"/>
+    <text x="470" y="233" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF">aclnn 接口层（op_api）：两段式调用 ★ 本节主角</text>
+    <rect x="145" y="256" width="315" height="58" rx="6" fill="#FFF" stroke="#E8446D" stroke-width="1.2"/>
+    <text x="302" y="278" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#A81640">第一段 GetWorkspaceSize</text>
+    <text x="302" y="298" text-anchor="middle" font-size="10.5" fill="#666">输入预处理 → l0op 算子构造 executor</text>
+    <text x="302" y="312" text-anchor="middle" font-size="10.5" fill="#666">→ 算出 workspaceSize</text>
+    <rect x="480" y="256" width="315" height="58" rx="6" fill="#FFF" stroke="#E8446D" stroke-width="1.2"/>
+    <text x="637" y="278" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#A81640">第二段 Run</text>
+    <text x="637" y="298" text-anchor="middle" font-size="10.5" fill="#666">CommonOpExecutorRun 统一执行器</text>
+    <text x="637" y="312" text-anchor="middle" font-size="10.5" fill="#666">→ 任务下发到 stream</text>
+  </g>
+
+  <!-- op_host -->
+  <g>
+    <rect x="120" y="354" width="700" height="96" rx="10" fill="#9334E6" fill-opacity="0.14" stroke="#9334E6" stroke-width="1.8"/>
+    <text x="470" y="378" text-anchor="middle" font-size="14" font-weight="bold" fill="#6B21A8">Host 侧算子实现（op_host）</text>
+    <rect x="145" y="392" width="205" height="44" rx="6" fill="#FFF" stroke="#9334E6" stroke-width="1"/>
+    <text x="247" y="410" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#6B21A8">OpDef 原型注册</text>
+    <text x="247" y="428" text-anchor="middle" font-size="10.5" fill="#666">输入/输出/属性定义</text>
+    <rect x="368" y="392" width="205" height="44" rx="6" fill="#FFF" stroke="#9334E6" stroke-width="1"/>
+    <text x="470" y="410" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#6B21A8">InferShape / DataType</text>
+    <text x="470" y="428" text-anchor="middle" font-size="10.5" fill="#666">按 layout 推导输出形状</text>
+    <rect x="591" y="392" width="205" height="44" rx="6" fill="#FFF" stroke="#9334E6" stroke-width="1.4" stroke-dasharray="0"/>
+    <text x="693" y="410" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#6B21A8">Tiling（3.3 节）</text>
+    <text x="693" y="428" text-anchor="middle" font-size="10.5" fill="#666">切分参数计算与下发</text>
+  </g>
+
+  <!-- Runtime / Driver -->
+  <g>
+    <rect x="230" y="474" width="480" height="58" rx="8" fill="#E0A800" fill-opacity="0.18" stroke="#E0A800" stroke-width="1.6"/>
+    <text x="470" y="498" text-anchor="middle" font-size="14" font-weight="bold" fill="#8A5500">CANN Runtime ＋ Driver</text>
+    <text x="470" y="520" text-anchor="middle" font-size="11.5" fill="#333">内存管理、stream 调度、kernel 指令下发到硬件</text>
+  </g>
+
+  <!-- Device kernel -->
+  <g>
+    <rect x="120" y="556" width="700" height="82" rx="10" fill="#34A853" fill-opacity="0.14" stroke="#34A853" stroke-width="2"/>
+    <text x="470" y="580" text-anchor="middle" font-size="14" font-weight="bold" fill="#1E6B34">Device：AI Core 上的 kernel（op_kernel）</text>
+    <text x="470" y="602" text-anchor="middle" font-size="11.5" fill="#333">fused_infer_attention_score 核函数按 TilingKey 路由（3.4 节）</text>
+    <text x="470" y="622" text-anchor="middle" font-size="11" fill="#888">GM：输入输出张量 ＋ TilingData ＋ workspace</text>
+  </g>
+
+  <!-- 竖向箭头 -->
+  <line x1="470" y1="110" x2="470" y2="126" stroke="#555" stroke-width="2" marker-end="url(#arrowC)"/>
+  <line x1="470" y1="194" x2="470" y2="210" stroke="#555" stroke-width="2" marker-end="url(#arrowC)"/>
+  <line x1="470" y1="330" x2="470" y2="352" stroke="#555" stroke-width="2" marker-end="url(#arrowC)"/>
+  <line x1="470" y1="450" x2="470" y2="472" stroke="#555" stroke-width="2" marker-end="url(#arrowC)"/>
+  <line x1="470" y1="532" x2="470" y2="554" stroke="#555" stroke-width="2" marker-end="url(#arrowC)"/>
+
+  <!-- 右侧注释 -->
+  <text x="845" y="270" text-anchor="middle" font-size="11.5" fill="#A81640" font-weight="bold">executor 是</text>
+  <text x="845" y="288" text-anchor="middle" font-size="11.5" fill="#A81640" font-weight="bold">"待办任务单"</text>
+  <text x="845" y="306" text-anchor="middle" font-size="11" fill="#888">第一段填单，第二段执行</text>
+
+  <text x="845" y="412" text-anchor="middle" font-size="11.5" fill="#6B21A8" font-weight="bold">TilingData</text>
+  <text x="845" y="430" text-anchor="middle" font-size="11.5" fill="#6B21A8" font-weight="bold">从这层出发</text>
+  <text x="845" y="448" text-anchor="middle" font-size="11" fill="#888">SaveToBuffer 进 GM</text>
+
+  <text x="95" y="270" text-anchor="middle" font-size="11.5" fill="#1B4E9B" font-weight="bold">接口有 V1~V5</text>
+  <text x="95" y="288" text-anchor="middle" font-size="11.5" fill="#1B4E9B" font-weight="bold">五世同堂</text>
+  <text x="95" y="306" text-anchor="middle" font-size="11" fill="#888">新代码建议走 V5</text>
+</svg>

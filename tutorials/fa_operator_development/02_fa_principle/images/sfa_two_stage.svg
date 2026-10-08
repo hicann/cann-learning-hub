@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="540" viewBox="0 0 940 540" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">SFA（Sparse FlashAttention）：先选关键 Token，再做稀疏 Attention</text>
+
+  <!-- ===== 顶部：完整 KV Cache ===== -->
+  <rect x="150" y="52" width="640" height="46" rx="8" fill="#34A853" fill-opacity="0.18" stroke="#34A853" stroke-width="1.5"/>
+  <text x="470" y="81" text-anchor="middle" font-size="12.5" fill="#1E6B34" font-weight="bold">完整 KV Cache（长上下文：10 万 ~ 百万 token）——全部算，算不起</text>
+
+  <line x1="470" y1="100" x2="470" y2="124" stroke="#555" stroke-width="2" marker-end="url(#arrowT)"/>
+
+  <!-- ===== 阶段一：Lightning Indexer ===== -->
+  <rect x="80" y="128" width="780" height="128" rx="12" fill="#FFF8E6" stroke="#E0A800" stroke-width="2"/>
+  <rect x="80" y="128" width="780" height="30" rx="12" fill="#E0A800" fill-opacity="0.85"/>
+  <text x="470" y="149" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF">阶段一：Lightning Indexer —— 「哪些 token 值得看？」</text>
+
+  <g font-size="11">
+    <rect x="110" y="176" width="150" height="44" rx="8" fill="#E8F1FE" stroke="#4C88F7"/>
+    <text x="185" y="194" text-anchor="middle" fill="#1B4E9B" font-weight="bold">低维投影打分</text>
+    <text x="185" y="210" text-anchor="middle" font-size="10" fill="#666">q、k 降维后做 GEMM</text>
+
+    <line x1="262" y1="198" x2="286" y2="198" stroke="#555" stroke-width="1.6" marker-end="url(#arrowT)"/>
+
+    <rect x="290" y="176" width="140" height="44" rx="8" fill="#FDE8E8" stroke="#E8446D"/>
+    <text x="360" y="194" text-anchor="middle" fill="#A81640" font-weight="bold">ReLU（稀疏激活）</text>
+    <text x="360" y="210" text-anchor="middle" font-size="10" fill="#666">昇腾：随路 ReLU（FixP）</text>
+
+    <line x1="432" y1="198" x2="456" y2="198" stroke="#555" stroke-width="1.6" marker-end="url(#arrowT)"/>
+
+    <rect x="460" y="176" width="150" height="44" rx="8" fill="#E8F1FE" stroke="#4C88F7"/>
+    <text x="535" y="194" text-anchor="middle" fill="#1B4E9B" font-weight="bold">ReduceSum 聚合</text>
+    <text x="535" y="210" text-anchor="middle" font-size="10" fill="#666">每 token 得到重要性分数</text>
+
+    <line x1="612" y1="198" x2="636" y2="198" stroke="#555" stroke-width="1.6" marker-end="url(#arrowT)"/>
+
+    <rect x="640" y="176" width="190" height="44" rx="8" fill="#9334E6" fill-opacity="0.15" stroke="#9334E6" stroke-width="1.5"/>
+    <text x="735" y="194" text-anchor="middle" fill="#6B21A8" font-weight="bold">TopK：选出 ~2048 个关键 token</text>
+    <text x="735" y="210" text-anchor="middle" font-size="10" fill="#6B21A8">输出离散的 token 索引</text>
+  </g>
+  <text x="470" y="248" text-anchor="middle" font-size="10.5" fill="#888">昇腾将整段做成一个融合 Kernel（LightningIndexer），TopK 的耗时被流水掩盖</text>
+
+  <!-- ===== 箭头 + 稀疏选取 ===== -->
+  <line x1="470" y1="258" x2="470" y2="284" stroke="#555" stroke-width="2" marker-end="url(#arrowT)"/>
+  <text x="560" y="276" text-anchor="middle" font-size="11" fill="#6B21A8">只保留 ~2% 的 token</text>
+
+  <!-- ===== 阶段二：Sparse FA ===== -->
+  <rect x="80" y="288" width="780" height="128" rx="12" fill="#3EAA8C" fill-opacity="0.1" stroke="#3EAA8C" stroke-width="2"/>
+  <rect x="80" y="288" width="780" height="30" rx="12" fill="#3EAA8C" fill-opacity="0.85"/>
+  <text x="470" y="309" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF">阶段二：Sparse FlashAttention —— 只对选中的 token 做精确 Attention</text>
+
+  <g font-size="11">
+    <rect x="110" y="336" width="200" height="52" rx="8" fill="#34A853" fill-opacity="0.15" stroke="#34A853"/>
+    <text x="210" y="356" text-anchor="middle" fill="#1E6B34" font-weight="bold">按索引离散搬运选中 KV</text>
+    <text x="210" y="374" text-anchor="middle" font-size="10" fill="#1E6B34">离散访存：两两聚合（srcGap）</text>
+
+    <line x1="312" y1="362" x2="336" y2="362" stroke="#555" stroke-width="1.6" marker-end="url(#arrowT)"/>
+
+    <rect x="340" y="336" width="230" height="52" rx="8" fill="#FDE8E8" stroke="#E8446D"/>
+    <text x="455" y="356" text-anchor="middle" fill="#A81640" font-weight="bold">FlashAttention（Online Softmax）</text>
+    <text x="455" y="374" text-anchor="middle" font-size="10" fill="#A81640">分块 + 递推，同 2.5 节，一个不少</text>
+
+    <line x1="572" y1="362" x2="596" y2="362" stroke="#555" stroke-width="1.6" marker-end="url(#arrowT)"/>
+
+    <rect x="600" y="336" width="230" height="52" rx="8" fill="#A8C7E8" stroke="#1B4E9B"/>
+    <text x="715" y="356" text-anchor="middle" fill="#1B4E9B" font-weight="bold">精确输出（非近似）</text>
+    <text x="715" y="374" text-anchor="middle" font-size="10" fill="#666">对选中集合是精确的</text>
+  </g>
+
+  <!-- ===== 底部：对比 ===== -->
+  <rect x="80" y="436" width="780" height="84" rx="10" fill="#FAFAFA" stroke="#CCC" stroke-width="1.2"/>
+  <!-- 计算量对比条 -->
+  <text x="120" y="460" font-size="11.5" fill="#444" font-weight="bold">计算量对比（128k 上下文，选中 2048 个 token）：</text>
+  <rect x="120" y="470" width="640" height="18" rx="4" fill="#E8446D" fill-opacity="0.75"/>
+  <text x="770" y="484" font-size="11" fill="#A81640" font-weight="bold">Dense 100%</text>
+  <rect x="120" y="494" width="16" height="18" rx="4" fill="#3EAA8C"/>
+  <text x="150" y="508" font-size="11" fill="#166B54" font-weight="bold">SFA ≈ 1.6%（2048/131072）</text>
+  <text x="480" y="508" text-anchor="middle" font-size="10.5" fill="#888">与因果掩码「整块跳过」（2.5 节）一脉相承：从按规则跳过 → 学习着跳过</text>
+</svg>

@@ -1,0 +1,3 @@
+1. C。mmad 的累加结果写入 L0C（Cube 私有的矩阵结果缓存），再由 MTE3/FIXPIPE 搬出。
+2. 错。高阶 MatMul API 内部自动完成分形转换、K 维循环与尾块处理，程序员无需手写——但理解底层机制是看懂 Profiler 数据的前提。
+3. B。mmad 的 init_flag 机制：K 维首块清零、后续块累加。FA 的 P·V 多块累加直接复用该语义。

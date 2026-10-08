@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="500" viewBox="0 0 940 500" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowK" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">TilingKey：把"一个算子、多种场景"编译成多个特化 kernel</text>
+
+  <!-- 左：Host 侧场景组合 -->
+  <rect x="40" y="65" width="270" height="300" rx="12" fill="#9334E6" fill-opacity="0.12" stroke="#9334E6" stroke-width="2"/>
+  <rect x="40" y="65" width="270" height="32" rx="12" fill="#9334E6" fill-opacity="0.85"/>
+  <text x="175" y="87" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#FFF">Host：TilingFunc 里组合场景</text>
+  <g font-size="11.5" fill="#444">
+    <text x="175" y="124" text-anchor="middle">dtype 组合（QF16_KVF16…）</text>
+    <text x="175" y="152" text-anchor="middle">input_layout（TND/BSH…）</text>
+    <text x="175" y="180" text-anchor="middle">mask 类型（CAUSAL/NOMASK…）</text>
+    <text x="175" y="208" text-anchor="middle">分支（SPLITFUSE / PFA / IFA）</text>
+    <text x="175" y="236" text-anchor="middle">PagedCache / FlashDecode 开关</text>
+  </g>
+  <rect x="65" y="262" width="220" height="60" rx="8" fill="#FFF" stroke="#9334E6" stroke-width="1.2"/>
+  <text x="175" y="286" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#6B21A8">SetTilingKey(key)</text>
+  <text x="175" y="306" text-anchor="middle" font-size="10.5" fill="#888">PFA 分支额外 +1e18 偏移</text>
+  <text x="175" y="330" text-anchor="middle" font-size="10.5" fill="#888">独占一段 key 区间</text>
+
+  <!-- 中：key 值 -->
+  <rect x="370" y="150" width="200" height="130" rx="12" fill="#FFF8E6" stroke="#E0A800" stroke-width="2"/>
+  <text x="470" y="180" text-anchor="middle" font-size="13" font-weight="bold" fill="#8A5500">一个整数 key</text>
+  <g font-family="Consolas, monospace" font-size="11" fill="#444">
+    <text x="470" y="212" text-anchor="middle">QF16_KVF16_OUTF16_</text>
+    <text x="470" y="232" text-anchor="middle">TND_CAUSALMASK</text>
+    <text x="470" y="252" text-anchor="middle">_SPLITFUSE_TILING</text>
+  </g>
+  <text x="470" y="320" text-anchor="middle" font-size="10.5" fill="#888">key 命名即模板参数编码</text>
+  <text x="470" y="338" text-anchor="middle" font-size="10.5" fill="#888">人能读懂的"配方表"</text>
+
+  <!-- 右：Kernel 编译期分发 -->
+  <rect x="630" y="65" width="280" height="300" rx="12" fill="#E8F5EC" stroke="#34A853" stroke-width="2"/>
+  <rect x="630" y="65" width="280" height="32" rx="12" fill="#34A853" fill-opacity="0.9"/>
+  <text x="770" y="87" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#FFF">Device：编译期特化</text>
+  <g font-family="Consolas, monospace" font-size="10.5" fill="#1E6B34">
+    <text x="650" y="124">if (TILING_KEY_VAR >= FAI_FLAG)</text>
+    <text x="668" y="146">TILING_KEY_IS(QF16_KVF16…)</text>
+    <text x="686" y="168">SplitFuse::FAInfer&lt;TND,…&gt;(...)</text>
+    <text x="650" y="200">#elif TILING_KEY_VAR == XXX</text>
+    <text x="668" y="222">SplitFuse::FAInfer&lt;BSH,…&gt;(...)</text>
+    <text x="650" y="254">#elif …（数百个组合）</text>
+  </g>
+  <text x="770" y="300" text-anchor="middle" font-size="11" fill="#A81640" font-weight="bold">编译器常量折叠</text>
+  <text x="770" y="320" text-anchor="middle" font-size="11" fill="#444">每个 key 只留一个具体模板</text>
+  <text x="770" y="340" text-anchor="middle" font-size="11" fill="#444">运行期零分支开销</text>
+
+  <!-- 箭头 -->
+  <line x1="312" y1="215" x2="367" y2="215" stroke="#555" stroke-width="2" marker-end="url(#arrowK)"/>
+  <line x1="572" y1="215" x2="627" y2="215" stroke="#555" stroke-width="2" marker-end="url(#arrowK)"/>
+
+  <!-- 底部 -->
+  <rect x="40" y="400" width="870" height="72" rx="10" fill="#3EAA8C" fill-opacity="0.12" stroke="#3EAA8C" stroke-width="1.6"/>
+  <text x="475" y="426" text-anchor="middle" font-size="13" font-weight="bold" fill="#166B54">为什么用编译期分发而不是运行期 if？</text>
+  <text x="475" y="450" text-anchor="middle" font-size="11.5" fill="#446">scalar 指令与 icache miss 是 kernel 里"看不见的开销"——分支在编译期折叠掉，kernel 全速跑矩阵乘（详见博客《TilingKey模板化编程》）</text>
+</svg>

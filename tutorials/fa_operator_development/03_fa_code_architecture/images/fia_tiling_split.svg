@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="640" viewBox="0 0 940 640" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowQ" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">FA 的两层切分：核间任务划分（外）与单核矩阵切块（内）</text>
+
+  <!-- 上半：核间切分 -->
+  <text x="470" y="68" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#6B21A8">外层：核间切分——把 (B × N2 × g·S1) 的任务摊到 26 个 AI Core</text>
+
+  <!-- 任务网格 -->
+  <g>
+    <text x="185" y="102" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#1B4E9B">任务空间（B×N2 维度）</text>
+    <g>
+      <rect x="80" y="115" width="52" height="26" rx="3" fill="#4C88F7" fill-opacity="0.55" stroke="#4C88F7"/>
+      <rect x="136" y="115" width="52" height="26" rx="3" fill="#4C88F7" fill-opacity="0.45" stroke="#4C88F7"/>
+      <rect x="192" y="115" width="52" height="26" rx="3" fill="#4C88F7" fill-opacity="0.35" stroke="#4C88F7"/>
+      <rect x="248" y="115" width="52" height="26" rx="3" fill="#4C88F7" fill-opacity="0.25" stroke="#4C88F7"/>
+      <rect x="80" y="145" width="52" height="26" rx="3" fill="#4C88F7" fill-opacity="0.45" stroke="#4C88F7"/>
+      <rect x="136" y="145" width="52" height="26" rx="3" fill="#4C88F7" fill-opacity="0.35" stroke="#4C88F7"/>
+      <rect x="192" y="145" width="52" height="26" rx="3" fill="#4C88F7" fill-opacity="0.25" stroke="#4C88F7"/>
+      <rect x="248" y="145" width="52" height="26" rx="3" fill="#4C88F7" fill-opacity="0.15" stroke="#4C88F7" stroke-dasharray="4 3"/>
+      <text x="190" y="196" text-anchor="middle" font-size="11" fill="#888">行 = batch，列 = head（N2）</text>
+    </g>
+  </g>
+
+  <line x1="320" y1="143" x2="375" y2="143" stroke="#555" stroke-width="2" marker-end="url(#arrowQ)"/>
+  <text x="347" y="130" text-anchor="middle" font-size="10.5" fill="#888">tiling 划分</text>
+
+  <!-- 核数组 -->
+  <g>
+    <text x="600" y="102" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#6B21A8">26 个 AI Core（arch22）</text>
+    <g font-size="10">
+      <rect x="410" y="115" width="34" height="26" rx="4" fill="#9334E6" fill-opacity="0.5" stroke="#9334E6"/><text x="427" y="132" text-anchor="middle" fill="#FFF" font-weight="bold">C0</text>
+      <rect x="448" y="115" width="34" height="26" rx="4" fill="#9334E6" fill-opacity="0.5" stroke="#9334E6"/><text x="465" y="132" text-anchor="middle" fill="#FFF" font-weight="bold">C1</text>
+      <rect x="486" y="115" width="34" height="26" rx="4" fill="#9334E6" fill-opacity="0.5" stroke="#9334E6"/><text x="503" y="132" text-anchor="middle" fill="#FFF" font-weight="bold">C2</text>
+      <rect x="524" y="115" width="34" height="26" rx="4" fill="#9334E6" fill-opacity="0.4" stroke="#9334E6"/><text x="541" y="132" text-anchor="middle" fill="#FFF" font-weight="bold">C3</text>
+      <rect x="562" y="115" width="34" height="26" rx="4" fill="#9334E6" fill-opacity="0.4" stroke="#9334E6"/><text x="579" y="132" text-anchor="middle" fill="#FFF" font-weight="bold">C4</text>
+      <rect x="600" y="115" width="34" height="26" rx="4" fill="#9334E6" fill-opacity="0.3" stroke="#9334E6"/><text x="617" y="132" text-anchor="middle" fill="#FFF" font-weight="bold">C5</text>
+      <rect x="638" y="115" width="34" height="26" rx="4" fill="#9334E6" fill-opacity="0.3" stroke="#9334E6"/><text x="655" y="132" text-anchor="middle" fill="#FFF" font-weight="bold">C6</text>
+      <rect x="676" y="115" width="34" height="26" rx="4" fill="#9334E6" fill-opacity="0.2" stroke="#9334E6" stroke-dasharray="4 3"/><text x="693" y="132" text-anchor="middle" fill="#777" font-weight="bold">…</text>
+      <rect x="714" y="115" width="34" height="26" rx="4" fill="#9334E6" fill-opacity="0.2" stroke="#9334E6"/><text x="731" y="132" text-anchor="middle" fill="#FFF" font-weight="bold">C25</text>
+    </g>
+    <text x="600" y="172" text-anchor="middle" font-size="11" fill="#888">每核领走一段 [start, end) 区间</text>
+  </g>
+
+  <!-- bN2End 数组 -->
+  <rect x="80" y="215" width="670" height="56" rx="8" fill="#F3E8FD" stroke="#9334E6" stroke-width="1.4"/>
+  <text x="415" y="238" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#6B21A8">OuterSplitParams：bN2End[26] / gS1End[26] / s2End[26]</text>
+  <text x="415" y="258" text-anchor="middle" font-size="11" fill="#666">三个数组各存 26 个"区间终点"——每个核 blockIdx 对号入座，找到自己的任务段</text>
+
+  <text x="820" y="143" text-anchor="middle" font-size="11" fill="#A81640" font-weight="bold">对应 FA2 手术二</text>
+  <text x="820" y="161" text-anchor="middle" font-size="11" fill="#888">并行扩维</text>
+  <text x="820" y="179" text-anchor="middle" font-size="10.5" fill="#888">（2.8 节）</text>
+
+  <!-- 分隔 -->
+  <line x1="60" y1="300" x2="880" y2="300" stroke="#DDD" stroke-width="1.5" stroke-dasharray="6 4"/>
+
+  <!-- 下半：核内切分 -->
+  <text x="470" y="336" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#1E6B34">内层：核内切分——每个核手上的矩阵切成 M × N 小块（2.5 节的 Q 块 / KV 块）</text>
+
+  <!-- Q 矩阵 -->
+  <g>
+    <text x="150" y="368" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#1B4E9B">Q（本核分到的 S1 行）</text>
+    <rect x="85" y="380" width="130" height="40" rx="4" fill="#4C88F7" fill-opacity="0.5" stroke="#4C88F7" stroke-width="1.5"/>
+    <text x="150" y="405" text-anchor="middle" font-size="11.5" fill="#1B4E9B" font-weight="bold">M 行（mBaseSize）</text>
+    <rect x="85" y="424" width="130" height="40" rx="4" fill="#4C88F7" fill-opacity="0.22" stroke="#4C88F7"/>
+    <text x="150" y="449" text-anchor="middle" font-size="11.5" fill="#1B4E9B">M 行 …</text>
+    <text x="150" y="492" text-anchor="middle" font-size="10.5" fill="#888">Q 块驻留片上</text>
+    <text x="150" y="508" text-anchor="middle" font-size="10.5" fill="#888">被所有 KV 块复用</text>
+  </g>
+
+  <!-- 内层循环 -->
+  <rect x="270" y="368" width="380" height="150" rx="12" fill="#FFF8E6" stroke="#E0A800" stroke-width="2"/>
+  <text x="460" y="394" text-anchor="middle" font-size="13" font-weight="bold" fill="#8A5500">核内主循环（3.4 节 kernel 的骨架）</text>
+  <g font-family="Consolas, monospace" font-size="11.5" fill="#444">
+    <text x="290" y="422">for 每个 KV 块（N = s2BaseSize 行）:</text>
+    <text x="308" y="446">GmCopyInToL1(K, V)　　// 搬运</text>
+    <text x="308" y="470">Mm1: S = Q·Kᵀ　　// Cube</text>
+    <text x="308" y="494">Vec1: online softmax　// Vector</text>
+    <text x="308" y="516" font-size="11">Mm2: O += P·V；Vec2: rescale</text>
+  </g>
+
+  <!-- KV 矩阵 -->
+  <g>
+    <text x="745" y="368" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#1E6B34">K / V（全部 KV 按块流入）</text>
+    <rect x="680" y="380" width="60" height="40" rx="4" fill="#34A853" fill-opacity="0.45" stroke="#34A853"/>
+    <text x="710" y="405" text-anchor="middle" font-size="10.5" fill="#1E6B34">N 行</text>
+    <rect x="744" y="380" width="60" height="40" rx="4" fill="#34A853" fill-opacity="0.3" stroke="#34A853"/>
+    <text x="774" y="405" text-anchor="middle" font-size="10.5" fill="#1E6B34">N 行</text>
+    <rect x="808" y="380" width="60" height="40" rx="4" fill="#34A853" fill-opacity="0.16" stroke="#34A853" stroke-dasharray="4 3"/>
+    <text x="838" y="405" text-anchor="middle" font-size="10.5" fill="#777">…</text>
+    <text x="745" y="452" text-anchor="middle" font-size="10.5" fill="#888">带尾块：S2 不整除 N 时</text>
+    <text x="745" y="468" text-anchor="middle" font-size="10.5" fill="#888">单独处理（第 5 章 5.6）</text>
+  </g>
+
+  <line x1="217" y1="420" x2="267" y2="420" stroke="#555" stroke-width="1.8" marker-end="url(#arrowQ)"/>
+  <line x1="655" y1="420" x2="653" y2="420" stroke="#555" stroke-width="1.8" marker-end="url(#arrowQ)" transform="rotate(180 654 420)"/>
+
+  <!-- 底部 -->
+  <rect x="80" y="545" width="780" height="64" rx="10" fill="#3EAA8C" fill-opacity="0.12" stroke="#3EAA8C" stroke-width="1.6"/>
+  <text x="470" y="572" text-anchor="middle" font-size="13" font-weight="bold" fill="#166B54">M 与 N 的取值是 tiling 的核心决策：受 L1/UB/L0C 容量、对齐、尾块共同约束</text>
+  <text x="470" y="595" text-anchor="middle" font-size="11.5" fill="#446">核间切分决定"谁算哪段"（负载均衡，第 9 章）；核内切块决定"一次算多大"（buffer 复用，第 5 章）</text>
+
+  <text x="828" y="490" text-anchor="middle" font-size="11" fill="#A81640" font-weight="bold">FlashDecode 时</text>
+  <text x="828" y="508" text-anchor="middle" font-size="11" fill="#A81640" font-weight="bold">另沿 S2 切分</text>
+  <text x="828" y="526" text-anchor="middle" font-size="10.5" fill="#888">（s2End 数组）</text>
+</svg>

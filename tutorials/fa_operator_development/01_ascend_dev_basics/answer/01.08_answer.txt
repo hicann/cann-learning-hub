@@ -1,0 +1,3 @@
+1. B。DeQue 的底层是 WaitFlag——消费者等待生产者（如 MTE2 搬运）完成的通知。
+2. 对。这就是"内存复用同步"：AllocTensor 内含 WaitFlag，两份缓冲均被占用时，第三次分配必须等最早的消费者释放。
+3. A。EnQue 隐含 SetFlag（通知后继阶段数据就绪），DeQue 隐含 WaitFlag（等待前驱阶段完成）——QK^T 结果 S 入队后，Softmax 消费者出队即建立了该依赖。

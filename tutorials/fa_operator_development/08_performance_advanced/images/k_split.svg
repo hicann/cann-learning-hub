@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="500" viewBox="0 0 880 500" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <text x="440" y="28" text-anchor="middle" font-size="20" font-weight="bold" fill="#111827">K 切分与部分和：C[M,N] = A[M,K] × B[K,N]</text>
+
+  <!-- K axis bar -->
+  <text x="80" y="70" font-size="14" fill="#374151">K 轴（累加轴）切成 3 段：</text>
+  <g font-size="13">
+    <rect x="80" y="85" width="160" height="34" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="160" y="107" text-anchor="middle" fill="#1d4ed8">K 第 1 段</text>
+    <rect x="240" y="85" width="160" height="34" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="320" y="107" text-anchor="middle" fill="#1d4ed8">K 第 2 段</text>
+    <rect x="400" y="85" width="160" height="34" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="480" y="107" text-anchor="middle" fill="#1d4ed8">K 第 3 段</text>
+    <text x="600" y="107" fill="#6b7280">每段独立装进 L0A/L0B</text>
+  </g>
+
+  <!-- segment accumulation -->
+  <g font-size="13">
+    <text x="80" y="165" fill="#374151">第 1 段：</text>
+    <text x="160" y="165" fill="#111827">L0C = A1×B1</text>
+
+    <text x="80" y="205" fill="#374151">第 2 段：</text>
+    <text x="160" y="205" fill="#b91c1c">L0C += A2×B2  ← fixup：读旧值 + 累加 + 写回</text>
+
+    <text x="80" y="245" fill="#374151">第 3 段：</text>
+    <text x="160" y="245" fill="#b91c1c">L0C += A3×B3  ← fixup</text>
+
+    <text x="80" y="285" fill="#065f46">段数 = K / kBase，fixup 次数 = 段数 − 1</text>
+  </g>
+
+  <!-- L0 boxes -->
+  <g font-size="13">
+    <rect x="560" y="150" width="120" height="60" fill="#f3f4f6" stroke="#374151" rx="6"/>
+    <text x="620" y="175" text-anchor="middle" fill="#111827">L0A</text>
+    <text x="620" y="193" text-anchor="middle" fill="#6b7280">M × kBase</text>
+
+    <rect x="560" y="230" width="120" height="60" fill="#f3f4f6" stroke="#374151" rx="6"/>
+    <text x="620" y="255" text-anchor="middle" fill="#111827">L0B</text>
+    <text x="620" y="273" text-anchor="middle" fill="#6b7280">kBase × N</text>
+
+    <rect x="710" y="190" width="120" height="60" fill="#fee2e2" stroke="#dc2626" rx="6"/>
+    <text x="770" y="215" text-anchor="middle" fill="#111827">L0C</text>
+    <text x="770" y="233" text-anchor="middle" fill="#6b7280">M × N</text>
+  </g>
+  <g font-size="12" fill="#6b7280">
+    <text x="770" y="268" text-anchor="middle">与 K 无关！</text>
+    <text x="770" y="284" text-anchor="middle">输出占满 L0C 后</text>
+    <text x="770" y="300" text-anchor="middle">继续切 K 无收益</text>
+  </g>
+
+  <!-- cost table -->
+  <text x="80" y="340" font-size="15" font-weight="bold" fill="#111827">K 切小的一笔账</text>
+  <g font-size="13">
+    <rect x="80" y="355" width="230" height="34" fill="#ecfdf5" stroke="#10b981"/>
+    <text x="195" y="377" text-anchor="middle" fill="#065f46">省：L0A/L0B 容量</text>
+
+    <rect x="330" y="355" width="230" height="34" fill="#fef3c7" stroke="#f59e0b"/>
+    <text x="445" y="377" text-anchor="middle" fill="#92400e">花：MTE1 整块率↓ 复用率↓</text>
+
+    <rect x="580" y="355" width="230" height="34" fill="#fee2e2" stroke="#dc2626"/>
+    <text x="695" y="377" text-anchor="middle" fill="#b91c1c">花：fixup 段数↑</text>
+  </g>
+
+  <text x="80" y="430" font-size="14" fill="#111827" font-weight="bold">工程结论</text>
+  <text x="80" y="455" font-size="13" fill="#374151">① 能全载就全载（mm1 的 K=D=128 通常全载）　② 必须切就取容量上限（最优 kBase ≈ 上限本身）</text>
+  <text x="80" y="477" font-size="13" fill="#374151">③ L0C 满时先切 M/N（不引入 fixup），不要硬切 K　④ 选优计算全部在 Host Tiling 侧完成</text>
+</svg>

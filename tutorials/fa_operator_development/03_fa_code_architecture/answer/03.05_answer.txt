@@ -1,0 +1,29 @@
+《FlashAttention 算子开发课程》第 3 章 3.5 节测验答案
+====================================================
+
+1. 属性给出 n1Size（Q 头数 N1），Q 的第三维是 H1 = N1×D，
+   K 的第三维是 H2 = N2×D：
+   - dSize（D）= h1 / n1Size；
+   - gSize（G）= h1 / h2（一个 KV 头对应几个 Q 头）；
+   - n2Size（N2）= h2 / dSize。
+   同时校验 h1 整除 n1Size、n1Size 整除 n2Size（GQA 合法性）。
+
+2. 当核间任务块总数 bSize×n1Size×gSize×ceil(s1Size/s1BasicBlock)
+   超过 AIV 核数时，s1BasicBlock 从 64 升到 128。
+   权衡：任务太多时用更大的块，减少任务块数量与调度开销，
+   但单块占用更大（UB 预算 apiMaxUBSize 随 s1×s2 基本块线性增长），
+   所以只有任务数超过核数才升级。
+
+3. nRatio 出现在：
+   - bmm1 的 SetShape：单次 N = s2BasicBlock × nRatio；
+   - bmm2 的 SetShape：单次 K = s2BasicBlock × nRatio；
+   - SoftMax 的 shape：{s1BasicBlock / nRatio, s2BasicBlock × nRatio}。
+   它配平的是 Cube 与 Vector 的块：一次 Cube 计算（s1 块 × s2 块×nRatio）
+   正好覆盖若干个 Vector 基本块，减少 AIC/AIV 之间的交互次数。
+
+4. blockDim 是「AIV+AIC 组合」的组数，不是核数。
+   40 AIV + 20 AIC，一个组合 = 2 AIV + 1 AIC，
+   blockDim = min(实际用到的组合数, 20) = 20，
+   启动 20 个组合正好用满 40 AIV + 20 AIC。
+   （Cube/Vector 融合算子按组合启动，AIC 数通常是 AIV 的一半，
+   blockDim 取受限制的那个，即组合数上限为 aicNum。）

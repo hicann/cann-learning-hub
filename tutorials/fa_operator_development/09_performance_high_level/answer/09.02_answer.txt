@@ -1,0 +1,20 @@
+# 9.2 小测验答案
+
+**1. 分层的计量单位为什么必须选「有效基本块数」？名义 shape 均分会错在哪三层？**
+
+因为真实负载只由有效块数决定。名义 shape 均分的三层错误：
+① shape 锯齿：B/N 不整除核数，离散分配天然有锯齿；
+② mask 无效块：因果 mask 下靠前的 S1 行有效块少，名义均分让前面的核闲、后面的核算死；
+③ section 变长：各 batch 有效 KV 长度不同（含 shared prefix 分段），按 maxSeqLen 名义均分让短 batch 的核算大量「空气」。
+
+**2. 什么是 section？带 section 的输入形态发生了什么本质区别？**
+
+section 是 KV 轴上的有效分段（如 shared prefix 共享前缀段 + 各自独有后缀段）。输入从四个标量 (B,N,S1,S2) 变成 per-batch 的有效区间数组（actualSeqLengths / actualSeqLengthsKV + prefix 分段描述），分核从「算术题」变成「带变长权重的一维装箱题」。
+
+**3. 一维装箱为什么用贪心而不是求最优解？**
+
+精确的一维装箱是 NP-hard；而 FA 的权重分布（行数多、单行权重有限）对贪心足够友好，且贪心是 O(行数)，可在 Host Tiling 侧即时完成。工程上贪心的解与最优解差距很小。
+
+**4. weight(b, n, s1) 的定义是什么？CoreWeight 怎么算？**
+
+weight(b,n,s1) = 该行（b, n 下第 s1 个 S1 基本块）真正需要计算的有效 S2 基本块数（考虑 mask 与 section 的有效区间，向上对齐到 s2Base）。CoreWeight = 所有行的 weight 之和 / 核数，即每核的期望负载。

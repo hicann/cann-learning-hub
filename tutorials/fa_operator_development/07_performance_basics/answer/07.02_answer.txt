@@ -1,0 +1,21 @@
+07.02 性能建模与 Roofline —— 小测验答案
+
+1. Roofline 公式与拐点：
+   - P = Bm·I（I ≤ Pm/Bm）或 P = Pm（I > Pm/Bm）；拐点 I* = Pm/Bm。
+   - I < I* 时处于带宽受限：搬运是短板，优化方向是减 Q（量化、块加大提高 I）或提高有效带宽（预取、命中率）；加计算优化（如更快的 Cube 指令）收益为零——P 已经被 Bm·I 钉死。
+
+2. 基本块计算强度推导：
+   - W = M·N·K（分块不改变计算量）；每个基本块搬入 A（BaseM×BaseK）与 B（BaseN×BaseK），共 M·N·K/(BaseM·BaseK) 个块，总搬运 Q = M·N·K·(1/BaseM + 1/BaseN)·D_size。
+   - I = W/Q = BaseM·BaseN / ((BaseM+BaseN)·D_size)：块越大，分母中 1/BaseM + 1/BaseN 越小，I 越高——每字节搬运支撑更多计算。
+   - 上限：UB 容量（Q/K/V/P + m/l 都要装下）、尾块浪费（不满整块按整块搬）、以及流水节拍的稳定（尾块半拍破坏 preload，见第 5 章 5.8 节）。
+
+3. ∂ 与 B_mix：
+   - ∂ 是 HBM 访存量占 Q 的比例（即 L2 未命中率），1−∂ 是 L2 命中占比。
+   - t = ∂·Q/B_HBM + (1−∂)·Q/B_L2，B_mix = B_HBM·B_L2/(∂·B_L2 + (1−∂)·B_HBM)。
+   - ∂=1：B_mix = B_HBM（全走 HBM）；∂=0：B_mix = B_L2（全命中）。
+   - FA decode 的 KV Cache 每个元素只被读一次、无复用，几乎全 miss，∂ 接近 1——所以 decode 的有效带宽就是 B_HBM，带宽受限。
+
+4. V1 > C1 ≈ C2 >> V2 的时间画像：
+   - Vector bound（后绑）：性能上限由 V1（softmax 及前后处理）决定。
+   - 优化优先级：① 编排——用两个 Cube 拍（i 的 C2 与 i+1 的 C1）掩盖长 V1（preload）；② 缩短 V1 本身——VF 化（Softmax VF、第 8 章）；③ 配平——AIC:AIV=1:2 的硬件上用 nRatio 等参数把 Cube/Vector 任务配平。给 Cube 抠指令是错药。
+

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" viewBox="0 0 880 560" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <text x="440" y="28" text-anchor="middle" font-size="20" font-weight="bold" fill="#111827">全书性能优化方法地图（第7~10章）</text>
+
+  <!-- 层次自上而下 -->
+  <g font-size="14">
+    <!-- 建模层 -->
+    <rect x="70" y="55" width="740" height="80" fill="#ede9fe" stroke="#7c3aed" rx="8"/>
+    <text x="90" y="82" font-weight="bold" fill="#5b21b6">第0层 建模（动手前）</text>
+    <text x="90" y="106" fill="#374151">Roofline: P = min(Bm·I, Pm)　｜　混合带宽账单　｜　I 与拐点 I* 判 bound　（7.2）</text>
+
+    <!-- 核间层 -->
+    <rect x="70" y="150" width="740" height="80" fill="#dbeafe" stroke="#2563eb" rx="8"/>
+    <text x="90" y="177" font-weight="bold" fill="#1d4ed8">第1层 核间（负载均衡）</text>
+    <text x="90" y="201" fill="#374151">有效块计量（9.2）→ 不合轴贪心（9.3）→ 合轴贪心（9.4）→ 切 S2 + merge（9.5）</text>
+
+    <!-- 引擎间层 -->
+    <rect x="70" y="245" width="740" height="80" fill="#d1fae5" stroke="#10b981" rx="8"/>
+    <text x="90" y="272" font-weight="bold" fill="#065f46">第2层 引擎间（CV 流水）</text>
+    <text x="90" y="296" fill="#374151">CV 四拍重叠（7.5）　｜　preload 流水（第5章）　｜　块大小与计算强度权衡（7.5）</text>
+
+    <!-- 引擎内层 -->
+    <rect x="70" y="340" width="740" height="110" fill="#fef3c7" stroke="#f59e0b" rx="8"/>
+    <text x="90" y="367" font-weight="bold" fill="#92400e">第3层 引擎内（逐引擎）</text>
+    <text x="90" y="391" fill="#374151">Cube: K 切分（容量上限即最优, 8.2/8.3）　　Vector: VF 五式（8.4）</text>
+    <text x="90" y="415" fill="#374151">Vector: DN 选型（8.5）　　Scalar: 上提/增量化/分支消除/同步精简（8.6）</text>
+
+    <!-- 指令级层 -->
+    <rect x="70" y="465" width="740" height="80" fill="#fee2e2" stroke="#dc2626" rx="8"/>
+    <text x="90" y="492" font-weight="bold" fill="#b91c1c">第4层 指令级（访存细节）</text>
+    <text x="90" y="516" fill="#374151">UB bank 冲突三板斧（7.3）　｜　RegBase/VF: vLoop 256B + 双缓冲（7.6）</text>
+  </g>
+
+  <!-- 排查方向箭头 -->
+  <g font-size="13" fill="#111827">
+    <text x="440" y="142" text-anchor="middle">↑ 排查从上往下：上层问题下层补不回 ↓</text>
+    <text x="440" y="565" text-anchor="middle" fill="#6b7280" font-size="12">每层方法详见对应章节；症状 → 处方检索见 10.2 / 10.3</text>
+  </g>
+</svg>

@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="640" viewBox="0 0 980 640" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#555"/>
+    </marker>
+  </defs>
+  <rect width="980" height="640" fill="#FAFBFD"/>
+  <text x="490" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">四种数据排布：同一个 Q 张量（B=2, N=4, S=256, D=128）的不同摆放</text>
+
+  <!-- ======== Row 1: BNSD ======== -->
+  <g transform="translate(30,70)">
+    <text x="0" y="14" font-size="15" font-weight="bold" fill="#0B62A4">BNSD：[2, 4, 256, 128]</text>
+    <text x="0" y="34" font-size="12" fill="#666">同头 token 连续；基本块 [128,128] 在头内顺序摆放</text>
+    <!-- 4x2 grid of 128x128 blocks, per (B,N) -->
+    <g transform="translate(0,48)">
+      <!-- b0 -->
+      <g>
+        <text x="0" y="0" font-size="11" fill="#888">B=0</text>
+        <g transform="translate(0,8)">
+          <rect x="0"   y="0" width="46" height="46" fill="#4E79A7" rx="4"/>
+          <rect x="52"  y="0" width="46" height="46" fill="#4E79A7" rx="4"/>
+          <rect x="104" y="0" width="46" height="46" fill="#4E79A7" rx="4"/>
+          <rect x="156" y="0" width="46" height="46" fill="#4E79A7" rx="4"/>
+          <text x="101" y="76" font-size="11" fill="#555">N=4 个头</text>
+        </g>
+        <g transform="translate(0,88)">
+          <rect x="0"   y="0" width="46" height="46" fill="#F28E2B" rx="4"/>
+          <rect x="52"  y="0" width="46" height="46" fill="#F28E2B" rx="4"/>
+          <rect x="104" y="0" width="46" height="46" fill="#F28E2B" rx="4"/>
+          <rect x="156" y="0" width="46" height="46" fill="#F28E2B" rx="4"/>
+          <text x="101" y="76" font-size="11" fill="#555">B=1</text>
+        </g>
+      </g>
+    </g>
+    <text x="0" y="240" font-size="12" fill="#2A6F3E">取基本块：地址顺序递增，无需跳址</text>
+  </g>
+
+  <!-- ======== Row 1 right: BSND ======== -->
+  <g transform="translate(330,70)">
+    <text x="0" y="14" font-size="15" font-weight="bold" fill="#B05A2A">BSND：[2, 256, 4, 128]</text>
+    <text x="0" y="34" font-size="12" fill="#666">token 的多头连续；基本块跨 S 跳跃取数</text>
+    <g transform="translate(0,48)">
+      <g>
+        <text x="0" y="0" font-size="11" fill="#888">B=0</text>
+        <g transform="translate(0,8)">
+          <!-- interleaved strips: token rows, each with N colors -->
+          <g>
+            <rect x="0"   y="0"  width="46" height="16" fill="#4E79A7"/><rect x="52" y="0" width="46" height="16" fill="#59A14F"/><rect x="104" y="0" width="46" height="16" fill="#E15759"/><rect x="156" y="0" width="46" height="16" fill="#F28E2B"/>
+            <rect x="0"   y="20" width="46" height="16" fill="#4E79A7"/><rect x="52" y="20" width="46" height="16" fill="#59A14F"/><rect x="104" y="20" width="46" height="16" fill="#E15759"/><rect x="156" y="20" width="46" height="16" fill="#F28E2B"/>
+            <rect x="0"   y="40" width="46" height="16" fill="#4E79A7"/><rect x="52" y="40" width="46" height="16" fill="#59A14F"/><rect x="104" y="40" width="46" height="16" fill="#E15759"/><rect x="156" y="40" width="46" height="16" fill="#F28E2B"/>
+            <rect x="0"   y="60" width="46" height="16" fill="#DDD" /><rect x="52" y="60" width="46" height="16" fill="#DDD"/><rect x="104" y="60" width="46" height="16" fill="#DDD"/><rect x="156" y="60" width="46" height="16" fill="#DDD"/>
+          </g>
+          <text x="101" y="96" font-size="11" fill="#555">每行 = 1 个 token（4 个头拼一起）</text>
+        </g>
+      </g>
+    </g>
+    <text x="0" y="240" font-size="12" fill="#A23B3B">取基本块：同头 token 分散，需按 stride 跳址</text>
+  </g>
+
+  <!-- ======== Row 2: TND ======== -->
+  <g transform="translate(30,340)">
+    <text x="0" y="14" font-size="15" font-weight="bold" fill="#5B6E8C">TND：[512, 4, 128]（B、S 合轴）</text>
+    <text x="0" y="34" font-size="12" fill="#666">各 batch 序列长度不同也不 padding；但切基本块会出现尾块</text>
+    <g transform="translate(0,48)">
+      <!-- T axis: long strip composed of two batch segments with a tail block -->
+      <text x="0" y="0" font-size="11" fill="#888">T 轴（B×S 拍平）</text>
+      <g transform="translate(0,8)">
+        <rect x="0"   y="0" width="70" height="46" fill="#4E79A7" rx="4"/>
+        <rect x="76"  y="0" width="70" height="46" fill="#4E79A7" rx="4"/>
+        <rect x="152" y="0" width="70" height="46" fill="#4E79A7" rx="4"/>
+        <rect x="228" y="0" width="70" height="46" fill="#4E79A7" rx="4"/>
+        <rect x="304" y="0" width="70" height="46" fill="#4E79A7" rx="4"/>
+        <rect x="380" y="0" width="70" height="46" fill="#4E79A7" rx="4"/>
+        <rect x="456" y="0" width="42" height="46" fill="#9EC1DE" rx="4" stroke="#4E79A7" stroke-dasharray="4,3"/>
+        <text x="256" y="76" font-size="11" fill="#555">虚线框 = 尾块（S 不足 128）</text>
+      </g>
+      <g transform="translate(0,100)">
+        <text x="0" y="12" font-size="11" fill="#555">actualSeqLengths = [256, 456]（叠加式，</text>
+        <text x="0" y="30" font-size="11" fill="#555">第 2 条序列长度 = 456 - 256 = 200）</text>
+      </g>
+    </g>
+    <text x="0" y="240" font-size="12" fill="#2A6F3E">省内存（无 padding）；代价：尾块基本块 ≠ [128,128]</text>
+  </g>
+
+  <!-- ======== Row 2 right: BSH + padding note ======== -->
+  <g transform="translate(560,340)">
+    <text x="0" y="14" font-size="15" font-weight="bold" fill="#7A5195">BSH：[2, S_max, 512]（H = N×D）</text>
+    <text x="0" y="34" font-size="12" fill="#666">单头场景常见；短 batch 自动 padding 到最长 S</text>
+    <g transform="translate(0,48)">
+      <text x="0" y="0" font-size="11" fill="#888">S 维（对齐到 S_max）</text>
+      <g transform="translate(0,8)">
+        <rect x="0"   y="0" width="52" height="46" fill="#7A5195" rx="4"/>
+        <rect x="58"  y="0" width="52" height="46" fill="#7A5195" rx="4"/>
+        <rect x="116" y="0" width="52" height="46" fill="#7A5195" rx="4"/>
+        <rect x="174" y="0" width="52" height="46" fill="#7A5195" rx="4"/>
+        <rect x="232" y="0" width="52" height="46" fill="#CBC9E2" rx="4"/>
+        <rect x="290" y="0" width="52" height="46" fill="#CBC9E2" rx="4"/>
+        <text x="143" y="76" font-size="11" fill="#555">浅色 = padding 补齐区（浪费）</text>
+      </g>
+      <g transform="translate(0,100)">
+        <text x="0" y="12" font-size="11" fill="#555">actualSeqLengths = [384, 256]，S_max = 384</text>
+        <text x="0" y="30" font-size="11" fill="#555">（每条序列的实际长度，逐条给出）</text>
+      </g>
+    </g>
+    <text x="0" y="240" font-size="12" fill="#A23B3B">内存浪费来源：短序列被补齐到 S_max</text>
+  </g>
+
+  <!-- ======== Bottom: GQA ======== -->
+  <g transform="translate(30,600)">
+  </g>
+  <g transform="translate(30,575)">
+    <rect x="0" y="0" width="920" height="52" fill="#EEF3FA" rx="8"/>
+    <text x="16" y="21" font-size="13" font-weight="bold" fill="#0B62A4">GQA 场景</text>
+    <text x="16" y="41" font-size="12" fill="#444">N1 个 Q 头 / N2 个 KV 头，组数 G = N1/N2：存储排布为 BSNGD；计算按 B、N2 分核，实际按 BN2SGD 展开（组内 G 个 Q 头共用同一份 KV）</text>
+  </g>
+</svg>

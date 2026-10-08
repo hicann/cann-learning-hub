@@ -1,0 +1,26 @@
+# 8.7 章节测验答案
+
+**Q1** 切 M/N 时每个输出子矩阵独立成立，算完即是最终结果，块间无依赖；切 K 时每段只产生部分和，必须累加（fixup）才能得到真结果。所以 K 是累加轴，「切 K = 分期付款 + 最后对账」。
+
+**Q2** mm2（O = P × V）的 K 轴 = S2（KV 序列长），训练可达 8K+、推理 KV Cache 可上万，远超 L0 容量，必须切。mm1 的 K=D（典型 128）通常全载。
+
+**Q3** 约束方程：
+```
+singleCoreM × kBase × dtypeSize ≤ L0A_SIZE
+kBase × singleCoreN × dtypeSize ≤ L0B_SIZE
+```
+L0C 存输出 M×N，占用与 K 无关，所以不参与 kBase 的约束；L0C 满时应先切 M/N。
+
+**Q4** 128 × kBase × 2 ≤ 65536 → kBase ≤ 256（L0A、L0B 对称，同为 256）；256 是 16 的倍数，kBase 上限 = 256。
+
+**Q5** 三笔开销：① MTE1 整块率变差（尾块、小笔搬运多）；② A/B 复用率变差（装载窗口变短）；③ fixup 开销新增（段数 − 1 次）。最优 kBase ≈ 容量上限（向下对齐分形 16）本身。
+
+**Q6** 本质是「少写指令」（VF 顺序执行、无乱序、无 Cache 掩盖）。优化点：循环不变量外提（Duplicate 等）、尾块 MaskReg 兜底不拆两个循环、合并相邻 Load/Store、广播类搬运用专用 LoadDist（如 DIST_BRC_B32）、计算图重排（除法变乘法、标量先算）。
+
+**Q7** 先在 Scalar/Host 侧算出 s = a/b（一条标量除法），VF 里只做：循环外一次 Duplicate(s) 广播 + 每轮一次 Mul。原写法每轮要 广播a + 广播b + Div + Mul，且 Div 比 Mul 贵数倍。
+
+**Q8** DN 是数据以 ND 排布经 MTE1（ND 模式）直进 L0/Cube 的通路；ND 通路是 GM→UB（MTE2）→ Vector TransData(ND2NZ) → UB→L1（MTE3）→ L0（MTE1），Vector 参与转排布。带 mask 时必须由 Vector 在 mm1 前把掩码叠加到输入上，Vector 的中转不可避免，DN 省中转的收益消失，只剩对齐约束的负担，所以不划算。
+
+**Q9** T_VF = Σ(指令发射延迟) + Σ(相邻依赖等待)。建模流程：vLoop 展开（ceil(元素数/64) 轮）→ 每轮数指令 → 查表累加 → 写后读处加等待周期。Load/Store 占 70% 说明瓶颈在搬运：合并搬运、排查 bank 冲突（pingpong/多 bank group）、广播装载替代逐行 Duplicate、寄存器双缓冲让 Load 与计算重叠。
+
+**Q10** 四种手段：① 标量上提（Host/Tiling 侧预计算，kernel 只消费结果）；② 循环内增量化（乘法变加法、指针自增）；③ 分支消除（掩码 / 查表 / 模板特化配 TilingKey）；④ 同步精简（合并 WaitFlag、去掉冗余保护）。「掩码代替分支」是用数据运算换控制流——与 Vector 的 MaskReg 用位掩码控制有效数据、避免分支和双份代码，是同一个哲学：把控制流问题转化为数据流问题。

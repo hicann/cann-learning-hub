@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="480" viewBox="0 0 880 480" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <text x="440" y="28" text-anchor="middle" font-size="20" font-weight="bold" fill="#111827">Roofline 模型：计算强度决定性能上限</text>
+
+  <!-- axes (log-log) -->
+  <g stroke="#374151" stroke-width="1.5">
+    <line x1="100" y1="390" x2="800" y2="390"/>
+    <line x1="100" y1="390" x2="100" y2="60"/>
+  </g>
+  <text x="450" y="430" text-anchor="middle" font-size="14" fill="#374151">计算强度 I = W / Q（对数轴）</text>
+  <text x="40" y="225" font-size="14" fill="#374151" transform="rotate(-90 40 225)">实际性能 P（对数轴）</text>
+
+  <!-- slope-1 bandwidth region -->
+  <line x1="100" y1="390" x2="400" y2="90" stroke="#2563eb" stroke-width="3"/>
+  <text x="180" y="200" font-size="13" fill="#1d4ed8" transform="rotate(-45 180 200)">P = B&#8344;·I（带宽受限）</text>
+  <!-- flat compute region -->
+  <line x1="400" y1="90" x2="800" y2="90" stroke="#dc2626" stroke-width="3"/>
+  <text x="600" y="78" text-anchor="middle" font-size="13" fill="#b91c1c">P = P&#8344;（计算受限）</text>
+
+  <!-- knee point -->
+  <circle cx="400" cy="90" r="6" fill="#111827"/>
+  <text x="400" y="120" text-anchor="middle" font-size="13" font-weight="bold" fill="#111827">拐点 I* = P&#8344; / B&#8344;</text>
+
+  <!-- markers -->
+  <g font-size="12">
+    <circle cx="230" cy="330" r="5" fill="#f59e0b"/>
+    <text x="242" y="335" fill="#92400e">FA Decode（小 I：带宽受限）</text>
+    <circle cx="640" cy="90" r="5" fill="#10b981"/>
+    <text x="620" y="120" fill="#065f46">FA Prompt 大块（大 I：计算受限）</text>
+  </g>
+
+  <!-- formula box -->
+  <g transform="translate(560,240)">
+    <rect x="0" y="0" width="290" height="150" fill="#f0fdf4" stroke="#86efac" rx="8"/>
+    <text x="145" y="26" text-anchor="middle" font-size="14" font-weight="bold" fill="#166534">关键公式</text>
+    <text x="16" y="52" font-size="13" fill="#14532d">I = W / Q（计算强度）</text>
+    <text x="16" y="74" font-size="13" fill="#14532d">P = min(B&#8344;·I , P&#8344;)</text>
+    <text x="16" y="96" font-size="13" fill="#14532d">基本块：I = B&#8344;aseM·B&#8344;aseN /</text>
+    <text x="32" y="114" font-size="13" fill="#14532d">((B&#8344;aseM + B&#8344;aseN)·D_size)</text>
+    <text x="16" y="138" font-size="12" fill="#166534">→ 计算强度只由基本块大小决定</text>
+  </g>
+
+  <!-- mixed bandwidth note -->
+  <g transform="translate(120,240)">
+    <rect x="0" y="0" width="300" height="140" fill="#eff6ff" stroke="#93c5fd" rx="8"/>
+    <text x="150" y="26" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">MTE2 混合带宽（HBM + L2）</text>
+    <text x="14" y="52" font-size="12" fill="#1e3a8a">t = ∂·Q/B_HBM + (1-∂)·Q/B_L2</text>
+    <text x="14" y="74" font-size="12" fill="#1e3a8a">B_mix = B_HBM·B_L2 /</text>
+    <text x="30" y="90" font-size="12" fill="#1e3a8a">(∂·B_L2 + (1-∂)·B_HBM)</text>
+    <text x="14" y="114" font-size="12" fill="#1e3a8a">∂：HBM 访存量占比（命中率越高 B_mix 越大）</text>
+  </g>
+</svg>

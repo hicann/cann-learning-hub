@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="560" viewBox="0 0 940 560" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowL" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">kernel 主循环：Mm1 → Vec1 → Mm2 → Vec2，Cube 与 Vector 交替流水</text>
+
+  <!-- 阶段标签 -->
+  <g font-size="12.5" font-weight="bold">
+    <text x="90" y="90" fill="#8A5500">搬运（MTE）</text>
+    <text x="90" y="200" fill="#1B4E9B">Cube（矩阵乘）</text>
+    <text x="90" y="320" fill="#A81640">Vector（逐元素）</text>
+  </g>
+
+  <!-- 时间轴 -->
+  <text x="470" y="70" text-anchor="middle" font-size="11.5" fill="#888">时间 →（以两个 KV 块为例，展示双缓冲重叠）</text>
+
+  <!-- 搬运 lane -->
+  <g>
+    <rect x="170" y="78" width="150" height="30" rx="5" fill="#E0A800" fill-opacity="0.5" stroke="#E0A800" stroke-width="1.4"/>
+    <text x="245" y="98" text-anchor="middle" font-size="11.5" fill="#8A5500" font-weight="bold">搬入 KV 块 0</text>
+    <rect x="380" y="78" width="150" height="30" rx="5" fill="#E0A800" fill-opacity="0.5" stroke="#E0A800" stroke-width="1.4"/>
+    <text x="455" y="98" text-anchor="middle" font-size="11.5" fill="#8A5500" font-weight="bold">搬入 KV 块 1</text>
+    <rect x="590" y="78" width="150" height="30" rx="5" fill="#E0A800" fill-opacity="0.3" stroke="#E0A800" stroke-dasharray="4 3"/>
+    <text x="665" y="98" text-anchor="middle" font-size="11.5" fill="#8A5500">搬入 KV 块 2 …</text>
+  </g>
+
+  <!-- Cube lane -->
+  <g>
+    <rect x="170" y="185" width="140" height="34" rx="5" fill="#4C88F7" fill-opacity="0.45" stroke="#4C88F7" stroke-width="1.5"/>
+    <text x="240" y="206" text-anchor="middle" font-size="12" fill="#1B4E9B" font-weight="bold">Mm1：S = Q·Kᵀ</text>
+    <rect x="380" y="185" width="140" height="34" rx="5" fill="#4C88F7" fill-opacity="0.45" stroke="#4C88F7" stroke-width="1.5"/>
+    <text x="450" y="206" text-anchor="middle" font-size="12" fill="#1B4E9B" font-weight="bold">Mm1（块1）</text>
+    <rect x="470" y="235" width="140" height="34" rx="5" fill="#4C88F7" fill-opacity="0.28" stroke="#4C88F7" stroke-width="1.3"/>
+    <text x="540" y="256" text-anchor="middle" font-size="12" fill="#1B4E9B">Mm2：O += P·V</text>
+    <rect x="680" y="235" width="140" height="34" rx="5" fill="#4C88F7" fill-opacity="0.28" stroke="#4C88F7" stroke-dasharray="4 3"/>
+    <text x="750" y="256" text-anchor="middle" font-size="12" fill="#1B4E9B">Mm2（块1）…</text>
+  </g>
+
+  <!-- Vector lane -->
+  <g>
+    <rect x="330" y="305" width="140" height="34" rx="5" fill="#E8446D" fill-opacity="0.3" stroke="#E8446D" stroke-width="1.5"/>
+    <text x="400" y="326" text-anchor="middle" font-size="12" fill="#A81640" font-weight="bold">Vec1：softmax</text>
+    <rect x="620" y="305" width="140" height="34" rx="5" fill="#E8446D" fill-opacity="0.3" stroke="#E8446D" stroke-width="1.5"/>
+    <text x="690" y="326" text-anchor="middle" font-size="12" fill="#A81640" font-weight="bold">Vec1（块1）</text>
+    <rect x="780" y="305" width="120" height="34" rx="5" fill="#E8446D" fill-opacity="0.2" stroke="#E8446D" stroke-dasharray="4 3"/>
+    <text x="840" y="326" text-anchor="middle" font-size="11" fill="#A81640">Vec2 …</text>
+  </g>
+
+  <!-- 依赖箭头 -->
+  <line x1="240" y1="112" x2="240" y2="182" stroke="#555" stroke-width="1.6" marker-end="url(#arrowL)"/>
+  <line x1="455" y1="112" x2="455" y2="182" stroke="#555" stroke-width="1.6" marker-end="url(#arrowL)"/>
+  <line x1="300" y1="219" x2="345" y2="303" stroke="#555" stroke-width="1.6" marker-end="url(#arrowL)"/>
+  <line x1="440" y1="340" x2="500" y2="272" stroke="#555" stroke-width="1.6" marker-end="url(#arrowL)"/>
+  <text x="298" y="280" font-size="10.5" fill="#888">S 写回后</text>
+  <text x="492" y="316" font-size="10.5" fill="#888">P 就绪</text>
+
+  <!-- 说明卡 -->
+  <rect x="170" y="380" width="570" height="150" rx="10" fill="#F7F8FA" stroke="#BBB" stroke-width="1.4"/>
+  <text x="455" y="406" text-anchor="middle" font-size="13" font-weight="bold" fill="#222">一个 KV 块的四步（对应真实函数名）</text>
+  <g font-family="Consolas, monospace" font-size="11.5" fill="#444">
+    <text x="200" y="434">CopyKeyToL1 / GmCopyInToL1　　→ K、V 从 GM 搬入（ND2NZ）</text>
+    <text x="200" y="458">ComputeMm1（Cube）　　　　 → S = Q·Kᵀ，经 L0A/L0B→L0C</text>
+    <text x="200" y="482">ComputeVec1（Vector）　　 → scale → mask → SoftmaxFlashV2</text>
+    <text x="200" y="506">ComputeMm2 ＋ ComputeVec2　 → O = P·V，rescale 后写出（Fixpipe）</text>
+  </g>
+
+  <!-- 右侧映射 -->
+  <rect x="755" y="150" width="165" height="215" rx="10" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.5"/>
+  <text x="837" y="178" text-anchor="middle" font-size="12" font-weight="bold" fill="#A81640">与第 2 章对应</text>
+  <g font-size="11" fill="#444">
+    <text x="837" y="206" text-anchor="middle">外层 Q / 内层 KV</text>
+    <text x="837" y="224" text-anchor="middle">＝ 2.5 节伪代码</text>
+    <text x="837" y="256" text-anchor="middle">Cube/Vector 交替</text>
+    <text x="837" y="274" text-anchor="middle">＝ 2.8 节分工重构</text>
+    <text x="837" y="306" text-anchor="middle">online softmax</text>
+    <text x="837" y="324" text-anchor="middle">＝ Vec1 内的递推</text>
+    <text x="837" y="350" text-anchor="middle" font-size="10.5" fill="#888">第 5 章将亲手写它</text>
+  </g>
+
+  <text x="470" y="552" text-anchor="middle" font-size="11.5" fill="#888">搬运与计算重叠（双缓冲 / pingpong）：KV 块 1 在算时，块 2 已在路上——第 5 章 5.3/5.4 的主题</text>
+</svg>

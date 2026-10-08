@@ -1,0 +1,3 @@
+1. B。MTE1 负责片上 L1 → L0A/L0B 的搬运，并顺带完成 ND → NZ 分形排布转换；MTE2 负责 GM → 片上，MTE3/FIXPIPE 负责输出。
+2. 错。各执行单元异步并行，正因为如此才必须有同步信号流（SetFlag/WaitFlag）保证"搬运完成才计算"的依赖顺序。
+3. D。Vector 只能直接访问 UB，Online Softmax 的行 Max/Exp/Sum/Rescale 全部在 UB 上进行（950 上 S 可从 L0C 直连进入 UB）。

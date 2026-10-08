@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="500" viewBox="0 0 880 500" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <text x="440" y="28" text-anchor="middle" font-size="20" font-weight="bold" fill="#111827">切 S2 的分核与 merge：softmax 归并</text>
+
+  <!-- split stage -->
+  <text x="70" y="70" font-size="15" font-weight="bold" fill="#374151">各核只看到一段 KV（decode: Q 短 KV 长）</text>
+  <g font-size="13">
+    <rect x="70" y="90" width="560" height="40" fill="#f3f4f6" stroke="#374151"/>
+    <text x="350" y="115" text-anchor="middle" fill="#111827">KV 全序列（S2，可上万）</text>
+    <g stroke="#dc2626" stroke-width="2">
+      <line x1="210" y1="90" x2="210" y2="130"/>
+      <line x1="350" y1="90" x2="350" y2="130"/>
+      <line x1="490" y1="90" x2="490" y2="130"/>
+      <line x1="630" y1="90" x2="630" y2="130"/>
+    </g>
+    <text x="140" y="152" text-anchor="middle" fill="#b91c1c">核0 段</text>
+    <text x="280" y="152" text-anchor="middle" fill="#b91c1c">核1 段</text>
+    <text x="420" y="152" text-anchor="middle" fill="#b91c1c">核2 段</text>
+    <text x="560" y="152" text-anchor="middle" fill="#b91c1c">核3 段</text>
+  </g>
+
+  <!-- partial stats -->
+  <g font-size="13">
+    <rect x="70" y="180" width="120" height="60" fill="#dbeafe" stroke="#2563eb" rx="6"/>
+    <text x="130" y="206" text-anchor="middle" fill="#1d4ed8">核0: m0, l0, acc0</text>
+    <rect x="210" y="180" width="120" height="60" fill="#dbeafe" stroke="#2563eb" rx="6"/>
+    <text x="270" y="206" text-anchor="middle" fill="#1d4ed8">核1: m1, l1, acc1</text>
+    <rect x="350" y="180" width="120" height="60" fill="#dbeafe" stroke="#2563eb" rx="6"/>
+    <text x="410" y="206" text-anchor="middle" fill="#1d4ed8">核2: m2, l2, acc2</text>
+    <rect x="490" y="180" width="120" height="60" fill="#dbeafe" stroke="#2563eb" rx="6"/>
+    <text x="550" y="206" text-anchor="middle" fill="#1d4ed8">核3: m3, l3, acc3</text>
+    <text x="130" y="260" text-anchor="middle" fill="#6b7280" font-size="12">m=段内最大值</text>
+    <text x="270" y="260" text-anchor="middle" fill="#6b7280" font-size="12">l=段内指数和</text>
+    <text x="410" y="260" text-anchor="middle" fill="#6b7280" font-size="12">acc=段内加权V和</text>
+    <text x="640" y="215" fill="#6b7280" font-size="12">→ 写入 GM 临时 buffer</text>
+    <text x="640" y="233" fill="#6b7280" font-size="12">（行数×核数）</text>
+  </g>
+
+  <!-- merge formula -->
+  <rect x="70" y="300" width="540" height="120" fill="#ecfdf5" stroke="#10b981" rx="8"/>
+  <g font-size="14" font-family="Consolas, Microsoft YaHei, monospace">
+    <text x="90" y="330" fill="#065f46">M   = max(m0..m3)                    ← 全局最大值</text>
+    <text x="90" y="356" fill="#065f46">L   = Σ li · exp(mi − M)            ← 缩放后求和</text>
+    <text x="90" y="382" fill="#065f46">ACC = Σ acci · exp(mi − M)          ← 缩放后累加</text>
+    <text x="90" y="408" fill="#111827" font-weight="bold">attn = ACC / L                        ← 最终结果</text>
+  </g>
+
+  <!-- merge kernel -->
+  <g font-size="13">
+    <rect x="650" y="300" width="170" height="80" fill="#fef3c7" stroke="#f59e0b" rx="8"/>
+    <text x="735" y="330" text-anchor="middle" fill="#92400e">merge kernel</text>
+    <text x="735" y="352" text-anchor="middle" fill="#92400e">（纯 Vector 归并）</text>
+    <text x="735" y="372" text-anchor="middle" fill="#92400e">避免原子操作</text>
+  </g>
+
+  <text x="70" y="460" font-size="13" fill="#374151">段数 = 核数时收益最大；merge 成本 = 临时 buffer 读写 + 归并计算 + 核间同步，切更细不再增加并行度</text>
+  <text x="70" y="484" font-size="13" fill="#6b7280">与第5章 softmax update 同构：在线 softmax 的本质 = 局部统计量 (m, l, acc) + 可交换的归并</text>
+</svg>

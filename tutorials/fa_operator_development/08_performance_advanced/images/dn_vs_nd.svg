@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="520" viewBox="0 0 880 520" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <text x="440" y="28" text-anchor="middle" font-size="20" font-weight="bold" fill="#111827">DN vs ND：两条 GM → L0 数据通路</text>
+
+  <!-- ND path -->
+  <text x="70" y="70" font-size="16" font-weight="bold" fill="#1d4ed8">ND 通路（Vector 中转）</text>
+  <g font-size="13">
+    <rect x="70" y="90" width="90" height="46" fill="#f3f4f6" stroke="#374151" rx="6"/>
+    <text x="115" y="118" text-anchor="middle" fill="#111827">GM (ND)</text>
+
+    <rect x="200" y="90" width="90" height="46" fill="#f3f4f6" stroke="#374151" rx="6"/>
+    <text x="245" y="118" text-anchor="middle" fill="#111827">UB</text>
+
+    <rect x="330" y="90" width="140" height="46" fill="#dbeafe" stroke="#2563eb" rx="6"/>
+    <text x="400" y="112" text-anchor="middle" fill="#1d4ed8">Vector</text>
+    <text x="400" y="128" text-anchor="middle" fill="#1d4ed8">TransData(ND2NZ)</text>
+
+    <rect x="510" y="90" width="90" height="46" fill="#f3f4f6" stroke="#374151" rx="6"/>
+    <text x="555" y="118" text-anchor="middle" fill="#111827">L1</text>
+
+    <rect x="640" y="90" width="90" height="46" fill="#fee2e2" stroke="#dc2626" rx="6"/>
+    <text x="685" y="112" text-anchor="middle" fill="#b91c1c">L0 (NZ)</text>
+    <text x="685" y="128" text-anchor="middle" fill="#b91c1c">Cube</text>
+
+    <g stroke="#6b7280" stroke-width="2" fill="none">
+      <line x1="160" y1="113" x2="200" y2="113"/>
+      <line x1="290" y1="113" x2="330" y2="113"/>
+      <line x1="470" y1="113" x2="510" y2="113"/>
+      <line x1="600" y1="113" x2="640" y2="113"/>
+    </g>
+    <text x="180" y="80" text-anchor="middle" fill="#6b7280" font-size="11">MTE2</text>
+    <text x="500" y="80" text-anchor="middle" fill="#6b7280" font-size="11">MTE3</text>
+    <text x="620" y="80" text-anchor="middle" fill="#6b7280" font-size="11">MTE1</text>
+
+    <text x="245" y="165" text-anchor="middle" fill="#92400e">两跳搬运 + Vector 转排布</text>
+    <text x="245" y="183" text-anchor="middle" fill="#92400e">（不产生算法价值）</text>
+  </g>
+
+  <!-- DN path -->
+  <text x="70" y="240" font-size="16" font-weight="bold" fill="#065f46">DN 通路（直进 Cube）</text>
+  <g font-size="13">
+    <rect x="70" y="260" width="90" height="46" fill="#f3f4f6" stroke="#374151" rx="6"/>
+    <text x="115" y="288" text-anchor="middle" fill="#111827">GM (ND)</text>
+
+    <rect x="330" y="260" width="90" height="46" fill="#fee2e2" stroke="#dc2626" rx="6"/>
+    <text x="375" y="284" text-anchor="middle" fill="#b91c1c">L0</text>
+    <text x="375" y="300" text-anchor="middle" fill="#b91c1c">Cube(ND模式)</text>
+
+    <line x1="160" y1="283" x2="330" y2="283" stroke="#10b981" stroke-width="3"/>
+    <text x="245" y="252" text-anchor="middle" fill="#065f46" font-size="12">MTE1 一跳直达</text>
+
+    <text x="245" y="335" text-anchor="middle" fill="#065f46">Vector 全程不碰这块数据</text>
+  </g>
+
+  <!-- selection rule -->
+  <text x="70" y="390" font-size="15" font-weight="bold" fill="#111827">选型判据</text>
+  <g font-size="13">
+    <rect x="70" y="405" width="360" height="70" fill="#ecfdf5" stroke="#10b981" rx="6"/>
+    <text x="90" y="428" fill="#065f46" font-weight="bold">选 DN：</text>
+    <text x="150" y="428" fill="#065f46">无 mask / pse / drop 等可选输入</text>
+    <text x="90" y="450" fill="#065f46">类型与布局对齐满足要求，且 S2 较长（有 S2 切分）</text>
+
+    <rect x="460" y="405" width="360" height="70" fill="#fef3c7" stroke="#f59e0b" rx="6"/>
+    <text x="480" y="428" fill="#92400e" font-weight="bold">选 ND：</text>
+    <text x="540" y="428" fill="#92400e">需要 Vector 旁路处理（加 mask / pse / 量化）</text>
+    <text x="480" y="450" fill="#92400e">S2 很短（转排布本来就没多少活）</text>
+  </g>
+  <text x="440" y="505" text-anchor="middle" font-size="13" fill="#6b7280">一句话：数据「干净」+ S2 长 → DN；要动数据或 S2 短 → ND</text>
+</svg>

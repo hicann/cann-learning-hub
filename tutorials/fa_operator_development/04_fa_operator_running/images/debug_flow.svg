@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#555"/>
+    </marker>
+  </defs>
+  <rect width="960" height="560" fill="#FAFBFD"/>
+  <text x="480" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">FA 算子调测全流程：tiling 与 kernel 分开编译、分开运行</text>
+
+  <!-- Step 1: inputs -->
+  <g transform="translate(40,70)">
+    <rect x="0" y="0" width="250" height="150" fill="#FFF" stroke="#4E79A7" stroke-width="1.5" rx="8"/>
+    <text x="125" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#0B62A4">① 准备输入</text>
+    <text x="14" y="58" font-size="12" fill="#444">golden：bin 格式</text>
+    <text x="14" y="80" font-size="12" fill="#444">  （标准答案数据）</text>
+    <text x="14" y="102" font-size="12" fill="#444">json：算子属性信息</text>
+    <text x="14" y="124" font-size="12" fill="#444">  （tensor shape、精度对比标准等）</text>
+  </g>
+
+  <line x1="290" y1="145" x2="350" y2="145" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 2: tiling -->
+  <g transform="translate(355,70)">
+    <rect x="0" y="0" width="250" height="150" fill="#EEF6EE" stroke="#59A14F" stroke-width="1.5" rx="8"/>
+    <text x="125" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#2A6F3E">② Tiling：先编译、再运行</text>
+    <text x="14" y="58" font-size="12" fill="#444">tiling 编译（CPU 侧）</text>
+    <text x="14" y="80" font-size="12" fill="#444">tiling 运行</text>
+    <text x="14" y="102" font-size="12" fill="#444">产物：TilingData / TilingKey</text>
+    <text x="14" y="124" font-size="12" fill="#444">日志：debug_workspace/</text>
+    <text x="20" y="140" font-size="12" fill="#444">算子名/tiling/</text>
+  </g>
+
+  <line x1="605" y1="145" x2="665" y2="145" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 3: kernel -->
+  <g transform="translate(670,70)">
+    <rect x="0" y="0" width="250" height="150" fill="#FDF1E7" stroke="#E15759" stroke-width="1.5" rx="8"/>
+    <text x="125" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#A23B3B">③ Kernel：编译成两个 .o</text>
+    <text x="14" y="58" font-size="12" fill="#444">AIC 一个 .o</text>
+    <text x="14" y="80" font-size="12" fill="#444">AIV 一个 .o</text>
+    <text x="14" y="102" font-size="12" fill="#444">（分离架构：两类核</text>
+    <text x="14" y="124" font-size="12" fill="#444">  代码分别编译）</text>
+  </g>
+
+  <line x1="795" y1="220" x2="795" y2="270" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 4: run -->
+  <g transform="translate(670,275)">
+    <rect x="0" y="0" width="250" height="120" fill="#F0EEF8" stroke="#7A5195" stroke-width="1.5" rx="8"/>
+    <text x="125" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#5B3E88">④ Kernel 运行（仿真）</text>
+    <text x="14" y="58" font-size="12" fill="#444">运行中：tail 命令看实时日志</text>
+    <text x="14" y="80" font-size="12" fill="#444">DumpTensor(ptr, index)</text>
+    <text x="14" y="102" font-size="12" fill="#444">  第二个参数是标识 index</text>
+  </g>
+
+  <line x1="670" y1="335" x2="610" y2="335" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 5: dump -->
+  <g transform="translate(355,275)">
+    <rect x="0" y="0" width="250" height="120" fill="#FFF" stroke="#4E79A7" stroke-width="1.5" rx="8"/>
+    <text x="125" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#0B62A4">⑤ 取回 dump 结果</text>
+    <text x="14" y="58" font-size="12" fill="#444">debug_workspace/算子名/</text>
+    <text x="14" y="80" font-size="12" fill="#444">  simulator/dump/</text>
+    <text x="14" y="102" font-size="12" fill="#444">  （运行结果）</text>
+  </g>
+
+  <line x1="355" y1="335" x2="300" y2="335" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 6: compare -->
+  <g transform="translate(40,275)">
+    <rect x="0" y="0" width="255" height="120" fill="#EEF6EE" stroke="#59A14F" stroke-width="1.5" rx="8"/>
+    <text x="127" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#2A6F3E">⑥ 与 golden 对拍</text>
+    <text x="14" y="58" font-size="12" fill="#444">按 json 里的精度标准比对</text>
+    <text x="14" y="80" font-size="12" fill="#444">一致 → 通过；</text>
+    <text x="14" y="102" font-size="12" fill="#444">不一致 → 定位 tiling / kernel</text>
+  </g>
+
+  <!-- bottom note -->
+  <g transform="translate(40,440)">
+    <rect x="0" y="0" width="880" height="90" fill="#FFF8E7" stroke="#F28E2B" stroke-width="1.2" rx="8"/>
+    <text x="16" y="30" font-size="13" font-weight="bold" fill="#B05A2A">mskpp 工具的核心思想</text>
+    <text x="16" y="54" font-size="12" fill="#444">将 tiling 与 kernel 分开、编译与运行分开：tiling 单独调通（看 tiling 日志），kernel 单独调通（看 dump），</text>
+    <text x="16" y="74" font-size="12" fill="#444">最后再合到一起跑全流程——问题域隔离，定位故障时不用大海捞针。</text>
+  </g>
+</svg>

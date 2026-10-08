@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="600" viewBox="0 0 940 600" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">FusedInferAttentionScore 源码目录：一个算子工程的三层骨架</text>
+
+  <!-- 左：目录树 -->
+  <rect x="30" y="55" width="470" height="490" rx="10" fill="#F7F8FA" stroke="#BBB" stroke-width="1.4"/>
+  <rect x="30" y="55" width="470" height="30" rx="10" fill="#4C88F7" fill-opacity="0.85"/>
+  <text x="265" y="76" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#FFF">attention/fused_infer_attention_score/（源码目录树）</text>
+  <g font-family="Consolas, 'Courier New', monospace" font-size="12.5" fill="#333">
+    <text x="50" y="112">fused_infer_attention_score/</text>
+    <text x="66" y="136" fill="#E8446D" font-weight="bold">├─ op_api/</text>
+    <text x="82" y="160">aclnn_fused_infer_attention_score.cpp</text>
+    <text x="82" y="184">aclnn_..._v2 ~ v5.cpp　（五代接口）</text>
+    <text x="82" y="208">aclnn_..._inner.cpp　　 （共享实现）</text>
+    <text x="66" y="236" fill="#9334E6" font-weight="bold">├─ op_host/</text>
+    <text x="82" y="260">..._def.cpp　　　　　 OpDef 原型注册</text>
+    <text x="82" y="284">..._infershape.cpp　 InferShape/DataType</text>
+    <text x="82" y="308">..._tiling.h/.cpp　　TilingData ＋ 总入口路由</text>
+    <text x="82" y="332">..._tiling_cache.h　 同 shape 只算一次</text>
+    <text x="82" y="356">..._tiling_register.cpp　IMPL_OP_OPTILING</text>
+    <text x="82" y="380">checkers/　arch22/　arch35/　arch38/</text>
+    <text x="66" y="404" fill="#34A853" font-weight="bold">├─ op_kernel/</text>
+    <text x="82" y="428">fused_infer_attention_score.cpp　核函数入口</text>
+    <text x="82" y="452">arch22/（910B）　arch35/（950）　arch38/</text>
+    <text x="66" y="476" fill="#888">├─ examples/　docs/　op_graph/</text>
+    <text x="66" y="500">└─ CMakeLists.txt　README.md</text>
+  </g>
+  <text x="265" y="530" text-anchor="middle" font-size="11.5" fill="#C0392B" font-weight="bold">arch22 = 910B：本课程第二部分的实战平台</text>
+
+  <!-- 右：三层职责 -->
+  <g>
+    <rect x="530" y="72" width="380" height="120" rx="10" fill="#FDE8E8" stroke="#E8446D" stroke-width="1.8"/>
+    <text x="720" y="98" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#A81640">op_api：接口层（Host 用户侧）</text>
+    <text x="720" y="122" text-anchor="middle" font-size="11.5" fill="#444">aclnn 两段式接口的五代演进（V1~V5）</text>
+    <text x="720" y="142" text-anchor="middle" font-size="11.5" fill="#444">输入预处理：连续化、KV stride 处理</text>
+    <text x="720" y="162" text-anchor="middle" font-size="11.5" fill="#444">构造 executor、管理 workspace</text>
+    <text x="720" y="182" text-anchor="middle" font-size="11" fill="#888">V1 计划 2026-12 废弃，推荐迁移 V5</text>
+  </g>
+  <g>
+    <rect x="530" y="212" width="380" height="140" rx="10" fill="#F3E8FD" stroke="#9334E6" stroke-width="1.8"/>
+    <text x="720" y="238" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#6B21A8">op_host：算子的大脑（3.3 节）</text>
+    <text x="720" y="262" text-anchor="middle" font-size="11.5" fill="#444">OpDef 原型：输入/输出/属性注册</text>
+    <text x="720" y="282" text-anchor="middle" font-size="11.5" fill="#444">InferShape：按 input_layout 推导输出</text>
+    <text x="720" y="302" text-anchor="middle" font-size="11.5" fill="#444">Tiling：切分参数计算（12 个子结构）</text>
+    <text x="720" y="322" text-anchor="middle" font-size="11.5" fill="#444">按架构（arch22/35/38）与负载路由</text>
+    <text x="720" y="342" text-anchor="middle" font-size="11" fill="#888">TilingCache：同 shape/attr 只算一次</text>
+  </g>
+  <g>
+    <rect x="530" y="372" width="380" height="130" rx="10" fill="#E8F5EC" stroke="#34A853" stroke-width="1.8"/>
+    <text x="720" y="398" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#1E6B34">op_kernel：算子的肌肉（3.4 节）</text>
+    <text x="720" y="422" text-anchor="middle" font-size="11.5" fill="#444">核函数入口按 TilingKey 路由</text>
+    <text x="720" y="442" text-anchor="middle" font-size="11.5" fill="#444">FAI / PFA / IFA 三分支实现</text>
+    <text x="720" y="462" text-anchor="middle" font-size="11.5" fill="#444">Cube/Vector 服务分层、多级搬运链</text>
+    <text x="720" y="482" text-anchor="middle" font-size="11" fill="#888">与两个"兄弟"算子共享 kernel 源码</text>
+  </g>
+
+  <line x1="500" y1="132" x2="527" y2="132" stroke="#555" stroke-width="1.8" marker-end="url(#arrowS)"/>
+  <line x1="500" y1="282" x2="527" y2="282" stroke="#555" stroke-width="1.8" marker-end="url(#arrowS)"/>
+  <line x1="500" y1="428" x2="527" y2="437" stroke="#555" stroke-width="1.8" marker-end="url(#arrowS)"/>
+
+  <!-- 底部注释 -->
+  <rect x="30" y="556" width="880" height="34" rx="8" fill="#3EAA8C" fill-opacity="0.12" stroke="#3EAA8C" stroke-width="1.4"/>
+  <text x="470" y="578" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#166B54">FIA 是融合入口：直接 #include 复用 prompt_flash_attention（PFA）与 incre_flash_attention（IFA）两个兄弟算子的 tiling / kernel 源码</text>
+</svg>

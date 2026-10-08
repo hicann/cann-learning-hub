@@ -1,0 +1,18 @@
+07.05 优化步骤②CV 流水与切块 —— 小测验答案
+
+1. 时间画像的 bound 与三条路径：
+   - V1 > C1 ≈ C2 >> V2 说明 FA 是 Vector bound：性能上限由 V1（softmax 行归一化及前后处理）决定，Cube 的优化空间有限。
+   - 三条路径：① 流水编排——preload 用两个 Cube 拍（i 的 C2 + i+1 的 C1）掩盖一个长 V1，消除 Cube 断流；② 缩短 V1 本身——Softmax VF 化（7.5 节的函数族、第 8 章的完整方法论）；③ CV 配平——AIC:AIV = 1:2 的硬件上用 nRatio 等参数控制 Cube/Vector 任务比例，让两侧同时干完（一侧提前干完就是纯浪费）。
+
+2. 块大小与计算强度：
+   - I = BaseM·BaseN / ((BaseM+BaseN)·D_size)，块越大 I 越高、越接近计算受限平台。
+   - 四个约束：UB 容量（装不下就白搭）、尾块浪费（不满整块按整块搬算）、softmax 归约粒度（S2 块是 m/l 增量更新单元）、流水节拍稳定（块时长一致才能精确错拍）。切块是四者的联合优化——这正是 Tiling 设计的核心艺术。
+
+3. VF 指令宽度与 originN 对齐：
+   - 寄存器 256B，FP32 占 4B，一条 VF 指令处理 64 个 FP32。
+   - originN 向上对齐到 256B 的整数倍 = 64 的整数倍（FP32），恰好匹配寄存器宽度——每条指令都吃满，不为对齐浪费指令发射；对齐后不一定等于 s2BaseSize 的整数倍，所以尾块形状走 GeneralImpl 通用路径。
+
+4. 函数族的分派维度与 Update/NoUpdate：
+   - 两个维度：originN 的落点（≤64 / =128 / 64<n<128 / 128<n≤256，即 Imp164/Impl128/GeneralImpl128/GeneralImpl256）× 是否首次计算（NoUpdate/Update）。
+   - NoUpdate 是第一次 softmax 计算：还没有历史 m/l 状态，直接取行 max 做完整 softmax；Update 是后续轮次：新块的行 max 要与已保存的全局 m 做更新（新 m = max(旧 m, 本块 m)），exp 的 rescale 系数也要算——多一段「全局 max 更新」逻辑，所以代码分两个分支、各配四个形状特化。
+

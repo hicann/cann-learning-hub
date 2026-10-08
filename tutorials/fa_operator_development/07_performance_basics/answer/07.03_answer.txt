@@ -1,0 +1,22 @@
+07.03 访存性能 —— 小测验答案
+
+1. bank 组织与交织：
+   - David：8 个 bank group × 每个 2 bank × 每个 4 block，UB 共 256KB，(bank_depth, bank_num, bank_group, C0) = (512, 2, 8, 32)；**低位交织**——bank0 与 bank1 地址相邻 256B，两个 bank 的 block 交替排布（排完 bank0 的 block0 立即排 bank1 的 block0）。
+   - 1971：16 个 bank group × 3 bank × 128 block，192KB，(3, 128, 16, 32)；**高位交织**——每个 bank 连续存放 64KB，排完一个 bank 全部 block 再排下一个。
+   - block 固定 32B，不随代际变化；同一 bank 内部只能顺序访问。
+
+2. 冲突判定（David）：
+   - 读读/写写：同时读/写的地址所在 block 的起始地址对 256 取模余数相等（1971 为 512）。
+   - 读写冲突：取模余数相等，**且**起始地址之差可被 512 整除（1971 为不大于 65024）。
+   - 仲裁优先级：VEC > Scalar > MTE，同 pipe 内 Write > Read。
+
+3. dump log 定位：
+   - 打开 core0.vector0.ub.dump，搜索关键字 **BGBK_CFLT** 和 **CFLT_BLOCKED**——命中即发生 bank 冲突。
+   - 冲突记录里有两条指令的 PC 指针，拿着 PC 到对应的 instr_log 中回查，即可定位到具体指令（是读读、写写还是读写冲突也能从记录类型看出）。
+
+4. 三板斧与关系：
+   - ① 单条 VEC 指令操作 ≤ 256B——限制单指令触及的 block 数；
+   - ② 读写 pingpong——输入数据与输出数据分放 ping/pong 缓冲，消灭读写冲突；
+   - ③ block 均匀分布——读/写操作的 8 个 block 分布到 8 个不同的 bank group（写操作只有一个操作数，尤其要分散写）。
+   - 「读写 pingpong」与第 5 章的乒乓缓冲是同一机制的双动机：性能上让搬运与计算重叠（MTE 预取），访存上让读写错开 bank——一次设计，两份收益。
+

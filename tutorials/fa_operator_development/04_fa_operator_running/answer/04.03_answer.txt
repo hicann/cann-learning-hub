@@ -1,0 +1,17 @@
+《FlashAttention 算子开发课程》第 4 章 4.3 节测验答案
+====================================================
+
+1. op_host 对应「算子原型注册 + Tiling」层，跑在 CPU（Host）上；
+   op_kernel 对应「Kernel」层，跑在 NPU 的 AI Core 上
+   （AIC + AIV）。
+
+2. 因为分离架构下 Cube 核与 Vector 核执行的是不同的代码
+   （Cube 管矩阵乘，Vector 管 softmax/mask/scale/update），
+   两类核代码分别编译成两个 .o（AIC 一个、AIV 一个），
+   运行时按「AIV+AIC 组合」一起加载启动。
+
+3. 动机是第 3 章 3.4 节原则二：融合算子输入组合多，
+   代码段混编会膨胀并导致 ICache Miss（AIC 32KB / AIV 16KB）。
+   按场景拆分成多个 kernel_fia_*.h 文件后，
+   由 TilingKey 在编译期隔离，每个 Kernel 只包含
+   自己场景的代码段。

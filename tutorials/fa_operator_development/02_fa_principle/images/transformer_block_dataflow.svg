@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="580" viewBox="0 0 940 580" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrowT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">一个 Decoder Block 的数据流，与 Attention / FFN 的开销对比</text>
+
+  <!-- 输入 -->
+  <rect x="380" y="55" width="180" height="34" rx="8" fill="#A8C7E8" stroke="#1B4E9B" stroke-width="1.5"/>
+  <text x="470" y="77" text-anchor="middle" font-size="12.5" fill="#1B4E9B" font-weight="bold">x（n × d_model）</text>
+
+  <!-- QKV 投影 -->
+  <line x1="470" y1="93" x2="470" y2="117" stroke="#555" stroke-width="1.8" marker-end="url(#arrowT)"/>
+  <rect x="355" y="120" width="230" height="46" rx="8" fill="#E8F1FE" stroke="#4C88F7" stroke-width="1.5"/>
+  <text x="470" y="139" text-anchor="middle" font-size="12" fill="#1B4E9B" font-weight="bold">QKV 三路投影 + 输出投影 W_O</text>
+  <text x="470" y="157" text-anchor="middle" font-size="10.5" fill="#666">4 个 d_model×d_model 矩阵 → 参数 4d²</text>
+
+  <!-- Attention -->
+  <line x1="470" y1="168" x2="470" y2="192" stroke="#555" stroke-width="1.8" marker-end="url(#arrowT)"/>
+  <rect x="330" y="195" width="280" height="66" rx="10" fill="#FDE8E8" stroke="#E8446D" stroke-width="2"/>
+  <text x="470" y="219" text-anchor="middle" font-size="13.5" fill="#A81640" font-weight="bold">Attention（2.3 ~ 2.6 节的主角）</text>
+  <text x="470" y="239" text-anchor="middle" font-size="11" fill="#A81640">S = QKᵀ/√d → Softmax → PV</text>
+  <text x="470" y="254" text-anchor="middle" font-size="10.5" fill="#888">计算量 O(n²·d)：唯一随序列长度平方增长！</text>
+
+  <!-- Add & Norm -->
+  <line x1="470" y1="263" x2="470" y2="287" stroke="#555" stroke-width="1.8" marker-end="url(#arrowT)"/>
+  <rect x="380" y="290" width="180" height="30" rx="15" fill="#F2F2F2" stroke="#999"/>
+  <text x="470" y="310" text-anchor="middle" font-size="11.5" fill="#555">RMSNorm + 残差</text>
+
+  <!-- FFN -->
+  <line x1="470" y1="322" x2="470" y2="346" stroke="#555" stroke-width="1.8" marker-end="url(#arrowT)"/>
+  <rect x="330" y="349" width="280" height="66" rx="10" fill="#E8F1FE" stroke="#4C88F7" stroke-width="2"/>
+  <text x="470" y="371" text-anchor="middle" font-size="13.5" fill="#1B4E9B" font-weight="bold">FFN（SwiGLU：升维 ~4× → 激活 → 降维）</text>
+  <text x="470" y="391" text-anchor="middle" font-size="10.5" fill="#666">参数 3 · d_model · d_ff ≈ 8d²（参数大头）</text>
+  <text x="470" y="407" text-anchor="middle" font-size="10.5" fill="#888">计算量 O(n·d²)：随序列长度线性增长</text>
+
+  <!-- Add & Norm 输出 -->
+  <line x1="470" y1="417" x2="470" y2="441" stroke="#555" stroke-width="1.8" marker-end="url(#arrowT)"/>
+  <rect x="380" y="444" width="180" height="30" rx="15" fill="#F2F2F2" stroke="#999"/>
+  <text x="470" y="464" text-anchor="middle" font-size="11.5" fill="#555">RMSNorm + 残差</text>
+  <line x1="470" y1="476" x2="470" y2="500" stroke="#555" stroke-width="1.8" marker-end="url(#arrowT)"/>
+  <rect x="380" y="503" width="180" height="34" rx="8" fill="#3EAA8C" fill-opacity="0.16" stroke="#3EAA8C" stroke-width="1.5"/>
+  <text x="470" y="525" text-anchor="middle" font-size="12.5" fill="#166B54" font-weight="bold">输出（n × d_model）→ 下一层</text>
+
+  <!-- 左侧注释：参数与计算量 -->
+  <g>
+    <rect x="30" y="195" width="255" height="220" rx="10" fill="#FAFAFA" stroke="#CCC" stroke-width="1.2"/>
+    <text x="157" y="220" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#444">单块参数分布（Llama 级，d_ff≈3.5d）</text>
+    <text x="157" y="244" text-anchor="middle" font-size="11.5" fill="#A81640">Attention 投影：4d² ≈ 33%</text>
+    <text x="157" y="264" text-anchor="middle" font-size="11.5" fill="#1B4E9B">FFN：3·d·d_ff ≈ 67%</text>
+    <line x1="60" y1="280" x2="255" y2="280" stroke="#DDD"/>
+    <text x="157" y="304" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#444">计算量（FLOPs）却会反转：</text>
+    <text x="157" y="330" text-anchor="middle" font-size="11.5" fill="#666">n = 4k：Attention 核心 ≈ 9%</text>
+    <text x="157" y="350" text-anchor="middle" font-size="11.5" fill="#666">n = 64k：≈ 56%</text>
+    <text x="157" y="370" text-anchor="middle" font-size="11.5" fill="#A81640" font-weight="bold">n = 128k：≈ 72%，成第一瓶颈</text>
+    <text x="157" y="398" text-anchor="middle" font-size="10.5" fill="#888">（causal 减半已计入；见 2.2 节实验）</text>
+  </g>
+
+  <!-- 右侧注释：Prefill / Decode -->
+  <g>
+    <rect x="655" y="195" width="255" height="220" rx="10" fill="#FAFAFA" stroke="#CCC" stroke-width="1.2"/>
+    <text x="782" y="220" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#444">同一条数据流的两种运行方式</text>
+    <rect x="675" y="236" width="215" height="70" rx="8" fill="#E8F1FE" stroke="#4C88F7" stroke-width="1.3"/>
+    <text x="782" y="256" text-anchor="middle" font-size="12" fill="#1B4E9B" font-weight="bold">Prefill：一次喂 n 个 token</text>
+    <text x="782" y="274" text-anchor="middle" font-size="10.5" fill="#666">Q 是 n 行矩阵 → 算力瓶颈</text>
+    <text x="782" y="292" text-anchor="middle" font-size="10.5" fill="#666">PromptFlashAttention 路径</text>
+    <rect x="675" y="316" width="215" height="80" rx="8" fill="#FFF8E6" stroke="#E0A800" stroke-width="1.3"/>
+    <text x="782" y="336" text-anchor="middle" font-size="12" fill="#8A5500" font-weight="bold">Decode：一次只喂 1 个 token</text>
+    <text x="782" y="354" text-anchor="middle" font-size="10.5" fill="#666">Q 是 1 行；K/V 从 KV Cache 读</text>
+    <text x="782" y="372" text-anchor="middle" font-size="10.5" fill="#666">每步扫全部历史 → 带宽瓶颈</text>
+    <text x="782" y="390" text-anchor="middle" font-size="10.5" fill="#666">IncreFlashAttention 路径</text>
+  </g>
+
+  <text x="470" y="562" text-anchor="middle" font-size="12" fill="#888">序列越长，越值得为 Attention 专门造轮子——这就是 FlashAttention 算子存在的理由</text>
+</svg>

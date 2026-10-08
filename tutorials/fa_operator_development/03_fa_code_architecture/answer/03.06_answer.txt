@@ -1,0 +1,28 @@
+《FlashAttention 算子开发课程》第 3 章 3.6 节测验答案
+====================================================
+
+1. tiling 是 Host 侧 TilingFunc 产出的 TilingData（序列化后的
+   二进制结构），随任务下发到 Device。接口层的 numHeads、
+   inputLayout 等属性已经在 Tiling 阶段被消化：或转成 TilingData
+   里的字段（bSize/n2Size/gSize/s1BaseSize 等），或决定了
+   TilingKey（从而在编译期选中对应的 Kernel 代码段）。
+   Kernel 拿到的只是「填好的表格」。
+
+2. Softmax 沿 S2（KV 序列）方向归一化：一个 Q 块的输出必须
+   「见到」该头全部 KV 才能算出正确的分母 l（指数和）。
+   若把 S2 切给不同核，每个核只有部分分数，无法独立完成归一化，
+   必须引入核间通信/规约，还要处理 Online Softmax 状态的跨核
+   合并，代价远超收益。所以 S2 只能留在核内循环，核间只切 Q 的 S1。
+
+3. GQA 场景：N1 个 Q 头按组共享 N2 份 KV，nIdx 是 Q 头索引，
+   n2oIdx 是它对应的 KV 头（组）索引，n2oIdx = nIdx / G。
+   非 GQA 时 N2 = N1、G = 1，每个 Q 头都有专属 KV，
+   两个索引一一对应、相等。
+
+4. totalSize=100、aivNum=50：
+   actualUsedAiv = min(100, 50) = 50，
+   splitFactorSize = ceil(100/50) = 2，每核 2 块，恰好均分。
+   totalSize=99：splitFactorSize = ceil(99/50) = 2，
+   前 49 个核各 2 块、最后 1 个核只剩 1 块（49×2+1=99），
+   最后一个核少干一半——这就是负载不均的最小示例，
+   尾差最多 1 块（向上取整切分保证「最差的基本块性能最优」）。

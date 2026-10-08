@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <text x="450" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#111827">MXFP8 存储布局与 Kernel 数据通路</text>
+
+  <!-- GM storage -->
+  <g transform="translate(50,60)">
+    <text x="190" y="0" font-size="15" font-weight="bold" fill="#1f2937">GM：KV Cache 以 MXFP8 存储（D = 128，gs = 32）</text>
+    <!-- data blocks: 4 groups along D -->
+    <g transform="translate(0,14)">
+      <rect x="0" y="0" width="80" height="150" fill="#dbeafe" stroke="#3b82f6" rx="4"/>
+      <rect x="86" y="0" width="80" height="150" fill="#dbeafe" stroke="#3b82f6" rx="4"/>
+      <rect x="172" y="0" width="80" height="150" fill="#dbeafe" stroke="#3b82f6" rx="4"/>
+      <rect x="258" y="0" width="80" height="150" fill="#dbeafe" stroke="#3b82f6" rx="4"/>
+      <text x="40" y="80" text-anchor="middle" font-size="13" fill="#1e40af">E4M3</text>
+      <text x="126" y="80" text-anchor="middle" font-size="13" fill="#1e40af">E4M3</text>
+      <text x="212" y="80" text-anchor="middle" font-size="13" fill="#1e40af">E4M3</text>
+      <text x="298" y="80" text-anchor="middle" font-size="13" fill="#1e40af">E4M3</text>
+      <text x="169" y="172" text-anchor="middle" font-size="13" fill="#374151">K / V 数据：S2 × D，沿 D 每 32 个元素一组</text>
+      <!-- scale row -->
+      <g transform="translate(0,196)">
+        <rect x="0" y="0" width="80" height="34" fill="#fef3c7" stroke="#f59e0b" rx="4"/>
+        <rect x="86" y="0" width="80" height="34" fill="#fef3c7" stroke="#f59e0b" rx="4"/>
+        <rect x="172" y="0" width="80" height="34" fill="#fef3c7" stroke="#f59e0b" rx="4"/>
+        <rect x="258" y="0" width="80" height="34" fill="#fef3c7" stroke="#f59e0b" rx="4"/>
+        <text x="40" y="22" text-anchor="middle" font-size="12" fill="#92400e">E8M0 ⁰</text>
+        <text x="126" y="22" text-anchor="middle" font-size="12" fill="#92400e">E8M0 ¹</text>
+        <text x="212" y="22" text-anchor="middle" font-size="12" fill="#92400e">E8M0 ²</text>
+        <text x="298" y="22" text-anchor="middle" font-size="12" fill="#92400e">E8M0 ³</text>
+        <text x="169" y="56" text-anchor="middle" font-size="13" fill="#374151">scale：每组一个 2 的幂，shape (S2, D/32)，数据量仅 1/32</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- arrow down -->
+  <path d="M 240 380 L 240 420" stroke="#6b7280" stroke-width="2" marker-end="url(#arr)"/>
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <!-- kernel flow -->
+  <g transform="translate(50,430)">
+    <text x="400" y="-4" font-size="15" font-weight="bold" fill="#1f2937">Kernel 内通路（相对非量化版的 diff）</text>
+    <rect x="0" y="10" width="200" height="70" fill="#ede9fe" stroke="#8b5cf6" rx="8"/>
+    <text x="100" y="38" text-anchor="middle" font-size="13" font-weight="bold" fill="#5b21b6">① MTE2 搬入</text>
+    <text x="100" y="60" text-anchor="middle" font-size="12" fill="#6d28d9">数据 + scale 随路搬入，搬运量减半</text>
+
+    <path d="M 204 45 L 248 45" stroke="#6b7280" stroke-width="2" marker-end="url(#arr)"/>
+
+    <rect x="252" y="10" width="200" height="70" fill="#dcfce7" stroke="#22c55e" rx="8"/>
+    <text x="352" y="38" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534">② 随路反量化</text>
+    <text x="352" y="60" text-anchor="middle" font-size="12" fill="#15803d">E8M0 即 2 的幂，乘法退化为指数加 / 移位</text>
+
+    <path d="M 456 45 L 500 45" stroke="#6b7280" stroke-width="2" marker-end="url(#arr)"/>
+
+    <rect x="504" y="10" width="220" height="70" fill="#fee2e2" stroke="#ef4444" rx="8"/>
+    <text x="614" y="38" text-anchor="middle" font-size="13" font-weight="bold" fill="#991b1b">③ Mmad（Cube）</text>
+    <text x="614" y="60" text-anchor="middle" font-size="12" fill="#b91c1c">FP8 直吃或反量化后 BF16，FP32 累加</text>
+
+    <path d="M 728 45 L 772 45" stroke="#6b7280" stroke-width="2" marker-end="url(#arr)"/>
+
+    <rect x="776" y="10" width="70" height="70" fill="#f0f9ff" stroke="#38bdf8" rx="8"/>
+    <text x="811" y="38" text-anchor="middle" font-size="13" font-weight="bold" fill="#0369a1">④</text>
+    <text x="811" y="60" text-anchor="middle" font-size="12" fill="#0369a1">scale 乘回</text>
+  </g>
+
+  <!-- key notes -->
+  <g transform="translate(50,340)">
+    <text x="0" y="0" font-size="13" fill="#b91c1c" font-weight="bold">关键：K 的 scale 必须在 softmax 之前生效（分组各不相同，不能事后统一补）；V 的 scale 在 mm2 输出后乘</text>
+  </g>
+</svg>

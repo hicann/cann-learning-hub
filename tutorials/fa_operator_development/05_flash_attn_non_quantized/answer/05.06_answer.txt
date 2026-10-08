@@ -1,0 +1,22 @@
+05.06 preload 流水 —— 小测验答案
+
+1. 四拍的依赖链与无断流编排：
+   - 依赖链：C1(i) → V1(i) → C2(i) → V2(i)，且 V2(i-1) 必须在 C2(i) 写 Output 前完成（Output 累加的读写依赖）；相邻 task 的同拍之间还有 buffer 依赖（i+1 的 C1 不能覆盖 i 还在用的 Q/K）。
+   - 无断流编排是 preload：把 C2 滞后一个 task 发射。时序上变成：
+     task i:   C1(i)  V1(i)        C2(i)   V2(i)
+     task i+1:     C1(i+1)  V1(i+1)    C2(i+1) ...
+   - 原理：V1 是最长的 Vector 段，一个 V1 的时长里塞进两个 Cube 段（i 的 C2 和 i+1 的 C1），Cube 队列里始终有活干，MTE 也因为提前一个 task 搬数而不再阻塞 C1——三条流水线（MTE/Cube/Vector）各自不断流。
+
+2. V1 > C1 ≈ C2 >> V2 的时间画像：
+   - 意味着 kernel 是 Vector-Bound（后绑）：性能上限由 V1 决定，优化 Cube/MTE 收益有限，真正的提速空间在 V1 的指令级优化（这也是第 7 章 Softmax VF 化的动机）。
+   - V1 长带来的问题：(1) V1 期间 Cube 完全空闲，若编排不好就是纯浪费；(2) V1 需要的 buffer 周转慢，UB 占用会被拉长，能同时 in-flight 的 task 数受限；(3) 流水的「掩盖窗口」必须 >= V1，preload 深度因此被 V1 定格。
+
+3. Buffer 数量不是越多越好的原因（至少两条）：
+   - UB 容量固定（~256KB 级）：buffer 多意味着每个 tensor 切小，或 Q/K/V 之外的中间量（P、m、l）挤占空间，甚至放不下基本块，被迫缩小分块、性能反降。
+   - 流水深度超过某阈值后，掩盖收益封顶：只要 buffer 数 >= 拍数 + 1 已经能把空等藏完，再加 buffer 只是空转，不减耗时。
+   - 尾块/收尾阶段 buffer 越多、收尾循环越复杂， draining 阶段的空拍反而增加；同时寄存器/队列资源（如 Vector 指令的 src/dst 分配）随 in-flight 增多而紧张。
+
+4. C2(task - PRELOAD_NUM) 滞后发射的意义与收尾循环：
+   - 意义：C2 是「依赖 V1 输出 P」的拍，它一旦和 V1 在同一拍排队就会卡住 Cube 队列；把它推后 PRELOAD_NUM 个 task，让 Cube 在等待 P 就绪前先去算后面 task 的 C1，Cube 的时间线被填满，实现第 1 题的交错。
+   - 收尾循环必须有：主循环只把发射动作做完，最后 PRELOAD_NUM 个 task 的 C2/V2 还压在队列里没执行（下标 task - PRELOAD_NUM 还没到 N-1）；必须有一个专门的 tail 循环把这些「已发射但未消费」的拍排干，否则输出不完整——漏写收尾循环是 preload 实现里最典型的正确性 bug。
+
