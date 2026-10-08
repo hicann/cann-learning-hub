@@ -132,7 +132,7 @@ DeepSeek-V3网络的多路由专家计算由GroupedMatmul算子实现，该算�
 
 同时，修改vLLM-Ascend的网络脚本，调整"npu_grouped_matmul"接口的"group_list_type"配置，以消除原本的Cumsum操作。
 
-调整TorchAir的优化功能开关"enable_view_optimize"和torch_npu接口"npu_grouped_matmul"的配置后，MoE阶段关键路径上的Transpose/Cumsum算子即被消除。尽管GroupedMatmul算子耗时有所增加，仍能获得单层158us，整网9ms的Decode性能收益，在3K推理长度下可将rollout总耗时优化超过28s。
+调整TorchAir的优化功能开关"enable_view_optimize"和torch_npu接口"npu_grouped_matmul"的配置后，MoE阶段关键路径上的Transpose/Cumsum算子即被消除。尽管GroupedMatmul算子耗时有所增加，仍能获得单层158us、整网约9.6ms（由单层158us逐层累加得到，约取整为9ms）的Decode性能收益。按3K推理步数估算：3000步×9.6ms≈28.8s，故在3K推理长度下可将rollout总耗时优化超过28s（口径：整网单步收益由单层158us累加得到，9ms为约取整值，此处按未取整的9.6ms推算总耗时）。
 
 ![transpose_cumsum_elimination_profiling](images/transpose_cumsum_elimination_profiling.png)
 
