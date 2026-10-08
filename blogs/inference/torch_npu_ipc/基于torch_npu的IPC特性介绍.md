@@ -326,7 +326,7 @@ if __name__ == '__main__':
 该方法适合在分布式框架中处理跨进程内存共享，示例如下：
 
 ```python
-import
+import os
 
 import torch
 
