@@ -19,7 +19,7 @@ SAM（suffix automaton，后缀自动机）是一个能够高效解决许多字�
 
  ![sam_automaton_next_and_suffix_link](images/sam_automaton_next_and_suffix_link.png)
 
-其中左图 next 是 SAM 的状态转移函数，表示的是 SAM 中的不同状态如何按前序进行转移，是 SAM 的**自动机**部分；右图 link则是上文所述的后缀链接，是 SAM 的**结构**部分。SAM采用线性复杂度的[**增量构造法**](https://oi-wiki.org/string/sam/)，每次向当前SAM 中加入一个新字符时，同时更新 next 和 link，单次更新的时间复杂度为O(1)。
+其中左图 next 是 SAM 的状态转移函数，表示的是 SAM 中的不同状态如何按前序进行转移，是 SAM 的**自动机**部分；右图 link则是上文所述的后缀链接，是 SAM 的**结构**部分。SAM采用线性复杂度的[**增量构造法**](https://oi-wiki.org/string/sam/)，整体构造时间为 O(n)；单次扩展最坏可沿后缀链接回溯 O(n)，摊还为 O(1)（假设状态转移查询和更新为 O(1)）。
 
 **SAM Decoding 将 SAM用于投机解码**
  投机解码被转化为在后缀自动机中的后缀匹配，使用 SAM能够在 O(1) 的常数时间内高效实现这个过程。SAM分为 **静态 SAM（S-SAM）** 和 **动态 SAM（D-SAM）** 两种类型：
