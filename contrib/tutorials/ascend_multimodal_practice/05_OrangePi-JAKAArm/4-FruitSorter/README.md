@@ -184,7 +184,7 @@ pip install openai python-dotenv        # 意图解析（OpenAI 兼容）
 pip install playsound==1.2.2            # 音频播放（锁定版本）
 
 # （可选，旧方案）百度语音 + 文心大模型
-# pip install baidu-aip==4.16.15
+# pip install baidu-aip==4.16.13
 # pip install erniebot==0.5.9
 
 # 其他工具
