@@ -6,6 +6,9 @@
  * 2. 修改模板类实现计算逻辑
  * 3. 添加 Float16/Int8 等特化（如需要）
  * 4. 修改核函数入口
+ *
+ * 注意：模板中的 GetValue/SetValue 仅用于示意数据流、便于理解 Kernel 结构；
+ * 正式实现请按 SKILL.md 的 API 黑名单改用 DataCopy 批量搬运 + 向量计算。
  */
 
 #include "kernel_operator.h"
@@ -67,7 +70,7 @@ __aicore__ inline void KernelOp<half>::Process()
     
     for (uint32_t i = start; i < end; i++) {
         half value_half = xGm.GetValue(i);
-        float value = (float)value_half;  // 转換為 float32
+        float value = (float)value_half;  // 转换为 float32
         // TODO: 使用 float32 计算
         float result = value;  // 替换为实际计算
         yGm.SetValue(i, (half)result);  // 写回 half

@@ -894,7 +894,7 @@ __aicore__ inline void Compute() {
 
 ### 核心要点
 
-1. **API 黑名单**：禁止使用 `GlobalTensor::SetValue()` 和 `GetValue()`
+1. **API 黑名单**：禁止使用 `GlobalTensor::SetValue()` 和 `GetValue()`（Part 5 示例与 `templates/kernel_template.cpp` 中的逐元素写法仅用于示意数据流，正式实现请改用 DataCopy 批量搬运）
 2. **DataCopy vs DataCopyPad**：优先使用 DataCopyPad，自动处理非对齐
 3. **TBuf vs TQue**：MTE 搬运用 TQue，纯计算用 TBuf
 4. **Double Buffer**：在 `InitBuffer` 的 `num` 参数中设置，与模板 `depth` 无关
