@@ -104,3 +104,4 @@ if __name__ == "__main__":
         )
     else:
         logging.error("%s images in total, %s ok, %s failed", total, count_ok, count_ng)
+    raise SystemExit(1 if count_ng else 0)
