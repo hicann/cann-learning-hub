@@ -1,0 +1,23 @@
+1. √
+解析：零拷贝操作前必须调用 register_buffer。
+
+2. ×
+解析：batch_put_from 是同步接口，但部分 key 可能失败（返回非 0），需要检查返回值。
+
+3. B
+解析：昇腾 NPU 场景 protocol 设为 "ascend"。
+
+4. B
+解析：A3 场景推荐 FabricMem 池化。
+
+5. B
+解析：mem_pool_size 在代码中未被使用，设 0 即可。
+
+6. B
+解析：Standalone 推理进程有自己的 TE 做传输；Dummy/Real 的 Dummy 没有 TE，由 Real Client 的 TE 代劳。
+
+7. B、D
+解析：HCCS 是机内芯片间互联，不是跨机通信（A错）。HCCS 支持 D2D/H2D/D2H，不是仅 Device 内存（C错）。B正确：适用于 PD D2D 直传。D正确：是 A2/A3 机内芯片间互联。
+
+8. A、B、C、D
+解析：四项均正确。

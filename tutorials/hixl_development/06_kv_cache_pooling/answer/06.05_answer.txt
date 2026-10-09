@@ -1,0 +1,23 @@
+1. √
+解析：没有池化时，KV Cache 在请求结束后从 HBM 释放（PagedAttention 回收 block），后续相同 prompt 需重新计算 Prefill。池化把 KV Cache 存到 Host DRAM，跨请求复用。
+
+2. B
+解析：Store 池化的核心价值是"存"（跨请求复用）。A/C/D 都是 TE 直传的场景（实时传输、不存储、低延迟）。
+
+3. B
+解析：A2/A3 机内默认 HCCS。设 HCCL_INTRA_ROCE_ENABLE=1 可强制机内走 RoCE。FabricMem 仅 A3 支持。
+
+4. B
+解析：Dummy/Real 的核心优势是一机多卡共享同一个 TE + HIXL，减少跨机连接数（从 O(卡数×机器数) 降到 O(机器数)）。
+
+5. B
+解析：batch_put_from 一个 key 对应一块连续 buffer（单层 KV Cache）；batch_put_from_multi_buffers 一个 key 对应多块 buffer（多层 KV Cache，如 32 层打包成一个 key）。内部都调 Client::BatchPut。
+
+6. A、B
+解析：batch_put_from 内部调 StartBatchPut（Master 分配）和 FinalizeBatchPut（Master 提交），共 2 次 Master RPC。batch_get_into 调 BatchQuery（Master 寻址），1 次 Master RPC。register_buffer 不经过 Master（Dummy 通过 RPC 直接送 Real Client，Embedded 直接注册到本地 TE）。te.batch_transfer_sync_write 不经 Store 层，不需要 Master。
+
+7. A、B、C、D
+解析：四项均正确。Embedded 数据在推理进程内存里（退出即丢）；Dummy/Real 数据在 Real Client 内存里（独立进程）；Standalone 数据在 mooncake_client 内存里（独立进程）；TE 直传不存储数据。
+
+8. A、B
+解析：Store 管理的是 Host DRAM（A）和可选 SSD（B）。NPU HBM 由推理引擎管理（C 非 Store 范畴）。网络缓冲区（D）不是存储介质。

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="500" viewBox="0 0 880 500">
+  <defs>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#9CA3AF"/>
+    </marker>
+  </defs>
+
+  <rect width="880" height="500" fill="#FFFFFF"/>
+
+  <!-- Title -->
+  <text x="440" y="35" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="22" fill="#1F2937" font-weight="bold" text-anchor="middle">逐层异步传输时序</text>
+
+  <!-- Row labels (multi-line via tspan) -->
+  <text x="60" y="116" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#2563EB" font-weight="bold" text-anchor="middle"><tspan x="60" dy="0">Prefill</tspan><tspan x="60" dy="16">计算</tspan></text>
+  <text x="60" y="236" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#EA580C" font-weight="bold" text-anchor="middle"><tspan x="60" dy="0">KV Cache</tspan><tspan x="60" dy="16">传输</tspan></text>
+  <text x="60" y="356" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#7C3AED" font-weight="bold" text-anchor="middle"><tspan x="60" dy="0">Decode</tspan><tspan x="60" dy="16">计算</tspan></text>
+
+  <!-- Green overlap region (from T1 start to L5 end) -->
+  <rect x="185" y="98" width="480" height="278" rx="4" ry="4" fill="#D1FAE5" fill-opacity="0.25" stroke="none"/>
+  <text x="425" y="93" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">计算与传输重叠（Overlap）</text>
+
+  <!-- Prefill blocks (L1-L5) -->
+  <rect x="125" y="108" width="60" height="24" rx="4" ry="4" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="155" y="124" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">L1</text>
+  <line x1="185" y1="132" x2="185" y2="228" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrow)"/>
+
+  <rect x="245" y="108" width="60" height="24" rx="4" ry="4" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="275" y="124" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">L2</text>
+  <line x1="305" y1="132" x2="305" y2="228" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrow)"/>
+
+  <rect x="365" y="108" width="60" height="24" rx="4" ry="4" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="395" y="124" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">L3</text>
+  <line x1="425" y1="132" x2="425" y2="228" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrow)"/>
+
+  <rect x="485" y="108" width="60" height="24" rx="4" ry="4" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="515" y="124" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">L4</text>
+  <line x1="545" y1="132" x2="545" y2="228" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrow)"/>
+
+  <rect x="605" y="108" width="60" height="24" rx="4" ry="4" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="635" y="124" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">L5</text>
+
+  <!-- Transfer blocks (T1-T5) -->
+  <rect x="185" y="228" width="60" height="24" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="215" y="244" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">T1</text>
+  <line x1="245" y1="252" x2="245" y2="348" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrow)"/>
+
+  <rect x="305" y="228" width="60" height="24" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="335" y="244" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">T2</text>
+  <line x1="365" y1="252" x2="365" y2="348" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrow)"/>
+
+  <rect x="425" y="228" width="60" height="24" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="455" y="244" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">T3</text>
+  <line x1="485" y1="252" x2="485" y2="348" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrow)"/>
+
+  <rect x="545" y="228" width="60" height="24" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="575" y="244" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">T4</text>
+  <line x1="605" y1="252" x2="605" y2="348" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrow)"/>
+
+  <rect x="665" y="228" width="60" height="24" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="695" y="244" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">T5</text>
+
+  <!-- Decode blocks (D1-D5) -->
+  <rect x="245" y="348" width="60" height="24" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="275" y="364" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" font-weight="bold" text-anchor="middle">D1</text>
+
+  <rect x="365" y="348" width="60" height="24" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="395" y="364" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" font-weight="bold" text-anchor="middle">D2</text>
+
+  <rect x="485" y="348" width="60" height="24" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="515" y="364" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" font-weight="bold" text-anchor="middle">D3</text>
+
+  <rect x="605" y="348" width="60" height="24" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="635" y="364" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" font-weight="bold" text-anchor="middle">D4</text>
+
+  <rect x="725" y="348" width="60" height="24" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="755" y="364" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" font-weight="bold" text-anchor="middle">D5</text>
+
+  <!-- Timeline axis -->
+  <line x1="100" y1="410" x2="800" y2="410" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="810" y="414" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#6B7280" text-anchor="start">时间</text>
+
+  <!-- Traditional method comparison -->
+  <line x1="100" y1="395" x2="800" y2="395" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="110" y="389" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="start">传统方式：等待全部 Prefill 完成后统一传输 → 延迟高</text>
+
+  <!-- Legend -->
+  <rect x="500" y="440" width="14" height="14" rx="3" ry="3" fill="#DBEAFE" stroke="#2563EB" stroke-width="1"/>
+  <text x="520" y="451" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="start">Prefill</text>
+  <rect x="590" y="440" width="14" height="14" rx="3" ry="3" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="610" y="451" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="start">传输</text>
+  <rect x="670" y="440" width="14" height="14" rx="3" ry="3" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="690" y="451" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="start">Decode</text>
+
+  <!-- Bottom note -->
+  <text x="440" y="475" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#9CA3AF" font-style="italic" text-anchor="middle">每层 Prefill 完成后立即传输 KV Cache，Decode 可提前开始计算，无需等待全部层完成</text>
+</svg>

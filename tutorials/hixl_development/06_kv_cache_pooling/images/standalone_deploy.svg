@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arr_o" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+    <marker id="arr_p" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#7C3AED"/>
+    </marker>
+  </defs>
+  <rect width="900" height="420" fill="#FFFFFF"/>
+
+  <text x="450" y="28" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="16" fill="#1F2937" font-weight="bold" text-anchor="middle">Standalone 模式部署</text>
+
+  <!-- Master -->
+  <rect x="30" y="50" width="160" height="50" rx="10" ry="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="110" y="72" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#D97706" font-weight="bold" text-anchor="middle">Master</text>
+  <text x="110" y="88" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">mooncake_master</text>
+
+  <line x1="110" y1="103" x2="110" y2="123" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- mooncake_client -->
+  <rect x="30" y="128" width="270" height="140" rx="10" ry="10" fill="#F3F4F6" stroke="#6B7280" stroke-width="2" filter="url(#shadow)"/>
+  <text x="165" y="150" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#6B7280" font-weight="bold" text-anchor="middle">mooncake_client（存储进程）</text>
+
+  <!-- Segment + TE → AscendDirect → HIXL -->
+  <rect x="45" y="165" width="65" height="28" rx="4" ry="4" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="77" y="183" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#D97706" text-anchor="middle">Segment</text>
+  <text x="77" y="202" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#9CA3AF" text-anchor="middle">Host DRAM 4GB</text>
+
+  <rect x="120" y="165" width="35" height="28" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="137" y="183" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#EA580C" text-anchor="middle">TE</text>
+
+  <line x1="158" y1="179" x2="170" y2="179" stroke="#EA580C" stroke-width="1.5" marker-end="url(#arr_o)"/>
+
+  <rect x="173" y="165" width="60" height="28" rx="4" ry="4" fill="#FFFBEB" stroke="#EA580C" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="203" y="183" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#EA580C" text-anchor="middle">AscendDirect</text>
+
+  <line x1="236" y1="179" x2="248" y2="179" stroke="#EA580C" stroke-width="1.5" marker-end="url(#arr_o)"/>
+
+  <rect x="251" y="165" width="45" height="28" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="273" y="183" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#7C3AED" text-anchor="middle">HIXL</text>
+
+  <text x="165" y="215" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">TE 用于注册内存（让远端能 RDMA 访问）</text>
+  <text x="165" y="232" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">只管存储，不做推理</text>
+  <text x="165" y="252" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#059669" text-anchor="middle">✓ 解决碎片 · ✓ 缓存持久化</text>
+
+  <line x1="305" y1="175" x2="350" y2="175" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="327" y="170" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">网络</text>
+
+  <!-- Inference process -->
+  <rect x="355" y="110" width="340" height="158" rx="10" ry="10" fill="#ECFDF5" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <text x="525" y="133" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#059669" font-weight="bold" text-anchor="middle">推理进程</text>
+
+  <rect x="375" y="145" width="300" height="22" rx="4" ry="4" fill="#FFFFFF" stroke="#059669" stroke-width="1"/>
+  <text x="525" y="160" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#059669" text-anchor="middle">global_segment_size=0（纯客户端，不贡献内存）</text>
+
+  <!-- TE → AscendDirect → HIXL → NPU -->
+  <rect x="385" y="175" width="35" height="28" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="402" y="193" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#EA580C" text-anchor="middle">TE</text>
+
+  <line x1="423" y1="189" x2="435" y2="189" stroke="#EA580C" stroke-width="1.5" marker-end="url(#arr_o)"/>
+
+  <rect x="438" y="175" width="60" height="28" rx="4" ry="4" fill="#FFFBEB" stroke="#EA580C" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="468" y="193" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#EA580C" text-anchor="middle">AscendDirect</text>
+
+  <line x1="501" y1="189" x2="513" y2="189" stroke="#EA580C" stroke-width="1.5" marker-end="url(#arr_o)"/>
+
+  <rect x="516" y="175" width="45" height="28" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="538" y="193" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#7C3AED" text-anchor="middle">HIXL</text>
+
+  <line x1="564" y1="189" x2="576" y2="189" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr_p)"/>
+
+  <rect x="579" y="175" width="60" height="28" rx="4" ry="4" fill="#FEE2E2" stroke="#DC2626" stroke-width="1"/>
+  <text x="609" y="193" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#DC2626" text-anchor="middle">NPU HBM</text>
+
+  <text x="525" y="220" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">推理进程有自己的 TE → AscendDirect → HIXL（做数据传输）</text>
+  <text x="525" y="237" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">segment 不在这里，由 mooncake_client 管理</text>
+  <text x="525" y="255" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">mooncake_config.json 配置 · connector 自动调用</text>
+
+  <!-- Right: comparison -->
+  <rect x="720" y="120" width="155" height="140" rx="8" ry="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="797" y="142" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#1F2937" font-weight="bold" text-anchor="middle">与 Dummy/Real 区别</text>
+  <line x1="735" y1="150" x2="860" y2="150" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="797" y="170" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#059669" font-weight="bold" text-anchor="middle">Standalone:</text>
+  <text x="797" y="186" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">推理进程有自己的</text>
+  <text x="797" y="200" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">TE → HIXL（做传输）</text>
+  <text x="797" y="216" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">只共享存储</text>
+  <line x1="735" y1="228" x2="860" y2="228" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="797" y="248" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#7C3AED" font-weight="bold" text-anchor="middle">Dummy/Real:</text>
+  <text x="797" y="264" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">Dummy 无 TE/HIXL</text>
+
+  <!-- Business flow -->
+  <rect x="30" y="285" width="840" height="120" rx="8" ry="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="450" y="305" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937" font-weight="bold" text-anchor="middle">业务流程（调用 API 后的步骤）</text>
+
+  <text x="50" y="325" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#059669" font-weight="bold">put(key, data):</text>
+  <text x="50" y="340" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">① 推理进程查 Master → 分配到 mooncake_client 的 Segment</text>
+  <text x="50" y="355" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">② 推理进程的 TE → AscendDirect → HIXL 执行传输</text>
+  <text x="50" y="370" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">③ 数据从 NPU 通过网络写入 mooncake_client Segment（D2H）</text>
+
+  <text x="50" y="390" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF">get 反向：查 Master → 推理 TE → HIXL → 从网络读取 Segment → NPU（H2D）</text>
+</svg>

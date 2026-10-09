@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="480" viewBox="0 0 880 480">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow_p" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#7C3AED"/>
+    </marker>
+    <marker id="arrow_o" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+    <marker id="arrow_b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <rect width="880" height="480" fill="#FFFFFF"/>
+  <text x="440" y="35" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="22" fill="#1F2937" font-weight="bold" text-anchor="middle">Ascend Direct Transport 传输示意</text>
+
+  <rect x="140" y="65" width="240" height="80" rx="10" ry="10" fill="#EDE9FE" fill-opacity="1.0" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <text x="260" y="92" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#7C3AED" font-weight="bold" text-anchor="middle">NPU 0</text>
+  <text x="260" y="115" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">Device Memory（VRAM）</text>
+  <text x="260" y="132" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">2MB 对齐</text>
+
+  <rect x="500" y="65" width="240" height="80" rx="10" ry="10" fill="#EDE9FE" fill-opacity="1.0" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <text x="620" y="92" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#7C3AED" font-weight="bold" text-anchor="middle">NPU 1</text>
+  <text x="620" y="115" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">Device Memory（VRAM）</text>
+  <text x="620" y="132" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">2MB 对齐</text>
+
+  <line x1="380" y1="100" x2="500" y2="100" stroke="#EA580C" stroke-width="2.5" marker-end="url(#arrow_o)" marker-start="url(#arrow_o)"/>
+  <rect x="408" y="78" width="64" height="20" rx="4" ry="4" fill="#FED7AA" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="440" y="92" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">D2D</text>
+  <text x="440" y="115" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">HCCS</text>
+
+  <rect x="300" y="210" width="280" height="70" rx="10" ry="10" fill="#DBEAFE" fill-opacity="1.0" stroke="#2563EB" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="235" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#2563EB" font-weight="bold" text-anchor="middle">Host DRAM</text>
+  <text x="440" y="258" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">主存（Host Memory）</text>
+
+  <line x1="260" y1="145" x2="360" y2="210" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow_b)" stroke-dasharray="5,3"/>
+  <text x="280" y="185" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">D2H</text>
+
+  <line x1="520" y1="210" x2="620" y2="145" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow_b)" stroke-dasharray="5,3"/>
+  <text x="600" y="185" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">H2D</text>
+
+  <line x1="300" y1="240" x2="360" y2="240" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="3,2"/>
+  <line x1="520" y1="240" x2="580" y2="240" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="3,2"/>
+  <text x="180" y="245" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">RDMA</text>
+  <text x="700" y="245" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">RDMA</text>
+
+  <line x1="440" y1="280" x2="440" y2="300" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="310" width="720" height="65" rx="10" ry="10" fill="#FED7AA" fill-opacity="1.0" stroke="#EA580C" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="335" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#EA580C" font-weight="bold" text-anchor="middle">Ascend Direct Transport</text>
+  <rect x="160" y="345" width="200" height="22" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="260" y="360" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">HCCS（机内 D2D）</text>
+  <rect x="400" y="345" width="200" height="22" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="500" y="360" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">RoCE / RDMA（跨机）</text>
+  <rect x="640" y="345" width="120" height="22" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="700" y="360" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">FabricMem（A3）</text>
+
+  <line x1="440" y1="375" x2="440" y2="395" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="400" width="720" height="55" rx="10" ry="10" fill="#F3F4F6" fill-opacity="1.0" stroke="#6B7280" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="425" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#6B7280" font-weight="bold" text-anchor="middle">HIXL（底层单边通信）</text>
+  <text x="440" y="445" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">编译选项：-DUSE_ASCEND_DIRECT=ON</text>
+
+</svg>

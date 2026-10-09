@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="430" viewBox="0 0 900 430">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arr_o" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+    <marker id="arr_p" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#7C3AED"/>
+    </marker>
+  </defs>
+  <rect width="900" height="430" fill="#FFFFFF"/>
+
+  <text x="450" y="28" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="16" fill="#1F2937" font-weight="bold" text-anchor="middle">Dummy/Real 部署流程</text>
+
+  <!-- Master -->
+  <rect x="30" y="50" width="200" height="50" rx="10" ry="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="130" y="72" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#D97706" font-weight="bold" text-anchor="middle">Step 1: Master</text>
+  <text x="130" y="88" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">mooncake_master --port=8080</text>
+
+  <line x1="130" y1="103" x2="130" y2="123" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Real Client -->
+  <rect x="30" y="128" width="270" height="140" rx="10" ry="10" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <text x="165" y="150" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#7C3AED" font-weight="bold" text-anchor="middle">Step 2: Real Client</text>
+  <text x="165" y="165" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">mooncake_client --global_segment_size=4GB</text>
+
+  <!-- Segment + TE → AscendDirect → HIXL -->
+  <rect x="45" y="175" width="60" height="26" rx="4" ry="4" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="75" y="192" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#D97706" text-anchor="middle">Segment</text>
+
+  <rect x="115" y="175" width="35" height="26" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="132" y="192" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#EA580C" text-anchor="middle">TE</text>
+
+  <line x1="153" y1="188" x2="165" y2="188" stroke="#EA580C" stroke-width="1.5" marker-end="url(#arr_o)"/>
+
+  <rect x="168" y="175" width="60" height="26" rx="4" ry="4" fill="#FFFBEB" stroke="#EA580C" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="198" y="192" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#EA580C" text-anchor="middle">AscendDirect</text>
+
+  <line x1="231" y1="188" x2="243" y2="188" stroke="#EA580C" stroke-width="1.5" marker-end="url(#arr_o)"/>
+
+  <rect x="246" y="175" width="45" height="26" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="268" y="192" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#7C3AED" text-anchor="middle">HIXL</text>
+
+  <text x="165" y="218" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">监听 50052 端口</text>
+  <text x="165" y="234" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#059669" text-anchor="middle">✓ 唯一的 TE + HIXL</text>
+  <text x="165" y="250" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">Real 的 HIXL 直接读写</text>
+  <text x="165" y="262" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">Dummy 的 NPU 显存</text>
+
+  <!-- RPC arrow -->
+  <line x1="305" y1="188" x2="360" y2="188" stroke="#7C3AED" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr_p)"/>
+  <text x="332" y="183" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#7C3AED" text-anchor="middle">RPC</text>
+
+  <!-- Dummy Clients -->
+  <rect x="365" y="50" width="505" height="190" rx="10" ry="10" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+  <text x="617" y="73" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#059669" font-weight="bold" text-anchor="middle">Step 3: 推理进程（Dummy Client × 8）</text>
+
+  <rect x="390" y="90" width="115" height="65" rx="8" ry="8" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="447" y="108" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#059669" font-weight="bold" text-anchor="middle">Dummy / NPU 0</text>
+  <rect x="400" y="115" width="95" height="20" rx="4" ry="4" fill="#FEE2E2" stroke="#DC2626" stroke-width="1"/>
+  <text x="447" y="129" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#DC2626" text-anchor="middle">NPU HBM</text>
+  <text x="447" y="145" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#9CA3AF" text-anchor="middle">无 TE · 无 HIXL</text>
+
+  <rect x="520" y="90" width="115" height="65" rx="8" ry="8" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="577" y="108" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#059669" font-weight="bold" text-anchor="middle">Dummy / NPU 1</text>
+  <rect x="530" y="115" width="95" height="20" rx="4" ry="4" fill="#FEE2E2" stroke="#DC2626" stroke-width="1"/>
+  <text x="577" y="129" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#DC2626" text-anchor="middle">NPU HBM</text>
+  <text x="577" y="145" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#9CA3AF" text-anchor="middle">无 TE · 无 HIXL</text>
+
+  <text x="660" y="123" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#9CA3AF" text-anchor="middle">...</text>
+
+  <rect x="685" y="90" width="115" height="65" rx="8" ry="8" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="742" y="108" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#059669" font-weight="bold" text-anchor="middle">Dummy / NPU 7</text>
+  <rect x="695" y="115" width="95" height="20" rx="4" ry="4" fill="#FEE2E2" stroke="#DC2626" stroke-width="1"/>
+  <text x="742" y="129" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#DC2626" text-anchor="middle">NPU HBM</text>
+  <text x="742" y="145" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#9CA3AF" text-anchor="middle">无 TE · 无 HIXL</text>
+
+  <rect x="390" y="170" width="460" height="55" rx="8" ry="8" fill="#FFFFFF" stroke="#059669" stroke-width="1"/>
+  <text x="620" y="188" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">register_buffer() → RPC → Real 注册 Dummy NPU 显存到 Real 的 HIXL</text>
+  <text x="620" y="204" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#059669" text-anchor="middle">✓ 8 卡共享 1 个 TE + AscendDirect + HIXL</text>
+
+  <!-- Business flow -->
+  <rect x="30" y="280" width="840" height="135" rx="8" ry="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="450" y="300" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937" font-weight="bold" text-anchor="middle">业务流程（调用 API 后的步骤）</text>
+
+  <text x="50" y="320" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#059669" font-weight="bold">put(key, data):</text>
+  <text x="50" y="335" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">① Dummy 调 store.put() → RPC 转发给 Real Client</text>
+  <text x="50" y="350" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">② Real 查 Master 分配空间 → 返回 Segment 位置</text>
+  <text x="50" y="365" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">③ Real 的 TE → AscendDirect → HIXL 执行传输（直接读写 Dummy 的 NPU 显存）</text>
+  <text x="50" y="380" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">④ 数据写入 Segment（D2H）→ RPC 返回 Dummy</text>
+
+  <text x="50" y="400" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF">get 反向：Dummy RPC → Real 查 Master → TE 读取 → HIXL → Dummy NPU（H2D）</text>
+</svg>

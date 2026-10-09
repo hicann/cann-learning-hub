@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="520" viewBox="0 0 880 520">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow_b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow_g" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#059669"/>
+    </marker>
+    <marker id="arrow_o" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+    <marker id="arrow_p" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#7C3AED"/>
+    </marker>
+    <marker id="arrow_t" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#0891B2"/>
+    </marker>
+    <marker id="arrow_r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+  </defs>
+  <rect width="880" height="520" fill="#FFFFFF"/>
+  <text x="440.0" y="35" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="22" fill="#1F2937" fill-opacity="1.0" font-weight="bold" text-anchor="middle">Global Proxy 请求流转</text>
+  <rect x="50" y="100" width="120" height="60" rx="10" ry="10" fill="#F3F4F6" fill-opacity="1.0" stroke="#6B7280" stroke-width="2" filter="url(#shadow)"/>
+  <text x="110" y="135" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#1F2937" fill-opacity="1.0" font-weight="bold" text-anchor="middle">Client</text>
+  <text x="110" y="152" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" fill-opacity="1.0" font-weight="normal" text-anchor="middle">推理请求</text>
+  <rect x="280" y="100" width="160" height="60" rx="10" ry="10" fill="#EDE9FE" fill-opacity="1.0" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <text x="360" y="128" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#7C3AED" fill-opacity="1.0" font-weight="bold" text-anchor="middle">Global Proxy</text>
+  <text x="360" y="148" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#A78BFA" fill-opacity="1.0" font-weight="normal" text-anchor="middle">(Nginx)</text>
+  <line x1="170" y1="130" x2="280" y2="130" stroke="#6B7280" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="225" y="122" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" fill-opacity="1.0" font-weight="bold" text-anchor="middle">① 请求</text>
+  <rect x="540" y="70" width="180" height="70" rx="10" ry="10" fill="#DBEAFE" fill-opacity="1.0" stroke="#2563EB" stroke-width="2" filter="url(#shadow)"/>
+  <text x="630" y="95" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#2563EB" fill-opacity="1.0" font-weight="bold" text-anchor="middle">Prefill 节点</text>
+  <text x="630" y="113" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" fill-opacity="1.0" font-weight="normal" text-anchor="middle">生成 KV Cache</text>
+  <text x="630" y="128" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" fill-opacity="1.0" font-weight="normal" text-anchor="middle">存储 / 传输</text>
+  <rect x="540" y="200" width="180" height="70" rx="10" ry="10" fill="#EDE9FE" fill-opacity="1.0" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <text x="630" y="225" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#7C3AED" fill-opacity="1.0" font-weight="bold" text-anchor="middle">Decode 节点</text>
+  <text x="630" y="243" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" fill-opacity="1.0" font-weight="normal" text-anchor="middle">接收 KV Cache</text>
+  <text x="630" y="258" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" fill-opacity="1.0" font-weight="normal" text-anchor="middle">生成 Token</text>
+  <line x1="440" y1="115" x2="540" y2="100" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow_b)"/>
+  <text x="490" y="92" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" fill-opacity="1.0" font-weight="bold" text-anchor="middle">② 子请求</text>
+  <text x="490" y="108" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#60A5FA" fill-opacity="1.0" font-weight="normal" text-anchor="middle">/prefill_internal</text>
+  <line x1="440" y1="145" x2="540" y2="230" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrow_p)"/>
+  <text x="490" y="180" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" fill-opacity="1.0" font-weight="bold" text-anchor="middle">③ 主请求</text>
+  <text x="490" y="196" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#A78BFA" fill-opacity="1.0" font-weight="normal" text-anchor="middle">/decode</text>
+  <line x1="630" y1="140" x2="630" y2="200" stroke="#EA580C" stroke-width="2.5" marker-end="url(#arrow_o)"/>
+  <text x="700" y="170" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" fill-opacity="1.0" font-weight="bold" text-anchor="middle">④ KV Cache</text>
+  <text x="700" y="185" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" fill-opacity="1.0" font-weight="normal" text-anchor="middle">传输</text>
+  <line x1="540" y1="250" x2="440" y2="165" stroke="#059669" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrow_g)"/>
+  <text x="470" y="220" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" fill-opacity="1.0" font-weight="bold" text-anchor="middle">⑤ 响应</text>
+  <line x1="280" y1="135" x2="170" y2="140" stroke="#059669" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrow_g)"/>
+  <text x="210" y="155" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" fill-opacity="1.0" font-weight="bold" text-anchor="middle">⑥ 返回</text>
+  <rect x="50" y="330" width="780" height="160" rx="10" ry="10" fill="#F3F4F6" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="440.0" y="355" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#1F2937" fill-opacity="1.0" font-weight="bold" text-anchor="middle">负载均衡策略</text>
+  <rect x="72.5" y="370" width="230" height="100" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <rect x="72.5" y="370" width="230" height="30" rx="8" ry="8" fill="#DBEAFE" fill-opacity="1.0" stroke="#2563EB" stroke-width="1.5"/>
+  <rect x="72.5" y="370" width="230" height="30" rx="8" ry="8" fill="#DBEAFE" fill-opacity="1.0" stroke="none" stroke-width="0"/>
+  <text x="187.5" y="390" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" fill-opacity="1.0" font-weight="bold" text-anchor="middle">prefill_score_balance</text>
+  <text x="187.5" y="412" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" fill-opacity="1.0" font-weight="bold" text-anchor="middle">最小化 TTFT</text>
+  <text x="187.5" y="432" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" fill-opacity="1.0" font-weight="normal" text-anchor="middle">选择 Prefill 负载最低的节点</text>
+  <text x="187.5" y="452" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#D1D5DB" fill-opacity="1.0" font-weight="normal" text-anchor="middle" font-style="italic">--prefill-lb-sdk / --decode-lb-sdk</text>
+  <rect x="325.0" y="370" width="230" height="100" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <rect x="325.0" y="370" width="230" height="30" rx="8" ry="8" fill="#EDE9FE" fill-opacity="1.0" stroke="#7C3AED" stroke-width="1.5"/>
+  <rect x="325.0" y="370" width="230" height="30" rx="8" ry="8" fill="#EDE9FE" fill-opacity="1.0" stroke="none" stroke-width="0"/>
+  <text x="440.0" y="390" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" fill-opacity="1.0" font-weight="bold" text-anchor="middle">weighted_least_active</text>
+  <text x="440.0" y="412" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" fill-opacity="1.0" font-weight="bold" text-anchor="middle">平衡 Decode</text>
+  <text x="440.0" y="432" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" fill-opacity="1.0" font-weight="normal" text-anchor="middle">加权最少活跃请求数</text>
+  <text x="440.0" y="452" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#D1D5DB" fill-opacity="1.0" font-weight="normal" text-anchor="middle" font-style="italic">--prefill-lb-sdk / --decode-lb-sdk</text>
+  <rect x="577.5" y="370" width="230" height="100" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#EA580C" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <rect x="577.5" y="370" width="230" height="30" rx="8" ry="8" fill="#FED7AA" fill-opacity="1.0" stroke="#EA580C" stroke-width="1.5"/>
+  <rect x="577.5" y="370" width="230" height="30" rx="8" ry="8" fill="#FED7AA" fill-opacity="1.0" stroke="none" stroke-width="0"/>
+  <text x="692.5" y="390" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" fill-opacity="1.0" font-weight="bold" text-anchor="middle">pd_score_balance</text>
+  <text x="692.5" y="412" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" fill-opacity="1.0" font-weight="bold" text-anchor="middle">联合优化 P+D</text>
+  <text x="692.5" y="432" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" fill-opacity="1.0" font-weight="normal" text-anchor="middle">共享内存联合评分</text>
+  <text x="692.5" y="452" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#D1D5DB" fill-opacity="1.0" font-weight="normal" text-anchor="middle" font-style="italic">--prefill-lb-sdk / --decode-lb-sdk</text>
+</svg>

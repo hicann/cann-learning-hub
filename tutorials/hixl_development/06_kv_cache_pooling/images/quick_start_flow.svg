@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="200" viewBox="0 0 880 200">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+  </defs>
+  <rect width="880" height="200" fill="#FFFFFF"/>
+
+  <text x="440" y="28" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="16" fill="#1F2937" font-weight="bold" text-anchor="middle">快速上手流程</text>
+
+  <!-- Step 1: setup -->
+  <rect x="20" y="55" width="140" height="80" rx="8" ry="8" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="90" y="78" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#D97706" font-weight="bold" text-anchor="middle">1. setup</text>
+  <text x="90" y="98" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">初始化 Store</text>
+  <text x="90" y="113" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">连接 Master</text>
+  <text x="90" y="126" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">分配 segment</text>
+
+  <line x1="165" y1="95" x2="195" y2="95" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 2: register -->
+  <rect x="200" y="55" width="140" height="80" rx="8" ry="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="270" y="78" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">2. register_buffer</text>
+  <text x="270" y="98" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">注册 NPU 显存</text>
+  <text x="270" y="113" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">让 TE 能访问</text>
+  <text x="270" y="126" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">这段内存</text>
+
+  <line x1="345" y1="95" x2="375" y2="95" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 3: put -->
+  <rect x="380" y="55" width="140" height="80" rx="8" ry="8" fill="#D1FAE5" stroke="#059669" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="450" y="78" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">3. batch_put_from</text>
+  <text x="450" y="98" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">写入 KV Cache</text>
+  <text x="450" y="113" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#059669" text-anchor="middle">D2H</text>
+  <text x="450" y="126" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">NPU → Host 池</text>
+
+  <line x1="525" y1="95" x2="555" y2="95" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 4: get -->
+  <rect x="560" y="55" width="140" height="80" rx="8" ry="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="630" y="78" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" font-weight="bold" text-anchor="middle">4. batch_get_into</text>
+  <text x="630" y="98" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">读取 KV Cache</text>
+  <text x="630" y="113" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#7C3AED" text-anchor="middle">H2D</text>
+  <text x="630" y="126" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">Host 池 → NPU</text>
+
+  <line x1="705" y1="95" x2="735" y2="95" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 5: verify -->
+  <rect x="740" y="55" width="120" height="80" rx="8" ry="8" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="800" y="78" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#DC2626" font-weight="bold" text-anchor="middle">5. 验证</text>
+  <text x="800" y="98" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">torch.equal</text>
+  <text x="800" y="113" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">检查数据</text>
+  <text x="800" y="126" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">一致性</text>
+
+  <text x="440" y="175" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">前置条件：需先启动 mooncake_master</text>
+</svg>

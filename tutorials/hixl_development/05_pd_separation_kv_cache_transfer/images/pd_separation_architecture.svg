@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow_b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow_g" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#059669"/>
+    </marker>
+    <marker id="arrow_o" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+    <marker id="arrow_p" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#7C3AED"/>
+    </marker>
+    <marker id="arrow_t" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#0891B2"/>
+    </marker>
+    <marker id="arrow_r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+  </defs>
+  <rect width="900" height="560" fill="#FFFFFF"/>
+  <text x="450.0" y="35" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="22" fill="#1F2937" fill-opacity="1.0" font-weight="bold" text-anchor="middle">PD 分离架构</text>
+  <rect x="120" y="65" width="660" height="80" rx="8" ry="8" fill="#F3F4F6" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="450" y="95" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#6B7280" fill-opacity="1.0" font-weight="bold" text-anchor="middle">传统混合部署（Prefill + Decode 在同一节点）</text>
+  <rect x="200" y="108" width="110" height="28" rx="6" ry="6" fill="#FFFFFF" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="255" y="126" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#6B7280" fill-opacity="1.0" font-weight="normal" text-anchor="middle">Prefill</text>
+  <rect x="330" y="108" width="110" height="28" rx="6" ry="6" fill="#FFFFFF" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="385" y="126" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#6B7280" fill-opacity="1.0" font-weight="normal" text-anchor="middle">Decode</text>
+  <rect x="460" y="108" width="130" height="28" rx="6" ry="6" fill="#FFFFFF" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="525" y="126" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#DC2626" fill-opacity="1.0" font-weight="normal" text-anchor="middle">资源竞争</text>
+  <rect x="50" y="190" width="290" height="300" rx="12" ry="12" fill="#DBEAFE" fill-opacity="1.0" stroke="#2563EB" stroke-width="2" filter="url(#shadow)"/>
+  <text x="195.0" y="218" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="16" fill="#2563EB" fill-opacity="1.0" font-weight="bold" text-anchor="middle">Prefill 集群（P 节点）</text>
+  <rect x="80" y="240" width="230" height="45" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#60A5FA" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="195.0" y="268" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#1F2937" fill-opacity="1.0" font-weight="normal" text-anchor="middle">输入 Tokens</text>
+  <line x1="195.0" y1="288" x2="195.0" y2="305" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="80" y="305" width="230" height="45" rx="8" ry="8" fill="#2563EB" fill-opacity="0.15" stroke="#2563EB" stroke-width="2" filter="url(#shadow_s)"/>
+  <rect x="80" y="305" width="230" height="45" rx="8" ry="8" fill="none" fill-opacity="1.0" stroke="#2563EB" stroke-width="2"/>
+  <text x="195.0" y="333" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#2563EB" fill-opacity="1.0" font-weight="bold" text-anchor="middle">Prefill 计算（生成 KV Cache）</text>
+  <line x1="195.0" y1="353" x2="195.0" y2="370" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="80" y="370" width="230" height="45" rx="8" ry="8" fill="#D1FAE5" fill-opacity="1.0" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="195.0" y="398" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#059669" fill-opacity="1.0" font-weight="bold" text-anchor="middle">KV Cache（设备内存）</text>
+  <rect x="80" y="430" width="230" height="30" rx="6" ry="6" fill="#FFFFFF" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="195.0" y="450" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" fill-opacity="1.0" font-weight="normal" text-anchor="middle">优势：高吞吐计算</text>
+  <rect x="350" y="280" width="200" height="60" rx="10" ry="10" fill="#FED7AA" fill-opacity="1.0" stroke="#EA580C" stroke-width="2" filter="url(#shadow)"/>
+  <text x="450.0" y="300" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#EA580C" font-weight="bold" text-anchor="middle"><tspan x="450.0" dy="0">KV Cache</tspan><tspan x="450.0" dy="16">传输</tspan></text>
+  <text x="450.0" y="328" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#FB923C" fill-opacity="1.0" font-weight="normal" text-anchor="middle">llm-datadist / HIXL</text>
+  <line x1="350" y1="295" x2="550" y2="295" stroke="#EA580C" stroke-width="2.5" marker-end="url(#arrow_o)"/>
+  <line x1="550" y1="325" x2="350" y2="325" stroke="#EA580C" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrow_o)"/>
+  <text x="450.0" y="288" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" fill-opacity="1.0" font-weight="normal" text-anchor="middle">Push / Pull</text>
+  <rect x="560" y="190" width="290" height="300" rx="12" ry="12" fill="#EDE9FE" fill-opacity="1.0" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <text x="705.0" y="218" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="16" fill="#7C3AED" fill-opacity="1.0" font-weight="bold" text-anchor="middle">Decode 集群（D 节点）</text>
+  <rect x="590" y="240" width="230" height="45" rx="8" ry="8" fill="#D1FAE5" fill-opacity="1.0" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="705.0" y="268" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#059669" fill-opacity="1.0" font-weight="bold" text-anchor="middle">接收 KV Cache</text>
+  <line x1="705.0" y1="288" x2="705.0" y2="305" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="590" y="305" width="230" height="45" rx="8" ry="8" fill="#7C3AED" fill-opacity="0.15" stroke="#7C3AED" stroke-width="2" filter="url(#shadow_s)"/>
+  <rect x="590" y="305" width="230" height="45" rx="8" ry="8" fill="none" fill-opacity="1.0" stroke="#7C3AED" stroke-width="2"/>
+  <text x="705.0" y="333" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#7C3AED" fill-opacity="1.0" font-weight="bold" text-anchor="middle">Decode 计算（Token 生成）</text>
+  <line x1="705.0" y1="353" x2="705.0" y2="370" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="590" y="370" width="230" height="45" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#A78BFA" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="705.0" y="398" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#1F2937" fill-opacity="1.0" font-weight="normal" text-anchor="middle">输出 Tokens</text>
+  <rect x="590" y="430" width="230" height="30" rx="6" ry="6" fill="#FFFFFF" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="705.0" y="450" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" fill-opacity="1.0" font-weight="normal" text-anchor="middle">优势：低延迟生成</text>
+  <rect x="50" y="520" width="800" height="30" rx="6" ry="6" fill="#F3F4F6" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="450" y="540" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" fill-opacity="1.0" font-weight="normal" text-anchor="middle">资源解耦：P 独立扩展吞吐 | D 独立优化延迟 | KV Cache 跨节点共享</text>
+</svg>

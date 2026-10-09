@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="380" viewBox="0 0 880 380">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow_b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow_g" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#059669"/>
+    </marker>
+    <marker id="arrow_o" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+  </defs>
+  <rect width="880" height="380" fill="#FFFFFF"/>
+
+  <text x="440" y="32" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="18" fill="#1F2937" font-weight="bold" text-anchor="middle">PD 分离传输 vs KV Cache 池化：数据路径对比</text>
+
+  <!-- Left panel: PD disaggregation -->
+  <rect x="30" y="55" width="380" height="300" rx="10" ry="10" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="220" y="80" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#2563EB" font-weight="bold" text-anchor="middle">PD 分离传输（llm-datadist）</text>
+
+  <!-- Prefill box -->
+  <rect x="80" y="100" width="140" height="55" rx="8" ry="8" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="150" y="122" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">Prefill</text>
+  <text x="150" y="140" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">NPU HBM</text>
+
+  <!-- Decode box -->
+  <rect x="80" y="250" width="140" height="55" rx="8" ry="8" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="150" y="272" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">Decode</text>
+  <text x="150" y="290" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">NPU HBM</text>
+
+  <!-- D2D arrow -->
+  <line x1="150" y1="160" x2="150" y2="245" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arrow_b)"/>
+  <rect x="175" y="190" width="80" height="24" rx="4" ry="4" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="215" y="206" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">D2D 直传</text>
+
+  <!-- Notes -->
+  <text x="220" y="328" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">不经 Host · 即传即用 · 用完即弃</text>
+
+  <!-- Right panel: Pooling -->
+  <rect x="470" y="55" width="380" height="300" rx="10" ry="10" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.5"/>
+  <text x="660" y="80" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#059669" font-weight="bold" text-anchor="middle">KV Cache 池化</text>
+
+  <!-- Prefill box -->
+  <rect x="520" y="100" width="140" height="55" rx="8" ry="8" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="590" y="122" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">Prefill</text>
+  <text x="590" y="140" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">NPU HBM</text>
+
+  <!-- Host DRAM pool box -->
+  <rect x="520" y="185" width="280" height="65" rx="8" ry="8" fill="#FFF7ED" stroke="#EA580C" stroke-width="2" filter="url(#shadow)"/>
+  <text x="660" y="208" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#EA580C" font-weight="bold" text-anchor="middle">Host DRAM 内存池</text>
+  <text x="660" y="228" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#9A3412" text-anchor="middle">global_segment · key-value 寻址 · 跨节点共享</text>
+  <text x="660" y="243" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#9A3412" text-anchor="middle">可选 SSD offload 扩展容量</text>
+
+  <!-- Decode box -->
+  <rect x="660" y="290" width="140" height="55" rx="8" ry="8" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="730" y="312" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">Decode</text>
+  <text x="730" y="330" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">NPU HBM</text>
+
+  <!-- D2H arrow -->
+  <line x1="590" y1="160" x2="590" y2="180" stroke="#059669" stroke-width="2.5" marker-end="url(#arrow_g)"/>
+  <text x="605" y="175" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#059669" font-weight="bold">D2H</text>
+
+  <!-- H2D arrow -->
+  <line x1="730" y1="255" x2="730" y2="285" stroke="#EA580C" stroke-width="2.5" marker-end="url(#arrow_o)"/>
+  <text x="745" y="275" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#EA580C" font-weight="bold">H2D</text>
+
+  <!-- Notes -->
+  <text x="660" y="363" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">经 Host 中转 · 可复用 · 跨请求共享</text>
+
+  <!-- VS divider -->
+  <circle cx="440" cy="205" r="18" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="440" y="211" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#6B7280" font-weight="bold" text-anchor="middle">VS</text>
+</svg>

@@ -1,0 +1,14 @@
+1. √
+解析：LLMRole.PROMPT 是 Prefill 角色，负责生成 KV Cache，是 KV Cache 的生产者。
+
+2. √
+解析：双向链接双方都需配置 IP 并发起 link，通过 rank_table 建链。
+
+3. C
+解析：transfer_cache_async 配合 LayerSynchronizer 实现逐层异步传输，将计算与传输重叠。
+
+4. A、B、C、D
+解析：四项均为 llm-datadist 配置项：llm.DeviceId、llm.ListenIpInfo、llm.TransferBackend、llm.SyncKvCacheWaitTime。
+
+5. A、B、C、D
+解析：Pull 由 Decode 发起按需拉取，Push 由 Prefill 发起计算完即推送，两种模式各有适用场景。

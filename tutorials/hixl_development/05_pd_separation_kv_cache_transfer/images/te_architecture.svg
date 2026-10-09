@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="580" viewBox="0 0 880 580">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+  </defs>
+  <rect width="880" height="580" fill="#FFFFFF"/>
+  <text x="440" y="35" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="22" fill="#1F2937" font-weight="bold" text-anchor="middle">Mooncake Transfer Engine 架构</text>
+
+  <rect x="80" y="65" width="720" height="70" rx="10" ry="10" fill="#E0E7FF" fill-opacity="1.0" stroke="#4F46E5" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="90" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#4F46E5" font-weight="bold" text-anchor="middle">应用层（Application Layer）</text>
+  <rect x="102" y="103" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#4F46E5" stroke-width="1"/>
+  <text x="164" y="119" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">vLLM</text>
+  <rect x="238" y="103" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#4F46E5" stroke-width="1"/>
+  <text x="300" y="119" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">SGLang</text>
+  <rect x="374" y="103" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#4F46E5" stroke-width="1"/>
+  <text x="436" y="119" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">TensorRT-LLM</text>
+  <rect x="510" y="103" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#4F46E5" stroke-width="1"/>
+  <text x="572" y="119" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">vLLM-Ascend</text>
+  <rect x="646" y="103" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#4F46E5" stroke-width="1"/>
+  <text x="708" y="119" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">NIXL</text>
+  <line x1="440" y1="135" x2="440" y2="155" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="160" width="720" height="70" rx="10" ry="10" fill="#DBEAFE" fill-opacity="1.0" stroke="#2563EB" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="185" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#2563EB" font-weight="bold" text-anchor="middle">多语言 API（Multi-language API）</text>
+  <rect x="170" y="203" width="150" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1"/>
+  <text x="245" y="219" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">C/C++</text>
+  <rect x="365" y="203" width="150" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1"/>
+  <text x="440" y="219" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">Python</text>
+  <rect x="560" y="203" width="150" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1"/>
+  <text x="635" y="219" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">Go / Rust</text>
+  <line x1="440" y1="230" x2="440" y2="250" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="255" width="720" height="105" rx="10" ry="10" fill="#D1FAE5" fill-opacity="1.0" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="280" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#059669" font-weight="bold" text-anchor="middle">Transfer Engine 核心</text>
+  <rect x="120" y="295" width="290" height="52" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="265" y="315" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#059669" font-weight="bold" text-anchor="middle">Segment</text>
+  <text x="265" y="335" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">RAM Segment（DRAM/VRAM）· NVMeof Segment</text>
+  <rect x="470" y="295" width="290" height="52" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="615" y="315" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#059669" font-weight="bold" text-anchor="middle">BatchTransfer</text>
+  <text x="615" y="335" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">批量 READ/WRITE · 异步 · 双向</text>
+  <line x1="440" y1="360" x2="440" y2="380" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="385" width="720" height="70" rx="10" ry="10" fill="#FED7AA" fill-opacity="1.0" stroke="#EA580C" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="410" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#EA580C" font-weight="bold" text-anchor="middle">Transport 后端（Batch Transfer Interface）</text>
+  <rect x="100" y="423" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="162" y="439" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">TCP Transport</text>
+  <rect x="236" y="423" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="298" y="439" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">RDMA Transport</text>
+  <rect x="372" y="423" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="434" y="439" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">CXL/SHM Transport</text>
+  <rect x="508" y="423" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="570" y="439" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">NVMe-oF Transport</text>
+  <rect x="644" y="423" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="706" y="439" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">Ascend Direct</text>
+  <line x1="440" y1="455" x2="440" y2="475" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="480" width="720" height="70" rx="10" ry="10" fill="#F3F4F6" fill-opacity="1.0" stroke="#6B7280" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="505" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#6B7280" font-weight="bold" text-anchor="middle">硬件层（Hardware）</text>
+  <rect x="100" y="518" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="162" y="534" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">DRAM</text>
+  <rect x="236" y="518" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="298" y="534" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">VRAM / NPU</text>
+  <rect x="372" y="518" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="434" y="534" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">NVMe</text>
+  <rect x="508" y="518" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="570" y="534" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">HCCS</text>
+  <rect x="644" y="518" width="124" height="24" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="706" y="534" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">RoCE / RDMA</text>
+
+  <text x="40" y="100" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">应用</text>
+  <text x="40" y="195" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">API</text>
+  <text x="40" y="310" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">核心</text>
+  <text x="40" y="420" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">传输</text>
+  <text x="40" y="515" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">硬件</text>
+</svg>

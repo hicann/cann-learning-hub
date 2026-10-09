@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="500" viewBox="0 0 880 500">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+  </defs>
+  <rect width="880" height="500" fill="#FFFFFF"/>
+
+  <text x="440" y="28" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="20" fill="#1F2937" font-weight="bold" text-anchor="middle">Mooncake 架构</text>
+
+  <!-- Layer 1: Inference Engines -->
+  <text x="440" y="55" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#6B7280" text-anchor="middle">应用层</text>
+  <rect x="120" y="65" width="180" height="40" rx="8" ry="8" fill="#E0E7FF" stroke="#4F46E5" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="210" y="90" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#4F46E5" font-weight="bold" text-anchor="middle">vLLM / vLLM-Ascend</text>
+  <rect x="350" y="65" width="180" height="40" rx="8" ry="8" fill="#E0E7FF" stroke="#4F46E5" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="440" y="90" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#4F46E5" font-weight="bold" text-anchor="middle">SGLang</text>
+  <rect x="580" y="65" width="180" height="40" rx="8" ry="8" fill="#E0E7FF" stroke="#4F46E5" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="670" y="90" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#4F46E5" font-weight="bold" text-anchor="middle">其他推理框架</text>
+
+  <!-- Single arrow from app layer to core layer -->
+  <line x1="440" y1="108" x2="440" y2="130" stroke="#6B7280" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#arr)"/>
+
+  <!-- Layer 2: Mooncake Core (three equal components) -->
+  <text x="440" y="125" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#6B7280" text-anchor="middle">Mooncake 核心层</text>
+
+  <!-- Master -->
+  <rect x="60" y="135" width="230" height="130" rx="10" ry="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="175" y="160" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#D97706" font-weight="bold" text-anchor="middle">Master</text>
+  <text x="175" y="178" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#92400E" text-anchor="middle">元数据管理 · 全局协调者</text>
+  <line x1="80" y1="188" x2="270" y2="188" stroke="#FDE68A" stroke-width="1"/>
+  <text x="175" y="205" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">· Segment 注册表</text>
+  <text x="175" y="222" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">· Key 索引（key → 位置）</text>
+  <text x="175" y="239" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">· 空间分配与回收</text>
+  <text x="175" y="256" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#9CA3AF" text-anchor="middle">独立进程 · HTTP 元数据服务</text>
+
+  <!-- Store -->
+  <rect x="325" y="135" width="230" height="130" rx="10" ry="10" fill="#D1FAE5" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="160" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#059669" font-weight="bold" text-anchor="middle">Store</text>
+  <text x="440" y="178" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#065F46" text-anchor="middle">存储层 · Host DRAM 内存池</text>
+  <line x1="345" y1="188" x2="535" y2="188" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="440" y="205" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">· batch_put_from（D2H 写入）</text>
+  <text x="440" y="222" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">· batch_get_into（H2D 读取）</text>
+  <text x="440" y="239" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">· register_buffer（注册显存）</text>
+  <text x="440" y="256" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#9CA3AF" text-anchor="middle">Embedded / Standalone / Dummy-Real</text>
+
+  <!-- Transfer Engine -->
+  <rect x="590" y="135" width="230" height="130" rx="10" ry="10" fill="#FED7AA" stroke="#EA580C" stroke-width="2" filter="url(#shadow)"/>
+  <text x="705" y="160" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#EA580C" font-weight="bold" text-anchor="middle">Transfer Engine</text>
+  <text x="705" y="178" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#9A3412" text-anchor="middle">传输引擎 · 跨节点数据搬运</text>
+  <line x1="610" y1="188" x2="800" y2="188" stroke="#FDBA74" stroke-width="1"/>
+  <text x="705" y="205" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">· submitTransfer（批量传输）</text>
+  <text x="705" y="222" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">· Store 内部调用（D2H/H2D）</text>
+  <text x="705" y="239" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">· 也可直接调用（D2D 直传）</text>
+  <text x="705" y="256" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#9CA3AF" text-anchor="middle">Batch → Task → Slice</text>
+
+  <!-- Arrows down -->
+  <line x1="440" y1="268" x2="440" y2="295" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arr)"/>
+
+  <!-- Layer 3: Transport Adapter -->
+  <text x="440" y="290" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#6B7280" text-anchor="middle">传输适配层</text>
+  <rect x="120" y="300" width="640" height="55" rx="10" ry="10" fill="#FFFBEB" stroke="#EA580C" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <rect x="160" y="312" width="240" height="32" rx="6" ry="6" fill="#FFFFFF" stroke="#EA580C" stroke-width="1"/>
+  <text x="280" y="333" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">ascend_direct_transport</text>
+  <rect x="480" y="312" width="240" height="32" rx="6" ry="6" fill="#FFFFFF" stroke="#EA580C" stroke-width="1"/>
+  <text x="600" y="333" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">HIXL / ADXL</text>
+  <line x1="400" y1="328" x2="480" y2="328" stroke="#EA580C" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Arrows down -->
+  <line x1="440" y1="358" x2="440" y2="380" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arr)"/>
+
+  <!-- Layer 4: Hardware -->
+  <text x="440" y="378" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#6B7280" text-anchor="middle">硬件层</text>
+  <rect x="60" y="388" width="760" height="95" rx="10" ry="10" fill="#F9FAFB" stroke="#6B7280" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <rect x="90" y="405" width="200" height="60" rx="8" ry="8" fill="#FFFFFF" stroke="#6B7280" stroke-width="1"/>
+  <text x="190" y="428" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">HCCS</text>
+  <text x="190" y="445" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">超节点芯片间互联</text>
+  <text x="190" y="458" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">~100 GB/s</text>
+
+  <rect x="340" y="405" width="200" height="60" rx="8" ry="8" fill="#FFFFFF" stroke="#6B7280" stroke-width="1"/>
+  <text x="440" y="428" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">RoCE</text>
+  <text x="440" y="445" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">RDMA 跨机网络</text>
+  <text x="440" y="458" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">~20 GB/s</text>
+
+  <rect x="590" y="405" width="200" height="60" rx="8" ry="8" fill="#FFFFFF" stroke="#6B7280" stroke-width="1"/>
+  <text x="690" y="428" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">FabricMem</text>
+  <text x="690" y="445" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">灵渠统一编址</text>
+  <text x="690" y="458" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">~100 GB/s</text>
+</svg>

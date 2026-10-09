@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="640" viewBox="0 0 880 640">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+  </defs>
+  <rect width="880" height="640" fill="#FFFFFF"/>
+  <text x="440" y="35" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="22" fill="#1F2937" font-weight="bold" text-anchor="middle">omni-infer 完整技术栈调用链路</text>
+
+  <rect x="80" y="65" width="720" height="65" rx="10" ry="10" fill="#F3F4F6" fill-opacity="1.0" stroke="#6B7280" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="88" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#1F2937" font-weight="bold" text-anchor="middle">用户请求（HTTP / gRPC）</text>
+  <text x="440" y="108" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">OpenAI API 兼容格式</text>
+  <line x1="440" y1="130" x2="440" y2="148" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="150" width="720" height="80" rx="10" ry="10" fill="#EDE9FE" fill-opacity="1.0" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="175" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#7C3AED" font-weight="bold" text-anchor="middle">omni-infer Global Proxy（Nginx）</text>
+  <rect x="110" y="190" width="200" height="28" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#7C3AED" stroke-width="1"/>
+  <text x="210" y="208" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">请求路由 / X-Request-Id</text>
+  <rect x="340" y="190" width="200" height="28" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#7C3AED" stroke-width="1"/>
+  <text x="440" y="208" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">负载均衡（pd_score_balance）</text>
+  <rect x="570" y="190" width="200" height="28" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#7C3AED" stroke-width="1"/>
+  <text x="670" y="208" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">Prefill/Decode 请求拆分</text>
+  <line x1="440" y1="230" x2="440" y2="248" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="250" width="720" height="80" rx="10" ry="10" fill="#DBEAFE" fill-opacity="1.0" stroke="#2563EB" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="275" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#2563EB" font-weight="bold" text-anchor="middle">omni-infer PD 连接器（accelerators/pd/）</text>
+  <rect x="110" y="290" width="155" height="28" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1"/>
+  <text x="187.5" y="308" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">llmdatadist_manager</text>
+  <rect x="285" y="290" width="155" height="28" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1"/>
+  <text x="362.5" y="308" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">llmdatadist_connector</text>
+  <rect x="460" y="290" width="155" height="28" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1"/>
+  <text x="537.5" y="308" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">omni_cache_connector</text>
+  <rect x="635" y="290" width="155" height="28" rx="5" ry="5" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1"/>
+  <text x="712.5" y="308" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">ranktable</text>
+  <line x1="440" y1="330" x2="440" y2="348" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="350" width="720" height="65" rx="10" ry="10" fill="#FED7AA" fill-opacity="1.0" stroke="#EA580C" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="375" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#EA580C" font-weight="bold" text-anchor="middle">HIXL llm-datadist（KV Cache 传输语义层）</text>
+  <text x="440" y="397" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#FB923C" text-anchor="middle">pull_blocks · push_blocks · transfer_cache_async · CacheManager</text>
+  <line x1="440" y1="415" x2="440" y2="433" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="435" width="720" height="65" rx="10" ry="10" fill="#D1FAE5" fill-opacity="1.0" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="460" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#059669" font-weight="bold" text-anchor="middle">HIXL Engine（CS 单边通信模型）</text>
+  <text x="440" y="482" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#10B981" text-anchor="middle">Server 导出内存 · Client 发起 Get/Put · 零拷贝 · 计算与传输重叠</text>
+  <line x1="440" y1="500" x2="440" y2="518" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="520" width="720" height="65" rx="10" ry="10" fill="#F3F4F6" fill-opacity="1.0" stroke="#6B7280" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="545" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#6B7280" font-weight="bold" text-anchor="middle">物理传输链路（Hardware）</text>
+  <rect x="110" y="558" width="200" height="20" rx="4" ry="4" fill="#FFFFFF" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="210" y="572" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">HCCS（119 GB/s 机内）</text>
+  <rect x="340" y="558" width="200" height="20" rx="4" ry="4" fill="#FFFFFF" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="440" y="572" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">RoCE / RDMA（22 GB/s 跨机）</text>
+  <rect x="570" y="558" width="200" height="20" rx="4" ry="4" fill="#FFFFFF" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="670" y="572" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="middle">FabricMem（A3）</text>
+
+  <text x="40" y="105" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">应用</text>
+  <text x="40" y="195" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">调度</text>
+  <text x="40" y="295" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">封装</text>
+  <text x="40" y="388" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">语义</text>
+  <text x="40" y="472" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">通信</text>
+  <text x="40" y="556" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">硬件</text>
+
+  <rect x="80" y="600" width="720" height="24" rx="4" ry="4" fill="none" stroke="none"/>
+  <text x="440" y="620" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#9CA3AF" font-style="italic" text-anchor="middle">从上到下：上层框架调用底层传输，每层屏蔽下层细节</text>
+</svg>

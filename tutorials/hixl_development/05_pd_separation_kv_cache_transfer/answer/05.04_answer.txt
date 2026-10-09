@@ -1,0 +1,14 @@
+1. √
+解析：Mooncake Transfer Engine 围绕 Segment（可被远端读写的连续地址空间）与 BatchTransfer（批量读写请求）两个核心抽象构建。
+
+2. √
+解析：调用 TransferEngine.initialize() 前必须先设置设备（如 torch.npu.set_device(0)），否则 Ascend Direct Transport 无法正常工作。
+
+3. D
+解析：使用 HCCS 协议时，注册的设备内存地址需 2MB 对齐。
+
+4. C
+解析：在 NPU 上运行 TE 时，initialize() 的 protocol 参数应填 "ascend"，表示使用 Ascend Direct Transport。
+
+5. A、B、C
+解析：Ascend Direct Transport 支持 H2D、D2H、D2D 三种传输类型；NVMe-of 是独立的传输后端，不属于 Ascend Direct Transport。

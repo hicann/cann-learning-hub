@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arr_put" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#059669"/>
+    </marker>
+    <marker id="arr_get" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <rect width="900" height="500" fill="#FFFFFF"/>
+
+  <text x="450" y="28" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="16" fill="#1F2937" font-weight="bold" text-anchor="middle">Store 调用链与数据路径</text>
+
+  <!-- Left: Call chain -->
+  <rect x="30" y="50" width="380" height="380" rx="10" ry="10" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1.5"/>
+  <text x="220" y="72" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#1F2937" font-weight="bold" text-anchor="middle">调用链（batch_put_from 为例）</text>
+
+  <!-- Chain boxes -->
+  <rect x="60" y="88" width="320" height="30" rx="4" ry="4" fill="#DBEAFE" stroke="#2563EB" stroke-width="1"/>
+  <text x="220" y="107" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#2563EB" text-anchor="middle">用户调用 batch_put_from(keys, device_ptrs, sizes)</text>
+
+  <line x1="220" y1="121" x2="220" y2="135" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="60" y="138" width="320" height="30" rx="4" ry="4" fill="#D1FAE5" stroke="#059669" stroke-width="1"/>
+  <text x="220" y="157" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#059669" text-anchor="middle">Store Client</text>
+
+  <line x1="220" y1="171" x2="220" y2="185" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="60" y="188" width="320" height="30" rx="4" ry="4" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="220" y="207" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#D97706" text-anchor="middle">向 Master 申请空间 → Master 分配 segment，返回目标地址</text>
+
+  <line x1="220" y1="221" x2="220" y2="235" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="60" y="238" width="320" height="30" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="220" y="257" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#EA580C" text-anchor="middle">Transfer Engine.submitTransfer（批量提交传输任务）</text>
+
+  <line x1="220" y1="271" x2="220" y2="285" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="60" y="288" width="320" height="30" rx="4" ry="4" fill="#FFFBEB" stroke="#EA580C" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="220" y="307" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#EA580C" text-anchor="middle">AscendDirectTransport（适配器）</text>
+
+  <line x1="220" y1="321" x2="220" y2="335" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="60" y="338" width="320" height="30" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="220" y="357" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#7C3AED" text-anchor="middle">HIXL / ADXL（底层传输）</text>
+
+  <line x1="220" y1="371" x2="220" y2="385" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="60" y="388" width="320" height="30" rx="4" ry="4" fill="#F3F4F6" stroke="#6B7280" stroke-width="1"/>
+  <text x="220" y="407" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">HCCS / RoCE / FabricMem（物理链路）</text>
+
+  <text x="220" y="425" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">合流点：TE 直传路径也在此处合流</text>
+
+  <!-- Right: Data path -->
+  <rect x="440" y="50" width="430" height="380" rx="10" ry="10" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1.5"/>
+  <text x="655" y="72" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#1F2937" font-weight="bold" text-anchor="middle">数据路径：D2H 与 H2D</text>
+
+  <!-- NPU HBM box (top) -->
+  <rect x="530" y="95" width="130" height="50" rx="8" ry="8" fill="#FEE2E2" stroke="#DC2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="595" y="118" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#DC2626" font-weight="bold" text-anchor="middle">NPU HBM</text>
+  <text x="595" y="134" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">Device 显存</text>
+
+  <!-- put arrow (D2H, going down) -->
+  <line x1="560" y1="148" x2="560" y2="245" stroke="#059669" stroke-width="2.5" marker-end="url(#arr_put)"/>
+  <rect x="470" y="180" width="80" height="24" rx="4" ry="4" fill="#D1FAE5" stroke="#059669" stroke-width="1"/>
+  <text x="510" y="196" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#059669" font-weight="bold" text-anchor="middle">put (D2H)</text>
+
+  <!-- get arrow (H2D, going up) -->
+  <line x1="630" y1="245" x2="630" y2="148" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arr_get)"/>
+  <rect x="660" y="180" width="80" height="24" rx="4" ry="4" fill="#DBEAFE" stroke="#2563EB" stroke-width="1"/>
+  <text x="700" y="196" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#2563EB" font-weight="bold" text-anchor="middle">get (H2D)</text>
+
+  <!-- Middle: call chain passing through -->
+  <rect x="480" y="250" width="220" height="30" rx="4" ry="4" fill="#FFFFFF" stroke="#6B7280" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="590" y="269" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">TE → AscendDirect → HIXL（调用链）</text>
+
+  <!-- put arrow continues -->
+  <line x1="560" y1="282" x2="560" y2="335" stroke="#059669" stroke-width="2.5" marker-end="url(#arr_put)"/>
+  <!-- get arrow continues -->
+  <line x1="630" y1="335" x2="630" y2="282" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arr_get)"/>
+
+  <!-- Segment box (bottom) -->
+  <rect x="510" y="340" width="170" height="55" rx="8" ry="8" fill="#FEF3C7" stroke="#D97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="595" y="362" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#D97706" font-weight="bold" text-anchor="middle">Segment</text>
+  <text x="595" y="378" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">Host DRAM 内存池</text>
+  <text x="595" y="390" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#9CA3AF" text-anchor="middle">数据落点</text>
+
+  <!-- Explanations -->
+  <rect x="460" y="410" width="400" height="50" rx="6" ry="6" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="660" y="427" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">put：数据从 NPU 显存经过调用链写入 Host DRAM Segment（D2H）</text>
+  <text x="660" y="445" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">get：数据从 Segment 经过调用链读取到 NPU 显存（H2D）</text>
+
+  <!-- Bottom note -->
+  <rect x="30" y="450" width="840" height="35" rx="6" ry="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <text x="450" y="472" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#92400E" text-anchor="middle">Store 的数据经过 Host 内存中转（D2H/H2D）。TE 直传路径不经 Store/Master，支持 D2D/H2D/D2H</text>
+</svg>

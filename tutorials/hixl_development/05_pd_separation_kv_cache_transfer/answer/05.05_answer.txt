@@ -1,0 +1,44 @@
+1. ×
+解析：PD 分离是部署架构优化，不改变模型参数量，目的是资源独立优化和批处理提升。
+
+2. √
+解析：kMix 角色同时支持 Prefill 和 Decode 功能。
+
+3. √
+解析：双向链接双方都发起 link，单向链接仅一方发起 link_clusters。
+
+4. √
+解析：transfer_cache_async + LayerSynchronizer 实现逐层异步，重叠计算与传输。
+
+5. B
+解析：Prefill 处理整个 prompt，计算量大，是计算密集型（compute-bound）。
+
+6. B
+解析：num_tensors 通常为 2 × num_layers，每层 K 和 V 各一个 tensor。
+
+7. B
+解析：单向链接适合 xPyD，Decode 端为每个 Prefill 构建 ClusterInfo 并 link_clusters。
+
+8. B
+解析：默认值为 2，即每层 K 和 V 两个 tensor。
+
+9. B
+解析：ngx_http_prefill_module 生成子请求发送到 /prefill_internal，完成后主请求转发到 Decode 上游。
+
+10. C
+解析：正确释放顺序：Unlink → Unregister → Finalize，避免资源泄漏。
+
+11. A、B、C
+解析：资源独立优化、批处理提升、弹性扩缩容均为核心优势；PD 分离不改变模型参数量。
+
+12. A、B、C、D
+解析：连续 Cache 传输、分块 Cache 传输、逐层异步传输、本地拷贝四种模式均支持。
+
+13. A、B、C
+解析：prefill_score_balance、weighted_least_active、pd_score_balance 三种策略均支持。
+
+14. A、B、C、D
+解析：四项均为 llm-datadist 状态码。
+
+15. A、B、C、D
+解析：传输后端可通过 llm.TransferBackend 配置，支持 HIXL，对上层 API 透明，决定底层物理链路。

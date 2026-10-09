@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="300" viewBox="0 0 880 300">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow_put" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#059669"/>
+    </marker>
+    <marker id="arrow_get" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <rect width="880" height="300" fill="#FFFFFF"/>
+
+  <text x="440" y="28" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="20" fill="#1F2937" font-weight="bold" text-anchor="middle">KV Cache 池化概念</text>
+
+  <!-- ============ Left: No Pooling ============ -->
+  <rect x="30" y="50" width="350" height="235" rx="10" ry="10" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="205" y="75" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#6B7280" font-weight="bold" text-anchor="middle">无池化（各节点独立）</text>
+
+  <rect x="55" y="95" width="125" height="65" rx="8" ry="8" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="117" y="117" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" font-weight="bold" text-anchor="middle">节点 A</text>
+  <rect x="70" y="125" width="95" height="22" rx="4" ry="4" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="1"/>
+  <text x="117" y="140" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#DC2626" text-anchor="middle">KV Cache (HBM)</text>
+
+  <rect x="220" y="95" width="125" height="65" rx="8" ry="8" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="282" y="117" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" font-weight="bold" text-anchor="middle">节点 B</text>
+  <rect x="235" y="125" width="95" height="22" rx="4" ry="4" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="1"/>
+  <text x="282" y="140" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#DC2626" text-anchor="middle">KV Cache (HBM)</text>
+
+  <rect x="55" y="180" width="125" height="65" rx="8" ry="8" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="117" y="202" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" font-weight="bold" text-anchor="middle">节点 C</text>
+  <rect x="70" y="210" width="95" height="22" rx="4" ry="4" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="1"/>
+  <text x="117" y="225" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#DC2626" text-anchor="middle">KV Cache (HBM)</text>
+
+  <rect x="220" y="180" width="125" height="65" rx="8" ry="8" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="282" y="202" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" font-weight="bold" text-anchor="middle">节点 D</text>
+  <rect x="235" y="210" width="95" height="22" rx="4" ry="4" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="1"/>
+  <text x="282" y="225" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#DC2626" text-anchor="middle">KV Cache (HBM)</text>
+
+  <text x="205" y="268" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#DC2626" font-weight="bold" text-anchor="middle">✗ KV Cache 无法跨节点共享 · 用完即弃</text>
+
+  <!-- ============ Right: With Pooling ============ -->
+  <rect x="420" y="50" width="430" height="235" rx="10" ry="10" fill="#ECFDF5" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <text x="635" y="75" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#059669" font-weight="bold" text-anchor="middle">有池化（共享 Host DRAM 内存池）</text>
+
+  <!-- Pool center -->
+  <rect x="550" y="105" width="170" height="130" rx="10" ry="10" fill="#D1FAE5" stroke="#059669" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="635" y="145" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#059669" font-weight="bold" text-anchor="middle">KV Cache 池</text>
+  <text x="635" y="168" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#065F46" text-anchor="middle">Host DRAM</text>
+  <text x="635" y="185" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#065F46" text-anchor="middle">跨节点共享</text>
+  <text x="635" y="205" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">key-value · 可复用</text>
+
+  <!-- Node A (top-left) -->
+  <rect x="435" y="115" width="70" height="45" rx="6" ry="6" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="470" y="135" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937" font-weight="bold" text-anchor="middle">节点 A</text>
+  <text x="470" y="150" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">NPU HBM</text>
+  <line x1="508" y1="130" x2="547" y2="130" stroke="#059669" stroke-width="1.5" marker-end="url(#arrow_put)"/>
+  <line x1="547" y1="142" x2="508" y2="142" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrow_get)"/>
+
+  <!-- Node B (top-right) -->
+  <rect x="765" y="115" width="70" height="45" rx="6" ry="6" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="800" y="135" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937" font-weight="bold" text-anchor="middle">节点 B</text>
+  <text x="800" y="150" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">NPU HBM</text>
+  <line x1="762" y1="142" x2="723" y2="142" stroke="#059669" stroke-width="1.5" marker-end="url(#arrow_put)"/>
+  <line x1="723" y1="130" x2="762" y2="130"  stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrow_get)"/>
+
+  <!-- Node C (bottom-left) -->
+  <rect x="435" y="180" width="70" height="45" rx="6" ry="6" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="470" y="200" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937" font-weight="bold" text-anchor="middle">节点 C</text>
+  <text x="470" y="215" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">NPU HBM</text>
+  <line x1="508" y1="195" x2="547" y2="195" stroke="#059669" stroke-width="1.5" marker-end="url(#arrow_put)"/>
+  <line x1="547" y1="207" x2="508" y2="207" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrow_get)"/>
+
+  <!-- Node D (bottom-right) -->
+  <rect x="765" y="180" width="70" height="45" rx="6" ry="6" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="800" y="200" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937" font-weight="bold" text-anchor="middle">节点 D</text>
+  <text x="800" y="215" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280" text-anchor="middle">NPU HBM</text>
+  <line x1="762" y1="207" x2="723" y2="207" stroke="#059669" stroke-width="1.5" marker-end="url(#arrow_put)"/>
+  <line x1="723" y1="195" x2="762" y2="195" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrow_get)"/>
+
+  <!-- Legend -->
+  <line x1="540" y1="258" x2="560" y2="258" stroke="#059669" stroke-width="2" marker-end="url(#arrow_put)"/>
+  <text x="568" y="262" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#059669">put (D2H)</text>
+  <line x1="640" y1="258" x2="660" y2="258" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow_get)"/>
+  <text x="668" y="262" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#2563EB">get (H2D)</text>
+
+  <text x="635" y="278" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#059669" font-weight="bold" text-anchor="middle">✓ 每个节点均可 put 和 get · KV Cache 跨节点复用</text>
+</svg>

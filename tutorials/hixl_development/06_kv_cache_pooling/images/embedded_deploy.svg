@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="300" viewBox="0 0 880 300">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arr_o" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+    <marker id="arr_p" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#7C3AED"/>
+    </marker>
+  </defs>
+  <rect width="880" height="300" fill="#FFFFFF"/>
+
+  <text x="440" y="28" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="16" fill="#1F2937" font-weight="bold" text-anchor="middle">Embedded 模式部署</text>
+
+  <!-- Master -->
+  <rect x="30" y="50" width="160" height="65" rx="10" ry="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="110" y="72" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#D97706" font-weight="bold" text-anchor="middle">Master</text>
+  <text x="110" y="90" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">mooncake_master</text>
+  <text x="110" y="105" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">空间分配 · key 索引</text>
+
+  <line x1="195" y1="82" x2="235" y2="82" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr)"/>
+
+  <!-- Inference process -->
+  <rect x="240" y="50" width="480" height="100" rx="10" ry="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" filter="url(#shadow)"/>
+  <text x="480" y="72" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#2563EB" font-weight="bold" text-anchor="middle">推理进程（全部内嵌）</text>
+
+  <!-- Component chain: Segment | TE → AscendDirect → HIXL → NPU -->
+  <rect x="260" y="85" width="65" height="28" rx="4" ry="4" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="292" y="103" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#D97706" text-anchor="middle">Segment</text>
+
+  <rect x="340" y="85" width="55" height="28" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="367" y="103" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#EA580C" text-anchor="middle">TE</text>
+
+  <line x1="400" y1="99" x2="415" y2="99" stroke="#EA580C" stroke-width="1.5" marker-end="url(#arr_o)"/>
+
+  <rect x="420" y="85" width="75" height="28" rx="4" ry="4" fill="#FFFBEB" stroke="#EA580C" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="457" y="103" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="7" fill="#EA580C" text-anchor="middle">AscendDirect</text>
+
+  <line x1="500" y1="99" x2="515" y2="99" stroke="#EA580C" stroke-width="1.5" marker-end="url(#arr_o)"/>
+
+  <rect x="520" y="85" width="55" height="28" rx="4" ry="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="547" y="103" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#7C3AED" text-anchor="middle">HIXL</text>
+
+  <line x1="580" y1="99" x2="595" y2="99" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr_p)"/>
+
+  <rect x="600" y="85" width="65" height="28" rx="4" ry="4" fill="#FEE2E2" stroke="#DC2626" stroke-width="1"/>
+  <text x="632" y="103" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#DC2626" text-anchor="middle">NPU HBM</text>
+
+  <text x="480" y="130" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF" text-anchor="middle">store.setup(global_segment_size=1GB, protocol="ascend")</text>
+
+  <!-- Notes -->
+  <rect x="740" y="65" width="115" height="55" rx="8" ry="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="797" y="85" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#059669" text-anchor="middle">✓ 最简单</text>
+  <text x="797" y="101" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#DC2626" text-anchor="middle">✗ 内存碎片</text>
+  <text x="797" y="117" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#DC2626" text-anchor="middle">✗ 退出即丢</text>
+
+  <!-- Business flow -->
+  <rect x="240" y="165" width="480" height="120" rx="8" ry="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="480" y="185" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937" font-weight="bold" text-anchor="middle">业务流程（调用 API 后的步骤）</text>
+
+  <text x="255" y="205" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#059669" font-weight="bold">put(key, data):</text>
+  <text x="255" y="220" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">① 查 Master 分配空间 → 返回 Segment 位置</text>
+  <text x="255" y="234" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">② TE.submitTransfer → AscendDirect → HIXL 执行传输</text>
+  <text x="255" y="248" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#6B7280">③ 数据从 NPU 写入 Segment（D2H）</text>
+
+  <text x="255" y="268" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="8" fill="#9CA3AF">get 反向：查 Master → TE 读取 → HIXL → NPU（H2D）</text>
+</svg>

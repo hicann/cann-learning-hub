@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="580" viewBox="0 0 880 580">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow_o" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+    <marker id="arrow_b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow_p" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#7C3AED"/>
+    </marker>
+  </defs>
+  <rect width="880" height="580" fill="#FFFFFF"/>
+  <text x="440" y="35" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="22" fill="#1F2937" font-weight="bold" text-anchor="middle">xPyD 交叉分离拓扑（M:P → N:D）</text>
+
+  <rect x="50" y="65" width="330" height="410" rx="12" ry="12" fill="#DBEAFE" fill-opacity="1.0" stroke="#2563EB" stroke-width="2" filter="url(#shadow)"/>
+  <text x="215" y="92" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#2563EB" font-weight="bold" text-anchor="middle">Prefill 集群（M 个 P 节点）</text>
+
+  <rect x="500" y="65" width="330" height="410" rx="12" ry="12" fill="#EDE9FE" fill-opacity="1.0" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <text x="665" y="92" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="15" fill="#7C3AED" font-weight="bold" text-anchor="middle">Decode 集群（N 个 D 节点）</text>
+
+  <rect x="80" y="110" width="270" height="100" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#60A5FA" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="215" y="133" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#2563EB" font-weight="bold" text-anchor="middle">P1 节点</text>
+  <text x="215" y="153" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">listen_ip_info: 10.10.10.1:26000</text>
+  <rect x="100" y="168" width="230" height="28" rx="5" ry="5" fill="#D1FAE5" fill-opacity="1.0" stroke="#059669" stroke-width="1"/>
+  <text x="215" y="186" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">KV Cache（Server 端导出）</text>
+
+  <rect x="80" y="225" width="270" height="100" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#60A5FA" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="215" y="248" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#2563EB" font-weight="bold" text-anchor="middle">P2 节点</text>
+  <text x="215" y="268" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">listen_ip_info: 10.10.10.2:26000</text>
+  <rect x="100" y="283" width="230" height="28" rx="5" ry="5" fill="#D1FAE5" fill-opacity="1.0" stroke="#059669" stroke-width="1"/>
+  <text x="215" y="301" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">KV Cache（Server 端导出）</text>
+
+  <rect x="80" y="340" width="270" height="100" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#60A5FA" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="215" y="363" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#2563EB" font-weight="bold" text-anchor="middle">P3 节点</text>
+  <text x="215" y="383" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">listen_ip_info: 10.10.10.3:26000</text>
+  <rect x="100" y="398" width="230" height="28" rx="5" ry="5" fill="#D1FAE5" fill-opacity="1.0" stroke="#059669" stroke-width="1"/>
+  <text x="215" y="416" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">KV Cache（Server 端导出）</text>
+
+  <rect x="530" y="170" width="270" height="100" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#A78BFA" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="665" y="193" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#7C3AED" font-weight="bold" text-anchor="middle">D1 节点</text>
+  <text x="665" y="213" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">link_clusters → P1, P2, P3</text>
+  <rect x="550" y="228" width="230" height="28" rx="5" ry="5" fill="#FED7AA" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="665" y="246" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">pull_blocks（按需拉取）</text>
+
+  <rect x="530" y="295" width="270" height="100" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#A78BFA" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="665" y="318" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#7C3AED" font-weight="bold" text-anchor="middle">D2 节点</text>
+  <text x="665" y="338" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">link_clusters → P1, P2, P3</text>
+  <rect x="550" y="353" width="230" height="28" rx="5" ry="5" fill="#FED7AA" fill-opacity="1.0" stroke="#EA580C" stroke-width="1"/>
+  <text x="665" y="371" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">pull_blocks（按需拉取）</text>
+
+  <line x1="530" y1="220" x2="350" y2="160" stroke="#EA580C" stroke-width="1.8" marker-end="url(#arrow_o)"/>
+  <line x1="530" y1="220" x2="350" y2="275" stroke="#EA580C" stroke-width="1.8" marker-end="url(#arrow_o)"/>
+  <line x1="530" y1="220" x2="350" y2="390" stroke="#EA580C" stroke-width="1.8" marker-end="url(#arrow_o)"/>
+  <line x1="530" y1="345" x2="350" y2="160" stroke="#EA580C" stroke-width="1.8" marker-end="url(#arrow_o)"/>
+  <line x1="530" y1="345" x2="350" y2="275" stroke="#EA580C" stroke-width="1.8" marker-end="url(#arrow_o)"/>
+  <line x1="530" y1="345" x2="350" y2="390" stroke="#EA580C" stroke-width="1.8" marker-end="url(#arrow_o)"/>
+
+  <text x="440" y="135" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">KV Cache 传输（pull_blocks）</text>
+
+  <rect x="50" y="495" width="780" height="65" rx="8" ry="8" fill="#F3F4F6" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="440" y="517" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">单向链接 + pull_blocks 模式</text>
+  <text x="440" y="537" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">Prefill 端仅 listen 监听 · Decode 端主动 link_clusters 建链 · 每个 D 可从任意 P 拉取不同请求的 KV Cache</text>
+  <text x="440" y="553" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">支持 2P1D / 4P1D / 8P1D / 18P1D 等灵活 P:D 比例 · 单点故障可路由到其他 P 节点</text>
+</svg>

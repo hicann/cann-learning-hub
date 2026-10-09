@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow_gray" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow_blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow_green" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#059669"/>
+    </marker>
+  </defs>
+  <rect width="900" height="520" fill="#FFFFFF"/>
+
+  <text x="450" y="28" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="18" fill="#1F2937" font-weight="bold" text-anchor="middle">Mooncake Store 架构与 put/get 流程</text>
+
+  <!-- Master box -->
+  <rect x="250" y="50" width="400" height="80" rx="10" ry="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="450" y="75" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="14" fill="#D97706" font-weight="bold" text-anchor="middle">Master（元数据管理）</text>
+  <rect x="270" y="85" width="160" height="38" rx="6" ry="6" fill="#FFFFFF" stroke="#D97706" stroke-width="1"/>
+  <text x="350" y="100" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#92400E" font-weight="bold" text-anchor="middle">Segment 注册表</text>
+  <text x="350" y="115" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">NodeA:4GB NodeB:4GB ...</text>
+  <rect x="470" y="85" width="160" height="38" rx="6" ry="6" fill="#FFFFFF" stroke="#D97706" stroke-width="1"/>
+  <text x="550" y="100" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#92400E" font-weight="bold" text-anchor="middle">Key 索引</text>
+  <text x="550" y="115" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">key1→NodeB:0x100 ...</text>
+
+  <!-- Node A -->
+  <rect x="40" y="180" width="220" height="100" rx="10" ry="10" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="150" y="202" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">Node A</text>
+  <rect x="60" y="212" width="180" height="55" rx="6" ry="6" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="150" y="232" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">Segment A (4GB)</text>
+  <text x="150" y="250" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">Host DRAM</text>
+
+  <!-- Node B -->
+  <rect x="340" y="180" width="220" height="100" rx="10" ry="10" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="450" y="202" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">Node B</text>
+  <rect x="360" y="212" width="180" height="55" rx="6" ry="6" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1.5"/>
+  <text x="450" y="232" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">Segment B (4GB)</text>
+  <text x="450" y="250" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">Host DRAM</text>
+
+  <!-- Node C -->
+  <rect x="640" y="180" width="220" height="100" rx="10" ry="10" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="750" y="202" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">Node C</text>
+  <rect x="660" y="212" width="180" height="55" rx="6" ry="6" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="750" y="232" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold" text-anchor="middle">Segment C (4GB)</text>
+  <text x="750" y="250" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">Host DRAM</text>
+
+  <!-- Arrows from Master to nodes -->
+  <line x1="350" y1="130" x2="150" y2="178" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="450" y1="130" x2="450" y2="178" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="550" y1="130" x2="750" y2="178" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- put flow -->
+  <rect x="30" y="310" width="410" height="195" rx="10" ry="10" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="235" y="332" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#2563EB" font-weight="bold" text-anchor="middle">put("key1", data) 流程（D2H）</text>
+
+  <rect x="50" y="343" width="370" height="32" rx="4" ry="4" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="60" y="363" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937">① Client → Master: "存 key1, 1GB"</text>
+
+  <rect x="50" y="380" width="370" height="32" rx="4" ry="4" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="60" y="400" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937">② Master: 分配 Segment B 空间, 记录 key1→(B,0x100)</text>
+
+  <rect x="50" y="417" width="370" height="32" rx="4" ry="4" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="60" y="437" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937">③ Master → Client: 返回目标地址 NodeB:0x100</text>
+
+  <rect x="50" y="454" width="370" height="32" rx="4" ry="4" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="60" y="474" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937">④ Client 调 TE: NPU ──D2H──→ NodeB Segment</text>
+
+  <!-- get flow -->
+  <rect x="460" y="310" width="410" height="195" rx="10" ry="10" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.5"/>
+  <text x="665" y="332" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#059669" font-weight="bold" text-anchor="middle">get("key1") 流程（H2D）</text>
+
+  <rect x="480" y="343" width="370" height="32" rx="4" ry="4" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="490" y="363" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937">① Client → Master: "key1 在哪？"</text>
+
+  <rect x="480" y="380" width="370" height="32" rx="4" ry="4" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="490" y="400" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937">② Master: 查索引 → key1 在 NodeB:0x100</text>
+
+  <rect x="480" y="417" width="370" height="32" rx="4" ry="4" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="490" y="437" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937">③ Master → Client: 返回地址 NodeB:0x100</text>
+
+  <rect x="480" y="454" width="370" height="32" rx="4" ry="4" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="490" y="474" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#1F2937">④ Client 调 TE: NodeB Segment ──H2D──→ NPU</text>
+
+  <!-- D2H label -->
+  <text x="400" y="300" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#2563EB" font-weight="bold" text-anchor="middle">put 写入 ↓ D2H</text>
+  <!-- H2D label -->
+  <text x="500" y="300" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="10" fill="#059669" font-weight="bold" text-anchor="middle">↑ H2D get 读出</text>
+</svg>

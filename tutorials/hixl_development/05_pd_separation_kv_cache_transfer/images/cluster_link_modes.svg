@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="580" viewBox="0 0 880 580">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow_b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow_p" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#7C3AED"/>
+    </marker>
+    <marker id="arrow_o" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+  </defs>
+  <rect width="880" height="580" fill="#FFFFFF"/>
+  <text x="440" y="35" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="22" fill="#1F2937" font-weight="bold" text-anchor="middle">集群链接模式对比</text>
+
+  <rect x="30" y="60" width="400" height="440" rx="12" ry="12" fill="#DBEAFE" fill-opacity="0.4" stroke="#2563EB" stroke-width="2" filter="url(#shadow)"/>
+  <text x="230" y="88" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="16" fill="#2563EB" font-weight="bold" text-anchor="middle">双向链接（Bidirectional Link）</text>
+
+  <rect x="470" y="60" width="380" height="440" rx="12" ry="12" fill="#EDE9FE" fill-opacity="0.4" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <text x="660" y="88" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="16" fill="#7C3AED" font-weight="bold" text-anchor="middle">单向链接（Unidirectional Link）</text>
+
+  <rect x="55" y="110" width="150" height="95" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="130" y="132" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#2563EB" font-weight="bold" text-anchor="middle">Prefill 节点</text>
+  <text x="130" y="152" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">配置 IP 列表</text>
+  <text x="130" y="168" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">datadist.link()</text>
+  <text x="130" y="188" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">主动参与建链</text>
+
+  <rect x="255" y="110" width="150" height="95" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="330" y="132" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#7C3AED" font-weight="bold" text-anchor="middle">Decode 节点</text>
+  <text x="330" y="152" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">配置 IP 列表</text>
+  <text x="330" y="168" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">datadist.link()</text>
+  <text x="330" y="188" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">主动参与建链</text>
+
+  <line x1="205" y1="145" x2="255" y2="145" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow_b)"/>
+  <line x1="255" y1="170" x2="205" y2="170" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrow_p)"/>
+  <text x="230" y="138" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">link</text>
+
+  <rect x="120" y="225" width="220" height="40" rx="6" ry="6" fill="#FEF3C7" fill-opacity="1.0" stroke="#D97706" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="230" y="243" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#D97706" font-weight="bold" text-anchor="middle">共享 rank_table.json</text>
+  <text x="230" y="258" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">双方需配置 cluster_rank_info</text>
+
+  <rect x="120" y="280" width="220" height="34" rx="6" ry="6" fill="#F3F4F6" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="230" y="301" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">query_register_mem_status 轮询</text>
+
+  <rect x="55" y="335" width="350" height="150" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="70" y="355" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" font-weight="bold">特点</text>
+  <text x="70" y="375" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280">• 双方都发起 link，需 rank_table</text>
+  <text x="70" y="393" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280">• P 和 D 互感知内存注册状态</text>
+  <text x="70" y="411" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280">• 适用：1P1D 固定配对拓扑</text>
+  <text x="70" y="429" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280">• 配置较复杂，灵活性低</text>
+  <text x="70" y="455" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold">典型用法：pull_cache_sample.py</text>
+  <text x="70" y="472" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#2563EB" font-weight="bold">双向连续 Cache Pull</text>
+
+  <rect x="495" y="110" width="150" height="95" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#2563EB" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="570" y="132" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#2563EB" font-weight="bold" text-anchor="middle">Prefill 节点</text>
+  <text x="570" y="152" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">listen_ip_info 监听</text>
+  <text x="570" y="168" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">（被动等待）</text>
+  <text x="570" y="188" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">无需调用 link</text>
+
+  <rect x="695" y="110" width="130" height="95" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="760" y="132" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#7C3AED" font-weight="bold" text-anchor="middle">Decode 节点</text>
+  <text x="760" y="152" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">LLMClusterInfo</text>
+  <text x="760" y="168" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">link_clusters()</text>
+  <text x="760" y="188" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">主动发起建链</text>
+
+  <line x1="695" y1="157" x2="645" y2="157" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrow_p)"/>
+  <text x="670" y="150" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" text-anchor="middle">建链</text>
+
+  <rect x="560" y="225" width="220" height="40" rx="6" ry="6" fill="#D1FAE5" fill-opacity="1.0" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="670" y="243" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">仅 Decode 端配置</text>
+  <text x="670" y="258" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">append_local/remote_ip_info</text>
+
+  <rect x="560" y="280" width="220" height="34" rx="6" ry="6" fill="#F3F4F6" fill-opacity="1.0" stroke="#6B7280" stroke-width="1"/>
+  <text x="670" y="301" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">无需查询内存状态</text>
+
+  <rect x="495" y="335" width="330" height="150" rx="8" ry="8" fill="#FFFFFF" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="510" y="355" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" font-weight="bold">特点</text>
+  <text x="510" y="375" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280">• 仅 Decode 端发起 link_clusters</text>
+  <text x="510" y="393" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280">• Prefill 端仅 listen，被动等待</text>
+  <text x="510" y="411" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280">• 适用：xPyD 灵活多对多拓扑</text>
+  <text x="510" y="429" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280">• 配置简单，动态扩展方便</text>
+  <text x="510" y="455" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" font-weight="bold">典型用法：pull_blocks_sample.py</text>
+  <text x="510" y="472" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#7C3AED" font-weight="bold">xPyD 分块 Cache Pull</text>
+
+  <rect x="30" y="520" width="820" height="40" rx="8" ry="8" fill="#F3F4F6" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="440" y="545" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#1F2937" font-weight="bold" text-anchor="middle">选型建议：固定 1P1D 用双向链接 · xPyD 多对多场景用单向链接</text>
+</svg>

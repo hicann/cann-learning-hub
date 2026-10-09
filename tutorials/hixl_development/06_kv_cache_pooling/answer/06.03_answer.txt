@@ -1,0 +1,17 @@
+1. √
+解析：Transfer Engine 通过 ascend_direct_transport 适配器调用 HIXL/ADXL。
+
+2. ×
+解析：Mooncake Store 内存池基于 Host DRAM，不是 NPU HBM。
+
+3. B
+解析：global_segment_size=0 表示不贡献内存到全局池，仅作为纯客户端。
+
+4. B
+解析：batch_put_from 将数据从 NPU 显存写入 Host DRAM 内存池（D2H）。
+
+5. A、B、C
+解析：Master、Store、Transfer Engine 是核心组件，没有独立的 Scheduler。
+
+6. A、B、C
+解析：Embedded、Standalone、Dummy/Real Client 三种模式；主从复制不是 Mooncake 的模式。

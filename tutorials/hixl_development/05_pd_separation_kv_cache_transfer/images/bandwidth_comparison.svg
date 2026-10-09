@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="440" viewBox="0 0 880 440">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadow_s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+  <rect width="880" height="440" fill="#FFFFFF"/>
+  <text x="440" y="35" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="22" fill="#1F2937" font-weight="bold" text-anchor="middle">PD 分离传输链路带宽对比</text>
+  <text x="440" y="58" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#6B7280" text-anchor="middle">以 40GB KV Cache 传输为例（柱长代表带宽，数值越高越好）</text>
+
+  <!-- Axis -->
+  <line x1="230" y1="80" x2="230" y2="370" stroke="#D1D5DB" stroke-width="1.5"/>
+  <line x1="230" y1="370" x2="830" y2="370" stroke="#D1D5DB" stroke-width="1.5"/>
+
+  <!-- Scale ticks -->
+  <text x="230" y="388" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#9CA3AF" text-anchor="middle">0</text>
+  <text x="430" y="388" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#9CA3AF" text-anchor="middle">40</text>
+  <text x="530" y="388" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#9CA3AF" text-anchor="middle">60</text>
+  <text x="630" y="388" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#9CA3AF" text-anchor="middle">80</text>
+  <text x="730" y="388" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#9CA3AF" text-anchor="middle">100</text>
+  <text x="830" y="388" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#9CA3AF" text-anchor="middle">120 GB/s</text>
+  <line x1="430" y1="368" x2="430" y2="372" stroke="#D1D5DB" stroke-width="1"/>
+  <line x1="530" y1="368" x2="530" y2="372" stroke="#D1D5DB" stroke-width="1"/>
+  <line x1="630" y1="368" x2="630" y2="372" stroke="#D1D5DB" stroke-width="1"/>
+  <line x1="730" y1="368" x2="730" y2="372" stroke="#D1D5DB" stroke-width="1"/>
+
+  <!-- Bar 1: 以太网 1.25 GB/s -->
+  <text x="220" y="103" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#1F2937" font-weight="bold" text-anchor="end">以太网（10Gbps）</text>
+  <rect x="230" y="88" width="24" height="32" rx="4" ry="4" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="264" y="108" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#DC2626" font-weight="bold" text-anchor="start">1.25 GB/s</text>
+  <rect x="420" y="93" width="120" height="22" rx="5" ry="5" fill="#FEE2E2" stroke="#DC2626" stroke-width="1"/>
+  <text x="480" y="108" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#DC2626" font-weight="bold" text-anchor="middle">40GB 需 32s ✕</text>
+
+  <!-- Bar 2: RoCE/RDMA 12.5 GB/s -->
+  <text x="220" y="163" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#1F2937" font-weight="bold" text-anchor="end">RoCE / RDMA（100Gbps）</text>
+  <rect x="230" y="148" width="240" height="32" rx="4" ry="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="478" y="168" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#EA580C" font-weight="bold" text-anchor="start">12.5 GB/s</text>
+  <rect x="540" y="153" width="120" height="22" rx="5" ry="5" fill="#FFEDD5" stroke="#EA580C" stroke-width="1"/>
+  <text x="600" y="168" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#EA580C" font-weight="bold" text-anchor="middle">40GB 需 3.2s</text>
+
+  <!-- Bar 3: 昇腾 RDMA (A3) 22 GB/s -->
+  <text x="220" y="223" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#1F2937" font-weight="bold" text-anchor="end">昇腾 RDMA（A3）</text>
+  <rect x="230" y="208" width="423" height="32" rx="4" ry="4" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="661" y="228" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#D97706" font-weight="bold" text-anchor="start">22 GB/s</text>
+  <rect x="700" y="213" width="120" height="22" rx="5" ry="5" fill="#FEFCE8" stroke="#D97706" stroke-width="1"/>
+  <text x="760" y="228" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#D97706" font-weight="bold" text-anchor="middle">40GB 需 1.8s</text>
+
+  <!-- Bar 4: 昇腾 HCCS D2D 119 GB/s -->
+  <text x="220" y="283" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="13" fill="#1F2937" font-weight="bold" text-anchor="end">昇腾 HCCS D2D</text>
+  <rect x="230" y="268" width="600" height="32" rx="4" ry="4" fill="#D1FAE5" stroke="#059669" stroke-width="1.5" filter="url(#shadow_s)"/>
+  <text x="838" y="288" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="12" fill="#059669" font-weight="bold" text-anchor="end">119 GB/s</text>
+  <text x="530" y="288" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#059669" font-weight="bold" text-anchor="middle">40GB 仅需 0.34s ✓</text>
+
+  <!-- Legend -->
+  <rect x="50" y="335" width="780" height="42" rx="8" ry="8" fill="#F3F4F6" fill-opacity="1.0" stroke="#D1D5DB" stroke-width="1" filter="url(#shadow_s)"/>
+  <rect x="70" y="350" width="14" height="14" rx="3" ry="3" fill="#FEE2E2" stroke="#DC2626" stroke-width="1"/>
+  <text x="92" y="361" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="start">不可行</text>
+  <rect x="180" y="350" width="14" height="14" rx="3" ry="3" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="202" y="361" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="start">跨机可接受</text>
+  <rect x="320" y="350" width="14" height="14" rx="3" ry="3" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="342" y="361" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="start">跨机良好</text>
+  <rect x="460" y="350" width="14" height="14" rx="3" ry="3" fill="#D1FAE5" stroke="#059669" stroke-width="1"/>
+  <text x="482" y="361" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#1F2937" text-anchor="start">机内最优</text>
+  <text x="560" y="361" font-family="'Noto Sans CJK SC', 'Noto Sans', sans-serif" font-size="11" fill="#6B7280" text-anchor="start">HCCS 带宽是以太网的 95 倍，是 RoCE 的 9.5 倍</text>
+</svg>
