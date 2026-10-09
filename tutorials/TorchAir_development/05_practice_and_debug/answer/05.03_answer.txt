@@ -1,0 +1,72 @@
+﻿======================================================================
+5.3 算子 Data-Dump 功能 章节练习答案
+======================================================================
+
+1. （单选题）Data-Dump 功能的主要适用场景是？
+   答案：C
+   解析：当模型输出出现 NaN、Inf 或局部精度偏差时，需要逐层检查算子的
+         中间数据来定位问题，Data-Dump 用于在 aclgraph 模式下整图执行
+         时保存图的输入和每个算子的输出数据。它不能提升性能、减少
+         显存，也不是多流死锁的检测手段。
+
+2. （单选题）`data_dump_stage` 取值为 `original` 时，下列说法正确的是？
+   答案：B
+   解析：original 表示 dump 最原始的、未经过 npugraph_ex 优化的 FX 图，
+         注意开启后通过 eager mode 执行，不进入 aclgraph 模式；
+         optimized（默认值）才是 dump 经过 npugraph_ex 优化后的 FX 图，
+         两者产物并不相同。
+
+3. （单选题）开启 SuperKernel 融合优化后，关于 `dump_tensor_data` 配置的说法正确的是？
+   答案：D
+   解析：使用约束明确说明：开启 SuperKernel 融合优化后，dump_tensor_
+         data 配置将不再生效，因此该组合无法完成整图算子数据 dump。
+
+4. （单选题）关于 `data_dump_dir` 的说法，正确的是？
+   答案：A
+   解析：data_dump_dir 默认值为当前执行路径，支持绝对路径或相对路径
+         （相对执行命令行时的当前路径），且该路径需要确实存在、运行
+         用户具有读写权限；目录不会自动递归创建，也不必须配置为
+         ./dump_output。
+
+5. （单选题）产物文件名 `add_device_0_0.pt` 中，`device` 后第一个数字的含义是？
+   答案：B
+   解析：文件名中 device 后的第一个数字表示设备序号，第二个数字表示
+         计数标识，因此 add_device_0_0.pt 表示 0 号设备上的算子输出
+         产物。
+
+6. （单选题）若只需要观察特定算子的输入或输出，推荐使用哪种方式？
+   答案：C
+   解析：场景二介绍：如果只需要观察特定算子的输入或输出，可以使用
+         torch_npu.save_npugraph_tensor 接口，将指定 tensor 保存到 pt
+         或 bin 文件中。dump_tensor_data 适用于一次性 Dump 整图所有
+         算子的场景。
+
+7. （多选题）关于 Data-Dump 功能的开销与使用建议，正确的说法有哪些？
+   答案：BCD
+   解析：应选择 B（会带来额外的 I/O 和存储开销）、C（应使用小规模输入
+         并限定复现次数）、D（定位完成后应及时关闭 dump 开关）。A 错误：
+         Data-Dump 并非零开销功能，开启后会带来额外 I/O 和存储开销。
+
+8. （多选题）关于整图算子 Dump 的产物文件命名与用途，正确的说法有哪些？
+   答案：ABC
+   解析：应选择 A（arg0_1_device_0_0.pt 表示图的输入）、B（以 getitem
+         开头的文件表示多输出算子的输出）、C（产物命名与 FX 图上的
+         节点名称一一对应）。D 错误：产物既可以通过 torch.load 查看，
+         也可以使用 Netron 软件查看。
+
+9. （多选题）关于 torch_npu.save_npugraph_tensor 接口，正确的说法有哪些？
+   答案：ABCD
+   解析：该接口可将指定 tensor 数据保存到 pt 或 bin 文件（A），提供
+         类似原生 print 特性且不影响 aclgraph replay（B），允许将图内
+         计算节点的 tensor 数据、数据类型、shape 信息保存到指定文件；
+         使用后会使 SuperKernel 融合优化断开（C），若要避免此问题，
+         可将 SuperKernel 优化选项 task_breaker_bypass 配置为 1（D），
+         四个选项均正确。
+
+10. （多选题）使用 Data-Dump 产物进行精度问题定位的合理做法有哪些？
+    答案：ABC
+    解析：应选择 A（与 Eager 输出做逐层误差比对）、B（使用 torch.load
+          读取 .pt 产物数据）、C（对比 original 与 optimized 两个阶段
+          的 dump 数据，锁定优化引入差异的环节）。D 错误：开启
+          SuperKernel 融合优化后 dump_tensor_data 将不再生效，无法
+          提升 dump 效率。

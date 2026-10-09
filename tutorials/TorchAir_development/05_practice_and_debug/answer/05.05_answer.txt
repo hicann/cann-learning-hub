@@ -1,0 +1,70 @@
+﻿======================================================================
+5.5 常见问题定位方法 章节练习答案
+======================================================================
+
+1. （单选题）将 Plog 日志级别改为 DEBUG，应设置哪个环境变量？
+   答案：B
+   解析：ASCEND_GLOBAL_LOG_LEVEL 用于设置日志级别，取 0 表示 DEBUG
+         级别；ASCEND_SLOG_PRINT_TO_STDOUT 是开启打屏，
+         ASCEND_HOST_LOG_FILE_NUM 是提高日志文件数量上限，
+         TORCH_COMPILE_DEBUG 是图编译 Debug 信息保存开关。
+
+2. （单选题）Plog 日志的默认存放路径是？
+   答案：D
+   解析：Plog 日志默认存放在 /root/ascend/log 路径下；./dump_output
+         是 Data-Dump 产物目录，./torch_compile_debug 是图编译 Debug
+         产物目录。
+
+3. （单选题）开启 Plog 日志打屏（输出到标准输出），应设置？
+   答案：A
+   解析：ASCEND_SLOG_PRINT_TO_STDOUT=1 可开启日志打屏；
+         ASCEND_GLOBAL_LOG_LEVEL=1 对应 INFO 级别而非打屏开关，
+         其余两个变量与打屏无关。
+
+4. （单选题）提高 Plog 日志文件数量上限，应设置？
+   答案：C
+   解析：ASCEND_HOST_LOG_FILE_NUM 用于设置日志文件数量上限，示例中
+         设为 1000；其他变量均无此作用。
+
+5. （单选题）开启 TORCH_COMPILE_DEBUG 后，可以获取到哪些内容？
+   答案：B
+   解析：开启后将 dump 出 npugraph_ex 每个图优化 pass 修改后的 FX 图，
+         以及 Torch Dynamo 组件和 npugraph_ex 的 debug 日志；本功能
+         不涉及模型权重、数据集或性能指标。
+
+6. （单选题）关于 TORCH_COMPILE_DEBUG 的设置方式，正确的是？
+   答案：D
+   解析：既可以在终端 export TORCH_COMPILE_DEBUG=1 后运行脚本，也可
+         以在脚本中通过 os.environ 设置，但脚本内设置必须在导入
+         torchair 和 logger 之前完成；运行结束后设置无效，且该变量
+         并非仅支持终端 export 方式。
+
+7. （多选题）关于 Plog 日志的环境变量配置，正确的说法有哪些？
+   答案：ABC
+   解析：应选择 A（ASCEND_SLOG_PRINT_TO_STDOUT=1 可开启日志打屏）、
+         B（ASCEND_GLOBAL_LOG_LEVEL=0 表示 DEBUG 级别）、C
+         （ASCEND_HOST_LOG_FILE_NUM 可提高日志文件数量上限）。D 错误：
+         这些环境变量既支持终端 export，也可在脚本中设置。
+
+8. （多选题）开启 TORCH_COMPILE_DEBUG 的方式包括哪些？
+   答案：AB
+   解析：应选择 A（终端执行 export TORCH_COMPILE_DEBUG=1）、B（脚本中
+         通过 os.environ["TORCH_COMPILE_DEBUG"] = "1" 设置）。C 错误：
+         fullgraph 是 torch.compile 的图完整性参数；D 错误：
+         data_dump_stage 是算子 Data-Dump 的配置项。
+
+9. （多选题）进行 npugraph_ex 问题定界定位时，合理的做法有哪些？
+   答案：ABC
+   解析：应选择 A（结合 Plog 日志与 TORCH_COMPILE_DEBUG 产物综合
+         分析）、B（保留完整报错信息与版本信息，便于定界和求助）、
+         C（定位完成后关闭 DEBUG 级日志等调试开关，避免开销）。D 错误：
+         同时修改多个环境变量会引入多个变化，无法确定问题由哪个
+         变量引入，应逐项开关验证。
+
+10. （多选题）下列环境变量与其作用的对应关系，正确的有哪些？
+    答案：ABCD
+    解析：ASCEND_SLOG_PRINT_TO_STDOUT 用于开启日志打屏（A），
+          ASCEND_GLOBAL_LOG_LEVEL 用于设置日志级别（B），
+          ASCEND_HOST_LOG_FILE_NUM 用于设置日志文件数量上限（C），
+          TORCH_COMPILE_DEBUG 用于开启图编译 Debug 信息收集（D），
+          四个选项的对应关系均正确。
