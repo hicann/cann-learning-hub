@@ -1,17 +1,4 @@
-"""使用 MindSpore ImageFolderDataset 读取整理后的 GTSRB 数据集。
 
-本文件依赖 `scripts/prepare_gtsrb.py` 先把数据整理成下面的目录结构：
-
-src/data/train/00000/*.ppm
-src/data/train/00001/*.ppm
-...
-src/data/test/00000/*.ppm
-src/data/test/00001/*.ppm
-...
-
-只要目录已经整理成“每个类别一个子目录”的形式，
-MindSpore 的 ImageFolderDataset 就可以自动把子目录名当作类别读取。
-"""
 
 from __future__ import annotations
 
@@ -132,7 +119,6 @@ def validate_prepared_split(split_dir: Path) -> tuple[list[Path], int]:
     if not split_dir.exists():
         raise FileNotFoundError(
             f"数据目录不存在：{split_dir}\n"
-            "请先运行 python scripts\\prepare_gtsrb.py 整理 GTSRB 官方数据集。"
         )
 
     if not split_dir.is_dir():
@@ -163,7 +149,6 @@ def validate_prepared_split(split_dir: Path) -> tuple[list[Path], int]:
     if total_image_count == 0:
         raise ValueError(
             f"目录存在类别子文件夹，但里面没有图片：{split_dir}\n"
-            "请先检查 prepare_gtsrb.py 是否已成功整理数据。"
         )
 
     return class_dirs, total_image_count
