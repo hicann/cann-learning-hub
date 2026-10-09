@@ -25,6 +25,10 @@
 | [CrossEntropyLoss与Zloss融合算子开发](./operator/cross_entropy_zloss_fusion/CrossEntropyLoss与Zloss融合算子开发.md) | CrossEntropyLoss和Zloss融合算子通过损失函数融合消除串行小算子开销，解决训练尾部瓶颈，在 MoE 场景中实现整网端到端 5.2% 效率提升。 | 2025.11 |
 | [算子Kernel直调编程](./operator/kernel_direct_call_programming/算子Kernel直调编程.md) | 通过 Kernel 直调、异构混合编程和模板化能力，简化算子编译部署流程，降低开发实现门槛。 | 2025.11 |
 | [TilingKey模板化编程](./operator/tilingkey_template_programming/TilingKey模板化编程.md) | 借助 TilingKey 模板化编程统一多场景算子开发与管理，同时减少 icache miss 和 scalar 开销，提升调用性能。 | 2025.11 |
+| [Ascend C 矩阵乘接口选型指南-从场景到API的快速决策](./operator/ascend_c_mmad_selection_guide/Ascend%20C矩阵乘接口选型指南-从场景到API的快速决策.md) | 对比矩阵乘各类接口的适用场景，给出从场景到 API 的快速选型建议。 | 2025.10 |
+| [算子开发的守护神-深度解析msSanitizer异常检测工具](./operator/ms_sanitizer/算子开发的守护神-深度解析msSanitizer异常检测工具.md) | 介绍 msSanitizer 异常检测工具，定位单算子开发中的内存访问、数据竞争与同步问题。 | 2025.10 |
+| [深入理解NDDMA多维数据搬运-昇腾算子开发性能优化利器](./operator/nddma_introduction/深入理解NDDMA多维数据搬运-昇腾算子开发性能优化利器.md) | 介绍 NDDMA 多维数据搬运，覆盖 Padding、Transpose、Broadcast、Slice 等变换。 | 2025.10 |
+| [从一个向量加法出发，深入理解Regbase编程范式](./operator/regbase_vec_add/从一个向量加法出发，深入理解Regbase编程范式.md) | 从一个向量加法出发，讲解 Regbase 编程范式与寄存器级性能优化。 | 2025.10 |
 
 
 <br>
