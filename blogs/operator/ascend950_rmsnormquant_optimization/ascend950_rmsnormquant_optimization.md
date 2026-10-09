@@ -546,7 +546,8 @@ $y_1 = y_0 \cdot \left(\frac{3}{2} - \frac{\text{var}}{2} \cdot y_0^2\right)$
 ```
 Muls(t, var, float(-0.5), pregLoop);  // t = -0.5 * var
 Mul(t, t, y, pregLoop);               // t = -0.5 * var * y₀
-Mula(t1, t, y, pregLoop);             // t1 = 1.5 + t * y₀
+Duplicate(t1, 1.5);                   // ★ t1 必须预置 1.5，因为下一步是累加语义 Mula
+Mula(t1, t, y, pregLoop);             // t1 = 1.5 + t * y₀ = 1.5 - 0.5 * var * y₀²
 Mul(rstd, y, t1, pregLoop);           // rstd = y₀ * (1.5 - 0.5 * var * y₀²)
 
 ```
@@ -556,11 +557,12 @@ Mul(rstd, y, t1, pregLoop);           // rstd = y₀ * (1.5 - 0.5 * var * y₀²
 第二轮（残差形式 Newton 修正）： 令 $e = 1 - \text{var} \cdot y_1^2$，修正步为 $y_2 = y_1 \cdot \left(1 + \frac{e}{2}\right)$——该形式与 Newton-Raphson 公式代数等价，但更便于在寄存器上直接操作。
 
 ```
+Duplicate(s, 1.0);                      // ★ s 必须预置 1，因为后续是累加语义 Mula
 Muls(t3, var, float(-1.0), pregLoop);   // t3 = -var
-Mula(s, t3, r, pregLoop);               // 残差中间项
+Mula(s, t3, r, pregLoop);               // s = 1 - var*(1/var) = 0（此处 r 仍为 1/var）
 Muls(t4, rstd, float(-1.0), pregLoop);  // t4 = -rstd
 Mula(r, t4, rstd, pregLoop);            // r = (1/var) - rstd²
-Mula(s, var, r, pregLoop);              // s = e（残差）
+Mula(s, var, r, pregLoop);              // s = 0 + var*((1/var)-rstd²) = 1 - var*rstd² = e（残差）
 Mul(s, s, rstd, pregLoop);              // s = e * rstd
 Mula(rstd, s, scalar1, pregLoop);       // rstd += e * rstd * 0.5
 
