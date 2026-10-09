@@ -52,7 +52,7 @@ def draw(img_path, result_path, output_path):
         lines = f.readlines()
 
     for line in lines:
-        parts = line.strip().split()
+        parts = line.strip().rsplit(maxsplit=5)
         if len(parts) < 6:
             continue
         label, conf = parts[0], float(parts[1])
