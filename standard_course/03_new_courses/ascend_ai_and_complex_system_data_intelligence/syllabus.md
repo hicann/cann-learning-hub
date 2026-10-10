@@ -93,7 +93,7 @@
 
 | 周次 | 讲次 | 主题 | 内容要点 | 教材 PPT |
 |------|------|------|---------|---------|
-| 5 | 第 5 讲 | 昇腾 AI 产业生态与 CANN 架构基础 | 产业生态全景；CANN 四层架构；环境搭建与认知 | 2h+2h, [1_AI 基础](./part1_llm_training_and_inference/1_artificial_intelligence_basics.pptx) |
+| 5 | 第 5 讲 | 昇腾 AI 产业生态与 CANN 架构基础 | 产业生态全景；CANN 四层架构；环境搭建与认知 | 2h+2h, [1_AI 基础](../../00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics.pptx) |
 | 6 | 第 6 讲 | ATC 离线模型编译与推理 | ATC 工具使用；模型转换流程；离线推理验证 | 2h+2h, [2_ATC 离线编译与推理](./part1_llm_training_and_inference/2_atc_offline_model_compilation_and_inference.pptx) |
 | 7 | 第 7 讲 | 基于 CANN 如何训练大模型 | 训练基础概念与流程（预训练/SFT/RL）；基础训练方法与实践 | 2h+2h, [3_大模型训练](./part1_llm_training_and_inference/3_llm_special_topic_training_with_cann.pptx) |
 | 8 | 第 8 讲 | 基于 CANN 如何部署和推理大模型 | 部署流程；推理验证；性能基准测试 | 2h+2h, [4_大模型部署与推理](./part1_llm_training_and_inference/4_llm_special_topic_deployment_and_inference_with_cann.pptx) |

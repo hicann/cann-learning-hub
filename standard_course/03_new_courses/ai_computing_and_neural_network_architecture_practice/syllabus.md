@@ -81,7 +81,7 @@
 
 | 周次 | 讲次 | 主题 | 内容要点 | 教材 PPT |
 |------|------|------|---------|---------|
-| 1 | 第 1 讲 | 昇腾 AI 产业生态与 CANN 架构基础 | AI 基础概念概述；CANN 软件栈与架构体系认知；PyTorch NPU 开发快速入门 | 2h+2h, [1_artificial_intelligence_basics.pptx](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/1_artificial_intelligence_basics.pptx) |
+| 1 | 第 1 讲 | 昇腾 AI 产业生态与 CANN 架构基础 | AI 基础概念概述；CANN 软件栈与架构体系认知；PyTorch NPU 开发快速入门 | 2h+2h, [artificial_intelligence_basics.pptx](../../00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics.pptx) |
 | 2 | 第 2 讲 | 基于 CANN 如何训练大模型 | 模型训练基础概念；预训练、有监督微调（SFT）与强化学习（RL）的核心区别；基于 CANN 的大模型基础训练方法与流程 | 2h+2h, [2_llm_training_with_cann.pptx](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/2_llm_training_with_cann.pptx) |
 | 3 | 第 3 讲 | 基于 CANN 如何部署和推理大模型 | 模型推理的基本概念与应用场景；掌握大模型基础部署与推理的实现方法 | 2h+2h, [3_llm_deployment_and_inference_with_cann.pptx](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/3_llm_deployment_and_inference_with_cann.pptx) |
 | 4 | 第 4 讲 | 基于 CANN 的大模型训推优化实践（1）：概述与入图推理优化 | 训推优化全景与方法论；算子入图原理、入图推理优化实践、性能对比 | 2h+2h, [4_1 训推优化概述](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/4_1_llm_inference_optimization_overview_with_cann.pptx)、[4_2 入图推理优化](./part1_introduction_to_ai_computing_and_llm_training_inference_practice_20h/4_2_llm_inference_optimization_via_operator_graph_integration.pptx) |

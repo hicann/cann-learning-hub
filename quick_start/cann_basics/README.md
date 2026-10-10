@@ -61,8 +61,8 @@ print("NPU device count:", torch.npu.device_count())
 
 | 课件 | 时长 | 说明 |
 |------|:----:|------|
-| [artificial_intelligence_basics.pptx](./slides/artificial_intelligence_basics.pptx) | 2h | 完整版授课课件，涵盖人工智能基础、NPU 架构、CANN 软件栈、Hello World 全部课程内容 |
-| [artificial_intelligence_basics_light.pptx](./slides/artificial_intelligence_basics_light.pptx) | 1h | 精简版授课课件，聚焦核心概念，适合 1 课时快速导览或讲座场景 |
+| [artificial_intelligence_basics.pptx](../../standard_course/00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics.pptx) | 2h | 完整版授课课件，涵盖人工智能基础、NPU 架构、CANN 软件栈、Hello World 全部课程内容 |
+| [artificial_intelligence_basics_light.pptx](../../standard_course/00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics_light.pptx) | 1h | 精简版授课课件，聚焦核心概念，适合 1 课时快速导览或讲座场景 |
 
 ## 适用人群
 
@@ -81,9 +81,8 @@ print("NPU device count:", torch.npu.device_count())
 ```text
 cann_basics/
 ├── README.md
-├── slides/       # 授课课件
-│   ├── artificial_intelligence_basics.pptx     # 完整版（2h）
-│   └── artificial_intelligence_basics_light.pptx  # 精简版（1h）
 ├── images/       # 课程图片资源
 └── answer/       # 练习答案与批改脚本
 ```
+
+> 课件统一存放于 `standard_course/00_atomic_courses/02_framework/01_overview/` 原子课程目录，见上方[课件](#课件)表格。

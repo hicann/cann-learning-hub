@@ -78,7 +78,7 @@
 
 | 时段 | 讲次 | 主题 | 内容要点 | 教材PPT |
 |------|------|------|---------|------|
-| **D1 上午** | 第 1 讲 | 昇腾 AI 产业生态与 CANN 架构基础 | 昇腾生态全景；CANN 全栈分层；Atlas 产品线 | 2h, [PPT](./two_weeks_course/1_artificial_intelligence_basics.pptx) |
+| **D1 上午** | 第 1 讲 | 昇腾 AI 产业生态与 CANN 架构基础 | 昇腾生态全景；CANN 全栈分层；Atlas 产品线 | 2h, [PPT](../00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics.pptx) |
 | **D1 下午** | 第 2 讲 | 基于 CANN 如何训练大模型 | SFT/RL 训练概念；torchtitan 训练流程；Qwen3 基线 | 2h, [PPT](./two_weeks_course/02_03_llm_training_with_cann_2h.pptx) |
 | **D2 上午** | 第 3 讲 | 基于 CANN 如何部署和推理大模型 | CANN 推理工具链；ATC 模型转换；基线推理流程 | 2h, [PPT](./two_weeks_course/04_llm_deployment_and_inference_with_cann_2h.pptx) |
 | **D2 下午** | 第 4 讲 | 基于 CANN 的大模型推理优化与最佳实践 | 量化 / 算子融合 / 图模式 / KV Cache；Profiling 定位 | 2h, [PPT](./two_weeks_course/05_llm_training_and_inference_optimization_overview_with_cann_2h.pptx) |

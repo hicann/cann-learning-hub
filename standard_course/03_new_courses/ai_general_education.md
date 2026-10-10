@@ -15,7 +15,7 @@
 | **学时安排** | 3 讲 × 45 分钟 ≈ 2.25 小时（课堂讲授 + 互动 + 课后轻量体验；可每周 1 讲 × 3 周，亦可单次讲座连排） |
 | **授课对象** | 大一新生（全体专业），零基础 |
 | **先修要求** | 无——无需编程、无需高等数学，高中数学与日常 AI 工具使用经验即可 |
-| **配套课件** | 复用 [cann_basics 精简版课件](../../quick_start/cann_basics/slides/artificial_intelligence_basics_light.pptx)（1h 版按三讲切分；需要更多素材可从 [完整版](../../quick_start/cann_basics/slides/artificial_intelligence_basics.pptx) 2h 版裁剪） |
+| **配套课件** | 复用 [cann_basics 精简版课件](../00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics_light.pptx)（1h 版按三讲切分；需要更多素材可从 [完整版](../00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics.pptx) 2h 版裁剪） |
 | **实践平台** | 课后轻量体验：cann-learning-hub 在线 Notebook（浏览器直接运行，无需本地环境与 NPU 硬件） |
 | **结业标准** | 完成 3 讲课堂互动（门票卡 / 竞猜 / 一分钟纸）＋ 至少 1 次课后 Notebook 体验 |
 

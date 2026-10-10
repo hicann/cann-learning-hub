@@ -83,7 +83,7 @@
 
 | 课次 | 单元 | 主题 | 内容要点 | 形式与学时 | 教材PPT |
 |------|------|------|---------|-----------|------|
-| **第 1 次** | 单元 1 | 昇腾 AI 产业生态与 CANN 架构基础 | 昇腾生态全景；CANN 分层架构；NPU/GPU 差异；开发者资源导航 | 1h 理论 + 1h 实践 | [PPT](../01_bootcamp/two_days_course/01_artificial_intelligence_basics_light.pptx) |
+| **第 1 次** | 单元 1 | 昇腾 AI 产业生态与 CANN 架构基础 | 昇腾生态全景；CANN 分层架构；NPU/GPU 差异；开发者资源导航 | 1h 理论 + 1h 实践 | [PPT](../00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics_light.pptx) |
 | **第 1 次** | 单元 2 | 基于 CANN 如何部署和推理大模型 | CANN 推理工具链；ATC 模型转换；基线推理流程 | 1h 理论 + 1h 实践 | [PPT](../01_bootcamp/two_days_course/02_llm_deployment_and_inference_with_cann_1h.pptx) |
 | **第 2 次** | 单元 3 | 基于 CANN 的大模型推理优化与最佳实践（理论） | 量化 / 算子融合 / 图模式 / KV Cache；Profiling 瓶颈定位 | 2h 理论 | [PPT](../01_bootcamp/two_days_course/03_llm_training_and_inference_optimization_overview_with_cann_2h.pptx) |
 | **第 2 次** | 单元 4 | 基于 CANN 的大模型推理优化与最佳实践（实践） | Profiling 采集与分析；量化 / 融合 / 图模式等优化手段 A/B 验证 | 2h 实践 | 复用单元 3 讲义（无新增 PPT） |
