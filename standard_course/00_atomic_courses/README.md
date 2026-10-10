@@ -2,7 +2,7 @@
 
 > **技术栈四层 × 难度三级 × 原子粒度**，共 **135 门**，每门可单独支撑一节课（45–90 分钟）。
 >
-> 本目录不设课程级子目录——全部原子课程大纲汇总于本 README；单课深化样板见各章节详情。课件素材按 [directory.md](./directory.md) 四层结构落位，现已有 [04_ops_programming/01_ascendc/](./04_ops_programming/01_ascendc/)（Ascend C 双路线 PPT，自 03_new_courses 迁入）。
+> 本目录不设课程级子目录——全部原子课程大纲汇总于本 README；单课深化样板见各章节详情。课件素材按 [directory.md](./directory.md) 四层结构落位，四层目录骨架已就位：[01_applications/](./01_applications/)（L1 应用层）、[02_ai_frameworks/](./02_ai_frameworks/)（L2 框架层）、[03_acceleration_libs/](./03_acceleration_libs/)（L3 加速库）、[04_ops_programming/](./04_ops_programming/)（L4 编程·编译·NPU 架构）；现有素材：[04_ops_programming/01_ascendc/](./04_ops_programming/01_ascendc/)（Ascend C 双路线 PPT，自 03_new_courses 迁入），其余子方向素材待建设。
 
 ---
 

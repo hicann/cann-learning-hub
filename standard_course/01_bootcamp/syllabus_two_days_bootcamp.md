@@ -76,7 +76,7 @@
 | **D1 上午** | 第 1 讲 | 昇腾 AI 产业生态与 CANN 架构基础 | 昇腾生态全景；CANN 分层架构；NPU/GPU 差异 | 1h + 1h, [PPT](./two_days_course/01_artificial_intelligence_basics_light.pptx) |
 | **D1 上午** | 第 2 讲 | 基于 CANN 如何部署和推理大模型 | CANN 推理工具链；ATC 模型转换；基线推理流程 | 1h + 1h, [PPT](./two_days_course/02_llm_deployment_and_inference_with_cann_1h.pptx) |
 | **D1 下午** | 第 3 讲 | 基于 CANN 的大模型推理优化与最佳实践 | 量化 / 算子融合 / 图模式 / KV Cache；Profiling 瓶颈定位 | 2h + 2h, [PPT](./two_days_course/03_llm_training_and_inference_optimization_overview_with_cann_2h.pptx) |
-| **D2 上午** | 第 4 讲 | 如何开发 Ascend C 矢量算子（支撑推理模型优化） | Ascend C 编程模型；矢量算子开发全流程；推理算子场景 | 2h + 2h, [PPT](./two_days_course/04_a2a3_ascend_c_simd_vector_operator_development_2h.pptx) |
+| **D2 上午** | 第 4 讲 | 如何开发 Ascend C 矢量算子（支撑推理模型优化） | Ascend C 编程模型；矢量算子开发全流程；推理算子场景 | 2h + 2h, [PPT](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3_ascend_c_simd_vector_operator_development.pptx) |
 | **D2 下午** | 第 5 讲 | Ascend C 算子如何接入 PyTorch ＋ 基于 CANNBot 的 Ascend C 算子开发介绍 | 算子注册与单算子调用；CANNBot 辅助开发 | 1h + 1h, [PPT1](./two_days_course/05_a2a3_ascend_c_operator_pytorch_single_operator_call_0.5h.pptx)、[PPT2](./two_days_course/05_cannbot_highlights_open_source_community_edition_0.5h.pptx) |
 | **D2 下午** | 第 6 讲 | 结业作业辅导与展示 | 结业要求解读；作业冲刺与成果展示 | 2~3h（结业作业说明参考 [PPT](./two_days_course/06_a2a3_two_day_bootcamp_final_project.pptx)） |
 

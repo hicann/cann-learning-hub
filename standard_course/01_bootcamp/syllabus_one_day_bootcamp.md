@@ -74,7 +74,7 @@
 | 时段 | 讲次 | 主题 | 内容要点 | 教材PPT |
 |------|------|------|---------|------|
 | **D1 上午** | 第 1 讲 | 昇腾 AI 产业生态与 CANN 架构基础 | 昇腾生态全景；CANN 分层架构；Atlas 产品线；资源导航 | 1h, [PPT](./two_days_course/01_artificial_intelligence_basics_light.pptx) |
-| **D1 上午** | 第 2 讲 | 如何开发 Ascend C 矢量算子 | 异构计算模型；核函数 / Tiling / 流水；开发全流程；上机跟练（Add 算子跟练 → 变体改造 → 过渡独立实现） | 1h 理论 + 1h 实践, [PPT](./two_days_course/04_a2a3_ascend_c_simd_vector_operator_development_2h.pptx)（2h 版讲义，一天营节选核心内容；实践内容见第五章） |
+| **D1 上午** | 第 2 讲 | 如何开发 Ascend C 矢量算子 | 异构计算模型；核函数 / Tiling / 流水；开发全流程；上机跟练（Add 算子跟练 → 变体改造 → 过渡独立实现） | 1h 理论 + 1h 实践, [PPT](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3_ascend_c_simd_vector_operator_development.pptx)（一天营节选核心内容；实践内容见第五章） |
 | **D1 下午** | 第 3 讲 | 基于 CANNBot 的 Ascend C 算子开发介绍 | CANNBot 简介；算子自动生成演示；辅助调试 | 0.5h, [PPT](./two_days_course/05_cannbot_highlights_open_source_community_edition_0.5h.pptx) |
 | **D1 下午** | 第 4 讲 | 结业作业冲刺与展示 | `add_rms_norm` 需求解读；功能实现与验证 | 2~3h（结业作业说明参考 [PPT](./two_days_course/06_a2a3_two_day_bootcamp_final_project.pptx)） |
 

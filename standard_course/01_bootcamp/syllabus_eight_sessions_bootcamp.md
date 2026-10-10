@@ -81,7 +81,7 @@
 | **第 2 次** | 基于 CANN 如何部署和推理大模型 | CANN 推理工具链；ATC 模型转换；基线推理流程 | 1h 理论 + 1h 实践 | [PPT](./two_days_course/02_llm_deployment_and_inference_with_cann_1h.pptx) |
 | **第 3 次** | 基于 CANN 的大模型推理优化与最佳实践（理论） | 量化 / 算子融合 / 图模式 / KV Cache；Profiling 瓶颈定位 | 2h 理论 | [PPT](./two_days_course/03_llm_training_and_inference_optimization_overview_with_cann_2h.pptx) |
 | **第 4 次** | 基于 CANN 的大模型推理优化与最佳实践（实践） | Profiling 采集与分析；量化 / 融合 / 图模式等优化手段 A/B 验证 | 2h 实践 | 复用第 3 次讲义（无新增 PPT） |
-| **第 5 次** | Ascend C SIMD 编程模型与矢量算子开发（理论） | 异构计算与 SIMD 编程模型；核函数 / Tiling / 流水；矢量算子开发全流程；推理算子场景 | 2h 理论 | [PPT](./two_days_course/04_a2a3_ascend_c_simd_vector_operator_development_2h.pptx) |
+| **第 5 次** | Ascend C SIMD 编程模型与矢量算子开发（理论） | 异构计算与 SIMD 编程模型；核函数 / Tiling / 流水；矢量算子开发全流程；推理算子场景 | 2h 理论 | [PPT](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3_ascend_c_simd_vector_operator_development.pptx) |
 | **第 6 次** | Ascend C SIMD 编程模型与矢量算子开发（实践） | HelloWorld → Add 算子跟练 → 变体改造 → Softmax 独立实现 | 2h 实践 | 复用第 5 次讲义（无新增 PPT） |
 | **第 7 次** | Ascend C 算子如何接入 PyTorch ＋ 基于 CANNBot 的 Ascend C 算子开发介绍 | 算子注册与单算子调用（Kernel 直调）；CANNBot 功能与辅助开发 | 1h 理论 + 1h 实践 | [PPT1](./two_days_course/05_a2a3_ascend_c_operator_pytorch_single_operator_call_0.5h.pptx)、[PPT2](./two_days_course/05_cannbot_highlights_open_source_community_edition_0.5h.pptx) |
 | **第 8 次** | 结业作业 | 结业要求解读；作业冲刺与成果展示 | 2h（结业冲刺） | 结业作业说明参考 [PPT](./two_days_course/06_a2a3_two_day_bootcamp_final_project.pptx) |

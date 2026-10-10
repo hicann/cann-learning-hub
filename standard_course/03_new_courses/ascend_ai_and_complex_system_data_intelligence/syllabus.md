@@ -11,7 +11,7 @@
 | **学时安排** | **约 32 课时**（必修 26 ＋ 选修 6 按需；另结业大作业课后 8，每讲另配约 2h 跟练实践）：第一部分 4 讲（第 1~4 周）＋ 第二部分 6 讲（第 5~10 周）＋ 第三部分必修 3 讲（第 11~13 周）＋ 选修 3 讲（第 14~16 周，按需）＋ 结业大作业（第 13~16 周课后推进，期末答辩） |
 | **授课对象** | 数据科学/人工智能相关专业本科高年级、研究生 |
 | **先修要求** | Python 编程能力；基本机器学习/深度学习概念；了解行业数据特点 |
-| **配套讲义** | 第一部分 4 个 PPT（建设中）；第二部分 8 个 PPT；第三部分必修 4 个 PPT ＋ 选修 3 个 PPT；结业大作业 1 份 |
+| **配套讲义** | 第一部分 4 个 PPT（建设中）；第二部分 8 个 PPT；第三部分必修 4 个 PPT ＋ 选修 6 个 PPT（Ascend C 950）；结业大作业 1 份 |
 | **实践平台** | cann-learning-hub（教程型跟练 Notebook）＋ CANNJudge（判题型自动评测） |
 | **结业标准** | 通过各讲 CANNJudge 判题；从作业 1/作业 2 中任选其一提交结业大作业并通过答辩；作业 3 开源贡献为加分项 |
 | **后续衔接** | 《AI 计算与神经网络计算架构实践》第二部分（36 课时完整算子体系，双架构路线） |
@@ -46,7 +46,7 @@
 |------|------|---------|---------|-----------|
 | 复杂系统行业导论与数据智能 | 第 1~4 讲 | 复杂系统与数据智能概述；行业场景（推荐/检索/时序等）系统架构；数据-模型-算力协同；性能工程方法与课程主线 | 行业认知与结业选题方向 | — |
 | 大模型训练与推理 | 第 5~10 讲 | 昇腾生态与 CANN 架构；ATC 离线模型编译与推理；大模型训练（SFT/RL）；部署与推理（Qwen3-1.7B）；训推优化实践（概述与入图推理优化、PD 分离 & KV 池化 & 自动融合训练） | Qwen3 训推全链路跑通 ＋ 每讲作业 | L1-14~21、L2-13~18 |
-| Ascend C 算子编程实践（必修 ＋ 选修） | 第 11~13 讲 ＋ 选修 | 矢量算子编程概述；算子调试调优与最佳实践；PyTorch 单算子调用与入图；选修：Memory 矢量/矩阵/融合算子编程 | 基础矢量算子独立实现 ＋ 判题 | L4-01~14 |
+| Ascend C 算子编程实践（必修 ＋ 选修） | 第 11~13 讲 ＋ 选修 | 矢量算子编程概述；算子调试调优与最佳实践；PyTorch 单算子调用与入图；选修：Ascend C 950 编程模型、Reg 矢量/矩阵（Tensor API）/融合与 SIMT 算子编程 | 基础矢量算子独立实现 ＋ 判题 | L4-01~14 |
 | 结业大作业 | 第 14 讲（第 13~16 周课后） | 昇腾 NPU 模型迁移与部署 或 算子开发（AddRmsNorm 或 QuantMatmul，支持 Qwen3）；开源贡献 | 结业大作业 ＋ 社区贡献 | 综合应用 |
 
 ---
@@ -106,17 +106,17 @@
 
 | 周次 | 讲次 | 主题 | 内容要点 | 教材 PPT |
 |------|------|------|---------|---------|
-| 11 | 第 11 讲 | Ascend C 矢量算子编程概述 | 异构计算原理；Ascend C 编程模型；核函数结构；矢量算子编程入门 | 2h+2h, [01_矢量算子编程导论](./part2_ascend_c_operator_programming_practice/00_a2a3_course_required/01_ascend_c_operator_programming_introduction_and_vector_programming.pptx) |
-| 12 | 第 12 讲 | Ascend C 算子调试调优与最佳实践 | 调试工具链；性能分析方法；常见瓶颈与优化；最佳实践总结 | 2h+2h, [02_调试调优与最佳实践](./part2_ascend_c_operator_programming_practice/00_a2a3_course_required/02_ascend_c_operator_debugging_tuning_and_best_practices.pptx) |
-| 13 | 第 13 讲 | Ascend C 算子 PyTorch 单算子调用与入图 | 单算子调用原理与方法；算子入图流程（PyTorch/AclGraph/GE）；端到端验证 | 2h+2h, [03_01 PyTorch 单算子调用](./part2_ascend_c_operator_programming_practice/00_a2a3_course_required/03_01_ascend_c_operator_pytorch_single_operator_call.pptx)、[03_02 图模式接入](./part2_ascend_c_operator_programming_practice/00_a2a3_course_required/03_02_ascend_c_operator_graph_integration_pytorch_aclgraph_ge.pptx) |
+| 11 | 第 11 讲 | Ascend C 矢量算子编程概述 | 异构计算原理；Ascend C 编程模型；核函数结构；矢量算子编程入门 | 2h+2h, [矢量算子编程导论](../../00_atomic_courses/04_ops_programming/01_ascendc/a2a3_ascend_c_simd_vector_operator_development.pptx) |
+| 12 | 第 12 讲 | Ascend C 算子调试调优与最佳实践 | 调试工具链；性能分析方法；常见瓶颈与优化；最佳实践总结 | 2h+2h, [调试调优与最佳实践](../../00_atomic_courses/04_ops_programming/01_ascendc/a2a3/06_a2a3_ascend_c_operator_debugging_tuning_and_best_practices.pptx) |
+| 13 | 第 13 讲 | Ascend C 算子 PyTorch 单算子调用与入图 | 单算子调用原理与方法；算子入图流程（PyTorch/AclGraph/GE）；端到端验证 | 2h+2h, [PyTorch 单算子调用](../../00_atomic_courses/04_ops_programming/01_ascendc/a2a3/07_a2a3_ascend_c_operator_pytorch_single_operator_call.pptx)、[图模式接入](../../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/Ascend950_09_ascend_c_operator_graph_integration_pytorch_aclgraph_ge.pptx) |
 
-**选修（第 14~16 周按需选学）：**
+**选修·Ascend C 950 算子编程（第 14~16 周按需选学，讲义位于原子课程素材目录 [`ascend950/`](../../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/)）：**
 
 | 讲次 | 主题 | 教材 PPT |
 |------|------|---------|
-| 选修 1 | Memory 矢量算子编程 | 2h+2h, [01_Memory 矢量算子编程](./part2_ascend_c_operator_programming_practice/01_a2a3_course_elective/01_a2a3_ascend_c_simd_memory_vector_operator_programming.pptx) |
-| 选修 2 | 矩阵算子编程 | 2h+2h, [02_矩阵算子编程](./part2_ascend_c_operator_programming_practice/01_a2a3_course_elective/02_a2a3_ascend_c_simd_matrix_operator_programming.pptx) |
-| 选修 3 | 融合算子编程（AIC/AIV 分离式） | 2h+2h, [03_融合算子编程](./part2_ascend_c_operator_programming_practice/01_a2a3_course_elective/03_a2a3_ascend_c_simd_fused_operator_programming.pptx) |
+| 选修 1 | Ascend C 950 导论、SIMD 编程模型与 Reg 矢量编程 | 2h+2h, [01 导论](../../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/Ascend950_01_heterogeneous_computing_and_ascend_c_operator_programming_introduction.pptx)、[02_1 编程模型](../../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/Ascend950_02_ascend_c_simd_programming_1_programming_model.pptx)、[02_2 Reg 矢量](../../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/Ascend950_02_ascend_c_simd_programming_2_reg_vector_operator.pptx) |
+| 选修 2 | Ascend C 950 矩阵算子编程（Tensor API） | 2h+2h, [02_3 矩阵算子](../../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/Ascend950_02_ascend_c_simd_programming_3_matrix_operator.pptx) |
+| 选修 3 | Ascend C 950 融合算子编程与 SIMT 编程模型 | 2h+2h, [02_4 融合算子](../../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/Ascend950_02_ascend_c_simd_programming_4_fused_operator.pptx)、[03 SIMT 编程](../../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/Ascend950_03_ascend_c_simt_programming.pptx) |
 
 ### 4.4 第四部分：结业大作业（综合实践 & 答辩）
 
@@ -152,7 +152,7 @@
 | 第 11 讲 | 矢量算子编程 | **易**：`01_basic_overview` 基础算子跟练；**中**：Add 改 ReLU/GELU 变体；**难**：Add/ReLU 泛化算子判题（任意 shape/数据类型） | `tutorials/ascendc_operator_development_light/01_basic_overview`、`tutorials/ascendc_operator_development_light/02_AscendC_basic` |
 | 第 12 讲 | 调试调优实战 | **易**：调优章节跟练；**中**：剖析报告解读并指出瓶颈；**难**：慢算子诊断优化达标（附前后对比） | `tutorials/ascendc_operator_development_light/04_debug` |
 | 第 13 讲 | 单算子调用与入图 | **易**：单算子调用/入图跟练；**中**：自定义算子注册调用与入图验证；**难**：矢量算子判题（含 Tiling 与性能要求） | `tutorials/ascendc_operator_development_light/02_AscendC_basic`、`tutorials/ge_development` |
-| 选修 | 算子编程拓展 | **易**：选修章节跟练；**中**：Memory 矢量 vs Reg 矢量同题对比；**难**：融合算子（AIC/AIV 分离）进阶判题 | `tutorials/ascendc_operator_development_light/02_AscendC_basic`、`tutorials/ascendc_operator_development_light/03_simple_operator_practice` |
+| 选修 | Ascend C 950 算子编程 | **易**：950 选修章节跟练；**中**：Reg 矢量（950）与 Memory 矢量（A2/A3）同题对比；**难**：融合与 SIMT 混合算子进阶判题 | 待补充（950 专属实践路径建设中） |
 
 ### 5.4 第四部分：结业大作业
 
@@ -200,14 +200,14 @@
 
 - **第一部分（第 1~4 讲）**：以行业认知为主，建立「数据-模型-算力」协同思维与性能闭环意识，结合自身方向（推荐/检索/时序等）酝酿结业选题
 - **第二部分（第 5~10 讲）**：以「会用会优化」为主，重点掌握大模型训推流程与优化手段（ATC 编译→训练→部署推理→入图/PD 分离/KV 池化/自动融合），按时完成 cann-learning-hub 练习
-- **第三部分（第 11~13 讲）**：以「会写会调」为主，重点掌握 Ascend C 矢量算子开发闭环（开发→调试→调用→入图）；学有余力者加选修（Memory 矢量/矩阵/融合）
+- **第三部分（第 11~13 讲）**：以「会写会调」为主，重点掌握 Ascend C 矢量算子开发闭环（开发→调试→调用→入图）；学有余力者加选修（Ascend C 950：编程模型/Reg 矢量/矩阵/融合与 SIMT）
 - **结业大作业（第 13~16 周课后）**：建议结合具体业务场景（推荐/检索/时序等）选题，从作业 1/作业 2 中任选其一，将训推优化与算子开发融会贯通
 
 ### 7.2 成功要素
 
 1. **跟练与判题同步**：教程练手（会不会）→ 判题独立实现（对不对、快不快），不要只跟练不判题
 2. **算子从简单起步**：先从简单算子（Add/ReLU）开始，理解每一步原理，再逐步过渡到复杂算子（AddRmsNorm/QuantMatmul）
-3. **选修按需选择**：选修（Memory 矢量/矩阵/融合）面向学有余力者，为衔接《AI 计算与神经网络计算架构实践》36 课时完整算子体系做准备
+3. **选修按需选择**：选修（Ascend C 950 算子编程：编程模型/Reg 矢量/矩阵/融合与 SIMT）面向学有余力者，为衔接《AI 计算与神经网络计算架构实践》36 课时完整算子体系做准备
 4. **结业选题结合场景**：从自身方向（推荐/检索/时序等行业场景）确定题目，并争取作业 3 开源贡献加分
 
 ### 7.3 后续学习路径
