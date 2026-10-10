@@ -91,7 +91,7 @@
 | **D1 下午** | 第 2 讲 | 大模型 Transformer 架构介绍 | Transformer 整体架构；Self-Attention 与位置编码；FFN / 残差连接 / RMSNorm；Qwen3 模型结构解析 | 2h + 2h, 讲义建设中 |
 | **D2 上午** | 第 3 讲 | 基于 CANN 如何部署和推理大模型 | CANN 推理工具链；ATC 模型转换；基线推理流程 | 2h + 2h, [PPT](./two_weeks_course/04_llm_deployment_and_inference_with_cann_2h.pptx) |
 | **D2 下午** | 第 4 讲 | 基于 CANN 的大模型推理优化与最佳实践 | 量化 / 算子融合 / 图模式 / KV Cache；Profiling 定位 | 2h + 2h, [PPT](./two_weeks_course/05_llm_training_and_inference_optimization_overview_with_cann_2h.pptx) |
-| **D3 上午** | 第 5 讲 | 大模型量化基础 | 量化基本原理（INT8 / INT4、对称 / 非对称量化）；W8A8 与权重量化；KV Cache 量化；精度与性能权衡 | 2h, 讲义建设中 |
+| **D3 上午** | 第 5 讲 | 大模型量化基础 | 量化基本原理（INT8 / INT4、对称 / 非对称量化）；W8A8 与权重量化；KV Cache 量化；精度与性能权衡 | 2h, [PPT](./two_weeks_course/02_04_llm_quantization_with_cann_2h.pptx) |
 | **D3 下午** | 第 6 讲 | 大模型推理实践 | 基线推理 → 优化手段验证 → 判题（CANN-LearningHub + CANNJudge 练习） | 4h 纯实践, 共用第 3~5 讲 PPT |
 | **D4 上午** | 第 7 讲 | 异构计算与 Ascend C 算子编程导论 | Host/Device 异构；NPU 架构概述；Ascend C 快速入门 | 2h + 2h, [PPT](./two_weeks_course/06_a2a3_heterogeneous_computing_and_ascend_c_operator_programming_introduction.pptx) |
 | **D4 下午** | 第 8 讲 | Ascend C(A2/A3) SIMD 编程模型介绍 | 核函数定义；内存层级；同步机制；算子编译与 Stream | 2h + 2h, [PPT](./two_weeks_course/07_a2a3_ascend_c_simd_programming_model.pptx) |
