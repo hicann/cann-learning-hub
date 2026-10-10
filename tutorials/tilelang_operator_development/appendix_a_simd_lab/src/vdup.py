@@ -2,8 +2,8 @@ import os
 os.environ["TILELANG_DISABLE_CACHE"] = "1"
 
 import tilelang
-import tilelang.language as T
-from tilelang.language import simd as S
+import tilelang.ascend.language as T
+from tilelang.ascend.language import simd as S
 import torch
 import torch_npu
 

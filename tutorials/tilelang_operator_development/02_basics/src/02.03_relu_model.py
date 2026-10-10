@@ -1,8 +1,8 @@
 """Chapter 2.3: CopyIn -> Compute -> CopyOut with a single-tile ReLU."""
 import torch
 import tilelang
-import tilelang.language as T
-from tilelang.language import simd as S
+import tilelang.ascend.language as T
+from tilelang.ascend.language import simd as S
 
 
 def make_relu(n: int = 1024):

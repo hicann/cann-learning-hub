@@ -1,6 +1,6 @@
 """Student exercise: fill only the tile-start expression; answer is provided separately."""
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 import torch,torch_npu
 N,TILE,NUM_BLOCKS=1179648,1024,8
 @T.prim_func

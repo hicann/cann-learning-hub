@@ -1,5 +1,5 @@
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 def gemm(M=512, N=36864, K=256, BM=256, BN=128, stages=2, persistent=False):

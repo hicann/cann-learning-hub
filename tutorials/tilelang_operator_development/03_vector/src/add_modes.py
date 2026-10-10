@@ -1,7 +1,7 @@
 """Same Add workload, tiling and interface for SimdVF/SimtVF comparison."""
 
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 def check_add_config(N, tile, blocks, mode):

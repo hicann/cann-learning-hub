@@ -4,7 +4,7 @@ Register-instruction implementation; validation status is recorded separately.
 """
 
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 def check_softmax_config(M, C, rows, blocks, versions=1):

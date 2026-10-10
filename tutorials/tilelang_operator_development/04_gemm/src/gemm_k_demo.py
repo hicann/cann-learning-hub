@@ -1,5 +1,5 @@
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 def k_demo_gemm(M=512, N=36864, K=2048, BM=128, BN=128, BK=128):

@@ -1,7 +1,7 @@
 """C=128 row Softmax: retain all intermediate values in one SIMD VF."""
 
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 def softmax_fused(M=9216, rows=8, blocks=36, stages=2):

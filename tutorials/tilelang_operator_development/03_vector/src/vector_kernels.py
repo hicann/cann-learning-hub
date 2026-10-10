@@ -3,7 +3,7 @@ Derived from Ascend examples; reference implementations are in src/original.
 """
 
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 def check_config(N, tile, blocks, versions=1, buffers=3):

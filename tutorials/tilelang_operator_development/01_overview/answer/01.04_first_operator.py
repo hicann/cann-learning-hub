@@ -1,7 +1,7 @@
 import torch
 import torch_npu
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 tilelang.disable_cache()  # 本例每次运行都重新编译。
 

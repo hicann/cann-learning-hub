@@ -3,7 +3,7 @@ The computation uses explicit SIMD register instructions inside SimdVF.
 """
 
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 from vector_kernels import check_config
 
 

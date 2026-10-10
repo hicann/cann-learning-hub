@@ -1,7 +1,7 @@
 """2.4 Add：同一份 kernel 分别通过 JIT 和显式编译运行。"""
 import torch
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 def _validate(n: int, num_blocks: int) -> int:

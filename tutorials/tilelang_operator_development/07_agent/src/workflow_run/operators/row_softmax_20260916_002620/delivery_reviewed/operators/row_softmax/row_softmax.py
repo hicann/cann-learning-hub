@@ -6,8 +6,8 @@ Each logical task processes one complete input row.
 from functools import lru_cache
 
 import tilelang
-import tilelang.language as T
-from tilelang.language import simd as S
+import tilelang.ascend.language as T
+from tilelang.ascend.language import simd as S
 import torch
 
 

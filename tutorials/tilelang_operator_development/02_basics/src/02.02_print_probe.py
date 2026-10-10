@@ -1,7 +1,7 @@
 """Chapter 2.2: inspect and run the T.print debug primitive."""
 import torch
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 @T.prim_func

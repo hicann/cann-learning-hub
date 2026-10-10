@@ -1,5 +1,5 @@
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 import torch
 import torch_npu
 from tilelang.profiler import do_bench

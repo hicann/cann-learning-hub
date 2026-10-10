@@ -2,7 +2,7 @@
 
 import torch
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 @tilelang.jit(out_idx=-1, target="ascend")

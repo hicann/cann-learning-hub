@@ -2,7 +2,7 @@
 
 import torch
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 
 def _validate_1d(n: int, num_blocks: int) -> int:
