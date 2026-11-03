@@ -57,7 +57,7 @@ DeepSeekV3网络模型是一个多层网络，共包含61层。每一层有20+�
 图4. Superkernel技术原理示例
 
 ```
-__global__ __aicore__ void sk_start_xxx_stop_yyy(...)
+__global__ __aicore__ void sk_start_xxx_stop_yyy(...)
 ```
 
 通过详细评估和调试，SuperKernel技术优化后的基本收益模型可以分为以下三部分：首先是两个Task之间的调度开销降低；其次是每个Task结束后会执行Cache Flush操作，将所有修改的Cache内容刷新出去，其中包含一些不必要的栈空间；最后是算子调度后的核启动时间，包括同地址访问的排队延迟、Scalar执行初始化等环节。
@@ -181,7 +181,7 @@ SuperKernel是一种算子的二进制融合技术，它通过在内核函数级
 使用torch.compile启用SuperKernel功能时，核心前提是确保计算图为静态图，即图中所有张量的形状（Shape）均为已知。
 
 ```
-class RunModel(nn.Module):
+class RunModel(nn.Module):
 ```
 
 具体提供以下两种配置方式：
@@ -212,8 +212,8 @@ class RunModel(nn.Module):
 最终需要确保Torch转换为GE的图为静态图，否则无法开启SuperKernel，动态图的识别方法，最直接的方式开启GE图的Dump：
 
 ```
-export DUMP_GE_GRAPH=3
-export DUMP_GRAPH_LEVEL=3
+export DUMP_GE_GRAPH=3
+export DUMP_GRAPH_LEVEL=3
 ```
 
 在运行目录下找到 ge_**_Build.txt/pbtxt 文件。
@@ -222,8 +222,8 @@ export DUMP_GRAPH_LEVEL=3
 
 ```
 node {
-    name: "graph_2_sub_2_unknow"
-	op_type: "subgraph"
+    name: "graph_2_sub_2_unknow"
+	op_type: "subgraph"
 }
 ```
 
@@ -231,12 +231,12 @@ node {
 
 ```
 node {
-    name: ""
-    op_type: ""
-    attribute {
-      name: "_is_unknown_shape"
-      i: 1
-      type: INT
+    name: ""
+    op_type: ""
+    attribute {
+      name: "_is_unknown_shape"
+      i: 1
+      type: INT
 }
 ```
 
@@ -245,7 +245,7 @@ node {
 打开环境变量保留SuperKernel生成的中间代码：
 
 ```
-export ASCEND_OP_COMPILE_SAVE_KERNEL_META=1
+export ASCEND_OP_COMPILE_SAVE_KERNEL_META=1
 ```
 
 打开SuperKernel调试选项，多个SK的选项用冒号分割，比如：
@@ -253,16 +253,16 @@ export ASCEND_OP_COMPILE_SAVE_KERNEL_META=1
 stream-fusion=1:compile-options=-g​​​​​​​
 
 ```
-torchair.scope.super_kernel('layers', 'compile-options=-g') 
+torchair.scope.super_kernel('layers', 'compile-options=-g') 
 # 多个compile-option用逗号分割，如compile-options=-g,-O3
 ```
 
 重新执行模型查看日志：
 
 ```
-The error from device(chipId:4, dieId:0), serial number is 16, there is an exception
-of fftgplusaivector error, core id is 0, error code = 0, dump info:pc start:0x12c0c02421ec, current:0x12c0c0244260, vec error info: 0b5690606674,............
-Aicore kernel execute failed, device_id=4, stream_id=64, report_stream_id=2,task_id=8,ftp_name,fault kernel_name=re_superkernel_9402ca1fea128689963df1b334led1b238c4c478452ba49888085161254686b36b364036c466c455473752c080186c816b8d_static_bin,fault kernel_info te_superkernel_9402ca1fea123485884b41b334led1b238c4c478452ba4988
+The error from device(chipId:4, dieId:0), serial number is 16, there is an exception
+of fftgplusaivector error, core id is 0, error code = 0, dump info:pc start:0x12c0c02421ec, current:0x12c0c0244260, vec error info: 0b5690606674,............
+Aicore kernel execute failed, device_id=4, stream_id=64, report_stream_id=2,task_id=8,ftp_name,fault kernel_name=re_superkernel_9402ca1fea128689963df1b334led1b238c4c478452ba49888085161254686b36b364036c466c455473752c080186c816b8d_static_bin,fault kernel_info te_superkernel_9402ca1fea123485884b41b334led1b238c4c478452ba4988
 ```
 
 
@@ -275,14 +275,14 @@ Aicore kernel execute failed, device_id=4, stream_id=64, report_stream_id=2,tas
 te_superkernel_9402ca1fea123485884b41b334led1b238c4c478452ba4988.o。使用反汇编工具llvm-objdump(CANN包路径)查看代码行，例如：
 
 ```
-llvm-objdump -S -l 
+llvm-objdump -S -l 
 te_superkernel_9402ca1fea123485884b41b334led1b238c4c478452ba4988.o
 ```
 
 查看偏移对应的代码行。注意，如果是aivector error则pc start对应的是
 
 ```
-te_superkernel_xxx_mix_aiv 符号地址，如果是aicore error，pc start对应的是te_superkernel_xxx_mix_aic。
+te_superkernel_xxx_mix_aiv 符号地址，如果是aicore error，pc start对应的是te_superkernel_xxx_mix_aic。
 ```
 
 ### 6.3 精度调试
@@ -303,9 +303,9 @@ torchair.scope.super_kernel('layers', 'debug-sync-all=1') # 算子之间强制�
 #### 6.4.1 使用Ascend C提供的API，SuperKernel在部分API中做了适配
 
 ```
-block_idx/get_block_idx() -> AscendC::GetBlockIdx() // 获取当前核索引，sk内部做了1:1/1:2下的区分
-block_num/get_block_num() -> AscendC::GetBlockNum() // 获取当前核数，sk内部做了固定核数的适配
-get_task_ration() -> AscendC::GetTaskRation() // 获取运行时vector/cube比例，sk未来可能会做适配
+block_idx/get_block_idx() -> AscendC::GetBlockIdx() // 获取当前核索引，sk内部做了1:1/1:2下的区分
+block_num/get_block_num() -> AscendC::GetBlockNum() // 获取当前核数，sk内部做了固定核数的适配
+get_task_ration() -> AscendC::GetTaskRation() // 获取运行时vector/cube比例，sk未来可能会做适配
 ```
 
 GM地址使用Scalar读写时依赖API的Cache刷新，例如：
@@ -313,8 +313,8 @@ GM地址使用Scalar读写时依赖API的Cache刷新，例如：
 【错误写法】
 
 ```
-*(__gm__ int32_t)xGm = 1;
-auto scale = *(__gm__ float *)scaleGm;
+*(__gm__ int32_t)xGm = 1;
+auto scale = *(__gm__ float *)scaleGm;
 ```
 
 【正确写法】
@@ -324,10 +324,10 @@ auto scale = *(__gm__ float *)scaleGm;
 SuperKernel编译时会在GlobalTensor的GetValue/SetValue/operator()中增加Cache刷新的指令:
 
 ```
-auto xGlobal = GlobalTensor<int32_t>(...);
+auto xGlobal = GlobalTensor<int32_t>(...);
 xGlobal.SetValue(0, 1);
-auto scaleGlobal = GlobalTensor<float>(...);
-auto scale = scaleGlobal.GetValue(0); // 或 scaleGlobal(0)
+auto scaleGlobal = GlobalTensor<float>(...);
+auto scale = scaleGlobal.GetValue(0); // 或 scaleGlobal(0)
 ```
 
 【方式二】自行刷新Cache
@@ -335,18 +335,18 @@ auto scale = scaleGlobal.GetValue(0); // 或 scaleGlobal(0)
 （不推荐）DCCI非标准API可能存在跨代兼容问题：
 
 ```
-*(__gm__ int32_t)xGm = 1;
-dcci(xGm, 0, 2); // 写入后刷新，xGm地址所在cache行(cache一行64字节，64对齐)
+*(__gm__ int32_t)xGm = 1;
+dcci(xGm, 0, 2); // 写入后刷新，xGm地址所在cache行(cache一行64字节，64对齐)
 // ...
-dcci(scaleGm, 0, 2); // 读取前刷新
-auto scale = *(__gm__ float *)scaleGm;
+dcci(scaleGm, 0, 2); // 读取前刷新
+auto scale = *(__gm__ float *)scaleGm;
 ```
 
 #### 6.4.2 MIX 1:1算子，当前依赖算子在运行时支持1:2
 
 ```
-if (AscendC::GetSubBlockIdx() != 0) {
-  // NotifyEvent/WaitEvent 适配，不做数据搬运和Vector计算
+if (AscendC::GetSubBlockIdx() != 0) {
+  // NotifyEvent/WaitEvent 适配，不做数据搬运和Vector计算
 }
 ```
 
