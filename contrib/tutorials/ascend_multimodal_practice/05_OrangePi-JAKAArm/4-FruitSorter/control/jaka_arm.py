@@ -124,7 +124,7 @@ class JakaArm:
             try:
                 from control.gripper_pwm import open_gripper
                 open_gripper()
-            except:
+            except Exception:
                 print("[JAKA] 夹爪控制失败，继续...")
             
             # 显示最终位置

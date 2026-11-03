@@ -294,7 +294,7 @@ def main():
                 try:
                     pixel_x = float(input("像素X: "))
                     pixel_y = float(input("像素Y: "))
-                except:
+                except Exception:
                     print("输入无效")
                     continue
             else:

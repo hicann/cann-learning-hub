@@ -45,7 +45,7 @@ def get_local_ip(retries=5, delay=3):
         try:
             s.connect(("114.114.114.114", 0))
             ip = s.getsockname()[0]
-        except:
+        except Exception:
             ip = "127.0.0.1"
         finally:
             s.close()

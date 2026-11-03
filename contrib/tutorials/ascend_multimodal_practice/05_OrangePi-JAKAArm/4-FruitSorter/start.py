@@ -251,7 +251,7 @@ def main():
                     try:
                         from perception.camera import Camera
                         camera = Camera()
-                    except:
+                    except Exception:
                         pass
 
             elif intent == 'arm_calib':
