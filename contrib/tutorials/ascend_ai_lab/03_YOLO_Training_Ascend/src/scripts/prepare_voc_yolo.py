@@ -61,8 +61,8 @@ VOC_CLASSES = [
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default="/mnt/workspace/datasets/voc", help="PASCAL VOC workspace root")
-    parser.add_argument("--train-limit", type=int, default=0, help="0 means keep all VOC2007+VOC2012 trainval images")
-    parser.add_argument("--val-limit", type=int, default=0, help="0 means keep all VOC2007 test images")
+    parser.add_argument("--train-limit", type=int, default=0, help="0 means keep all eligible VOC2007+VOC2012 training images")
+    parser.add_argument("--val-limit", type=int, default=0, help="0 means keep all VOC2007 test images (or val if test is missing)")
     parser.add_argument("--seed", type=int, default=2026, help="random seed used when a limit is set")
     parser.add_argument("--copy-images", action="store_true", help="copy images instead of creating symlinks")
     parser.add_argument("--include-difficult", action="store_true", help="keep objects marked difficult in VOC XML")
@@ -120,10 +120,12 @@ def link_or_copy(src: Path, dst: Path, copy_images: bool) -> None:
 
 
 def voc_bbox_to_yolo(box: ET.Element, width: int, height: int) -> tuple[float, float, float, float]:
-    xmin = float(box.findtext("xmin", "0"))
-    ymin = float(box.findtext("ymin", "0"))
-    xmax = float(box.findtext("xmax", "0"))
-    ymax = float(box.findtext("ymax", "0"))
+    # VOC pixel coordinates start at (1, 1). Translate before clipping, while
+    # retaining this lab's endpoint-difference widths/heights (no inclusive +1).
+    xmin = float(box.findtext("xmin", "0")) - 1.0
+    ymin = float(box.findtext("ymin", "0")) - 1.0
+    xmax = float(box.findtext("xmax", "0")) - 1.0
+    ymax = float(box.findtext("ymax", "0")) - 1.0
 
     xmin = max(0.0, min(xmin, width - 1.0))
     ymin = max(0.0, min(ymin, height - 1.0))
@@ -207,6 +209,7 @@ def write_split(path: Path, items: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(sorted(items)) + ("\n" if items else ""), encoding="utf-8")
     print(f"{path}: {len(items)} images")
+    
 
 
 def main() -> None:
@@ -214,17 +217,26 @@ def main() -> None:
     root = Path(args.root)
     root.mkdir(parents=True, exist_ok=True)
 
-    train_pairs = [("2007", image_id) for image_id in read_ids(voc_dir(root, "2007"), "trainval")]
+    voc_2007 = voc_dir(root, "2007")
+    train_2007_ids = read_ids(voc_2007, "trainval")
+    try:
+        val_2007_ids = read_ids(voc_2007, "test")
+        val_split = "test"
+    except FileNotFoundError:
+        val_2007_ids = read_ids(voc_2007, "val")
+        val_split = "val"
+        # VOC2007 val is a subset of trainval. Exclude the complete validation
+        # split before either limit is applied, including unsampled val images.
+        val_ids = set(val_2007_ids)
+        train_2007_ids = [image_id for image_id in train_2007_ids if image_id not in val_ids]
+        print("VOC2007 test split missing; using val and excluding its IDs from training.")
+
+    train_pairs = [("2007", image_id) for image_id in train_2007_ids]
     train_pairs += [("2012", image_id) for image_id in read_ids(voc_dir(root, "2012"), "trainval")]
     train_pairs = limit_pairs(train_pairs, args.train_limit, args.seed)
     train_2007 = [image_id for year, image_id in train_pairs if year == "2007"]
     train_2012 = [image_id for year, image_id in train_pairs if year == "2012"]
-    try:
-        val_2007 = limit_items(read_ids(voc_dir(root, "2007"), "test"), args.val_limit, args.seed)
-        val_split = "test"
-    except FileNotFoundError:
-        val_2007 = limit_items(read_ids(voc_dir(root, "2007"), "val"), args.val_limit, args.seed)
-        val_split = "val"
+    val_2007 = limit_items(val_2007_ids, args.val_limit, args.seed)
 
     train_items = []
     train_items += convert_split(root, "2007", "trainval", "train2007", train_2007, args.copy_images, args.include_difficult)
