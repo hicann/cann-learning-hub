@@ -17,6 +17,8 @@
 | **课程大纲** | [一天营详细大纲](./syllabus_one_day_bootcamp.md) | [两天营详细大纲](./syllabus_two_days_bootcamp.md) | [两周营详细大纲](./syllabus_two_weeks_bootcamp.md) | [四周营详细大纲](./syllabus_four_weeks_bootcamp.md) |
 | **讲义目录** | 共 4 份：[two_days_course/](./two_days_course/) 2 份 + 原子课程 2 份（与两天营共用） | 共 7 份（6 讲）：[two_days_course/](./two_days_course/) 5 份 + 原子课程 2 份 | 共 14 份支撑 18 讲次：[two_weeks_course/](./two_weeks_course/) 5 份 + 原子课程 9 份（AI 基础 1 + a2a3 系列 7 + 950 入图 1） | 共 16 份支撑 28 讲次：[two_weeks_course/](./two_weeks_course/) 5 份 + 原子课程 11 份（AI 基础 1 + a2a3 系列 9 + 950 入图 1）；其余专属讲义建设中 |
 
+> 另有周期班形式：[启航营（8 次课）详细大纲](./syllabus_eight_sessions_bootcamp.md)（8 次课 × 2 课时，建议按周排课）。
+
 ---
 
 ## 二、排课节奏
