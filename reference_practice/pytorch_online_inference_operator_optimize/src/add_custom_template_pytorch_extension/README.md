@@ -1,5 +1,5 @@
 ## 概述
-本样例展示了自定义算子通过torch原生提供的cppextension方式注册eager模式与torch.compile模式的注册样例，eager模式与torch.compile模式的介绍参考：[Link](https://pytorch.org/get-started/pytorch-2.0)。
+本样例展示了自定义算子通过torch原生提供的cppextension方式注册eager模式与torch.compile模式的注册样例，eager模式与torch.compile模式的介绍参考：[Link](https://docs.pytorch.org/get-started/pytorch-2.0/)。
 
 ## 目录结构介绍
 ```
