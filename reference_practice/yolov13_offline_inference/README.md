@@ -180,7 +180,7 @@ Notebook 会通过 `npu-smi info -t board` 自动读取 `Chip Name` 和 `NPU Nam
 bash scripts/build.sh
 ```
 
-脚本会检测目标 CPU 架构（x86 主机交叉编译 ARM 目标时使用 `aarch64-linux-gnu-g++`，其余情况使用本地 `g++`），执行 CMake 构建，产物为 `out/yolov13_main`。
+脚本默认按当前主机架构构建，产物为 `out/yolov13_main`。在 x86 主机为 Atlas ARM 目标交叉编译时，请先安装交叉编译器并运行 `TARGET_KERNEL=arm bash scripts/build.sh`；脚本将使用 `aarch64-linux-gnu-g++`。如需显式构建本机 x86 版本，可运行 `TARGET_KERNEL=x86 bash scripts/build.sh`。
 
 ### 2. 运行
 

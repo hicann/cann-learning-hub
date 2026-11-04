@@ -48,6 +48,15 @@ function build()
 
 function target_kernel()
 {
+    if [[ -n "${TARGET_KERNEL:-}" ]]; then
+        TargetKernel=$(echo "$TARGET_KERNEL" | tr '[:upper:]' '[:lower:]')
+        if [[ "$TargetKernel" != "arm" && "$TargetKernel" != "x86" ]]; then
+            echo "[ERROR] TARGET_KERNEL must be arm or x86."
+            return 1
+        fi
+        return 0
+    fi
+
     local arch=""
     if command -v lscpu >/dev/null 2>&1; then
         arch_info=$(lscpu 2>/dev/null | grep -i "Architecture" | head -n1)

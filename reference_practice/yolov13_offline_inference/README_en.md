@@ -183,7 +183,7 @@ The Notebook automatically reads `Chip Name` and `NPU Name` via `npu-smi info -t
 bash scripts/build.sh
 ```
 
-The script detects the target CPU architecture (uses `aarch64-linux-gnu-g++` for cross-compiling to ARM from an x86 host, otherwise the local `g++`), runs the CMake build, and produces `out/yolov13_main`.
+The script builds for the host architecture by default and produces `out/yolov13_main`. To cross-compile an Atlas ARM target from an x86 host, install the cross-compiler and run `TARGET_KERNEL=arm bash scripts/build.sh`; this selects `aarch64-linux-gnu-g++`. To explicitly build a native x86 binary, run `TARGET_KERNEL=x86 bash scripts/build.sh`.
 
 ### 2. Run
 
