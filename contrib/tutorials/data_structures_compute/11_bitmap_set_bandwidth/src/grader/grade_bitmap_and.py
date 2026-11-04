@@ -88,6 +88,91 @@ def expected_contract(case: dict[str, int | str]) -> dict[str, str]:
     }
 
 
+TAIL_BLOCK_HARNESS = """
+#include <cstdint>
+#include "student_compute.h"
+
+int main()
+{
+    constexpr uint32_t blockFormers[] = {0U, 1U, 512U, 513U, 0xFFFFFFFFU};
+    constexpr uint32_t blockTails[] = {0U, 37U, 4097U, 0xFFFFFFFEU};
+    for (uint32_t caseIdx = 0U; caseIdx < 4U; ++caseIdx) {
+        const uint32_t blockTail = blockTails[caseIdx];
+        for (uint32_t blockNum = 1U; blockNum <= 33U; ++blockNum) {
+            for (uint32_t blockIdx = 0U; blockIdx < blockNum; ++blockIdx) {
+                const uint32_t blockFormer = blockFormers[caseIdx];
+                const uint32_t expected =
+                    blockIdx + 1U == blockNum ? blockTail : blockFormer;
+                if (StudentCurrentUnits(blockIdx, blockNum, blockFormer, blockTail) !=
+                    expected) {
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+"""
+
+
+def compile_tail_block_harness(
+    compiler: str, header: Path, source: Path, executable: Path
+) -> bool:
+    command = [
+        compiler,
+        "-std=c++17",
+        "-D__aicore__=",
+        "-I",
+        str(header.parent),
+        str(source),
+        "-o",
+        str(executable),
+    ]
+    try:
+        result = subprocess.run(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+            timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return result.returncode == 0
+
+
+def tail_block_semantics_pass(header: Path) -> bool:
+    compiler = shutil.which("c++") or shutil.which("g++")
+    if compiler is None:
+        print("[GATE FAIL] tail block semantics: no host C++ compiler was found")
+        return False
+
+    with tempfile.TemporaryDirectory(prefix="bitmap-grade-source-gate-") as temp_dir:
+        work = Path(temp_dir)
+        source = work / "tail_block_semantics.cpp"
+        executable = work / "tail_block_semantics"
+        source.write_text(TAIL_BLOCK_HARNESS, encoding="utf-8")
+        if not compile_tail_block_harness(compiler, header, source, executable):
+            print("[GATE FAIL] tail block semantics: CPU compile failed")
+            return False
+        try:
+            result = subprocess.run(
+                [str(executable)],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                check=False,
+                timeout=10,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            print("[GATE FAIL] tail block semantics: CPU check could not complete")
+            return False
+    passed = result.returncode == 0
+    print(f"[GATE {'PASS' if passed else 'FAIL'}] tail block semantics")
+    return passed
+
+
 def source_is_complete(header: Path) -> bool:
     if not header.is_file():
         print("[GATE FAIL] student_compute.h is missing")
@@ -100,16 +185,13 @@ def source_is_complete(header: Path) -> bool:
             re.search(r"return\s+blockFormer\s*\*\s*blockIdx\s*;", uncommented)
             or re.search(r"return\s+blockIdx\s*\*\s*blockFormer\s*;", uncommented)
         ),
-        "tail branch uses block index and count": all(
-            name in uncommented for name in ("blockIdx", "blockNum", "blockTail", "blockFormer")
-        ) and "?" in uncommented,
         "compute uses both inputs": bool(
             re.search(r"ComputeSetAnd\s*\(\s*\(z\)\s*,\s*\(x\)\s*,\s*\(y\)", uncommented)
         ),
     }
     for name, passed in checks.items():
         print(f"[{'GATE PASS' if passed else 'GATE FAIL'}] {name}")
-    return all(checks.values())
+    return all(checks.values()) and tail_block_semantics_pass(header)
 
 
 def locate_executable(build_dir: Path) -> Path:
