@@ -5,13 +5,19 @@ import os
 # 默认使用大模型模式
 USE_LLM = True
 
-# 填入你的API Key（从百度AI Studio获取）
-ERNIE_BOT_API_KEY = '60d2fa48f1f3f6f7dc8c2b636eac06da97f300ac'
+# API Key 从环境变量读取（在 .env 中配置 ERNIE_BOT_API_KEY，从百度 AI Studio 获取）
+ERNIE_BOT_API_KEY = os.getenv("ERNIE_BOT_API_KEY", "")
 
 class LLMParser:
     def __init__(self):
         self.bot = None
-        
+
+        if USE_LLM and not ERNIE_BOT_API_KEY:
+            print("[LLMParser] 未配置 ERNIE_BOT_API_KEY（.env），文心大模型不可用")
+            print("将回退到规则模式")
+            self.bot = None
+            return
+
         if USE_LLM:
             try:
                 # erniebot 0.5.9 的正确导入方式

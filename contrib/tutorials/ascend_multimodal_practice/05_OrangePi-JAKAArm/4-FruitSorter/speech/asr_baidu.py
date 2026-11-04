@@ -1,10 +1,16 @@
 import pyaudio
 import wave
+import os
 from aip import AipSpeech
 
-APP_ID = "119426775"
-API_KEY = "APuDVMhunwewuZnDgyWKbOM7"
-SECRET_KEY = "dFZS1KBfLkE9mFG2Nmjr2PhKBbaPJ1Q2"
+# 从环境变量读取（在 .env 中配置 BAIDU_APP_ID / BAIDU_API_KEY / BAIDU_SECRET_KEY）
+APP_ID = os.getenv("BAIDU_APP_ID", "")
+API_KEY = os.getenv("BAIDU_API_KEY", "")
+SECRET_KEY = os.getenv("BAIDU_SECRET_KEY", "")
+
+if not (APP_ID and API_KEY and SECRET_KEY):
+    print("[ASR] 未配置百度语音凭据（BAIDU_APP_ID/BAIDU_API_KEY/BAIDU_SECRET_KEY），"
+          "请在 .env 中填写；或改用主方案的华为云 SIS（见 README）")
 
 class BaiduASR:
     def __init__(self):
