@@ -16,14 +16,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import inspect
+import glob
+import json
+import os
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Literal, get_args
 
 import torch
 from torch import nn
 
-QuantizationMethods = str
-QUANTIZATION_METHODS: list[str] = []
+QuantizationMethods = Literal[
+    "compressed-tensors",
+]
+QUANTIZATION_METHODS: list[str] = list(get_args(QuantizationMethods))
 
 
 class QuantizeMethodBase(ABC):
@@ -102,6 +108,10 @@ class QuantizationConfig(ABC):
         """
         return None
 
+    @classmethod
+    def get_config_filenames(cls) -> list[str]:
+        return []
+
     @staticmethod
     def get_from_keys(config: dict[str, Any], keys: list[str]) -> Any:
         """Get a value from the model's quantization config."""
@@ -143,12 +153,74 @@ class QuantizationConfig(ABC):
 
 # Adapted from vllm.model_executor.layers.quantization.get_quantization_config
 def get_quantization_config(quantization: str) -> type[QuantizationConfig]:
-    raise ValueError(
-        f"Quantization method {quantization!r} is not included in the "
-        "Qwen3-1.7B chapters 01-04 tutorial subset."
-    )
+    if quantization not in QUANTIZATION_METHODS:
+        raise ValueError(f"Invalid quantization method: {quantization}")
+
+    # lazy import to avoid triggering `torch.compile` too early
+    from module.quantization.compressed_tensors.compressed_tensors import CompressedTensorsConfig
+
+    method_to_config: dict[str, type[QuantizationConfig]] = {
+        "compressed-tensors": CompressedTensorsConfig,
+    }
+    # Update the `method_to_config` with customized quantization methods.
+
+    return method_to_config[quantization]
 
 
 # Adapted from vllm.model_executor.model_loader.weight_utils.get_quant_config
 def get_quant_config(hf_config, quantization, model_path) -> QuantizationConfig:
-    return get_quantization_config(quantization)()
+
+    quant_cls = get_quantization_config(quantization)
+
+    # Read the quantization config from the HF model config, if available.
+    hf_quant_config = getattr(hf_config, "quantization_config",
+                              None)
+    # some vision model may keep quantization_config in their text_config
+    hf_text_config = getattr(hf_config, "text_config", None)
+    if hf_quant_config is None and hf_text_config is not None:
+        hf_quant_config = getattr(hf_text_config, "quantization_config", None)
+    if hf_quant_config is None:
+        # compressed-tensors uses a compressions_config
+        hf_quant_config = getattr(hf_config, "compression_config",
+                                  None)
+    if hf_quant_config is not None:
+        return quant_cls.from_config(hf_quant_config)
+
+    hf_folder = model_path
+
+    possible_config_filenames = quant_cls.get_config_filenames()
+
+    # The current quantization methods have no filename-based fallback config.
+    if not possible_config_filenames:
+        raise ValueError(
+            f"Cannot find the quantization config for {quantization}")
+
+    config_files = glob.glob(os.path.join(hf_folder, "*.json"))
+
+    quant_config_files = [
+        f for f in config_files if any(
+            f.endswith(x) for x in possible_config_filenames)
+    ]
+    if len(quant_config_files) == 0:
+        raise ValueError(
+            f"Cannot find the config file for {quantization}")
+    if len(quant_config_files) > 1:
+        raise ValueError(
+            f"Found multiple config files for {quantization}: "
+            f"{quant_config_files}")
+
+    quant_config_file = quant_config_files[0]
+    with open(quant_config_file) as f:
+        config = json.load(f)
+
+        if quantization == "bitsandbytes":
+            config["adapter_name_or_path"] = model_path
+        elif quantization == "modelopt":
+            if config["producer"]["name"] == "modelopt":
+                return quant_cls.from_config(config)
+            else:
+                raise ValueError(
+                    f"Unsupported quantization config"
+                    f" found for {quantization} in {f}.")
+
+    return quant_cls.from_config(config)

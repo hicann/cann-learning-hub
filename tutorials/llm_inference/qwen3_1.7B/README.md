@@ -1,9 +1,9 @@
 # Qwen3-1.7B 推理优化实践
-本教程以 `Qwen3-1.7B` 为例，展示如何在昇腾 NPU 上使用 cann-recipes-infer 离线推理框架完成 Baseline 推理、Profiling 分析，并验证 Dense RMSNorm NPU 融合路径的性能收益。课程主流程采用 recipes 的典型用法：查看并修改 `models/qwen/config/` 下的 YAML 配置，通过 `executor/scripts/infer.sh` 拉起离线推理，再从 `res/` 与 `prof/` 目录读取日志和性能产物。本目录只包含第 1 至第 4 章，不包含量化和自定义算子实践。
+本教程以 `Qwen3-1.7B` 为例，展示如何在昇腾 NPU 上使用 cann-recipes-infer 离线推理框架完成 Baseline 推理、Profiling 分析、Dense RMSNorm NPU 融合路径的性能收益验证，以及 W8A8 量化与自定义量化 matmul 算子 `QmmCustom` 的开发与接入。课程主流程采用 recipes 的典型用法：查看并修改 `models/qwen/config/` 下的 YAML 配置，通过 `executor/scripts/infer.sh` 拉起离线推理，再从 `res/` 与 `prof/` 目录读取日志和性能产物。本目录包含完整六章：第 1–4 章（Baseline、Profiling、Dense RMSNorm 融合）、第 5 章（W8A8 量化）与第 6 章（自定义算子开发与接入）。
 
 教程包含以下内容：
-- Notebooks：包含环境准备、YAML 修改、`infer.sh` 启动、Profiling 分析和 Dense RMSNorm NPU 融合路径 A/B 验证步骤，可在 GitCode 提供的轻量级 Notebook 上运行，也可在本地 Jupyter 环境中执行。
-- SRC：包含教程中使用的 recipes 推理入口、Qwen3-1.7B 模型适配代码、NPU 适配辅助函数、运行后处理工具与样例 prompt。
+- Notebooks：包含环境准备、YAML 修改、`infer.sh` 启动、Profiling 分析、Dense RMSNorm NPU 融合路径 A/B 验证，以及 W8A8 量化推理与自定义量化 matmul 算子 `QmmCustom` 的开发/编译/接入步骤，可在 GitCode 提供的轻量级 Notebook 上运行，也可在本地 Jupyter 环境中执行。
+- SRC：包含教程中使用的 recipes 推理入口、Qwen3-1.7B 模型适配代码、量化模块、自定义算子工程（`src/op_custom/`）、NPU 适配辅助函数、运行后处理工具与样例 prompt。
 
 ## 关于 cann-recipes-infer
 
@@ -11,10 +11,13 @@
 
 仓库以 `executor/` 提供统一推理执行框架，包含离线推理入口、在线推理服务、模型加载、配置解析、调度执行和通用工具模块；以 `models/` 提供不同模型的脚本与 YAML 配置；以 `module/` 和 `ops/` 提供基础层、量化模块以及 AscendC、PyPTO、TileLang 等算子样例。不同模型样例围绕昇腾 NPU 推理常见优化点展开，包括融合算子、图模式编译、Packed Sequence、Page Attention、TP/EP/DP/CP 等并行策略、多流并行、KV Cache 管理、W8A8/W8A8C8/混合量化，以及部分模型中的 MTP 投机推理能力。
 
-本课程采用该仓库的 recipes 工作流与 Qwen3-1.7B 单卡 BF16 推理所需代码子集，保留 YAML 配置、`executor/scripts/infer.sh` 启动方式、离线推理、Profiling 和 Dense RMSNorm NPU 融合验证链路。学习本课程后，可以继续到完整 `cann-recipes-infer` 仓库中查看更多模型和更复杂的部署优化实践。
+本课程采用该仓库的 recipes 工作流与 Qwen3-1.7B 单卡推理所需代码子集，保留 YAML 配置、`executor/scripts/infer.sh` 启动方式、离线推理、Profiling、Dense RMSNorm NPU 融合验证链路，以及 W8A8 量化与自定义量化 matmul 算子实践。学习本课程后，可以继续到完整 `cann-recipes-infer` 仓库中查看更多模型和更复杂的部署优化实践。
+
+> **CANN 版本要求**：本教程（含第 5 章 W8A8 量化与第 6 章自定义算子 `QmmCustom`）基于 **CANN 9.0.0** 验证，请使用 CANN 9.0.0 环境运行。
 
 >- **注意：**
->- 教程支持在CANNLab中执行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）。环境需预置 CANN、`torch` 和 `torch_npu`；公共 `requirements.txt` 只补充推理所需 Python 依赖，不包含 `torch`/`torch_npu`。第 2 章会按本目录 [`requirements.txt`](./requirements.txt) 检查 1-4 章统一使用的 Python 依赖，仅安装缺失项或替换不匹配的版本；第 3、4 章只检查并复用该环境，不再安装依赖。本地运行前请先执行 `/usr/local/Ascend/ascend-toolkit/set_env.sh` 或等价 CANN 环境脚本。
+>- 教程支持在CANNLab中执行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）。环境需预置 CANN、`torch` 和 `torch_npu`；公共 `requirements.txt` 只补充推理所需 Python 依赖，不包含 `torch`/`torch_npu`。第 2 章会按本目录 [`requirements.txt`](./requirements.txt) 检查 1-6 章统一使用的 Python 依赖，仅安装缺失项或替换不匹配的版本；第 3-6 章只检查并复用该环境，不再安装依赖。本地运行前请先执行 `/usr/local/Ascend/ascend-toolkit/set_env.sh` 或等价 CANN 环境脚本。
+>- 第 5、6 章需使用 **CANN 9.0.0**；第 5 章会用 AMCT 将 BF16 权重导出为 W8A8 量化权重（额外占用磁盘与耗时），第 6 章会编译自定义算子并接入量化模型。
 >- `Qwen3-1.7B` BF16 权重约占 3.4GB，短上下文单卡验证建议至少使用 16GB HBM NPU，磁盘空间建议至少预留 10GB。教程默认关闭 thinking 模式并使用短输出，降低在线环境资源压力。
 >- 模型权重使用 `Qwen/Qwen3-1.7B`。首次运行会通过 ModelScope 下载并缓存权重；如环境中已准备本地权重，可设置 `QWEN3_1_7B_MODEL_PATH=/path/to/Qwen3-1.7B`。
 
@@ -52,10 +55,12 @@ Notebook 环境中按顺序打开并 Run All：
 2. `02_baseline_inference.ipynb`
 3. `03_profiling_analysis.ipynb`
 4. `04_npu_optimization.ipynb`
+5. `05_quantization_qwen3_1_7b.ipynb`
+6. `06_custom_matmul_operator_development_and_integration_with_qwen3_1_7b.ipynb`
 
 首次执行 `02_baseline_inference.ipynb` 的 Baseline 推理 cell 会开始下载并缓存 `Qwen/Qwen3-1.7B` 权重；如果已设置 `QWEN3_1_7B_MODEL_PATH`，则直接使用本地权重目录。
 
-第 2 章的环境准备单元会定位仓库目录、创建 `Sources/model_inference_optimization/qwen3_1.7B` 运行目录、导入 CANN 环境，并按公共 `requirements.txt` 检查统一依赖。若所有包均满足固定版本，会完全跳过 `pip install`；否则仅由 pip 安装缺失项或替换不匹配版本。第 3、4 章不包含安装操作。手工操作时，进入 `src/inference_scripts/recipe_qwen3_1_7b/models/qwen/config/` 修改 YAML；Notebook 中会把对应 YAML 复制到 `Sources/.../recipe_yaml/`，只填入当前环境可用的模型路径。启动推理时会显式展示并执行：
+第 2 章的环境准备单元会定位仓库目录、创建 `Sources/model_inference_optimization/qwen3_1.7B` 运行目录、导入 CANN 环境，并按公共 `requirements.txt` 检查统一依赖。若所有包均满足固定版本，会完全跳过 `pip install`；否则仅由 pip 安装缺失项或替换不匹配版本。第 3-6 章不包含安装操作。手工操作时，进入 `src/inference_scripts/recipe_qwen3_1_7b/models/qwen/config/` 修改 YAML；Notebook 中会把对应 YAML 复制到 `Sources/.../recipe_yaml/`，只填入当前环境可用的模型路径。启动推理时会显式展示并执行：
 
 ```bash
 cd src/inference_scripts/recipe_qwen3_1_7b
@@ -83,8 +88,10 @@ export QWEN3_1_7B_MODEL_PATH=/path/to/Qwen3-1.7B
 
 - 本实践的 Notebook、推理脚本和 Qwen3 NPU 适配辅助代码位于本目录 `src/`。
 - recipes 推理框架子集位于 `src/inference_scripts/recipe_qwen3_1_7b/`，保留 Qwen3-1.7B 单卡离线推理所需的 executor、model loader、Qwen 模型文件与公共线性层代码。
-- recipes YAML 位于 `src/inference_scripts/recipe_qwen3_1_7b/models/qwen/config/`：`qwen3_1_7b_1tp.yaml` 用于 Baseline，`qwen3_1_7b_1tp_profile.yaml` 用于 Profiling，`qwen3_1_7b_1tp_add_rmsnorm.yaml` 用于 Dense RMSNorm NPU 融合验证。
+- recipes YAML 位于 `src/inference_scripts/recipe_qwen3_1_7b/models/qwen/config/`：`qwen3_1_7b_1tp.yaml` 用于 Baseline，`qwen3_1_7b_1tp_profile.yaml` 用于 Profiling，`qwen3_1_7b_1tp_add_rmsnorm.yaml` 用于 Dense RMSNorm NPU 融合验证，`qwen3_1_7b_a8w8_1tp.yaml` 用于 W8A8 量化推理（第 5、6 章）。
 - Qwen dense 模型实现位于 `src/inference_scripts/recipe_qwen3_1_7b/models/qwen/models/modeling_qwen.py`，基于 Qwen2/Qwen3 dense 结构适配 NPU 推理。
+- 量化模块位于 `src/inference_scripts/recipe_qwen3_1_7b/module/quantization/`（compressed-tensors W8A8 实现），供第 5、6 章的量化推理使用。
+- 自定义量化 matmul 算子工程位于 `src/op_custom/qmm_custom/`（`CMakeLists.txt`），第 6 章由 `06_*.ipynb` 写入并编译 `qmm_custom.asc`，编译产物为 `libascendc_ops.so`。
 - Qwen3 NPU norm 精度检查位于 `src/qwen3_npu_adaptation.py`；第 4 章 A/B 只切换 recipes Qwen3-1.7B 路径中是否启用 `torch_npu.npu_rms_norm` 与 `torch_npu.npu_add_rms_norm` 融合。
 - 模型权重使用 `Qwen/Qwen3-1.7B`；首次运行会通过默认下载通道获取权重，已准备本地权重时可通过 `QWEN3_1_7B_MODEL_PATH` 指定。
 
@@ -92,8 +99,10 @@ export QWEN3_1_7B_MODEL_PATH=/path/to/Qwen3-1.7B
 
 <table>
 <tr><th>Notebook</th><th>在线体验</th><th>状态</th></tr>
-<tr><td>1. 章节介绍</td><td rowspan="4">在CANNLab中运行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）</td><td>✅ 已发布</td></tr>
+<tr><td>1. 章节介绍</td><td rowspan="6">在CANNLab中运行（<a href="../../../docs/CANNLab_env_experience_guide.md">CANNLab运行教程指导书</a>）</td><td>✅ 已发布</td></tr>
 <tr><td>2. Baseline 跑通</td><td>✅ 已发布</td></tr>
 <tr><td>3. Profiling 分析</td><td>✅ 已发布</td></tr>
 <tr><td>4. Dense RMSNorm NPU 融合路径优化验证</td><td>✅ 已发布</td></tr>
+<tr><td>5. W8A8 量化模型推理与 Profiling 分析</td><td>✅ 已发布</td></tr>
+<tr><td>6. 自定义量化 matmul 算子开发并接入模型</td><td>✅ 已发布</td></tr>
 </table>
