@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="440" viewBox="0 0 1000 440" role="img" aria-labelledby="title desc">
+  <title id="title">矢量算子的显式数据流</title>
+  <desc id="desc">输入数据从全局内存GM搬入AI Core本地存储UB，由Vector单元读取并计算，结果写入UB，再搬出至GM。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 1 L8 5 L0 9" fill="none" stroke="#42617a" stroke-width="1.8"/></marker>
+  </defs>
+  <rect width="1000" height="440" rx="16" fill="#ffffff"/>
+  <g font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif" text-anchor="middle">
+    <rect x="24" y="30" width="260" height="380" rx="16" fill="#f0f5fb" stroke="#b8cbe0" stroke-width="2"/>
+    <text x="154" y="70" font-size="22" font-weight="bold" fill="#243d56">Global Memory（GM）</text>
+    <text x="154" y="99" font-size="16" fill="#52677d">全局内存</text>
+    <rect x="57" y="139" width="194" height="64" rx="10" fill="#ffffff" stroke="#7097bd" stroke-width="2"/>
+    <text x="154" y="179" font-size="21" fill="#243d56">输入数据</text>
+    <rect x="57" y="299" width="194" height="64" rx="10" fill="#ffffff" stroke="#7097bd" stroke-width="2"/>
+    <text x="154" y="339" font-size="21" fill="#243d56">输出数据</text>
+    <rect x="459" y="30" width="517" height="380" rx="16" fill="#f5faf8" stroke="#a8cebd" stroke-width="2"/>
+    <text x="717" y="70" font-size="23" font-weight="bold" fill="#244f40">AI Core</text>
+    <rect x="483" y="100" width="238" height="286" rx="12" fill="#e7f3ee" stroke="#a8cebd"/>
+    <text x="602" y="126" font-size="16" fill="#345f50">Local Memory · UB</text>
+    <rect x="505" y="139" width="194" height="64" rx="10" fill="#ffffff" stroke="#62a68b" stroke-width="2"/>
+    <text x="602" y="179" font-size="21" fill="#244f40">本地输入数据</text>
+    <rect x="505" y="299" width="194" height="64" rx="10" fill="#ffffff" stroke="#62a68b" stroke-width="2"/>
+    <text x="602" y="339" font-size="21" fill="#244f40">本地计算结果</text>
+    <rect x="764" y="211" width="184" height="80" rx="12" fill="#fff3dc" stroke="#d0a04b" stroke-width="2"/>
+    <text x="856" y="244" font-size="21" font-weight="bold" fill="#725019">Vector</text>
+    <text x="856" y="272" font-size="18" fill="#725019">矢量计算</text>
+    <g fill="none" stroke="#42617a" stroke-width="2.5" marker-end="url(#arrow)">
+      <path d="M251 171 H505"/>
+      <path d="M505 331 H251"/>
+      <path d="M699 171 H856 V211"/>
+      <path d="M856 291 V331 H699"/>
+    </g>
+    <text x="376" y="150" font-size="19" fill="#314e66">① 数据搬入</text>
+    <text x="376" y="310" font-size="19" fill="#314e66">③ 数据搬出</text>
+    <text x="818" y="151" font-size="17" fill="#314e66">② 读取并计算</text>
+    <text x="818" y="360" font-size="17" fill="#314e66">结果写入UB</text>
+  </g>
+</svg>
