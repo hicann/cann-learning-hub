@@ -84,9 +84,9 @@ static ge::graphStatus TilingFunc(gert::TilingContext *context)
 namespace ge {
 static graphStatus InferShape(gert::InferShapeContext *context)
 {
-    const gert::Shape *intputShape = context->GetInputShape(0);
+    const gert::Shape *inputShape = context->GetInputShape(0);
     gert::Shape *outputShape = context->GetOutputShape(0);
-    *outputShape = *intputShape;
+    *outputShape = *inputShape;
     return GRAPH_SUCCESS;
 }
 

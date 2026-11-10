@@ -66,9 +66,9 @@ class SqueezeBlock(nn.Module):
         return out * x
 
 class MobileBlock(nn.Module):
-    def __init__(self, in_channels, out_channels, kernal_size, stride, nonLinear, SE, exp_size):
+    def __init__(self, in_channels, out_channels, kernel_size, stride, nonLinear, SE, exp_size):
         super().__init__()
-        padding = (kernal_size - 1) // 2
+        padding = (kernel_size - 1) // 2
         self.use_connect = stride == 1 and in_channels == out_channels
         self.SE = SE
         activation = nn.ReLU if nonLinear == "RE" else h_swish
@@ -76,7 +76,7 @@ class MobileBlock(nn.Module):
             nn.Conv2d(in_channels, exp_size, 1, 1, 0, bias=False),
             nn.BatchNorm2d(exp_size), activation(inplace=True))
         self.depth_conv = nn.Sequential(
-            nn.Conv2d(exp_size, exp_size, kernal_size, stride, padding, groups=exp_size),
+            nn.Conv2d(exp_size, exp_size, kernel_size, stride, padding, groups=exp_size),
             nn.BatchNorm2d(exp_size))
         if self.SE:
             self.squeeze_block = SqueezeBlock(exp_size)
