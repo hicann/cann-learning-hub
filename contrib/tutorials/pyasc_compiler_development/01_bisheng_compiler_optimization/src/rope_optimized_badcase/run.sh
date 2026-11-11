@@ -32,6 +32,7 @@ source "${ASCEND_HOME_PATH}/set_env.sh" || die "set_env.sh 执行失败"
 
 if [ "${TORCH_ONLY}" -eq 1 ]; then
     echo "=== PyTorch 通路验证 ==="
+    mkdir -p build
     cd build
     python3 ../scripts/test_torch.py || die "PyTorch 通路验证失败"
     echo "=== 完成 ==="
