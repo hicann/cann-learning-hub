@@ -161,6 +161,7 @@ Notebook 会通过 `npu-smi info -t board` 自动读取 `Chip Name` 和 `NPU Nam
 
    ```
    python3 ../scripts/preprocess.py
+   cd ..
    ```
 
    脚本会扫描当前目录下的 `*.jpg`、`*.jpeg`、`*.png`、`*.bmp`（跳过 `*_out.jpg`），对每张图片执行 letterbox 缩放至 640x640（填充色 114）、BGR→RGB、归一化到 [0,1]、HWC→CHW 并扩展 batch 维，输出 FP32 BIN 文件（shape `[1, 3, 640, 640]`）及 `_info.txt`（记录 `scale`、`pad_left`、`pad_top`、`orig_h`、`orig_w`，供后处理反算坐标）。
@@ -227,10 +228,10 @@ bash scripts/run.sh --model=model/yolov13.om --input=data/bus.bin --warmup-runs=
 
 ### 4. （可选）可视化检测结果
 
-在结果文件所在目录执行：
+从案例根目录切换到结果文件所在目录后执行：
 
 ```
-cd ../data/
+cd data/
 python3 ../scripts/draw_boxes.py
 ```
 

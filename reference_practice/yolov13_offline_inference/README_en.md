@@ -164,6 +164,7 @@ The Notebook automatically reads `Chip Name` and `NPU Name` via `npu-smi info -t
 
    ```
    python3 ../scripts/preprocess.py
+   cd ..
    ```
 
    The script scans `*.jpg`, `*.jpeg`, `*.png`, `*.bmp` files in the current directory (skipping `*_out.jpg`). For each image it performs letterbox resizing to 640x640 (pad color 114), BGR→RGB conversion, normalization to [0,1], HWC→CHW transposition, and batch-dimension expansion, then outputs an FP32 BIN file (shape `[1, 3, 640, 640]`) and an `_info.txt` file recording `scale`, `pad_left`, `pad_top`, `orig_h`, and `orig_w` for coordinate back-projection in post-processing.
@@ -230,10 +231,10 @@ bash scripts/run.sh --model=model/yolov13.om --input=data/bus.bin --warmup-runs=
 
 ### 4. (Optional) Visualize detection results
 
-Run in the directory containing the result files:
+From the sample root, enter the directory containing the result files and run:
 
 ```
-cd ../data/
+cd data/
 python3 ../scripts/draw_boxes.py
 ```
 
