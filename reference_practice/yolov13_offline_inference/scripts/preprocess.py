@@ -83,11 +83,19 @@ def process(input_path):
 if __name__ == "__main__":
     count_ok = 0
     count_ng = 0
-    for fname in os.listdir("./"):
+    inputs = {}
+    for fname in sorted(os.listdir("./")):
         if not fname.lower().endswith((".jpg", ".jpeg", ".png", ".bmp")):
             continue
         if fname.lower().endswith("_out.jpg"):
             continue
+        stem = fname.rsplit(".", 1)[0]
+        if stem in inputs:
+            logging.error("%s and %s share the output %s.bin; rename one input", inputs[stem], fname, stem)
+            raise SystemExit(1)
+        inputs[stem] = fname
+
+    for fname in inputs.values():
         logging.info("processing %s ...", fname)
         ret = process(fname)
         if ret == 0:
