@@ -181,8 +181,8 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
 ```
     uint8_t *xHost, *yHost, *zHost;
     uint8_t *xDevice, *yDevice, *zDevice;
-    size_t inputByteSize = 8 * 32 * sizeof(uint32_t);
-    size_t outputByteSize = 8 * 32 * sizeof(uint32_t);
+    size_t inputByteSize = 8 * 32 * sizeof(float);
+    size_t outputByteSize = 8 * 32 * sizeof(float);
     CHECK_ACL(aclrtMallocHost((void **)(&xHost), inputByteSize));
     CHECK_ACL(aclrtMallocHost((void **)(&yHost), inputByteSize));
     CHECK_ACL(aclrtMallocHost((void **)(&zHost), outputByteSize));
@@ -190,11 +190,12 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
     CHECK_ACL(aclrtMalloc((void **)&yDevice, inputByteSize, ACL_MEM_MALLOC_HUGE_FIRST));
     CHECK_ACL(aclrtMalloc((void **)&zDevice, outputByteSize, ACL_MEM_MALLOC_HUGE_FIRST));
 
-    uint32_t *xHostAsUint32 = reinterpret_cast<uint32_t*>(xHost);
-    uint32_t *yHostAsUint32 = reinterpret_cast<uint32_t*>(yHost);
+    float *xHostAsFloat = reinterpret_cast<float*>(xHost);
+    float *yHostAsFloat = reinterpret_cast<float*>(yHost);
+    float *zHostAsFloat = reinterpret_cast<float*>(zHost);
     for (int i = 0; i < 8 * 32; i++) {
-        xHostAsUint32[i] = 1;
-        yHostAsUint32[i] = 2;
+        xHostAsFloat[i] = 1;
+        yHostAsFloat[i] = 2;
     }
 
     CHECK_ACL(aclrtMemcpy(xDevice, inputByteSize, xHost, inputByteSize, ACL_MEMCPY_HOST_TO_DEVICE));
@@ -219,7 +220,7 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
 ```
     aclrtFuncHandle funcHandle = nullptr;
 
-    CHECK_ACL(aclrtBinaryGetFunction(binHandle, funcName, &funcHandle)); // 获取算子核函数句柄
+    CHECK_ACL(aclrtBinaryGetFunction(binHandle, "add_custom", &funcHandle)); // 获取算子核函数句柄
 
     aclrtArgsHandle argsHandle = nullptr;
     aclrtParamHandle paramHandle = nullptr;
@@ -246,19 +247,19 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
 ```
     printf("x:");
     for (int i = 0; i < 32; i++) {
-        printf(" %u", xHostAsUint32[i]);
+        printf(" %.1f", xHostAsFloat[i]);
     }
     printf("\n");
 
     printf("y:");
     for (int i = 0; i < 32; i++) {
-        printf(" %u", yHostAsUint32[i]);
+        printf(" %.1f", yHostAsFloat[i]);
     }
     printf("\n");
 
     printf("z:");
     for (int i = 0; i < 32; i++) {
-        printf(" %u", zHostAsUint32[i]);
+        printf(" %.1f", zHostAsFloat[i]);
     }
     printf("\n");
 ```
