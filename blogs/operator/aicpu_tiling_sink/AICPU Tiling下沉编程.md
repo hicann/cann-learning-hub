@@ -64,6 +64,7 @@
 
      ```cpp
      // abs.aicpu
+     template<typename T>
      __global__ __aicpu__ int32_t TemplateAicpuKernel(T *args)
      {
          // 计算每个核需要处理的数据量，将结果保存在tiling地址对应的device空间中
@@ -269,6 +270,7 @@
   - AICPU 也可使用`AscendC::printf`打印变量调试。
 
     ```cpp
+    template<typename T>
     __global__ __aicpu__ int32_t TemplateAicpuKernel(T *args)
     {
         int32_t var = 0;
