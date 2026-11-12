@@ -71,16 +71,16 @@ int CreateAclTensor(const std::vector<T> &hostData, const std::vector<int64_t> &
     return SUCCESS;
 }
 
-void DestroyResources(std::vector<void *> tensors, std::vector<void *> deviceAddrs, aclrtStream stream,
-                      int32_t deviceId, void *workspaceAddr = nullptr)
+void DestroyResources(const std::vector<aclTensor **> &tensors, const std::vector<void **> &deviceAddrs,
+                      aclrtStream stream, int32_t deviceId, void *workspaceAddr = nullptr)
 {
     // Release aclTensor and device
     for (uint32_t i = 0; i < tensors.size(); i++) {
-        if (tensors[i] != nullptr) {
-            aclDestroyTensor(reinterpret_cast<aclTensor *>(tensors[i]));
+        if (*tensors[i] != nullptr) {
+            aclDestroyTensor(*tensors[i]);
         }
-        if (deviceAddrs[i] != nullptr) {
-            aclrtFree(deviceAddrs[i]);
+        if (*deviceAddrs[i] != nullptr) {
+            aclrtFree(*deviceAddrs[i]);
         }
     }
     if (workspaceAddr != nullptr) {
@@ -119,8 +119,8 @@ int main(int argc, char **argv)
         inputYHostData[i] = aclFloatToFloat16(2.0);
         outputZHostData[i] = aclFloatToFloat16(0.0);
     }
-    std::vector<void *> tensors = {inputX, inputY, outputZ};
-    std::vector<void *> deviceAddrs = {inputXDeviceAddr, inputYDeviceAddr, outputZDeviceAddr};
+    std::vector<aclTensor **> tensors = {&inputX, &inputY, &outputZ};
+    std::vector<void **> deviceAddrs = {&inputXDeviceAddr, &inputYDeviceAddr, &outputZDeviceAddr};
     // Create inputX aclTensor
     ret = CreateAclTensor(inputXHostData, inputXShape, &inputXDeviceAddr, aclDataType::ACL_FLOAT16, &inputX);
     CHECK_RET(ret == ACL_SUCCESS, DestroyResources(tensors, deviceAddrs, stream, deviceId); return FAILED);
