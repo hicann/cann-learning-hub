@@ -122,7 +122,7 @@
 | **D12 全天** | 第 22 讲 | 案例分析与实践：矢量算子 Softmax 如何逐步实现极致性能 | 优化路径案例剖析（多核 / TilingKey 分支 / Double Buffering / 流水优化 / UB 复用 / OnlineSoftmax）；复现与超越 | 2h 案例 + 4h 实践, [PPT](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3/a2a3_softmax_membase_optimization_2h.pptx) |
 | **D13 全天** | 第 23 讲 | 案例分析与实践：Matmul 算子如何逐步实现极致性能 | 分块 / 数据布局 / 流水优化路径剖析；复现与超越 | 2h 案例 + 4h 实践, 讲义建设中 |
 | **D14 全天** | 第 24 讲 | 案例分析与实践：融合算子（Matmul+LeakyReLU 等）如何逐步实现极致性能 | 优化路径案例剖析（Mix 融合 / 二维分核 / 蛇形窗口 SWAT 调度 / 低阶 API + L1 多缓冲 / C/V 深度融合 / L1 Bank 冲突规避）；复现与超越 | 2h 案例 + 4h 实践, [PPT](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3/a2a3_matmul_leakyrelu_fusion_optimization.pptx) |
-| **D15 上午** | 第 25 讲 | CANN Python 算子编程：PyPTO 算子编程（理论） | PyPTO 与 Ascend C 的关系；Host / Kernel 分工与 MPMD 编程范式；计算图与泳道图；Hello World 执行流程 | 3h 理论, 讲义建设中 |
+| **D15 上午** | 第 25 讲 | CANN Python 算子编程：PyPTO 算子编程（理论） | PyPTO 与 Ascend C 的关系；Host / Kernel 分工与 MPMD 编程范式；计算图与泳道图；Hello World 执行流程 | 3h 理论, [PPT](../00_atomic_courses/04_ops_programming/02_pypto/01_pypto_basic_3.1.pptx) |
 | **D15 下午** | 第 26 讲 | PyPTO 算子编程实践 | PyPTO 环境体验 → elementwise / matmul 等基础算子 Python 实现 → 判题（CANN-LearningHub + CANNJudge 练习） | 3h 纯实践, 共用第 25 讲讲义 |
 
 ### 第 4 周（W4）：结业大作业与社区实践（D16~D20）
