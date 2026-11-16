@@ -55,6 +55,7 @@ contrib/tutorials/
 | [PyAsc 编译原理课程](./pyasc_compiler_development) | 以 PyAsc 开源编译框架为载体的编译原理课程，覆盖 Python 前端、MLIR（ASC-IR）到 Ascend C 代码生成的完整编译链路 | 哈尔滨工业大学 | 2026.09 | ✅ 已发布 |
 | [面向国产智算平台的智能计算系统（Qwen 算子开发）](./qwen_ops) | 围绕 Qwen2.5 五类核心算子（RMSNorm、RoPE、SwiGLU、GEMM、GQA）的 Ascend C 开发与优化实验，并统一接入 Qwen2.5-0.5B 模型验证 | 东南大学 | 2026.09 | ✅ 已发布 |
 | [并行计算：基于鲲鹏与昇腾的实践](./parallel_computing_practices_on_kunpeng_ascend) | 基于鲲鹏通用算力与昇腾智算算力，覆盖 ARM NEON SIMD、Pthreads、OpenMP、Ascend C 与 AscendCL 的并行计算和异构开发实践 | 深圳职业技术大学 | 2026.09 | ✅ 已迁移 |
+| [AscendCBook2：Ascend C 异构并行程序设计（第二版）](./ascendcbook2) | 面向昇腾算子开发者与异构并行计算学习者的系统化教材，覆盖异构计算、昇腾 AI 处理器、CANN、Ascend C 的 SIMD/SIMT 编程、编译运行、调试调优、典型算子案例及工程生态，共 20 章 | 哈尔滨工业大学 | 2026.11 | 持续建设 |
 
 ---
 
