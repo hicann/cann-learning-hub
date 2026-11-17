@@ -305,6 +305,7 @@ for B in batch_sizes:
 
     # Step 2: Warmup
     _ = torch.bmm(a, b)
+    _ = torch.stack([torch.matmul(a[i], b[i]) for i in range(B)])
     torch.npu.synchronize()
 
     # Step 3: torch.bmm 计时
