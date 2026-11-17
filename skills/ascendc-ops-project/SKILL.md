@@ -307,7 +307,7 @@ tiling->blockDim = blockDim;
 uint32_t blockIdx_ = AscendC::GetBlockIdx();
 uint32_t outerPerCore = (outerLength + blockDim - 1) / blockDim;
 uint32_t outerStart = blockIdx_ * outerPerCore;
-uint32_t outerEnd = std::min(outerStart + outerPerCore, outerLength);
+uint32_t outerEnd = (outerStart + outerPerCore) < outerLength ? (outerStart + outerPerCore) : outerLength ;
 ```
 
 ### 2.5 原型定义 dtype 数量问题
@@ -499,87 +499,76 @@ OP_ADD(Op);
 #include "kernel_operator.h"
 #include "op_tiling.h"
 
-template<typename T>
+template <typename T>
 class KernelOp {
 public:
     __aicore__ inline KernelOp() {}
-    
-    __aicore__ inline void Init(GM_ADDR x, GM_ADDR y, 
-                                uint32_t totalLength, uint32_t blockDim)
+
+    __aicore__ inline void Init(GM_ADDR x,GM_ADDR y, uint32_t totalLength,tilingData.blockDim)
     {
-        this->totalLength = totalLength;
-        this->blockDim = blockDim;
         blockIdx_ = AscendC::GetBlockIdx();
+        uint32_t blockNum = AscendC::GetBlockNum();
+        coreLength_ = totalLength / blockNum;
+
+        uint64_t coreStart =static_cast<uint64_t>(blockIdx_) *coreLength_;
+
+        xGm_.SetGlobalBuffer(reinterpret_cast<__gm__ T *>(x) + coreStart,coreLength_);
+
+        yGm_.SetGlobalBuffer(reinterpret_cast<__gm__ T *>(y) + coreStart, coreLength_);
+            
+        tileNum_ = coreLength_ / TILE_LENGTH;
         
-        xGm.SetGlobalBuffer((__gm__ T *)x, totalLength);
-        yGm.SetGlobalBuffer((__gm__ T *)y, totalLength);
-    }
-    
+        pipe_.InitBuffer(ioQueue_, BUFFER_NUM,TILE_LENGTH * sizeof(T));}
+
     __aicore__ inline void Process()
     {
-        uint32_t lengthPerCore = (totalLength + blockDim - 1) / blockDim;
-        uint32_t start = blockIdx_ * lengthPerCore;
-        uint32_t end = (start + lengthPerCore < totalLength) ? 
-                       (start + lengthPerCore) : totalLength;
-        
-        for (uint32_t i = start; i < end; i++) {
-            T value = xGm.GetValue(i);
-            // 计算逻辑
-            yGm.SetValue(i, value);
+        for (uint32_t i = 0; i < tileNum_; ++i) {
+            uint32_t offset = i * TILE_LENGTH;
+            CopyIn(offset);
+            CopyOut(offset);
         }
     }
 
 private:
-    AscendC::GlobalTensor<T> xGm;
-    AscendC::GlobalTensor<T> yGm;
-    uint32_t totalLength;
-    uint32_t blockDim;
-    uint32_t blockIdx_;
+    __aicore__ inline void CopyIn(uint32_t offset)
+    {
+        AscendC::LocalTensor<T> localTensor =ioQueue_.AllocTensor<T>();
+
+        AscendC::DataCopyExtParams copyParams{1,TILE_LENGTH * sizeof(T),0, 0,0 };
+
+        AscendC::DataCopyPadExtParams<T> padParams{false, 0,0, static_cast<T>(0)};
+
+        AscendC::DataCopyPad(localTensor,xGm_[offset],copyParams,padParams);
+
+        ioQueue_.EnQue(localTensor);
+    }
+
+    __aicore__ inline void CopyOut(uint32_t offset)
+    {
+        AscendC::LocalTensor<T> localTensor =ioQueue_.DeQue<T>();
+
+        AscendC::DataCopyExtParams copyParams{1, TILE_LENGTH * sizeof(T), 0,0,0};
+
+        AscendC::DataCopyPad( yGm_[offset], localTensor,copyParams);
+
+        ioQueue_.FreeTensor(localTensor);
+    }
+
+private:
+    static constexpr uint32_t TILE_LENGTH = 256;
+    static constexpr uint32_t BUFFER_NUM = 2;
+
+    AscendC::TPipe pipe_;
+
+    AscendC::TQue<AscendC::QuePosition::VECIN,1> ioQueue_;
+
+    AscendC::GlobalTensor<T> xGm_;
+    AscendC::GlobalTensor<T> yGm_;
+
+    uint32_t coreLength_ = 0;
+    uint32_t tileNum_ = 0;
+    uint32_t blockIdx_ = 0;
 };
-
-// Float16 特化（需要 float32 中间计算）
-template<>
-__aicore__ inline void KernelOp<half>::Process()
-{
-    uint32_t lengthPerCore = (totalLength + blockDim - 1) / blockDim;
-    uint32_t start = blockIdx_ * lengthPerCore;
-    uint32_t end = (start + lengthPerCore < totalLength) ? 
-                   (start + lengthPerCore) : totalLength;
-    
-    for (uint32_t i = start; i < end; i++) {
-        half value_half = xGm.GetValue(i);
-        float value = (float)value_half;
-        // 使用 float 计算
-        yGm.SetValue(i, (half)value);
-    }
-}
-
-extern "C" __global__ __aicore__ void op_kernel(GM_ADDR x, GM_ADDR y, 
-                                                GM_ADDR workspace, GM_ADDR tiling)
-{
-    REGISTER_TILING_DEFAULT(TilingData);
-    GET_TILING_DATA_WITH_STRUCT(TilingData, tilingData, tiling);
-    
-    int32_t dtype = tilingData.dtype;
-    
-    if (dtype == 0) {  // DT_FLOAT
-        KernelOp<float> op;
-        op.Init(x, y, tilingData.totalLength, tilingData.blockDim);
-        op.Process();
-    } else if (dtype == 1) {  // DT_FLOAT16
-        KernelOp<half> op;
-        op.Init(x, y, tilingData.totalLength, tilingData.blockDim);
-        op.Process();
-    } else if (dtype == 3) {  // DT_INT32
-        KernelOp<int32_t> op;
-        op.Init(x, y, tilingData.totalLength, tilingData.blockDim);
-        op.Process();
-    } else if (dtype == 2) {  // DT_INT8
-        KernelOp<int8_t> op;
-        op.Init(x, y, tilingData.totalLength, tilingData.blockDim);
-        op.Process();
-    }
-}
 ```
 
 ---
