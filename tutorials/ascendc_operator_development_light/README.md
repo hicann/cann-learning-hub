@@ -38,57 +38,78 @@
 
 > **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)，并选择对应 CANN 版本的文档。
 
+## 课程导航
 
-### 第一章：Ascend C算子开发入门基础
+课程按以下八章组织。每章先阅读章节介绍，再按编号学习。请将 Notebook 所在章节目录作为工作目录，避免相对资源路径解析错误。
 
-| Notebook | Link | 状态 |
-|--|--|--|
-| 1.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.01_chapter_intro.ipynb) | ✅ 已发布 |
-| 1.2 人工智能与算子基础 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.02_ai_and_operator_basics.ipynb) | ✅ 已发布 |
-| 1.3 CANN架构与昇腾NPU原理 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.03_cann_arch_ascend_npu_principle.ipynb) | ✅ 已发布 |
-| 1.4 Ascend C算子开发的基本概念 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.04_ascend_c_op_dev_basic_concepts.ipynb) | ✅ 已发布 |
-| 1.5 章节练习 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.05_chapter_practice.ipynb) | ✅ 已发布 |
+### 第1章：算子开发基本概念（什么是算子，什么是CANN，什么是 AscendC）
 
-### 第二章：Ascend C算子开发基础知识
+| Notebook | 在线体验 | 状态 |
+| --- | --- | --- |
+| [01.01 章节介绍](01_basic_overview/01.01_chapter_intro.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.01_chapter_intro.ipynb) | ✅ 已发布 |
+| [01.02 人工智能与算子基础](01_basic_overview/01.02_ai_and_operator_basics.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.02_ai_and_operator_basics.ipynb) | ✅ 已发布 |
+| [01.03 CANN架构与昇腾NPU原理](01_basic_overview/01.03_cann_arch_ascend_npu_principle.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.03_cann_arch_ascend_npu_principle.ipynb) | ✅ 已发布 |
+| [01.04 Ascend C算子开发基本概念](01_basic_overview/01.04_ascend_c_op_dev_basic_concepts.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.04_ascend_c_op_dev_basic_concepts.ipynb) | ✅ 已发布 |
+| [01.05 Ascend C Hello World](01_basic_overview/01.05_HelloWorld.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.05_HelloWorld.ipynb) | ✅ 已发布 |
+| [01.06 章节练习](01_basic_overview/01.06_chapter_practice.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/01_basic_overview/01.06_chapter_practice.ipynb) | ✅ 已发布 |
 
-| Notebook | Link | 状态 |
-|--|--|--|
-| 2.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.01_chapter_intro.ipynb) | ✅ 已发布 |
-| 2.2 Ascend C的"Hello world" | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.02_HelloWorld.ipynb) | ✅ 已发布 |
-| 2.3 SIMD编程概述与Ascend C编程接口概述 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.03_simd_programming_and_ascendc_api_overview.ipynb) | ✅ 已发布 |
-| 2.4 基于Ascend C TPipe/TQue 框架开发一个矢量算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.04_vector_operator_development_with_tpipe_tque.ipynb) | ✅ 已发布 |
-| 2.5 基于静态 Tensor 开发一个矢量算子 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.05_introduction_to_vector_operator_based_on_static_tensor.ipynb) | ✅ 已发布 |
-| 2.6 泛化Tiling设计 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.06_generalized_tiling_design.ipynb) | ✅ 已发布 |
-| 2.7 PyTorch框架下Kernel直调 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.07_kernel_pytorch_call.ipynb) | ✅ 已发布 |
-| 2.8 核函数实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.08_kernel_function_practice.ipynb) | ✅ 已发布 |
-| 2.9 Vector算子开发实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_AscendC_basic/02.09_vector_operator_practice.ipynb) | ✅ 已发布 |
+### 第2章：Ascend C SIMD 编程基础与矢量算子开发（A2/A3）
 
-### 第三章：简单算子实践
+| Notebook | 在线体验 | 状态 |
+| --- | --- | --- |
+| [02.01 章节介绍](02_simd_basics_and_vector_operator/02.01_chapter_intro.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_simd_basics_and_vector_operator/02.01_chapter_intro.ipynb) | ✅ 已发布 |
+| [02.02 SIMD编程概述与Ascend C编程接口概述](02_simd_basics_and_vector_operator/02.02_simd_programming_and_ascendc_api_overview.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_simd_basics_and_vector_operator/02.02_simd_programming_and_ascendc_api_overview.ipynb) | ✅ 已发布 |
+| [02.03 TPipe/TQue编程框架与矢量算子开发](02_simd_basics_and_vector_operator/02.03_vector_operator_development_with_tpipe_tque.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_simd_basics_and_vector_operator/02.03_vector_operator_development_with_tpipe_tque.ipynb) | ✅ 已发布 |
+| [02.04 自主分配内存与同步管理](02_simd_basics_and_vector_operator/02.04_manual_memory_allocation_and_sync_management.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_simd_basics_and_vector_operator/02.04_manual_memory_allocation_and_sync_management.ipynb) | ✅ 已发布 |
+| [02.05 核函数实践](02_simd_basics_and_vector_operator/02.05_kernel_function_practice.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_simd_basics_and_vector_operator/02.05_kernel_function_practice.ipynb) | ✅ 已发布 |
+| [02.06 泛化Tiling设计](02_simd_basics_and_vector_operator/02.06_generalized_tiling_design.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_simd_basics_and_vector_operator/02.06_generalized_tiling_design.ipynb) | ✅ 已发布 |
+| [02.07 Vector算子开发实践](02_simd_basics_and_vector_operator/02.07_vector_operator_practice.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/02_simd_basics_and_vector_operator/02.07_vector_operator_practice.ipynb) | ✅ 已发布 |
 
-| Notebook | Link | 状态 |
-|--|--|--|
-| 3.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.01_chapter_intro.ipynb) | ✅ 已发布 |
-| 3.2 矩阵乘法介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.02_introduction_to_matrix_multiplication.ipynb) | ✅ 已发布 |
-| 3.3 基于高阶API的矩阵乘算子开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.03_matrix_multiplication_operator_development_with_high_level_api.ipynb) | ✅ 已发布 |
-| 3.4 融合算子概念介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.04_fused_operator_concept_intro.ipynb) | ✅ 已发布 |
-| 3.5 CV融合算子开发 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.05_cv_fused_operator_development.ipynb) | ✅ 已发布 |
-| 3.6 Matmul算子实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.06_matmul_practice.ipynb) | ✅ 已发布 |
-| 3.7 CV融合算子实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.07_cv_fused_operator_practice.ipynb) | ✅ 已发布 |
-| 3.8 PyTorch调用算子综合实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simple_operator_practice/03.08_pytorch_operator_practice.ipynb) | ✅ 已发布 |
+### 第3章：Ascend C SIMD Cube（矩阵）算子编程
 
-### 第四章：Ascend C算子调试调优
+| Notebook | 在线体验 | 状态 |
+| --- | --- | --- |
+| [03.01 章节介绍](03_simd_cube_operator/03.01_chapter_intro.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simd_cube_operator/03.01_chapter_intro.ipynb) | ✅ 已发布 |
+| [03.02 矩阵乘法介绍](03_simd_cube_operator/03.02_introduction_to_matrix_multiplication.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simd_cube_operator/03.02_introduction_to_matrix_multiplication.ipynb) | ✅ 已发布 |
+| [03.03 高阶API矩阵乘算子开发](03_simd_cube_operator/03.03_matrix_multiplication_operator_development_with_high_level_api.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simd_cube_operator/03.03_matrix_multiplication_operator_development_with_high_level_api.ipynb) | ✅ 已发布 |
+| [03.04 Matmul综合实践](03_simd_cube_operator/03.04_matmul_practice.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/03_simd_cube_operator/03.04_matmul_practice.ipynb) | ✅ 已发布 |
 
-| Notebook | Link | 状态 |
-|--|--|--|
-| 4.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_debug/04.01_chapter_intro.ipynb) | ✅ 已发布 |
-| 4.2 NPU域上板调试 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_debug/04.02_NPU_On-Board_Debugging.ipynb) | ✅ 已发布 |
-| 4.3 算子性能优化工具 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_debug/04.03_profiling_tool_usage.ipynb) | ✅ 已发布 |
-| 4.4 算子仿真调优 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_debug/04.04_simulation_analysis.ipynb) | ✅ 已发布 |
+### 第4章：Ascend C SIMD 融合算子编程
 
-### 第五章：Ascend C算子进阶特性
+| Notebook | 在线体验 | 状态 |
+| --- | --- | --- |
+| [04.01 章节介绍](04_simd_mix_operator/04.01_chapter_intro.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_simd_mix_operator/04.01_chapter_intro.ipynb) | ✅ 已发布 |
+| [04.02 融合算子概念介绍](04_simd_mix_operator/04.02_fused_operator_concept_intro.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_simd_mix_operator/04.02_fused_operator_concept_intro.ipynb) | ✅ 已发布 |
+| [04.03 CV融合算子开发](04_simd_mix_operator/04.03_cv_fused_operator_development.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_simd_mix_operator/04.03_cv_fused_operator_development.ipynb) | ✅ 已发布 |
+| [04.04 CV融合算子实践](04_simd_mix_operator/04.04_cv_fused_operator_practice.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/04_simd_mix_operator/04.04_cv_fused_operator_practice.ipynb) | ✅ 已发布 |
 
-| Notebook | Link | 状态 |
-|--|--|--|
-| 5.1 章节介绍 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/05_advanced_features/05.01_chapter_intro.ipynb) | ✅ 已发布 |
-| 5.2 Aclgraph入图编译与运行 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/05_advanced_features/05.02_aclgraph_compile_launch.ipynb) | ✅ 已发布 |
-| 5.3 算子性能优化最佳实践 | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/05_advanced_features/05.03_best_practice.ipynb) | ✅ 已发布 |
+### 第5章：Ascend C 调试与性能分析
+
+| Notebook | 在线体验 | 状态 |
+| --- | --- | --- |
+| [05.01 章节介绍](05_debug_and_profile/05.01_chapter_intro.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/05_debug_and_profile/05.01_chapter_intro.ipynb) | ✅ 已发布 |
+| [05.02 NPU上板调试](05_debug_and_profile/05.02_NPU_On-Board_Debugging.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/05_debug_and_profile/05.02_NPU_On-Board_Debugging.ipynb) | ✅ 已发布 |
+| [05.03 算子上板调优](05_debug_and_profile/05.03_profiling_tool_usage.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/05_debug_and_profile/05.03_profiling_tool_usage.ipynb) | ✅ 已发布 |
+| [05.04 算子仿真调优](05_debug_and_profile/05.04_simulation_analysis.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/05_debug_and_profile/05.04_simulation_analysis.ipynb) | ✅ 已发布 |
+
+### 第6章：Ascend C SIMD 最佳实践（典型算子与极致性能）
+
+| Notebook | 在线体验 | 状态 |
+| --- | --- | --- |
+| [06.01 章节介绍](06_simd_best_practices/06.01_chapter_intro.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/06_simd_best_practices/06.01_chapter_intro.ipynb) | ✅ 已发布 |
+| [06.02 算子性能优化最佳实践](06_simd_best_practices/06.02_best_practice.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/06_simd_best_practices/06.02_best_practice.ipynb) | ✅ 已发布 |
+
+### 第7章：Ascend C PyTorch 单算子调用
+
+| Notebook | 在线体验 | 状态 |
+| --- | --- | --- |
+| [07.01 章节介绍](07_pytorch_single_operator_call/07.01_chapter_intro.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/07_pytorch_single_operator_call/07.01_chapter_intro.ipynb) | ✅ 已发布 |
+| [07.02 PyTorch框架下Kernel直调](07_pytorch_single_operator_call/07.02_kernel_pytorch_call.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/07_pytorch_single_operator_call/07.02_kernel_pytorch_call.ipynb) | ✅ 已发布 |
+| [07.03 PyTorch调用算子综合实践](07_pytorch_single_operator_call/07.03_pytorch_operator_practice.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/07_pytorch_single_operator_call/07.03_pytorch_operator_practice.ipynb) | ✅ 已发布 |
+
+### 第8章：Ascend C 算子入图（PyTorch、AclGraph）
+
+| Notebook | 在线体验 | 状态 |
+| --- | --- | --- |
+| [08.01 章节介绍](08_operator_graph_integration/08.01_chapter_intro.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/08_operator_graph_integration/08.01_chapter_intro.ipynb) | ✅ 已发布 |
+| [08.02 AclGraph入图编译与运行](08_operator_graph_integration/08.02_aclgraph_compile_launch.ipynb) | [在线体验](https://ai.gitcode.com/user/username/notebookcann?repoUrl=https://gitcode.com/cann/cann-learning-hub.git&ttl=120&diskSize=40Gi&path=tutorials/ascendc_operator_development_light&scanFilePath=tutorials/ascendc_operator_development_light/08_operator_graph_integration/08.02_aclgraph_compile_launch.ipynb) | ✅ 已发布 |
