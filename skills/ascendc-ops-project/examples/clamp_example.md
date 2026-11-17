@@ -188,7 +188,15 @@ public:
         pipe.InitBuffer(outQueueTmp, BUFFER_NUM, this->tileLength * sizeof(float));
     }
 
-    __aicore__ inline void Process()
+    __aicore__ inline void Process() // float 类型处理 
+    {
+        for (int32_t i = 0; i < this->tileNum * BUFFER_NUM; i++) {
+            CopyIn(i);
+            Compute(i);
+            CopyOut(i);
+        }
+    }
+    __aicore__ inline void Process2() // int32 类型处理
     {
         for (int32_t i = 0; i < this->tileNum * BUFFER_NUM; i++) {
             CopyIn(i);
@@ -220,13 +228,14 @@ __global__ __aicore__ void clamp(GM_ADDR x, GM_ADDR y, GM_ADDR workspace, GM_ADD
     
     KernelClamp<D_T_X, D_T_Y> op;
     op.Init(x, y, workspace, tilingData.totalLength, tilingData.tileNum, tilingData.min);
-
-    // 根据模板参数选择处理逻辑
-    if constexpr (std::is_same_v<D_T_X, float> && std::is_same_v<D_T_Y, float>) {
-        op.Process();  // float 类型处理
-    } else {
-        op.Process2(); // int32 类型处理
-    }
+    // 根据模板参数选择处理逻辑	 
+    if constexpr (std::is_same_v<D_T_X, float> && std::is_same_v<D_T_Y, float>) {	 
+         op.Process();  // float 类型处理 
+     } else { 
+         op.Process2(); // int32 类型处理 
+     }
+    
+  
 }
 ```
 
