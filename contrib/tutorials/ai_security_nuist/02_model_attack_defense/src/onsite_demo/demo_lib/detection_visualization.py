@@ -280,7 +280,6 @@ def show_strip_light_summary_table(result: dict[str, Any]):
         column_order=LIGHT_STRIP_SUMMARY_COLUMNS,
         figsize=(11.8, 2.8),
     )
-    return fig
 
 
 def plot_strip_light_target_probability(result: dict[str, Any]):
