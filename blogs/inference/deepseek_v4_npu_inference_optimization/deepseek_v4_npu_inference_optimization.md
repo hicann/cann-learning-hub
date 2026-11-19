@@ -84,7 +84,15 @@ mHC是对于传统残差连接的扩展，它将`hidden_state`从一路扩展到
 
 - 在DeepSeek-V4中，通过多种算法有效降低KV Cache占用的内存。SWA仅需保留`sliding_window`大小的KV Cache；在压缩Cache的层中，KV Cache中存储压缩后的KV，内存大小为：
 
+$$
+\mathrm{batch\_size}\times (\mathrm{kv\_length} // \mathrm{compress\_ratio} ) \times \mathrm{head\_dim} \times \mathrm{storage\_bytes} \times \mathrm{num\_compress\_layers}
+$$
+
 - 未满足压缩长度，暂时不被压缩的`kv_state`和对应的`score_state`，会被保存在`remainder`中。因此`remainder`的最大大小为：
+
+$$
+\mathrm{batch\_size}\times (\mathrm{compress\_ratio - 1}) \times \mathrm{compress\_dim} \times \mathrm{storage\_bytes} \times \mathrm{num\_compress\_layers}
+$$
 
 - 在压缩倍率为4的层中（CSA），采用了LI进一步稀疏KV Cache，因此与DeepSeek-3.2类似，LI需要保留对应的Indexer Cache。为了与KV Cache的压缩对应，在LI中也通过Compressor模块进行了4倍压缩，因此Indexer Cache的存储数据量也为压缩后的长度，如当前的`kv_length`不满足压缩长度，则会暂存在`indexer_kv_state`和`indexer_score_state`中。
 
@@ -190,7 +198,15 @@ DeepSeek-V4依然提供了原生的Multi-Token Prediction(MTP)机制，MTP机制
 
 结合本模型的Ring Buffer设计，只需要提前申请更大的Buffer，就可以自然实现额外缓存的动作。需要缓存的Cache大小可以以`compress_ratio`个Token为一组进行统计，具体多少组Token的计算公式为
 
+$$
+\mathrm{num\_ratio\_group} = (1 \ \mathrm{if} \ \mathrm{next\_n}\  == 0 \ \mathrm{else}\ 2) + \mathrm{overlap}
+$$
+
 其中`overlap`在CSA等于1，在HCA等于0。`num_ratio_group`里预留了余数Token和可能需要重新压缩的前序Token。每个Batch需要的Cache Block个数为
+
+$$
+\mathrm{ceil}(\mathrm{num\_ratio\_group} * \mathrm{ratio} \ / \ \mathrm{block\_size})
+$$
 
 ### MTP Spec Model方案
 
