@@ -80,7 +80,7 @@ URMA（Unified Remote Memory Access）负责将"写远端一段内存"描述为�
 
 SHMEM 使用 PGAS（Partitioned Global Address Space）模型。所有 PE 同步调用`aclshmem_malloc(size)` 分配相同大小的对象，返回的指针就是对称内存指针。仓内 Device 代码把这种指针变量普遍命名为 `gva`（global virtual address）；本文后续统一用"对称指针"或"对称内存"指代它，以避免读者把它当作某个具体对象的名字。
 
-对称语义来自 SHMEM 的 heap 布局约定（见 `docs/principles.md`）：
+对称语义来自 SHMEM 的 heap 布局约定（见 shmem 仓 [docs/principles/init_finalize.md](https://gitcode.com/cann/shmem/blob/master/docs/principles/init_finalize.md)）：
 
 - 每个 rank 持有自己的 `heap_base[i]`，`aclshmem_malloc` 从该 heap 内分配。
 
@@ -214,7 +214,7 @@ AIV直驱URMA 在三个维度上改变了通信组织方式：
 | 传统问题 | AIV直驱URMA 的处理方式 |
 | --- | --- |
 | Host launch 和同步降低流水连续性 | 通信在 kernel 内发起，Host 只负责初始化和启动 |
-| 远端地址要 Host 拼装 | 对称内存对象同名同地址，本地传指针 + pe 即可 |
+| 远端地址要 Host 拼装 | 对称内存对象同名同偏移，本地传指针 + pe 即可 |
 | barrier 粒度太粗 | 使用 aclshmemx_udma_quiet(pe)、signal 或 AMO counter 表达局部完成 |
 
 收益来源可归纳为三点：减少 Host round trip、用对称内存的同名约定省掉远端地址拼装、把同步粒度从全局 barrier 降到 PE 或 tile 级别。
@@ -266,7 +266,7 @@ aclshmemx_udma_put_nbi(dst, src, work_buf, elem_size, dst_pe);
 
 - `dst` 是本地的对称指针 + 目标 `pe`；因为所有 PE 的 heap 在虚拟地址空间等距，RMA 接口按 `heap_base[pe] + offset` 找到远端的同一对象。
 
-- 所有 PE 同步调用`aclshmem_malloc(size)` 分配相同大小，否则相邻 heap 的等距步长被破坏，`aclshmem_ptr` 公式失效（见 `docs/principles.md` 与 `docs/debug/Troubleshooting_FAQs.md`）。
+- 所有 PE 同步调用`aclshmem_malloc(size)` 分配相同大小，否则相邻 heap 的等距步长被破坏，`aclshmem_ptr` 公式失效（见 shmem 仓 [docs/principles/init_finalize.md](https://gitcode.com/cann/shmem/blob/master/docs/principles/init_finalize.md) 与 [docs/debug/Troubleshooting_FAQs.md](https://gitcode.com/cann/shmem/blob/master/docs/debug/Troubleshooting_FAQs.md)）。
 
 ## 7. 编程模型：AIV 直驱通信的分工
 
@@ -328,7 +328,7 @@ aclrtMemcpy(gva + my_pe * msg_size, msg_size, host_input,
 
 `option_attr.data_op_engine_type = ACLSHMEM_DATA_OP_UDMA` 是把 SHMEM 数据面切到 UDMA 后端的关键开关，没设会与 `aclshmemx_udma_*` 接口不匹配。Host 还需要完成通信域、jetty / EID、device state 等初始化（由 `aclshmemx_init_attr` 一并完成）。
 
-> 强制约定：所有 PE 同步调用 `aclshmem_malloc` 且分配相同 size，否则相邻 heap 的等距步长被破坏，远端写入会落到错位地址（见 `docs/debug/Troubleshooting_FAQs.md`）。
+> 强制约定：所有 PE 同步调用 `aclshmem_malloc` 且分配相同 size，否则相邻 heap 的等距步长被破坏，远端写入会落到错位地址（见 shmem 仓 [docs/debug/Troubleshooting_FAQs.md](https://gitcode.com/cann/shmem/blob/master/docs/debug/Troubleshooting_FAQs.md)）。
 
 ### 第二步：Device 内获取 PE 信息
 
