@@ -1,38 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="830" height="420" viewBox="0 0 830 420">
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="600" viewBox="0 0 1160 600" role="img" aria-labelledby="title desc">
+<title id="title">相邻两轮 tile 的正向与反向流水同步</title>
+<desc id="desc">时间从左向右。第 i 轮 MTE2 搬入通过 MTE2_V 同步到 Add，Add 通过 V_MTE3 同步到 MTE3 搬出。反向事件 V_MTE2 从第 i 轮 Add 连接到第 i+1 轮搬入，防止覆盖未读完的输入；MTE3_V 从第 i 轮搬出连接到第 i+1 轮 Add，防止覆盖未读完的输出。每条箭头由源流水 SetFlag 连接到目的流水 WaitFlag。</desc>
 <defs>
 <style>
-.bg{fill:#ffffff}.lane{fill:#f9fafb;stroke:#e5e7eb;stroke-width:1.2;rx:12;ry:12}.box{fill:#f7fbff;stroke:#337ab7;stroke-width:1.4;rx:10;ry:10}.store{fill:#fff8e6;stroke:#d99a00;stroke-width:1.4;rx:10;ry:10}.compute{fill:#f2fff4;stroke:#3a9d45;stroke-width:1.4;rx:10;ry:10}.sync{fill:#fff3f3;stroke:#c74a4a;stroke-width:1.4;rx:10;ry:10}.warn{fill:#fff7ed;stroke:#ea580c;stroke-width:1.2;rx:10;ry:10}.txt{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:15px;fill:#1f2933}.small{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:12px;fill:#4b5563}.title{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;font-weight:700;fill:#111827}.laneTitle{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:14px;font-weight:700;fill:#374151}.arrow{stroke:#374151;stroke-width:1.6;fill:none;marker-end:url(#arrow)}.dash{stroke:#6b7280;stroke-width:1.4;fill:none;stroke-dasharray:5 4;marker-end:url(#arrow)}.danger{stroke:#ea580c;stroke-width:1.4;fill:none;stroke-dasharray:4 3;marker-end:url(#arrow-orange)}
+.bg{fill:#fff}.lane{fill:#f9fafb;stroke:#e5e7eb;stroke-width:1.2}.copy{fill:#f7fbff;stroke:#337ab7;stroke-width:1.5}.compute{fill:#f2fff4;stroke:#3a9d45;stroke-width:1.5}
+text{font-family:Arial,'Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#1f2933}.title{font-size:22px;font-weight:700}.txt{font-size:16px}.small{font-size:14px;fill:#4b5563}.lane-title{font-size:16px;font-weight:700}.event{font-size:16px;font-weight:700;fill:#b54141}.reverse-label{font-size:16px;font-weight:700;fill:#2563a6}
+.time{stroke:#374151;stroke-width:1.5;fill:none;marker-end:url(#arrow)}.forward{stroke:#b54141;stroke-width:2;fill:none;marker-end:url(#forward-arrow)}.reverse{stroke:#2563a6;stroke-width:2;stroke-dasharray:6 4;fill:none;marker-end:url(#reverse-arrow)}
 </style>
-<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#374151"/></marker>
-<marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ea580c"/></marker>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#374151"/></marker>
+<marker id="forward-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b54141"/></marker>
+<marker id="reverse-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2563a6"/></marker>
 </defs>
-<rect class="bg" x="0" y="0" width="830" height="420"/>
-<text class="title" x="28" y="34">核内并行流水与同步关系</text>
-<text class="small" x="76" y="68">时间推进方向</text><path class="arrow" d="M160 64 H750"/>
+<rect class="bg" width="1160" height="600"/>
+<text class="title" x="28" y="36">核内流水同步：既要等数据就绪，也要等 buffer 可复用</text>
+<text class="small" x="28" y="67">单 buffer：相邻两轮复用同一组 xLocal / yLocal / zLocal；仅示意依赖，不代表实际耗时。</text>
+<text class="small" x="170" y="100">时间向右</text><path class="time" d="M245 95 H1110"/>
 
-<rect class="lane" x="28" y="88" width="775" height="75"/>
-<text class="laneTitle" x="48" y="130">MTE2 搬入流水</text>
-<rect class="box" x="190" y="104" width="105" height="45"/><text class="txt" x="208" y="125">DataCopy</text><text class="small" x="215" y="140">(GM->UB)</text>
-<rect class="sync" x="300" y="104" width="120" height="45"/><text class="txt" x="330" y="125">SetFlag</text><text class="small" x="335" y="140">MTE2_V</text>
+<rect class="lane" x="28" y="120" width="1104" height="76" rx="10"/>
+<rect class="lane" x="28" y="270" width="1104" height="76" rx="10"/>
+<rect class="lane" x="28" y="420" width="1104" height="76" rx="10"/>
+<text class="lane-title" x="45" y="163">MTE2 搬入</text>
+<text class="lane-title" x="45" y="313">V 计算</text>
+<text class="lane-title" x="45" y="463">MTE3 搬出</text>
 
-<rect class="lane" x="28" y="183" width="775" height="75"/>
-<text class="laneTitle" x="48" y="225">V 计算流水</text>
-<rect class="sync" x="300" y="200" width="120" height="45"/><text class="txt" x="330" y="220">WaitFlag</text><text class="small" x="335" y="235">MTE2_V</text>
-<path class="dash" d="M360 148 V199"/>
-<rect class="compute" x="425" y="200" width="100" height="45"/><text class="txt" x="460" y="226">Add</text>
-<rect class="sync" x="530" y="200" width="120" height="45"/><text class="txt" x="560" y="220">SetFlag</text><text class="small" x="565" y="235">V_MTE3</text>
+<!-- Operation boxes are ordered in time within each hardware pipeline. -->
+<rect class="copy" x="180" y="130" width="130" height="56" rx="8"/>
+<text class="txt" x="245" y="153" text-anchor="middle">第 i 轮搬入</text><text class="small" x="245" y="175" text-anchor="middle">GM → UB 输入</text>
+<rect class="compute" x="360" y="280" width="120" height="56" rx="8"/>
+<text class="txt" x="420" y="303" text-anchor="middle">第 i 轮 Add</text><text class="small" x="420" y="325" text-anchor="middle">读输入，写输出</text>
+<rect class="copy" x="540" y="430" width="130" height="56" rx="8"/>
+<text class="txt" x="605" y="453" text-anchor="middle">第 i 轮搬出</text><text class="small" x="605" y="475" text-anchor="middle">UB 输出 → GM</text>
 
-<rect class="lane" x="28" y="278" width="775" height="75"/>
-<text class="laneTitle" x="48" y="320">MTE3 搬出流水</text>
-<rect class="sync" x="530" y="295" width="120" height="45"/><text class="txt" x="560" y="315">WaitFlag</text><text class="small" x="565" y="330">V_MTE3</text>
-<path class="dash" d="M590 243 V294"/>
+<rect class="copy" x="610" y="130" width="140" height="56" rx="8"/>
+<text class="txt" x="680" y="153" text-anchor="middle">第 i+1 轮搬入</text><text class="small" x="680" y="175" text-anchor="middle">覆盖输入 buffer</text>
+<rect class="compute" x="810" y="280" width="140" height="56" rx="8"/>
+<text class="txt" x="880" y="303" text-anchor="middle">第 i+1 轮 Add</text><text class="small" x="880" y="325" text-anchor="middle">覆盖输出 buffer</text>
+<rect class="copy" x="990" y="430" width="130" height="56" rx="8"/>
+<text class="txt" x="1055" y="453" text-anchor="middle">第 i+1 轮搬出</text><text class="small" x="1055" y="475" text-anchor="middle">UB 输出 → GM</text>
 
-<rect class="box" x="655" y="295" width="105" height="45"/><text class="txt" x="670" y="315">DataCopy</text><text class="small" x="675" y="330">(UB->GM)</text>
+<!-- Forward events: SetFlag after producer, WaitFlag before consumer. -->
+<path class="forward" d="M310 186 L360 280"/>
+<text class="event" x="240" y="226">MTE2_V</text><text class="small" x="203" y="247">输入已搬完，才能计算</text>
+<path class="forward" d="M480 336 L540 430"/>
+<text class="event" x="377" y="376">V_MTE3</text><text class="small" x="340" y="397">结果已写好，才能搬出</text>
+<path class="forward" d="M750 186 L810 280"/>
+<text class="event" x="825" y="226">MTE2_V</text>
+<path class="forward" d="M950 336 L990 430"/>
+<text class="event" x="1000" y="376">V_MTE3</text>
 
-<path class="danger" d="M250 148 C250 200 450 140 475 200"/>
-<text class="small" x="160" y="185">没有 MTE2_V：V 可能提前读取 UB</text>
-<path class="danger" d="M475 243 C475 295 675 260 700 295"/>
-<text class="small" x="600" y="273">没有 V_MTE3：MTE3 可能提前搬出结果</text>
-<rect class="warn" x="40" y="366" width="750" height="34"/>
-<text class="small" x="59" y="387">要点：AI Core 内部流水可并行发射。读写同一片 Local Memory 时，需要用 SetFlag/WaitFlag 或 PipeBarrier 显式建立指令先后关系。</text>
+<!-- Reverse events advance time while returning to an earlier pipeline. -->
+<path class="reverse" d="M480 280 L610 186"/>
+<text class="reverse-label" x="460" y="208">V_MTE2</text>
+<text class="small" x="550" y="258">上轮输入已读完</text>
+<path class="reverse" d="M670 430 L810 336"/>
+<text class="reverse-label" x="660" y="359">MTE3_V</text>
+<text class="small" x="728" y="406">上轮输出已读完</text>
+
+<path class="forward" d="M40 526 H90"/><text class="small" x="102" y="531">正向：同一轮数据就绪</text>
+<path class="reverse" d="M340 526 H390"/><text class="small" x="402" y="531">反向：下一轮 buffer 可复用</text>
+<text class="small" x="710" y="531">每条箭头：源流水 SetFlag → 目的流水 WaitFlag</text>
+<text class="small" x="40" y="569">首轮不等待反向事件；末轮不再设置供下一轮使用的反向事件；退出前执行 PipeBarrier&lt;PIPE_ALL&gt;()。</text>
 </svg>
