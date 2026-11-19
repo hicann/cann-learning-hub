@@ -87,6 +87,33 @@ def test_existing_project_not_overwritten(tmp_path):
         extract_package(b'', tmp_path)
 
 
+def test_failed_extraction_leaves_no_partial_project_and_allows_retry(tmp_path):
+    data = io.BytesIO()
+    with zipfile.ZipFile(data, 'w', compression=zipfile.ZIP_STORED) as archive:
+        archive.writestr('good.txt', 'good content')
+        archive.writestr('bad.txt', 'bad content')
+    valid = data.getvalue()
+    broken = bytearray(valid)
+    broken[broken.index(b'bad content')] = ord('X')
+
+    with pytest.raises(zipfile.BadZipFile):
+        extract_package(bytes(broken), tmp_path)
+    assert list(tmp_path.iterdir()) == []
+
+    assert Path(extract_package(valid, tmp_path)).joinpath('good.txt').read_text() == 'good content'
+    assert (tmp_path / 'project.zip').read_bytes() == valid
+
+
+def test_invalid_template_metadata_leaves_no_partial_project(tmp_path):
+    data = io.BytesIO()
+    with zipfile.ZipFile(data, 'w') as archive:
+        archive.writestr('kernel.asc', '// kernel')
+
+    with pytest.raises(ValueError, match='files'):
+        extract_package(data.getvalue(), tmp_path, {'_id': 'problem'}, {'files': 'invalid'})
+    assert list(tmp_path.iterdir()) == []
+
+
 def test_ambiguous_registry_files_rejected(tmp_path):
     (tmp_path / 'op_kernel').mkdir()
     for p in ('a_tiling.h', 'b_tiling.h'):
@@ -192,3 +219,38 @@ def test_empty_svg_does_not_leave_partial_image(tmp_path):
     with pytest.raises(ValueError, match='为空'):
         save_captcha_svg('')
     assert list(tmp_path.iterdir()) == []
+
+
+def test_failed_publication_removes_zip_and_allows_retry(tmp_path, monkeypatch):
+    data = io.BytesIO()
+    with zipfile.ZipFile(data, 'w') as archive:
+        archive.writestr('kernel.asc', '// kernel')
+    valid = data.getvalue()
+
+    def fail_publication(_source, _destination):
+        raise OSError('publication failed')
+
+    with monkeypatch.context() as scoped:
+        scoped.setattr(Path, 'rename', fail_publication)
+        with pytest.raises(OSError, match='publication failed'):
+            extract_package(valid, tmp_path)
+    assert list(tmp_path.iterdir()) == []
+    assert Path(extract_package(valid, tmp_path)).joinpath('kernel.asc').read_text() == '// kernel'
+    assert (tmp_path / 'project.zip').read_bytes() == valid
+
+
+def test_package_created_during_extraction_is_preserved(tmp_path, monkeypatch):
+    data = io.BytesIO()
+    with zipfile.ZipFile(data, 'w') as archive:
+        archive.writestr('kernel.asc', '// kernel')
+    original_extractall = zipfile.ZipFile.extractall
+
+    def extract_and_create_package(archive, destination):
+        original_extractall(archive, destination)
+        (tmp_path / 'project.zip').write_bytes(b'existing package')
+
+    monkeypatch.setattr(zipfile.ZipFile, 'extractall', extract_and_create_package)
+    with pytest.raises(ValueError, match='覆盖'):
+        extract_package(data.getvalue(), tmp_path)
+    assert (tmp_path / 'project.zip').read_bytes() == b'existing package'
+    assert list(tmp_path.iterdir()) == [tmp_path / 'project.zip']

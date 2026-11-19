@@ -5,6 +5,7 @@ import io
 import json
 import re
 import stat
+import tempfile
 import zipfile
 from pathlib import Path, PurePosixPath
 
@@ -38,10 +39,37 @@ def template_files(template):
     return result
 
 
+def _write_project_manifest(staged_project, problem, template):
+    files = template_files(template or {})
+    (staged_project / MANIFEST).write_text(json.dumps({
+        'version': 1, 'problem_id': problem['_id'],
+        'code_template': problem.get('code_template'),
+        'files': [{'path': path, 'editable': item['editable'],
+                   'sha256': hashlib.sha256(item['content'].encode('utf-8')).hexdigest()}
+                  for path, item in files.items()],
+    }, ensure_ascii=False, indent=2), encoding='utf-8')
+
+
+def _publish_package(content, package, staged_project, destination):
+    if destination.exists() or package.exists():
+        raise ValueError('输出目录已有 project 或 project.zip，请选择新目录以免覆盖代码')
+    created_package = False
+    try:
+        with package.open('xb') as stream:
+            created_package = True
+            stream.write(content)
+        staged_project.rename(destination)
+    except BaseException:
+        if created_package:
+            package.unlink(missing_ok=True)
+        raise
+
+
 def extract_package(content, output_dir, problem=None, template=None):
     output = Path(output_dir)
     destination = output / 'project'
-    if destination.exists() or (output / 'project.zip').exists():
+    package = output / 'project.zip'
+    if destination.exists() or package.exists():
         raise ValueError('输出目录已有 project 或 project.zip，请选择新目录以免覆盖代码')
     with zipfile.ZipFile(io.BytesIO(content)) as archive:
         total = 0
@@ -57,18 +85,13 @@ def extract_package(content, output_dir, problem=None, template=None):
             if total > 256 * 1024 * 1024:
                 raise ValueError('解压工程超过 256 MiB，请手动检查下载包')
         output.mkdir(parents=True, exist_ok=True)
-        (output / 'project.zip').write_bytes(content)
-        destination.mkdir()
-        archive.extractall(destination)
-    if problem is not None:
-        files = template_files(template or {})
-        (destination / MANIFEST).write_text(json.dumps({
-            'version': 1, 'problem_id': problem['_id'],
-            'code_template': problem.get('code_template'),
-            'files': [{'path': path, 'editable': item['editable'],
-                       'sha256': hashlib.sha256(item['content'].encode('utf-8')).hexdigest()}
-                      for path, item in files.items()],
-        }, ensure_ascii=False, indent=2), encoding='utf-8')
+        with tempfile.TemporaryDirectory(prefix='.cannjudge-', dir=output) as staging_dir:
+            staged_project = Path(staging_dir) / 'project'
+            staged_project.mkdir()
+            archive.extractall(staged_project)
+            if problem is not None:
+                _write_project_manifest(staged_project, problem, template)
+            _publish_package(content, package, staged_project, destination)
     return str(destination)
 
 
