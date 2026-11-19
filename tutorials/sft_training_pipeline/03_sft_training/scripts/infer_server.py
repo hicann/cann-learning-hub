@@ -12,7 +12,25 @@ import json
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+import sys
+
 import torch
+
+# torchvision may be installed but incompatible with the NPU torch build
+# (C++ ops like torchvision::nms are missing).  transformers 5.x unconditionally
+# imports torchvision.io for every model, which crashes on import.  Block the
+# import so transformers' is_vision_available() returns False and skips the
+# vision code path.  Qwen3 is a text-only model.
+#
+# sys.modules["torchvision"] = None is the standard import-blocking sentinel:
+# importlib.util.find_spec sees module is None and returns None, so
+# is_torchvision_available() evaluates to False.  (A placeholder module with
+# __spec__ = None would instead raise ValueError on CPython 3.12+.)
+for _mod in list(sys.modules):
+    if _mod == "torchvision" or _mod.startswith("torchvision."):
+        del sys.modules[_mod]
+sys.modules["torchvision"] = None
+
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
