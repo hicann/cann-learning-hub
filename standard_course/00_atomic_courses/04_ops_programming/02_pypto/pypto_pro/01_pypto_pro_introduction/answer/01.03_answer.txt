@@ -1,0 +1,5 @@
+01.03 课后练习答案
+
+1. B。Cube 计算从 L0A Buffer 与 L0B Buffer 读取矩阵操作数，累加结果写入 L0C Buffer；数据路径为 GM → L1 → L0A/L0B → Cube → L0C → GM。
+2. MTE2（搬入）；MTE3（搬出）。AIV 的 GM 与 UB 搬运主要使用这两个搬运单元；Reg 计算另用 DMA 在 UB 与 Vector Register File 间搬运。
+3. 错。指令流与数据流不同：Scalar 发射任务后，各流水异步执行，源码顺序不等同于硬件完成顺序；消费方必须通过同步机制（如 auto_mutex 管理的依赖）等待生产方完成。

@@ -1,0 +1,6 @@
+08.07 客观题答案
+
+1. JIT 预热。
+2. B。pypto_sanitizer_report.txt 位于该 Kernel 编译产物目录。
+3. 错。缺 bwd_ids 时生产者可能覆写消费者未读完的槽位。
+4. max(T_cube, T_vector)（较慢核的单次迭代耗时）。

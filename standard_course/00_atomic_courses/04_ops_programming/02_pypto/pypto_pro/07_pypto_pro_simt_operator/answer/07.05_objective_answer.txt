@@ -1,0 +1,6 @@
+07.05 客观题答案
+
+1. 索引表（indices，运行时值）；写目标重复导致未定义结果。
+2. B。
+3. 错。读改写竞争丢更新，需 atomic_add。
+4. B、C。make_tile_group（Tile 创建）与动态 GM Shape 均不支持；atomic_add 与 syncthreads 是 SIMT 内合法接口。

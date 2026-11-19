@@ -1,0 +1,6 @@
+06.06 客观题答案
+
+1. 2048；32。
+2. B。Host 的 block_dim 配置逻辑核数（每个 Vector 核启动一个 Thread Block）；simt.block_dim() 返回块内各维线程数。
+3. 错。入口函数不能在 SIMT 函数中嵌套调用（入口由外层 Kernel 在 section_vector 中以 f[threads](...) 启动）。
+4. syncthreads（块内屏障）；syncthreads（第二个屏障）。

@@ -1,0 +1,4 @@
+11.02 课后练习答案
+1. 32 块选 8 块，无 mask 下 QKᵀ 工作量比 Gated:Full=1:4，不等于总耗时比。
+2. 在有限输入、相同可见集合和归一化约定下数学等价；浮点顺序可能带来差异，性能需实测。全遮蔽行须另定义零输出，不能让 -inf-(-inf) 产生 NaN。
+3. 使用 11.02 正文 gated_kv_reference：Host stable argsort 确定性选块；沿 [B,S,H] 的 S 轴 gather；causal 按原始 token_idx 构造 mask。不要把 B 同时用作 batch 与 KV_BLOCK，也不要混用未定义的 D/H。

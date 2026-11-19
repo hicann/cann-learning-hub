@@ -1,0 +1,27 @@
+10.06 编程实践参考答案（完整串行参考已提供，待 950 验证）
+
+【实践一】独立 Host 分块参考函数（不代表 Device 功能验证）：
+    def plan_rows(seq, block=256):
+        assert isinstance(seq, int) and isinstance(block, int)
+        assert seq > 0 and block > 0
+        return [(start, min(block, seq - start)) for start in range(0, seq, block)]
+
+    assert plan_rows(2048)[-1] == (1792, 256)
+    assert plan_rows(3000)[-1] == (2816, 184)
+    for seq in (2048, 3000):
+        plan = plan_rows(seq)
+        assert sum(length for _, length in plan) == seq
+        assert plan[0][0] == 0
+        assert all(0 < length <= 256 and start + length <= seq for start, length in plan)
+        assert all(start + length == next_start
+                   for (start, length), (next_start, _) in zip(plan, plan[1:]))
+
+H=128 的逻辑字节数见 10.03 答案；还需重算 AIV 分行、临时区、槽数和地址。
+S=3000，块宽256时 ceil(3000/256)=12；最后 Q/KV 块编号11，起点2816，有效长度184。
+Q/K/V 尾块的有效范围须传到全部参与搬运/计算的 Tile，causal 三角 mask 另处理。原题3072=12×256，不存在尾块。
+
+【实践二】先走读 10.04 已提供的 Tile、状态、AIV 拆分、事件和 Host 包装，再运行 10.05 验收。B、H、mask、S 的配置都须实际作用于被测 Kernel。固定 seed/环境/测量口径，预热后建立基线，不能把骨架当已实现算子。
+
+【实践三】分别评估 K/V 缓冲深度、kv_block、逐块预取、Phase；每次同时复核容量、地址和事件预算。QK/PV 共用 Cube，online 状态有跨块依赖，不保证简单加槽就加速。先过固定阈值精度再测量，保留失败与无收益结果。任意 mask 属于 RFC 明确排除的本期范围，不据此推断其在真实系统中不重要。
+
+本轮完整参考：src/sdpa_reference.py。实践二从 prepare_attention 返回的启动闭包建立基线；原有骨架补齐项现已提供。实践三仍须独立完成至少两项优化并提交实测，不能把串行 GM 中转版记为 FlashAttention 流水性能。

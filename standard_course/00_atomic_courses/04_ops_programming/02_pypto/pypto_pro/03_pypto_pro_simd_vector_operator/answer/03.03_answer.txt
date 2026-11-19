@@ -1,0 +1,11 @@
+03.03 课后练习答案
+
+1. [8, 1]。dim=0 对每行沿 256 方向求和。
+2. B。查对应接口文档确认；当前 Tile add 文档明确允许 out 与输入重合，但不能推广到所有 API。
+3. 三步调用（Kernel 内片段，需先分配 Tile）：
+   pl.sum(m_dn, x_tile, tmp_tile, dim=0)
+   pl.div(m_rm, m_rm, 256.0)
+   pl.expand_sub(out_tile, x_tile, m_dn, dim=0)
+   sum 输出和而非均值；Tile 操作写入 out 参数，不返回新 Tile。
+   x/out/tmp 为 [8,256] FP32；m_dn 为 [8,1] DN，m_rm 为同地址 [1,8] 行主序视图。
+   DN 用于归约/广播，行主序用于 Tile-Scalar 除法；两视图共享统计量，并须统一规划生命周期与同步。

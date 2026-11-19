@@ -1,0 +1,18 @@
+09.05 编程实践参考答案（待 950 实现/验证）
+
+【实践一】Host 清零 INT32 counter，输出最多 1024 行，并分配 source_idx[1024]。
+SIMT 用 grid-stride 遍历 i；score[i]>0 时 slot=atomic_add(counter[0,0],1)，写 source_idx[slot]=i 和 out[slot,:]=x[i,:]。
+INT32 atomic_add 返回旧值已由 API/源码确认。不同 slot 不冲突，但顺序取决于调度；Host 等 Kernel 结束后，按 source_idx 对齐 Golden，验证无重复、无遗漏、count 与命中数一致。计数器先增加不代表该槽的数据已发布。
+
+【实践二】先做单核同 Kernel 版本：选择结束→显式完成 V 与后续标量/搬运的依赖及 GM 可见性→读取最终 count→逐 [64,64] Tile 处理。
+每轮 valid_rows=min(64,count-r)，sum(dim=0)→div(64.0)→expand_sub；count=0 时不进循环。
+UB 方案还要预算输入/输出/归约临时；GM 方案不能依靠 auto_mutex 追踪直接 Tensor 写入。多核初版用两个同 Stream Kernel 提供阶段边界，不用 syncthreads 充当全核同步。完整发布协议和 950 运行仍待实现验证。
+
+【实践三】确定性排名（单次 selection Kernel，一个 Vector 核）：
+每个线程 i<32 扫描全部 j，累计 score[j]>score[i] 或 (score[j]==score[i] 且 j<i) 的数量 rank。
+这是严格全序，rank 恰好覆盖 0..31 且互不相同。rank<8 的线程写 sel_idx[rank]=i，因此无写冲突、无需原子取号；调用结束后输出已按分数降序、同分块号升序排列。
+成本为 O(n²) 次比较，n=32 时易于讲清并验证；这不是大规模 TopK 的最优方案。
+Golden：torch.argsort(scores.cpu(), descending=True, stable=True)[:8]；原分数按块号升序存放，stable 保证同分块号小者先出。覆盖全同分、负分、边界并列及随机分数。
+atomic_max 的一次归约只给最大值；Host 预传第 k 名门槛不能作为 NPU 已实现选择的证明，严格 >threshold 还会漏第 k 名和并列名额。
+
+独立参考见 src/hybrid_examples.py。实践二完整交付分 Kernel 基线；同 Kernel GM 交接优化仍需实现并验证发布/缓存协议。本章的完整同 Kernel 示例使用可识别依赖的 UB Tile。

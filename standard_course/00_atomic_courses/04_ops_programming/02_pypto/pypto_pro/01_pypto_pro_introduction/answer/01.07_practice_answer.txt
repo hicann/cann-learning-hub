@@ -1,0 +1,50 @@
+01.07 编程实践参考答案（理论推导版，待 950 验证）
+
+【实践一】Shape [16, 512] / FP16 向量加法要点：
+- 单 Tile 字节数 = 16 × 512 × 2（FP16 每元素 2 字节）= 16384 = 0x4000；
+- 三个 Tile Group 地址可取 0x0000 / 0x4000 / 0x8000；
+- kernel 标注与 TileType 改为 pl.DT_FP16、shape=[16, 512]；
+- 精度阈值：rtol=1e-3, atol=1e-3（FP16 精度低于 FP32，阈值放宽）。
+核心代码骨架与 01.06 完全一致，仅替换上述常量。
+
+【实践二】标量缩放 out = alpha * x 参考实现：
+    @pl.jit(auto_mutex=True)
+    def scale_kernel(
+        x: pl.Tensor[[8, 256], pl.DT_FP32],
+        alpha: pl.DT_FP32,
+        out: pl.Tensor[[8, 256], pl.DT_FP32],
+    ):
+        ...  # Tile 规划同 01.06（x、out 两个 Group）
+        with pl.section_vector():
+            x_tile = x_group.current()
+            out_tile = out_group.current()
+            pl.load(x_tile, x, [0, 0])
+            pl.mul(out_tile, x_tile, alpha)   # Tile × 标量
+            pl.store(out, out_tile, [0, 0])
+    # Host：scale_kernel[None, 1](x, 2.5, out)
+推导依据：Tensor/标量/TilingData 参数类型（kernel_function.md）；Tile-API elementwise/mul.md 与 language/_api.py::mul 支持 Tile-Scalar。
+签名与标量语义已由源码/API 核实；完整 Kernel 的编译与结果仍待 950 验证。
+
+【实践三】线性组合 out = alpha*x + beta*y 参考实现（两步组合）：
+    @pl.jit(auto_mutex=True)
+    def lincomb_kernel(
+        x: pl.Tensor[[8, 256], pl.DT_FP32],
+        y: pl.Tensor[[8, 256], pl.DT_FP32],
+        alpha: pl.DT_FP32,
+        beta: pl.DT_FP32,
+        out: pl.Tensor[[8, 256], pl.DT_FP32],
+    ):
+        ...  # 四个 Tile Group：x/y/out/tmp，地址各间隔 8KB（FP32: 8×256×4=0x2000）
+        with pl.section_vector():
+            ...
+            pl.load(x_tile, x, [0, 0]); pl.load(y_tile, y, [0, 0])
+            pl.mul(tmp_tile, x_tile, alpha)      # tmp = alpha*x
+            pl.mul(out_tile, y_tile, beta)       # out = beta*y
+            pl.add(out_tile, tmp_tile, out_tile) # out = tmp + out
+            pl.store(out, out_tile, [0, 0])
+选择理由：复用实践二的"Tile×标量"模式，仅增加一次 add；tmp Tile 避免覆盖尚未消费的输入。
+Tile-API add.md 明确支持 out 与 lhs 或 rhs 为同一 Tile；此处的原地形式有文档依据。
+以上仍是省略 Tile 定义的参考片段，完整实现与 Host 校验须按 01.06 补齐，并显式以单核启动；
+功能与同步行为待 950 验证。
+
+完整独立实现及 Host 校验见 src/first_kernels.py（从章节目录定位）。Notebook 末尾显示全部源码；设备验证仍待完成。

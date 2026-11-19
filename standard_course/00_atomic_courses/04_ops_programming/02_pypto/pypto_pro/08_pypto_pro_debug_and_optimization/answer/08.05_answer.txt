@@ -1,0 +1,10 @@
+08.05 课后练习答案
+
+1. 较慢的一侧；(1+3)/3≈1.33x（理想稳态，忽略建立/排空及额外开销）。
+2. C。只配 fwd 不保证复用槽位前消费者已经读完。
+3. 只能得到“可尝试改造”的设计结论，不能在没有完整代码时宣称通过：
+   - Cube 是主循环中第 1 个 stage，写出的 Buffer 至少 2 slot（奇数规则）；不是 stage 2。
+   - 原实践采用 GM workspace，须用带 depth/fwd_ids/bwd_ids 的 make_tensor，按逻辑核分配不重叠区域。不能直接把 GM workspace 当 TileGroup。
+   - 若改成片上 UB 交接，需实现并验证 L0C→UB 的拆分搬运，再用 UB TileGroup 管跨核依赖。
+   - 检查相邻 stage 一对一交接、严格 CV 交替、静态分支、声明位置、事件预算及槽位容量。
+   - 先 pipeline=pl.pipeline.PipelineConfig(preload=0) 校验，再调大 preload，检查 pipeline_generated.py 并重新测精度/性能。

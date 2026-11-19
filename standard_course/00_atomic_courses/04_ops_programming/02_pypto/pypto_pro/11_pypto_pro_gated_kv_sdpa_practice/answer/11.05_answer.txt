@@ -1,0 +1,3 @@
+11.05 课后练习答案
+1. 先 assert count==k、索引范围正确且唯一，再将完整 sel_idx 与 torch.argsort(g_cpu,descending=True,stable=True)[:k] 逐位比较。统一按分数降序、同分块号升序，不用原子取号顺序作为规范。
+2. S=2048/4096、ratio=25% 时，KV_BLOCK 128→256，块数和选中块数均减半，token 总数仍为 S/4。粗粒度会改变所选内容及相关性，循环/搬运开销可能变化；不是必然增加 token 数，也不是选择耗时必然减半。

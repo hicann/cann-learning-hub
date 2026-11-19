@@ -1,0 +1,38 @@
+02.08 编程实践参考答案（理论推导版，待 950 验证）
+
+【实践一】要点：x/y 加 pl.Input（可省略，默认即 Input），out 加 pl.Output：
+    def add_kernel(
+        x: pl.Tensor[[8, 256], pl.DT_FP32, pl.Input],
+        y: pl.Tensor[[8, 256], pl.DT_FP32, pl.Input],
+        out: pl.Tensor[[8, 256], pl.DT_FP32, pl.Output],
+    ):
+方向标注只影响 Profiling 上报，不改变读写语义；推荐放在标注末尾。
+
+【实践二】双缓冲搬运计算参考骨架：
+    @pl.jit(auto_mutex=True)
+    def scale2_kernel(x: pl.Tensor[[8, 256], pl.DT_FP32], out: pl.Tensor[[8, 256], pl.DT_FP32]):
+        tt = pl.TileType(shape=[4, 256], dtype=pl.DT_FP32, target_memory=pl.MemorySpace.Vec)
+        buf = pl.make_tile_group(type=tt, addrs=0x0000, mutex_ids=[0, 1])
+        with pl.section_vector():
+            tile = buf.next()
+            pl.load(tile, x, [0, 0])            # 先搬第 0 块
+            for i in pl.range(0, 2):
+                tile_cur = tile
+                if i + 1 < 2:
+                    tile = buf.next()           # 提前发起下一块
+                    pl.load(tile, x, [(i + 1) * 4, 0])
+                pl.mul(tile_cur, tile_cur, 2.0) # 计算本块（与下块搬运重叠窗口）
+                pl.store(out, tile_cur, [i * 4, 0])
+推导依据：tile 文档轮转/自动同步；提前 load 让 MTE 搬运与 Vector 计算形成重叠。
+待验证点：auto_mutex 对"先发起下块 load 再计算本块"写法生成的同步位置；950 上对照单缓冲耗时。
+
+【实践三】双输入双缓冲参考设计：
+- mutex 分配：x 组 [0,1]、y 组 [2,3]、out 单块 [4]——互不冲突；
+- 每轮：xt = x_buf.next(); yt = y_buf.next(); load 两块；ot = out 单 Tile（计算后 store 覆写）；
+- 输出单缓冲在正确性上可行，但必须同时满足“本轮计算完成才 store”与
+  “本轮 store 读完 UB 后，下一轮计算才可覆盖同一输出 Tile”。auto_mutex 根据输出组的 mutex
+  元数据保护这两类依赖，可能引入等待；若要让本轮 store 与下一轮输出计算重叠，可改用
+  双缓冲。输入走 MTE2、输出走 MTE3 本身不能消除输出 Tile 的复用冲突。
+待验证点：双输入 next() 交错推进的同步正确性；950 实测与单输入版耗时对比。
+
+完整实现、预取循环与 Host 校验见 src/buffer_examples.py。预取包含首块暖机、非末块搬入与末块收尾；设备通过状态仍待 950。

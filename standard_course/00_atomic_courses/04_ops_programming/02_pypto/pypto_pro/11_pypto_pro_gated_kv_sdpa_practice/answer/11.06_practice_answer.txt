@@ -1,0 +1,13 @@
+11.06 编程实践参考答案（完整阶段参考已提供，待 950 验证）
+
+【实践一】复用本章 gated_kv_reference，在固定输入与 g 下生成三档 ratio、H 两档、无 mask/causal 的参考结果。S=4096、KV_BLOCK=128 时 num_blocks=32；12.5% 选 4 块=512 token，无 mask QKᵀ 工作量为全量 1/8。加入全同分、边界并列与 causal 无可见 key 的行。
+
+【实践二】Host 按规范选择，生成 [num_blocks] UINT8/INT32 0/1 表。Kernel 用 pl.getval(sel_mask,kv) 读取后协调所有参与端的计算与事件跳过；causal 还要保留原始 token 位置。先单独验收选择集合，再验收注意力。
+ratio=25% 的 4x 仅是忽略固定开销、选择和调度损失的理想比例，绝非实际加速比下界；实测可能更小甚至变慢。
+
+【实践三】采用 11.03 的确定性排名选择作为小规模基线：rank_i=分数更高者数+同分块号更小者数，rank_i<k 时唯一写入 sel_idx[rank_i]。单次 atomic_max 不能求第 k 名，Host 预传门槛不能算作 Device 完成选择。
+先独立 selection Kernel→同 Stream 注意力，再评估同 Kernel 的发布/等待协议；不依赖未证明的浮点分数位打包。逐位选择一致→数值验收→全量耗时记录。完整阶段实现见 src/gated_kv_reference.py，复用第 10 章的注意力基线。它实现独立 selection Kernel→同 Stream attention；单 Kernel 融合与片上流水仍是优化任务。
+
+【延伸阅读】quant_lightning_indexer 对照选择；mixed_quant_sparse_flash_mla 对照稀疏注意力消费；indexer_prologue_qw/k 对照前处理；engram_gate 是残差门控，不是 KV TopK。实际目录为 ops/pypto_pro/deepseek_v4_1，各自数值与软件版本契约不同。
+
+运行参考前先阅读 build_selector、golden_attention 与 check_case，分别定位选择、语义和验收职责。设备编译、1e-3 精度和实际加速比尚待 950 验证。

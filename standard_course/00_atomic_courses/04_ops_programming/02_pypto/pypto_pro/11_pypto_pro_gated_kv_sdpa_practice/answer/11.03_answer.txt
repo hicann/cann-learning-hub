@@ -1,0 +1,4 @@
+11.03 课后练习答案
+1. 分数原在 Device 时可减少 Host 回读；本课程分数在 Host 且仅 16/32 项，选择上 Device 的主要目的为教学，不保证性能收益。与 Q 准备重叠还需资源独立与正确发布协议。
+2. 选择：SIMT 排名，输出唯一 rank 对应的 sel_idx；交接：selection Kernel 完成后，在同 Stream 启动注意力；注意力：按 sel_idx 用运行时 load 偏移，Cube/Vector 继续使用自己的跨核事件和 TileGroup 同步。
+同 Kernel 融合时必须重新设计“一个选择生产者→所有注意力消费者”的协议，不能用 auto_mutex 或局部 syncthreads 代替全体就绪。

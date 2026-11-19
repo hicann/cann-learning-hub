@@ -1,0 +1,6 @@
+01.05 课后练习答案
+
+1. C。线程独立分支是 SIMT 的标志性特征；SPMD 是多核分工方式，SIMD 中所有元素同步执行同一操作、无独立分支。
+2. SPMD（Single Program Multiple Data）；block_dim。
+3. B。Embedding 查表按索引离散取数，访问不规则，是 SIMT 的典型场景。
+4. 错。本题的 vector_function 是外层 JIT Kernel 内的 SIMT 函数，由 simt_func[threads](...) 启动。它与当前源码中的 @pl.jit(mode="simt") Host 入口是两种不同声明；后者是否在所用发行包提供，应单独核对。

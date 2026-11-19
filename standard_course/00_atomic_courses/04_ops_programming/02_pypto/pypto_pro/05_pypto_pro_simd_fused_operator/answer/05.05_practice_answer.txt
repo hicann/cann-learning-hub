@@ -1,0 +1,26 @@
+05.05 编程实践参考答案（推导说明；完整 Kernel/Host 已补到 src/fused_gemm.py，待 950 验证）
+
+【实践一】Cube 写 workspace，FIX 发 READY；两个 AIV 用相同的组号和不同 sub_id 分割行，MTE2 等 READY 后加载。
+bias 为按列偏置，加载为 [1,TILE_N] FP32 行 Tile：
+    pl.neg(bias_tile, bias_tile)
+    pl.expand_sub(out_tile, mat_tile, bias_tile, dim=1)
+取负仅修改 UB 中的 bias Tile，不修改 GM 输入；随后计算 mat_tile - (-bias)。pl.expand_add 需要安装包提供对应接口及后端，不能无条件使用。
+[rows,1] 列 Tile 表示每行一个值，与按列偏置的题意不符。
+读入/输出按不相交行分配，不能让两个 AIV 重复写同一结果。
+
+【实践二】固定使用 GELU 的 tanh 近似，并用同口径 Golden：
+    torch.nn.functional.gelu(a.float() @ b.float() + bias, approximate='tanh')
+当前 Tile/VF 无直接 tanh/gelu。有限范围 FP32 输入的稳定组合步骤为：
+    u = 0.7978845608 * (x + 0.044715 * x*x*x)
+    e = exp(-2*abs(u))
+    t_abs = (1-e)/(1+e)
+    t = select(u >= 0, t_abs, -t_abs)
+    y = 0.5*x*(1+t)
+这段是数学表达，需按 Tile API 的 out-first 规则逐步落实，用独立常量/临时/压缩掩码 Tile 满足 sub/select 的约束。
+不要用 exp(-2*u) 的直接形式：负 u 会导致指数溢出。还须测试零、正负大值、饱和区域及近零误差；极端输入的 x³ 溢出另作边界限制。
+
+【实践三】每个 task 对应一个产出 Tile；slot=task%2。Cube 覆写旧槽前等 RELEASE[slot]，写完发 READY[slot]；Vector 等 READY，读完发同一槽的 RELEASE。
+首次使用槽位不等 RELEASE；排空所有尾任务，并消费收尾事件。两槽轮转不能替代反向同步。
+耗时均待 950 实测。理想两阶段稳态加速比为 (T_cube+T_vec)/max(T_cube,T_vec)，至多 2；有限任务、启动/排空和同步会降低收益，不能预填 1.5～1.9x。
+
+完整参考采用一个 MIX Block、四个输出任务；两个 AIV 各处理 64 行。RELEASE 保守地放在 MTE3 写回后，便于单槽基线与双槽比较；最终事件全部消费。

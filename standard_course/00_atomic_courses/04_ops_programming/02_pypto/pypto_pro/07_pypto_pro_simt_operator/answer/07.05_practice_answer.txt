@@ -1,0 +1,18 @@
+07.05 编程实践参考答案（设计步骤与完整实现，见 src/irregular_examples.py；待 950 验证）
+
+【实践一】使用 07.03 的完整小规模 Gather 示例，indices 为 [1,512] INT32；Golden 为 input.index_select(0, indices.reshape(-1).to(torch.int64))，输出 [512,64]，纯拷贝使用 rtol=atol=0。
+
+【实践二】用 torch.topk(scores,256,dim=1) 得到 [1,256] 索引，转 INT32 后再 Gather。运算在 scores 所在设备执行；参考代码的 scores/input 都在 NPU，因此 TopK 也在 NPU 上，Host 只负责发起调用。8×256 个线程覆盖 256 行，多余线程不进入循环。
+本题复用同一份 TopK 索引做 Golden，不要求 topk 的同分排序；第 11 章的确定性选择另定义同分规则。
+top-k 是排序/选择任务，不能由一次 atomic_max 得到前 k 项；也不存在本教材所称的“Cube 排序”接口。Tile sort32、SIMT 选择与 PyTorch TopK 方案需按规模和语义比较。
+
+【实践三】三阶段确定性 Scatter：
+准备 best_score[1,1024] FP32=-inf，winner[1,1024] INT32=INT32_MAX，out[1024,64] FP32=0；scores 限定有限值，indices 范围合法。
+1. Kernel A：每来源 i 对 t=indices[0,i] 执行 atomic_max(best_score, [0,t], scores[0,i])。
+2. A 全部完成后启动 Kernel B：若 scores[0,i]==best_score[0,t]，执行 atomic_min(winner, [0,t], i)。注意 i 的 dtype 与 INT32 winner 一致。
+3. B 全部完成后启动 Kernel C：仅当 winner[0,t]==i 时复制 data[i,:] 到 out[t,:]。因此每个目标至多一个写者。
+同一 Stream 的 Kernel 顺序或显式 Stream 事件提供跨 Block 阶段边界；syncthreads 不具备这个作用。
+必须测试重复目标、同分、负分、未命中目标、边界索引。不能把“偶发竞争教学可接受”作为答案。
+atomic_max/min 对 FP32/INT32 可返回旧值，FP16/BF16 不返回；本方案不依赖返回值。
+
+完整实现同时返回 winner 供分层检查，三个阶段在同一 Stream 按顺序启动。

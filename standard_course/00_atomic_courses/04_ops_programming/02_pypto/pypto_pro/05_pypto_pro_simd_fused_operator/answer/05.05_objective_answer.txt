@@ -1,0 +1,5 @@
+05.05 客观题答案
+
+1. 2；2（MIX 的 AIV 侧 get_subblock_num() 返回 2，AIC 侧返回 1）。
+2. B。需要多遍/乱序读取的完整行数据适合 workspace；单次消费的小 Tile 适合片上通路。
+3. 错。auto_mutex 只负责核内 Tile 相关的流水同步；AIC 与 AIV 之间的依赖需要 set/wait_cross_core 显式描述。

@@ -1,0 +1,7 @@
+07.02 课后练习答案
+
+1. pl.simt.grid_dim().x；pl.simt.block_dim().x（全局线程总数 = Grid X 维 × 块内线程数）。
+2. B。ceil(20000 / (8×256)) = ceil(20000/2048) = 10 行（每线程最多 10 行，最后一批线程少一些）。
+3. 参考答案：first = block_idx().x * block_dim().x + thread_idx().x；stride = grid_dim().x * block_dim().x；
+   for i in pl.range(first, count, stride): out[0, i] = x[0, i] + y[0, i]。
+   尾部由 range 上界 count 自然截断（count=10000），无需 if（range 语义即边界）。

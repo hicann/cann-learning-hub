@@ -1,0 +1,34 @@
+03.05 编程实践参考答案（完整实现见 src/rmsnorm_examples.py；待 950 验证）
+
+【实践一】relu(out,x) → mul(out,out,alpha) → add(out,out,beta)，共三接口。
+add_relu 对应 relu(x+b)，改变加法位置会改变语义，不能替代原公式。
+对于改题 relu(x+b)*alpha，可用 add_relu(out,x,b) → mul(out,out,alpha)，由三接口减至二接口。
+
+【实践二】[8,256] FP32、eps=1e-5，无 gamma 的 RMSNorm 核心：
+    tt = pl.TileType(shape=[8,256], dtype=pl.DT_FP32, target_memory=pl.MemorySpace.Vec)
+    rt = pl.TileType(shape=[8,1], dtype=pl.DT_FP32, target_memory=pl.MemorySpace.Vec, layout=pl.DN)
+    rr = pl.TileType(shape=[1,8], dtype=pl.DT_FP32, target_memory=pl.MemorySpace.Vec)
+    # ms_rm/rstd_rm 用 rr，分别与 ms_tile/rstd_tile 的 DN 视图共享地址。
+    # Tile 地址：x=0x0000、y=0x2000、平方=0x4000、归约临时=0x6000、ms=0x8000、rstd=0x8100
+    # 由这些类型/地址建立 TileGroup，在 auto_mutex=True 的 Kernel 中选好各 Tile。
+    with pl.section_vector():
+        pl.load(x_tile, x, [0,0])
+        pl.mul(tmp_tile, x_tile, x_tile)
+        pl.sum(ms_tile, tmp_tile, tmp2_tile, dim=0)
+        pl.div(ms_rm, ms_rm, 256.0)
+        pl.add(ms_rm, ms_rm, 1e-5)
+        pl.rsqrt(rstd_rm, ms_rm)
+        pl.expand_mul(y_tile, x_tile, rstd_tile, dim=0)
+        pl.store(y, y_tile, [0,0])
+归约/广播用 DN，div/add/rsqrt 用行主序视图（完整声明见 PyPTO 源码仓库 python/tests/st/pypto_pro/frontend/tile_vector/test_layernorm.py）；共享地址不代表可忽略生命周期与同步。
+rsqrt、expand_mul 已在当前源码/API 中确认；这不等于 Kernel 已编译或精度通过。
+Golden：x / torch.sqrt(x.pow(2).mean(-1, keepdim=True) + 1e-5)。
+单块版本显式 kernel[None,1] 启动；其他核数需要先分割行，不能多核同址写。
+
+【实践三】VF 实现步骤（算法说明，不把省略号当作实现）：
+1. 对 8 行逐行处理，每行按偏移 0/64/128/192 加载 4 个 FP32 寄存器；保留原 x。
+2. 对四个平方寄存器求和并 reduce_sum，得到该行 256 个元素的平方和。
+3. lane 0 除以 256、加 1e-5，再求 rsqrt；用已支持的寄存器广播方式复制到全部 lane。
+4. 将该 rstd 分别乘到四个 x 寄存器，按对应行和列偏移 store_align，覆盖所有输出。
+reduce_sum 只归约一个寄存器，返回值只有 lane 0 有效，不能直接与整行 x 相乘。
+广播已在完整 VF 中使用 vf.full(lane0,mask)，外层 Kernel 与多输入验收均已补齐。此处保留推导步骤，完整源码在 Notebook 末尾展示；仍需 950 编译/执行。

@@ -1,0 +1,5 @@
+10.06 客观题答案
+
+1. m（行最大值）；l（指数和）；acc（输出累加）；exp(m_old - m_new)。
+2. B。Cube 产 s 块、Vector 消费的依赖是核间依赖（auto_mutex 只管核内 Tile 流水），需 set/wait_cross_core 或自动流水。
+3. 错。实现完全遮蔽块跳过后，第 i 个 Q 块只处理前 i+1 个 K 块，任务量呈三角分布。当前 GM 中转参考尚未做整块跳过，仍对全部 selected 块执行 QK/PV，不能直接套用这个工作量结论。

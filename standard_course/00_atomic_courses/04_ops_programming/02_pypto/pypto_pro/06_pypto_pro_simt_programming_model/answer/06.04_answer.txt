@@ -1,0 +1,15 @@
+06.04 课后练习答案
+
+1. 错。前端只校验静态常量下标；动态下标（线程编号/运行时表达式）的有效性由开发者保证，需显式边界判断。
+2. 本 Thread Block；死锁（部分线程未到达屏障，先到的永久等待）。
+3. 参考答案（块内计数五步模式）：
+    @pl.vector_function(mode="simt", max_threads=256)
+    def block_count(shared, out, block_id: pl.DT_UINT32):
+        tid = pl.simt.linear_thread_idx()
+        if tid == 0:
+            shared[0, 0] = 0            # ① 单线程初始化
+        pl.simt.syncthreads()            # ② 屏障
+        pl.simt.atomic_add(shared, [0, 0], 1)   # ③ 全员原子累加
+        pl.simt.syncthreads()            # ④ 屏障
+        if tid == 0:
+            out[0, block_id] = shared[0, 0]   # ⑤ 读取结果

@@ -1,0 +1,5 @@
+08.03 课后练习答案
+
+1. 不一定。TILE_OVERLAP 是 WARNING，当前 sanitizer_replay.check_tile_overlap 按声明的地址区间检查，不做生命周期证明；增加同步也不保证消除告警。
+   有意复用须逐项证明读写生命周期、流水等待和跨核交接均安全，并记录理由；未能证明时按缺陷修复。TileGroup 也须正确分配地址与 mutex，不能仅换 API 就视为安全。
+2. 不检测 SIMT 线程块内部访问；SIMT 侧靠完整边界约束、共享 Tile 屏障、调试输出和独立 Golden 对照。无 sanitizer 报告不等于 SIMT 无越界。

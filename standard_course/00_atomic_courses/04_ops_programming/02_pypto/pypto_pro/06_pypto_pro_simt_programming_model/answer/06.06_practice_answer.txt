@@ -1,0 +1,25 @@
+06.06 编程实践参考答案（理论推导版，待 950 验证）
+
+【实践一】逐线程向量加法要点：
+    @pl.vector_function(mode="simt", max_threads=256)
+    def add_simt(x, y, out, count: pl.DT_UINT32):
+        index = pl.simt.block_idx().x * pl.simt.block_dim().x + pl.simt.thread_idx().x
+        if index < count:
+            out[0, index] = x[0, index] + y[0, index]
+    # 外层 kernel：with pl.section_vector(): add_simt[256](x, y, out, 1024)
+校验说明：FP32 加法仍有舍入误差；若两端输入位模式、舍入及非正规数处理一致，单次加法可逐位一致，因而可测试 rtol=0/atol=0。不能把“无归约顺序差异”说成数学上精确；若失败，先定位数值语义，不以随意放宽阈值掩盖问题。
+参考依据：官方 simt_computation.md affine 示例同构。
+
+【实践二】块内计数要点：见 06.04 答案 3 的五步模式骨架；输出侧：
+out[0, block_id] = shared[0, 0]，block_id 取 pl.simt.block_idx().x；
+验证 torch 断言 out 全部等于 256。
+atomic_add 以元素引用作第一参数已在源码/API 确认；shared 选 INT32 Tile，输出 INT32，Host 启动/结果仍待 950 验证。
+
+【实践三】发散测量要点：
+- A 版：if x[0, i] > 0: y[0, i] = 2*x[0, i] else: y[0, i] = x[0, i]
+- B 版：y[0, i] = x[0, i] + pl.simt.max(x[0, i], 0.0)
+- 无分歧输入：torch.cat([正数段, 负数段])（Warp 内同路）；有分歧：交替 sign（Warp 内 16/16 分裂）。
+预期只能定性：显式分支可能被编译器改写，短分支的开销也可能被访存掩盖。不能预设 A 版有分歧必为 2 倍，也不能保证 B 更快；应同时查看产码和多次测量。
+【950 待测】填表后分析：若实测偏离预期（如调度掩盖发散），记录现象——这正是第 8 章性能分析的起点。
+
+完整独立实现与四组分歧测量入口见 src/simt_basics.py；计时包含 Host 下发，不代表纯设备时间。

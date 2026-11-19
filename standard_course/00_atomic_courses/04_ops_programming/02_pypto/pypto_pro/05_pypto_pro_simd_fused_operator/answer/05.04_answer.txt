@@ -1,0 +1,5 @@
+05.04 课后练习答案
+
+1. A。GEMM（Cube）产出后接 Bias+GELU（Vector 逐元素），是后处理型。
+2. get_subblock_idx()；FIX（Cube 写 workspace 后从 FIX 流水发 set_cross_core）。
+3. 参考答案：片上通路（L0C move 到 UB）要求 shape/dtype/layout 与消费端匹配，并有足够容量和正确的生产/消费同步。每块 [64,64] FP32 为 16 KiB。若完整归约行及中间状态能在 UB 保留，Vector 可在 UB 多遍计算，不需要每遍重读 L0C；消费完成前不能覆盖对应缓冲。若一行被拆成多块且 UB 无法保留全部分数，三遍算法需要重算或借助 GM workspace。是否能直通取决于容量、跨块依赖和生命周期，并非单遍/多遍的绝对分类。

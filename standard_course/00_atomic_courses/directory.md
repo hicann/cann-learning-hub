@@ -1,6 +1,6 @@
 # 原子课程目录规划（directory）
 
-> 本目录规划基于《原子课程设计参考》（`ref/atomic_courses.md`）生成，课程清单与编号（Lx-yy，共 **123 门**）对齐同目录总纲 [README.md](./README.md)（其框架层在参考文件 21 门基础上规范化重组并扩充至 30 门，Ascend C 层由双平台 30 门合并为主题制 17 门，其余三层与参考文件一致）。
+> 本目录规划基于《原子课程设计参考》（`ref/atomic_courses.md`）生成，课程清单与编号（Lx-yy，共 **134 门**）对齐同目录总纲 [README.md](./README.md)（其框架层在参考文件 21 门基础上规范化重组并扩充至 30 门，Ascend C 层由双平台 30 门合并为主题制 17 门，其余三层与参考文件一致）。
 >
 > **落位规则**：全部原子课程统一规划到 `cann-learning-hub_1799/tutorials/` 目录下，按技术架构四层建立编号子目录；L1/L3/L4 层每门课程建立单独目录，L2 框架层课程文件（课件 / Notebook）直接挂二级子方向目录；目录内**每节课对应一个独立文件**（45–90 分钟/节，Notebook 为主）。
 >
@@ -25,7 +25,7 @@
 
 ## 二、目录结构总览
 
-> **四层结构**：**第 1 层** 技术架构层（4 个）→ **第 2 层** 子方向（23 个）→ **第 3 层** 原子课程（123 门 + 3 门规划外补充，对应总纲 `Lx-yy` 编号；L1/L3/L4 层为课程目录，L2 框架层课程直接挂二级子方向目录）→ **第 4 层** 课程文件（**一节课一个 Notebook 文件**，45~90 分钟/节）。
+> **四层结构**：**第 1 层** 技术架构层（4 个）→ **第 2 层** 子方向（23 个）→ **第 3 层** 原子课程（134 门 + 3 门规划外补充，对应总纲 `Lx-yy` 编号；L1/L3/L4 层为课程目录，L2 框架层课程直接挂二级子方向目录）→ **第 4 层** 课程文件（**一节课一个 Notebook 文件**，45~90 分钟/节）。
 >
 > 下方目录树完整列出第 1~3 层全部目录；第 4 层文件每层各选 1 门代表课程展开示例（其余课程的第 4 层遵循同一模板，完整规范见第三节）。
 
@@ -152,7 +152,7 @@ tutorials/                                                # 教程根目录（CA
 │       ├── 02_asnumpy_practice/                          # L3-11 AsNumpy 编程实践
 │       ├── 03_math_python_practice/                      # L3-12 Math-Python 编程实践
 │       └── 04_thrust_python_practice/                    # L3-13 并行算法实践：Thrust-Python
-└── 04_ops_programming/                                   # 第 1 层 · L4 编程、编译、NPU 架构（36 门 + 1 门规划外补充）
+└── 04_ops_programming/                                   # 第 1 层 · L4 编程、编译、NPU 架构（47 门 + 1 门规划外补充）
     ├── 01_ascendc/                                       # 第 2 层 · 4.1 Ascend C 算子编程（17 门，统一覆盖 A2/A3 与 Ascend 950 双平台，平台差异作为课程内章节）
     │   ├── 01_quick_start/                               # L4-01 Ascend C 快速入门（含原轻量版 Kernel 直调内容）
     │   │   ├── README.md                                 # 第 4 层 · 课程文件示例（完整模板见第三节）
@@ -174,7 +174,20 @@ tutorials/                                                # 教程根目录（CA
     │   ├── 15_operator_graph_integration/                # L4-15 Ascend C 算子入图（PyTorch/AclGraph/GE）
     │   ├── 16_ecosystem_libraries/                       # L4-16 Ascend C 开发生态库：asc-stl、asc-mathdx、高阶 API
     │   └── 17_custom_communication_ops/                  # L4-17 Ascend C 通信算子自定义开发
-    ├── 02_pypto/                                         # 第 2 层 · 4.2 PyPTO 算子编程（5 门 + 1 门补充）
+    ├── 02_pypto/                                         # 第 2 层 · 4.2 PyPTO 算子编程（5 门 + 1 门补充 + Pro 11 门 L4-50~60 已建成）
+    │   ├── pypto_pro/                                    # PyPTO Pro 算子开发（L4-50~60 已建成：11 章 65 Notebook + slides/ 11 份 PPT；仓内首例试点，实际落位 standard_course/00_atomic_courses/04_ops_programming/02_pypto/pypto_pro/，未按 tutorials 落位）
+    │   │   ├── 01_pypto_pro_introduction/                # L4-50 PyPTO Pro 快速入门
+    │   │   ├── 02_pypto_pro_simd_programming_model/      # L4-51 PyPTO Pro SIMD 编程模型
+    │   │   ├── 03_pypto_pro_simd_vector_operator/        # L4-52 PyPTO Pro SIMD 矢量算子编程
+    │   │   ├── 04_pypto_pro_simd_matmul_operator/        # L4-53 PyPTO Pro SIMD 矩阵算子编程
+    │   │   ├── 05_pypto_pro_simd_fused_operator/         # L4-54 PyPTO Pro SIMD 融合算子编程
+    │   │   ├── 06_pypto_pro_simt_programming_model/      # L4-55 PyPTO Pro SIMT 编程模型
+    │   │   ├── 07_pypto_pro_simt_operator/               # L4-56 PyPTO Pro SIMT 算子编程
+    │   │   ├── 08_pypto_pro_debug_and_optimization/      # L4-57 PyPTO Pro 算子调试与性能优化
+    │   │   ├── 09_pypto_pro_simd_simt_hybrid/            # L4-58 PyPTO Pro SIMD&SIMT 协同编程与调优
+    │   │   ├── 10_pypto_pro_sdpa_practice/               # L4-59 PyPTO Pro 综合实战一：SDPA
+    │   │   ├── 11_pypto_pro_gated_kv_sdpa_practice/      # L4-60 PyPTO Pro 综合实战二：Gated-KV SDPA（MLA 场景）
+    │   │   └── slides/                                   # 章节课件（一门一份，11 份 PPT）
     │   ├── 01_pypto_introduction/                        # L4-31 PyPTO 算子编程导论
     │   ├── 02_pypto_vector_development_tuning/           # L4-32 PyPTO 矢量算子开发与调优实践
     │   ├── 03_pypto_matmul_development_tuning/           # L4-33 PyPTO 矩阵算子开发与调优实践
@@ -305,10 +318,10 @@ tutorials/<层>/<方向>/<课程>/
 | L1 应用层 | 44 | 0 | 5 | 39 | 11.4% |
 | L2 框架层 | 30 | 3 | 10 | 17 | 43.3% |
 | L3 加速库 | 13 | 1 | 3 | 9 | 30.8% |
-| L4 编程·编译·NPU 架构 | 36 | 6 | 9 | 21 | 41.7% |
-| **合计** | **123** | **10** | **27** | **86** | **30.1%** |
+| L4 编程·编译·NPU 架构 | 47 | 17 | 9 | 21 | 55.3% |
+| **合计** | **134** | **21** | **27** | **86** | **35.8%** |
 
-> 说明：🟡 部分覆盖 = 现有教程覆盖该课部分内容（如仅实践场景、仅部分章节），仍需按原子课程大纲补齐成独立课程目录；Ascend C 双平台课程合并（30→17 门）后，L4 覆盖状态按原素材映射重新校准（如 02/05/06/09 等课 A2/A3 章节有素材、950 章节待建设，计为 🟡）。
+> 说明：🟡 部分覆盖 = 现有教程覆盖该课部分内容（如仅实践场景、仅部分章节），仍需按原子课程大纲补齐成独立课程目录；Ascend C 双平台课程合并（30→17 门）后，L4 覆盖状态按原素材映射重新校准（如 02/05/06/09 等课 A2/A3 章节有素材、950 章节待建设，计为 🟡）；PyPTO Pro 11 门（L4-50~60）已全量建成（11 章 65 个 Notebook + slides/ 11 份 PPT，落位 `standard_course/00_atomic_courses/04_ops_programming/02_pypto/pypto_pro/`），计为 ✅ 已建设。
 
 ### 5.2 遗漏清单（规划有、tutorials 无 —— 按建设优先级排序）
 
@@ -334,7 +347,7 @@ tutorials/<层>/<方向>/<课程>/
 12. **多模态大模型（L2-19）、强化学习进阶补齐（L2-18）**；
 13. **GE 图 PASS 优化（L3-05）、算子入图（L4-15）、开发生态库（L4-16）、PyPTO PASS（L4-35）、PyAsc SIMT/高级（L4-43/44）、CANNBot Skills 贡献补齐（L4-46）**。
 
-### 5.3 规划外内容（tutorials 有、123 门规划未含 —— 建议补入规划）
+### 5.3 规划外内容（tutorials 有、134 门规划未含 —— 建议补入规划）
 
 校验同时发现 3 项现有教程内容超出原子课程规划范围，已在目录规划中以"规划外补充"显式承接，建议总纲后续升版时正式纳入编号（原补充③ ascendc_operator_development_light 已并入 `01_ascendc/01_quick_start/`，不再单列）：
 
@@ -346,11 +359,11 @@ tutorials/<层>/<方向>/<课程>/
 
 ### 5.4 校验结论
 
-- **123 门规划课程中，86 门在 tutorials 中尚无对应内容（69.9%）**，其中应用层缺口最大（44 门中 39 门完全空白）；
+- **134 门规划课程中，86 门尚无对应内容（64.2%）**，其中应用层缺口最大（44 门中 39 门完全空白）；PyPTO Pro 11 门（L4-50~60）已建成于 standard_course（试点），不计入缺口；
 - 现有 15 个教程高度集中在 **L4 算子编程（Ascend C 主题课的 A2/A3 章节、PyPTO、PyAsc 入门、CANNBot）与 L2 训练/推理管线实践**，可作为对应原子课程的拆分与迁移素材；Ascend C 双平台 30 门合并为主题制 17 门后，950 平台章节为主要缺口；
 - 3 项规划外内容已反向补入目录规划（见 5.3），规划与现状双向无遗漏；
 - 后续建设建议按 5.2 的 P0 → P1 → P2 优先级推进，责任人确认后补充回填。
 
 ---
 
-*文档生成时间：2026-09-14（2026-10-11 增补一：`02_ai_frameworks` 新增 `01_overview` 子方向与 L2-30《从图灵到 CANN》总览课，框架层改为扁平结构；增补二：`01_ascendc` 由双平台 30 门 + light 补充重组为**主题制 17 门**（L4-01~17，统一覆盖 A2/A3 与 Ascend 950，删除 a2a3/950 目录前缀，平台差异作为课程内章节；light 版并入 `01_quick_start/`），L4 层 49→36 门、总计 135→123 门；原 L4-29 Aclnn 算子工程化开发未纳入新结构，如需保留可迁至 `03_acceleration_libs/01_aclnn/`）；数据来源：`ref/atomic_courses.md`、`standard_course/00_atomic_courses/README.md`（123 门总纲）、`tutorials/` 现有 15 个教程目录实地盘点。*
+*文档生成时间：2026-09-14（2026-10-11 增补一：`02_ai_frameworks` 新增 `01_overview` 子方向与 L2-30《从图灵到 CANN》总览课，框架层改为扁平结构；增补二：`01_ascendc` 由双平台 30 门 + light 补充重组为**主题制 17 门**（L4-01~17，统一覆盖 A2/A3 与 Ascend 950，删除 a2a3/950 目录前缀，平台差异作为课程内章节；light 版并入 `01_quick_start/`），L4 层 49→36 门、总计 135→123 门；原 L4-29 Aclnn 算子工程化开发未纳入新结构，如需保留可迁至 `03_acceleration_libs/01_aclnn/`）；增补三（2026-11-13）：4.2 节新增 PyPTO Pro 算子开发 11 门（L4-50~60，紧接 L4-49 顺延的新编号块；教材 11 章 65 个 Notebook + slides/ 11 份 PPT 已建成，落位 `standard_course/00_atomic_courses/04_ops_programming/02_pypto/pypto_pro/`，Notebook 进 standard_course 为仓内首例试点），L4 层 36→47 门、总计 123→134 门；数据来源：`ref/atomic_courses.md`、`standard_course/00_atomic_courses/README.md`（134 门总纲）、`tutorials/` 现有 15 个教程目录实地盘点。*

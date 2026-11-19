@@ -1,0 +1,20 @@
+08.07 编程实践参考答案（理论推导版，待 950 验证）
+
+【实践一】基线要点：预热 1 次 + 采集 5 次取中位数；条件固定表（Shape/dtype/block_dim/seed）随数据归档；
+profiler 配置参考 08.04 官方示例（PipeUtilization 指标）。产物分析：kernel_details.csv 定位 Kernel 行。
+
+【实践二】优化路径参考（按四问对号入座）：
+- 耗时不均（某核任务多）→ 改任务分配（第 4 章连续分配改跨步/重排 N 内层）；
+- Cube 流水低（M 空等）→ 在时间线证实搬运等待后评估加深缓冲；同时重算地址占用并分配不冲突的 mutex_ids，不能只扩列表；
+- Vector 空等 Cube → 流水化（实践三）；
+- 带宽低（MTE2 占用低）→ 检查 Tile 大小是否过小（搬运次数过多）。
+纪律：每项优化先跑精度回归（rtol/atol 不变）再测性能；一次只改一个变量。
+
+【实践三】自动流水改造要点：
+- stage1（Cube）：@pl.pipeline.stage，内含 load→move→matmul（普通 Tile 操作，不写同步）；
+- stage2（Vector）：load 结果槽（或 move 自 L0C）→ bias 加 → GELU → store；
+- 本例使用 UB TileGroup 两槽交接，fwd_ids=[0,1]、bwd_ids=[2,3]，通过 DualModeSplitM 向两个 AIV 各搬运 64 行；GM 自动流水需另核对安装包支持。
+- jit 参数补 pipeline=pl.pipeline.PipelineConfig(preload=0)，先验证串行同步，再增加 preload；
+- 三版本对比表【950 待测】；本例自动版使用 UB、基线使用 GM，不能预设耗时接近或单独归因于调度。统一数据通路后，再结合 pipeline_generated.py 和 profiling 分析。
+
+完整三版本实验、精度检查和结果持久化入口为 src/benchmark_fusion.py；--profile 单独采集，普通基线不含 profiler 开销。

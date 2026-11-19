@@ -1,0 +1,11 @@
+02.06 课后练习答案
+
+1. 最后一个写；第一个读。set 放在生产者最后一个写操作之后，wait 放在消费者第一个读操作之前。
+2. B。缺反向（RELEASE）同步时，生产者可能在消费者读完前覆盖缓冲——正向同步只保护"写完才读"，不保护"读完才写"。
+3. 错。mutex_id 是片上互斥同步资源（TileGroup 轮转/自动同步），event_id 是跨核事件编号（set/wait_cross_core 配对使用），两者是不同资源，不能互相替代。
+4. 参考答案（事件清单设计）：
+   - 方向：Vector（生产者，pipe=MTE3 写 GM）→ Cube（消费者，pipe=MTE2 从 GM 读入 L1）；
+   - 正向 READY：Vector 每写完一个 Tile 槽位 set READY[slot]，event_id 取槽位映射（如 0~3 对应 4 槽位）；Cube 读对应槽位前 wait 同 ID；
+   - 反向 RELEASE：Cube 读完槽位后 set RELEASE[slot]（pipe=MTE2），Vector 覆写该槽位前 wait（pipe=MTE3）；
+   - 粒度：逐 Tile 事件（不用整体屏障，保证逐槽流水）；
+   - event_id 预算：4 槽 × 2 方向 = 8 个 ID，在 [0,16) 内可行；槽位映射 slot=task_idx%4 与 TileGroup 下标访问保持一致。

@@ -16,12 +16,16 @@
                 <filteritem type="filename" name="*.xml" desc="xml file"/>
                 <filteritem type="filename" name="*.csv" desc="csv file"/>
                 <filteritem type="filename" name="*.info" desc="info file"/>
+                <filteritem type="filename" name="*.ipynb" desc="notebook file"/>
+                <filteritem type="filename" name="*.pptx" desc="presentation file"/>
             </filefilter>
             <filefilter name="copyrightPolicyFilter" desc="Filters for copyright header policies">
                 <filteritem type="filename" name=".gitmodules" desc="git submodule "/>
                 <filteritem type="filename" name="*.xml" desc="xml file"/>
                 <filteritem type="filename" name="*.csv" desc="xml csv"/>
                 <filteritem type="filename" name="*.info" desc="info file"/>
+                <filteritem type="filename" name="*.ipynb" desc="notebook file"/>
+                <filteritem type="filename" name="*.pptx" desc="presentation file"/>
             </filefilter>
             <filefilter name="licenseFileNamePolicyFilter" desc="Filters for LICENSE file policies">
             </filefilter>

@@ -1,10 +1,10 @@
 # 原子课程总纲（Atomic Courses · V1.2）
 
-> **技术栈四层 × 难度三级 × 原子粒度**，共 **123 门**，每门可单独支撑一节课（45–90 分钟）。
+> **技术栈四层 × 难度三级 × 原子粒度**，共 **134 门**，每门可单独支撑一节课（45–90 分钟）。
 >
 > 本目录不设课程级子目录——全部原子课程大纲汇总于本 README；单课深化样板见各章节详情。课件素材按 [directory.md](./directory.md) 四层结构落位，四层目录骨架已全部就位：[01_applications/](./01_applications/)（L1 应用层，6 子方向）、[02_framework/](./02_framework/)（L2 框架层，6 子方向）、[03_acceleration_libs/](./03_acceleration_libs/)（L3 加速库，5 子方向）、[04_ops_programming/](./04_ops_programming/)（L4 编程·编译·NPU 架构，3 子方向）。
 >
-> **课件素材现状（37 份 PPT，详见各子目录 README）**：[04_ops_programming/01_ascendc/](./04_ops_programming/01_ascendc/)（Ascend C 25 份：[a2a3/](./04_ops_programming/01_ascendc/a2a3/) 10 份 + [ascend950/](./04_ops_programming/01_ascendc/ascend950/) 12 份 + 根目录 3 份（NPU 架构导论合并版主讲义 + 双路线矢量算子开发））、[04_ops_programming/05_npu_architecture/](./04_ops_programming/05_npu_architecture/)（NPU 架构 4 份，体系结构课三幕剧主讲义）、[02_framework/01_overview/](./02_framework/01_overview/)（L2-30 总览课 3 份）、[02_framework/03_training_techniques/](./02_framework/03_training_techniques/)（SFT/RL 训练管线 4 份）、[04_ops_programming/02_pypto/](./04_ops_programming/02_pypto/)（PyPTO 1 份）；其余子方向素材待建设。
+> **课件素材现状（48 份 PPT + 65 个 Notebook，详见各子目录 README）**：[04_ops_programming/01_ascendc/](./04_ops_programming/01_ascendc/)（Ascend C 25 份：[a2a3/](./04_ops_programming/01_ascendc/a2a3/) 10 份 + [ascend950/](./04_ops_programming/01_ascendc/ascend950/) 12 份 + 根目录 3 份（NPU 架构导论合并版主讲义 + 双路线矢量算子开发））、[04_ops_programming/05_npu_architecture/](./04_ops_programming/05_npu_architecture/)（NPU 架构 4 份，体系结构课三幕剧主讲义）、[02_framework/01_overview/](./02_framework/01_overview/)（L2-30 总览课 3 份）、[02_framework/03_training_techniques/](./02_framework/03_training_techniques/)（SFT/RL 训练管线 4 份）、[04_ops_programming/02_pypto/](./04_ops_programming/02_pypto/)（PyPTO：Pro 教材 11 章 65 个 Notebook + 章节 PPT 11 份 + 基础 1 份）；其余子方向素材待建设。
 
 ---
 
@@ -69,8 +69,8 @@
 | **L1 应用层** | 8 | 17 | 19 | **44** |
 | **L2 框架层** | 8 | 11 | 11 | **30** |
 | **L3 加速库** | 3 | 8 | 2 | **13** |
-| **L4 编程·编译·NPU 架构** | 5 | 21 | 10 | **36** |
-| **合计** | **24** | **57** | **42** | **123** |
+| **L4 编程·编译·NPU 架构** | 6 | 28 | 13 | **47** |
+| **合计** | **25** | **64** | **45** | **134** |
 
 ### 1.3 典型学习路径
 
@@ -277,7 +277,7 @@
 
 ---
 
-### L4 编程、编译、NPU 架构（36 门）
+### L4 编程、编译、NPU 架构（47 门）
 
 > 面向算子开发工程师和架构师，聚焦 NPU 底层编程模型、多种编程语言、编译工具链与体系架构。
 
@@ -316,6 +316,22 @@
 | L4-33 | 🟡 中级 | PyPTO 矩阵算子开发与调优实践 | PyPTO 矩阵编程；Cube 调用；分块策略；数据布局；GEMM 开发；性能调优 | PyPTO GEMM 算子开发与调优 |
 | L4-34 | 🟡 中级 | PyPTO 融合算子开发与调优实践 | PyPTO 融合编程；算子融合模式；Cube+Vector 协同；融合性能分析 | PyPTO 融合算子开发（GEMM+Bias+GELU） |
 | L4-35 | 🔴 高级 | PyPTO 自定义扩展优化 PASS 实践 | PyPTO 编译栈；自定义 PASS 开发；图优化；性能基准；高级特性 | 开发 PyPTO 自定义融合 PASS |
+
+**PyPTO Pro 算子开发**（L4-50~60，共 11 门，面向 Ascend 950 的 PyPTO Pro 编程范式；已建成于 [04_ops_programming/02_pypto/pypto_pro/](./04_ops_programming/02_pypto/pypto_pro/)——11 章 65 个 Notebook + 11 份章节 PPT，Notebook 落位 standard_course 为仓内首例试点）：
+
+| 编号 | 层级 | 原子课程 | 核心内容 | 实践项目 |
+|------|------|---------|---------|---------|
+| L4-50 | 🟢 初级 | PyPTO Pro 快速入门 | 异构计算引言（Host+Device）；Ascend 950 系列硬件架构与执行域（AI Core、AIC/AIV、片上存储层级）；PyPTO Pro 概述（Pythonic 语法、编译器属性、与 Ascend C 的区别）；轻量级 Kernel `@jit` 模式直调体验 | 向量加法 Kernel（HelloWorld 级） |
+| L4-51 | 🟡 中级 | PyPTO Pro SIMD 编程模型 | 核函数定义与 Kernel 参数；数据对象（Tensor/Tile/Ptr）与 make_tensor；内存层级与数据搬运；NBuffer 多缓冲；同步机制（auto_mutex、event、核间同步）；JIT 编译流程与编译签名 | 双缓冲（NBuffer）向量算子 |
+| L4-52 | 🟡 中级 | PyPTO Pro SIMD 矢量算子编程 | Reg 级 SIMD 计算（VF 函数族）；Tile 级矢量计算；Reg/Tile 两种方式选型 | RMSNorm 算子 |
+| L4-53 | 🟡 中级 | PyPTO Pro SIMD 矩阵算子编程 | Cube 计算模型；矩阵分形布局；多核切分与动态 shape | GEMM 算子（含动态 shape、多核切分） |
+| L4-54 | 🟡 中级 | PyPTO Pro SIMD 融合算子编程 | Cube+Vector 协同（计算/搬运流水组织）；融合模式；融合中的同步与缓冲管理 | GEMM+Bias+GELU 融合算子 |
+| L4-55 | 🟡 中级 | PyPTO Pro SIMT 编程模型 | SIMT 线程层次（Grid/Thread Block/Thread、dim3）；线程索引与 SIMT 入口函数启动（与外层 Kernel 的混合结构）；共享 Tile 与线程间同步；分支与 Warp 发散 | 线程模型基础实践（按索引拷贝/逐元素算子） |
+| L4-56 | 🟡 中级 | PyPTO Pro SIMT 算子编程 | SIMT 核函数开发（原子操作）；不规则计算场景（Embedding Gather/Scatter、直方图）；SIMT 算子调试 | SIMT Gather 算子（Embedding 场景） |
+| L4-57 | 🟡 中级 | PyPTO Pro 算子调试与性能优化 | 功能调试方法；sanitizer；性能分析与瓶颈定位；流水线优化与自动并行流水线；Cube 高级用法 | 算子性能调优实战（量化前后对比） |
+| L4-58 | 🔴 高级 | PyPTO Pro SIMD&SIMT 协同编程与调优 | 同一 Kernel 内 SIMD 稠密段与 SIMT 稀疏段的协同设计；协同模式典型场景（稀疏索引选择类算子）；SIMT 分支发散与占用率调优；协同算子性能分析 | 协同算子开发与调优（稀疏索引 + 稠密计算） |
+| L4-59 | 🔴 高级 | PyPTO Pro 综合实战一：SDPA | SDPA 算法规格与 online softmax；分块策略与多核负载均衡；Cube+Vector 融合实现；精度验收方法；综合调优 | SDPA 完整实现 + 精度验收 + 调优 |
+| L4-60 | 🔴 高级 | PyPTO Pro 综合实战二：Gated-KV SDPA（MLA 场景） | 门控 KV 选择算法规格（KV 块按门控分数选择的稀疏注意力）；门控/索引段 SIMT 与稠密段 SIMD/Cube 协同实现；与 SDPA 的结构对比与改造路径；精度验收与性能调优 | Gated-KV SDPA 教学版实现 |
 
 #### 4.3 TileLang 算子编程
 
@@ -366,6 +382,7 @@
 - **编号** `Lx-yy`：x = 技术栈层（1 应用 / 2 框架 / 3 加速库 / 4 编程与芯片架构）；yy 按层内「初 → 中 → 高」顺序编号；
 - **难度三级**：初级（认知/首跑）、中级（系统实践）、高级（深度优化与扩展）；
 - **双平台融合**：L4 层 Ascend C 课程（4.1，L4-01~17）**统一覆盖 A2/A3 与 Ascend 950 双平台**，平台差异作为课程内章节，目录与课名不带平台前缀；Ascend C 主题制重组后 L4-18~30 编号已释放，其余方向（L4-31~49）编号保持不变；
+- **PyPTO Pro 编号块**：4.2 节 PyPTO Pro 课程（11 门）采用紧接 L4-49 顺延的新编号块 L4-50~60；Tensor 课程（L4-31~35）编号不变；
 
 ## 四、每门课的标准结构（单节课）
 
