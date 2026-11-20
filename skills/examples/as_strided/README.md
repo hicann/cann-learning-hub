@@ -249,7 +249,6 @@ const uint32_t TOTAL_UB_SIZE = 192 * 1024;  // 196608 bytes
 | Case 4 | 5.30ms | 5.08ms | 1.04x | 接近最优 |
 | Case 5 | 51.30ms | 51.30ms | **1.00x** | 已达最优 |
 
-<!-- 截图占位：CANNJudge as_strided 提交结果页面 -->
 > 📸 **需要截图**：CANNJudge as_strided 提交结果页面（https://cannjudge.cn/public/s2/asstrided），展示 5/5 Pass 和各用例耗时
 
 ## 七、性能验收：NPU Profiling 分析
@@ -277,7 +276,6 @@ const uint32_t TOTAL_UB_SIZE = 192 * 1024;  // 196608 bytes
 
 Small~XL 延迟恒定 (~43 us)，说明受启动开销主导。XXL 才显示数据依赖的扩展性。
 
-<!-- 截图占位：NPU Profiling Task Duration 截图 -->
 > 📸 **需要截图**：msprof 界面中 as_strided 算子的 Task Duration 和流水线利用率
 
 ## 八、踩坑全景图
