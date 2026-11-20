@@ -4,7 +4,7 @@
 >
 > 本目录不设课程级子目录——全部原子课程大纲汇总于本 README；单课深化样板见各章节详情。课件素材按 [directory.md](./directory.md) 四层结构落位，四层目录骨架已全部就位：[01_applications/](./01_applications/)（L1 应用层，6 子方向）、[02_framework/](./02_framework/)（L2 框架层，6 子方向）、[03_acceleration_libs/](./03_acceleration_libs/)（L3 加速库，5 子方向）、[04_ops_programming/](./04_ops_programming/)（L4 编程·编译·NPU 架构，3 子方向）。
 >
-> **课件素材现状（48 份 PPT + 65 个 Notebook，详见各子目录 README）**：[04_ops_programming/01_ascendc/](./04_ops_programming/01_ascendc/)（Ascend C 25 份：[a2a3/](./04_ops_programming/01_ascendc/a2a3/) 10 份 + [ascend950/](./04_ops_programming/01_ascendc/ascend950/) 12 份 + 根目录 3 份（NPU 架构导论合并版主讲义 + 双路线矢量算子开发））、[04_ops_programming/05_npu_architecture/](./04_ops_programming/05_npu_architecture/)（NPU 架构 4 份，体系结构课三幕剧主讲义）、[02_framework/01_overview/](./02_framework/01_overview/)（L2-30 总览课 3 份）、[02_framework/03_training_techniques/](./02_framework/03_training_techniques/)（SFT/RL 训练管线 4 份）、[04_ops_programming/02_pypto/](./04_ops_programming/02_pypto/)（PyPTO：Pro 教材 11 章 65 个 Notebook + 章节 PPT 11 份 + 基础 1 份）；其余子方向素材待建设。
+> **课件素材现状（48 份 PPT + 65 个 Notebook，详见各子目录 README）**：[04_ops_programming/01_ascendc/](./04_ops_programming/01_ascendc/)（Ascend C 26 份：[a2a3/](./04_ops_programming/01_ascendc/a2a3/) 11 份 + [ascend950/](./04_ops_programming/01_ascendc/ascend950/) 12 份 + 根目录 3 份（NPU 架构导论合并版主讲义 + 双路线矢量算子开发））、[04_ops_programming/05_npu_architecture/](./04_ops_programming/05_npu_architecture/)（NPU 架构 4 份，体系结构课三幕剧主讲义）、[02_framework/01_overview/](./02_framework/01_overview/)（L2-30 总览课 3 份）、[02_framework/03_training_techniques/](./02_framework/03_training_techniques/)（SFT/RL 训练管线 4 份）、[04_ops_programming/02_pypto/](./04_ops_programming/02_pypto/)（PyPTO：Pro 教材 11 章 65 个 Notebook + 章节 PPT 11 份 + 基础 1 份）；其余子方向素材待建设。
 
 ---
 

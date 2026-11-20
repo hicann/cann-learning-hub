@@ -11,7 +11,7 @@
 | **学时安排** | **20 个工作日 ≈ 125 小时**（理论约 38h + 实践约 57h + 结业大作业与社区任务约 30h；上午理论 / 下午实践为主，含多个纯实践半日与全天实践日） |
 | **授课对象** | 有一定编程基础、希望系统掌握 CANN 大模型推理全链路、Ascend C 矢量 / 矩阵 / 融合算子开发与 PyPTO Python 算子编程的工程师（含高校学生，无需先修其他启航营） |
 | **先修要求** | Python/C/C++ 基础；了解 Makefile/GIT 操作等 |
-| **配套讲义** | 共 16 份 PPT：[two_weeks_course/](./two_weeks_course/) 5 份、[AI 基础](../00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics.pptx) 1 份、[a2a3 原子课程](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3/) 9 份、[ascend950 图接入课程](../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/Ascend950_09_ascend_c_operator_graph_integration_pytorch_aclgraph_ge.pptx) 1 份；Transformer 架构、PyPTO、矩阵算子极致性能案例讲义建设中 |
+| **配套讲义** | 共 17 份 PPT：[two_weeks_course/](./two_weeks_course/) 5 份、[AI 基础](../00_atomic_courses/02_framework/01_overview/artificial_intelligence_basics.pptx) 1 份、[a2a3 原子课程](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3/) 10 份、[ascend950 图接入课程](../00_atomic_courses/04_ops_programming/01_ascendc/ascend950/Ascend950_09_ascend_c_operator_graph_integration_pytorch_aclgraph_ge.pptx) 1 份；Transformer 架构、PyPTO 讲义建设中 |
 | **实践平台** | cann-learning-hub（教程型跟练 Notebook）＋ CANNJudge（判题型自动评测） |
 | **结业标准** | 独立完成 `add_rms_norm` 算子开发（QWen3-1.7B 场景）、PyTorch 整网集成与性能优化，并完成一项社区任务（提交 PR / issue 或参加算子竞赛） |
 
@@ -120,7 +120,7 @@
 |------|------|------|---------|------|
 | **D11 全天** | 第 21 讲 | 基于 CANNBot 的算子开发实践 | CANNBot 生成 / 调试 / 优化；**尝试更改 skill 优化算子** | 2h + 4h, [PPT](./two_weeks_course/16_cannbot_operator_development_practice_1d.pptx) |
 | **D12 全天** | 第 22 讲 | 案例分析与实践：矢量算子 Softmax 如何逐步实现极致性能 | 优化路径案例剖析（多核 / TilingKey 分支 / Double Buffering / 流水优化 / UB 复用 / OnlineSoftmax）；复现与超越 | 2h 案例 + 4h 实践, [PPT](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3/a2a3_softmax_membase_optimization_2h.pptx) |
-| **D13 全天** | 第 23 讲 | 案例分析与实践：Matmul 算子如何逐步实现极致性能 | 分块 / 数据布局 / 流水优化路径剖析；复现与超越 | 2h 案例 + 4h 实践, 讲义建设中 |
+| **D13 全天** | 第 23 讲 | 案例分析与实践：Matmul 算子如何逐步实现极致性能 | 优化路径案例剖析（Cube 多核 / 蛇形窗口喂数 / 错位分核 / 低阶 API 流水 / L1 四级缓冲 / shape 泛化）；复现与超越 | 2h 案例 + 4h 实践, [PPT](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3/a2a3_matmul_optimization.pptx) |
 | **D14 全天** | 第 24 讲 | 案例分析与实践：融合算子（Matmul+LeakyReLU 等）如何逐步实现极致性能 | 优化路径案例剖析（Mix 融合 / 二维分核 / 蛇形窗口 SWAT 调度 / 低阶 API + L1 多缓冲 / C/V 深度融合 / L1 Bank 冲突规避）；复现与超越 | 2h 案例 + 4h 实践, [PPT](../00_atomic_courses/04_ops_programming/01_ascendc/a2a3/a2a3_matmul_leakyrelu_fusion_optimization.pptx) |
 | **D15 上午** | 第 25 讲 | CANN Python 算子编程：PyPTO 算子编程（理论） | PyPTO 与 Ascend C 的关系；Host / Kernel 分工与 MPMD 编程范式；计算图与泳道图；Hello World 执行流程 | 3h 理论, [PPT](../00_atomic_courses/04_ops_programming/02_pypto/01_pypto_basic_3.1.pptx) |
 | **D15 下午** | 第 26 讲 | PyPTO 算子编程实践 | PyPTO 环境体验 → elementwise / matmul 等基础算子 Python 实现 → 判题（CANN-LearningHub + CANNJudge 练习） | 3h 纯实践, 共用第 25 讲讲义 |
