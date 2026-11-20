@@ -166,6 +166,8 @@ tutorials/
         └── src/
 ```
 
+> **适用目录**：官方课程位于 `tutorials/`，社区贡献课程位于 `contrib/tutorials/`，两者目录结构与命名规范一致。
+
 **命名规范：**
 - 目录名、文件名使用英文、数字、下划线，必要时使用点号。
 - 章节目录：`0n_abc` 格式，如 `01_introduction`。
@@ -281,15 +283,17 @@ tutorials/
 
 | 体验环境 | 镜像模板 / 版本 | Python 内核 | 说明 |
 | --- | --- | --- | --- |
-| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.15 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
+| cann-learning-hub 在线体验 notebook | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 | 各 Notebook 表格中的"在线体验"链接可直接打开运行 |
 | CANNLab 云开发环境 | cann_9.0.0_py3.11-A2-arm | Python 3.11.4 |参考 [CANNLab 环境体验指南](https://gitcode.com/cann/cann-learning-hub/blob/master/docs/CANNLab_env_experience_guide.md)创建CANNLab环境运行notebook |
+
+> **注意：** 表中 Python 内核版本为创建环境后执行 `which python` 的实测值；同一镜像模板应保持一致，如实测值与表中不一致，请以实测为准并在主 README 中注明。
 
 > **注意：** 如在本地环境离线体验，需自行安装配套的 CANN 软件，具体请参考 [CANN 安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/600alpha003/softwareinstall/instg/atlasdeploy_03_0001.html)，选择对应CANN版本文档。
 ```
 
 ## 5. PR准入Checklist
 
-> 本清单用于课程组在提PR到test分支前逐项自检，全部通过后方可发起PR。可将本清单提供给AI辅助预检，快速定位问题。
+> 本清单用于课程组发起 PR 前逐项自检（路径A 在提 master PR 前、路径B 在提 test PR 前），全部通过后方可发起 PR。可将本清单提供给AI辅助预检，快速定位问题。
 
 | 序号 | 验收项 | 准入要求 | 结果 |
 | --- | --- | --- | --- |
@@ -314,7 +318,7 @@ tutorials/
 | 19 | gitcode notebook | 算子课程和模型参数量 <0.5B 的课程，须在 cann-learning-hub notebook 可直接运行。 | □ 通过  □ 不通过  □ 不适用 |
 | 20 | 清理输出 | 提交 PR 前已删除所有 code cell 的输出内容，notebook 中不得保留运行结果。 | □ 通过  □ 不通过 |
 
-**自检说明**：以上所有项须全部通过（含条件项结论明确）后，方可从课程组侧发起合入 test 分支的 PR。
+**自检说明**：以上所有项须全部通过（含条件项结论明确）后，方可从课程组侧发起 PR（路径A 提至 `master`、路径B 提至 `test` 分支）。
 
 ---
 
